@@ -200,8 +200,8 @@ ORDER BY R.specific_schema, R.routine_name, R.routine_type;";
                 ? $@"""{table.Split('.')[0]}"".""{table.Split('.')[1]}"""
                 : $@"""{table}""";
 
-            return !string.IsNullOrEmpty(groupField) ? 
-                $@"SELECT ""{nameField}"" AS ""NameField"", ""{valueField}"" AS ""ValueField"", ""{groupField}"" AS ""GroupField"", * FROM {formattedTable};" : 
+            return !string.IsNullOrEmpty(groupField) ?
+                $@"SELECT ""{nameField}"" AS ""NameField"", ""{valueField}"" AS ""ValueField"", ""{groupField}"" AS ""GroupField"", * FROM {formattedTable};" :
                 $@"SELECT ""{nameField}"" AS ""NameField"", ""{valueField}"" AS ""ValueField"", * FROM {formattedTable};";
         }
 
@@ -345,7 +345,7 @@ ORDER BY SchemaName, TableName, TriggerName;";
                     {
                         cmd.CommandText = sb.ToString();
                         sqlAdapter.SelectCommand = cmd;
-                        if(cmd.Connection.State != ConnectionState.Open)
+                        if (cmd.Connection.State != ConnectionState.Open)
                             cmd.Connection.Open();
                         sqlAdapter.SelectCommand.ExecuteReader(CommandBehavior.SchemaOnly | CommandBehavior.KeyInfo);
                         cmd.Connection.Close();
@@ -365,7 +365,7 @@ ORDER BY SchemaName, TableName, TriggerName;";
                 {
                     proc.ReturnModels.Add(ds.Tables[count].Columns.Cast<DataColumn>().ToList());
                 }
-                
+
                 proc.MergeModelsIfAllSame();
                 Settings.ReadStoredProcReturnObjectCompleted(proc);
             }

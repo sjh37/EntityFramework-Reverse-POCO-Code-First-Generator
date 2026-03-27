@@ -45,14 +45,14 @@ namespace Efrpg.Generators
 
         protected Generator(FileManagementService fileManagementService, Type fileManagerType)
         {
-            _fileManagementService  = fileManagementService;
-            _fileManagerType        = fileManagerType;
-            InitialisationOk        = false;
-            DatabaseReader          = null;
-            _fileHeaderFooter        = null;
-            _preHeaderInfo          = new StringBuilder(1024);
+            _fileManagementService = fileManagementService;
+            _fileManagerType = fileManagerType;
+            InitialisationOk = false;
+            DatabaseReader = null;
+            _fileHeaderFooter = null;
+            _preHeaderInfo = new StringBuilder(1024);
             _codeGeneratedAttribute = string.Format("[GeneratedCode(\"EF.Reverse.POCO.Generator\", \"{0}\")]", EfrpgVersion.Version());
-            FilterList              = new DbContextFilterList();
+            FilterList = new DbContextFilterList();
         }
 
         public void Init(DatabaseReader databaseReader, string singleDbContextSubNamespace)
@@ -64,7 +64,7 @@ namespace Efrpg.Generators
             }
 
             var licence = ReadAndValidateLicence();
-            if(licence == null)
+            if (licence == null)
                 return;
 
             BuildPreHeaderInfo(licence);
@@ -88,7 +88,7 @@ namespace Efrpg.Generators
             }
 
             _hasAcademicLicence = licence.LicenceType == LicenceType.Academic;
-            _hasTrialLicence    = licence.LicenceType == LicenceType.Trial;
+            _hasTrialLicence = licence.LicenceType == LicenceType.Trial;
             InitialisationOk = FilterList.ReadDbContextSettings(DatabaseReader, singleDbContextSubNamespace);
             _fileManagementService.Init(FilterList.GetFilters(), _fileManagerType);
         }
@@ -112,7 +112,7 @@ namespace Efrpg.Generators
             }
 
             var validator = new LicenceValidator();
-            if(!validator.Validate(File.ReadAllText(file)))
+            if (!validator.Validate(File.ReadAllText(file)))
             {
                 _fileManagementService.Error(validator.Expired
                     ? string.Format("// Your licence file {0} has expired.", file)
@@ -213,7 +213,7 @@ namespace Efrpg.Generators
                 _fileManagementService.Error(string.Empty);
             }
         }
-        
+
         public void LoadSequences()
         {
             if (DatabaseReader == null || !Settings.ElementsToGenerate.HasFlag(Elements.Context))
@@ -224,7 +224,7 @@ namespace Efrpg.Generators
                 var sequences = DatabaseReader.ReadSequences();
                 if (sequences.Count <= 0)
                     return; // No sequences in database
-                
+
                 foreach (var filterKeyValuePair in FilterList.GetFilters())
                 {
                     // Only add sequences where the table is used by this filter
@@ -250,15 +250,16 @@ namespace Efrpg.Generators
                 _fileManagementService.Error(string.Empty);
             }
         }
-        
+
         public void ReadDatabase()
         {
+            Settings.CheckSettings();
             LoadTables();
             LoadStoredProcs();
             LoadEnums();
             LoadSequences();
         }
-        
+
         public void LoadTables()
         {
             if (DatabaseReader == null ||
@@ -272,8 +273,8 @@ namespace Efrpg.Generators
             {
                 var includeSynonyms = FilterList.IncludeSynonyms();
 
-                var rawTables      = DatabaseReader.ReadTables(includeSynonyms);
-                var rawIndexes     = DatabaseReader.ReadIndexes();
+                var rawTables = DatabaseReader.ReadTables(includeSynonyms);
+                var rawIndexes = DatabaseReader.ReadIndexes();
                 var rawForeignKeys = DatabaseReader.ReadForeignKeys(includeSynonyms);
 
                 // For unit testing
@@ -323,9 +324,9 @@ namespace Efrpg.Generators
                 return;
 
             var uniqueForeignKeys = from i in rawIndexes.Where(x => x.IsUniqueConstraint)
-                join fk1 in rawForeignKeys
-                    on new { X1 = i.Schema, X2 = i.TableName } equals new { X1 = fk1.PkSchema, X2 = fk1.PkTableName }
-                select fk1;
+                                    join fk1 in rawForeignKeys
+                                        on new { X1 = i.Schema, X2 = i.TableName } equals new { X1 = fk1.PkSchema, X2 = fk1.PkTableName }
+                                    select fk1;
 
             foreach (var fk in uniqueForeignKeys)
                 fk.HasUniqueConstraint = true;
@@ -356,7 +357,7 @@ namespace Efrpg.Generators
                 foreach (var tn in tablesNames)
                 {
                     var exclude = tn.IsView && !filter.IncludeViews;
-                    if(exclude && !deleteFilteredOutFiles)
+                    if (exclude && !deleteFilteredOutFiles)
                         continue;
 
                     // Check if schema is excluded
@@ -392,7 +393,7 @@ namespace Efrpg.Generators
                             continue;
                     }
 
-                    if(exclude)
+                    if (exclude)
                     {
                         FileManagementService.DeleteFile(table.NameHumanCaseWithSuffix() + Settings.FileExtension); // Poco
                         FileManagementService.DeleteFile(table.NameHumanCaseWithSuffix() + Settings.ConfigurationClassName + Settings.FileExtension); // Poco config
@@ -515,9 +516,9 @@ namespace Efrpg.Generators
 
                         col.Indexes.Add(index);
 
-                        col.IsPrimaryKey       = col.IsPrimaryKey       || index.IsPrimaryKey;
+                        col.IsPrimaryKey = col.IsPrimaryKey || index.IsPrimaryKey;
                         col.IsUniqueConstraint = col.IsUniqueConstraint || (index.IsUniqueConstraint && index.ColumnCount == 1);
-                        col.IsUnique           = col.IsUnique           || (index.IsUnique           && index.ColumnCount == 1);
+                        col.IsUnique = col.IsUnique || (index.IsUnique && index.ColumnCount == 1);
                     }
 
                     // Check if table has any primary keys
@@ -543,10 +544,10 @@ namespace Efrpg.Generators
                         var col = t.Columns.Find(x => x.DbName == key.ColumnName);
                         if (col != null && !col.IsNullable && !col.Hidden && !col.IsPrimaryKey)
                         {
-                            col.IsPrimaryKey       = true;
+                            col.IsPrimaryKey = true;
                             col.IsUniqueConstraint = true;
-                            col.IsUnique           = true;
-                            col.UniqueIndexName    = indexName;
+                            col.IsUnique = true;
+                            col.UniqueIndexName = indexName;
                         }
                     }
                 }
@@ -561,7 +562,7 @@ namespace Efrpg.Generators
             if (rawForeignKeys == null)
                 rawForeignKeys = new List<RawForeignKey>();
             //else
-                //SortForeignKeys(rawForeignKeys);
+            //SortForeignKeys(rawForeignKeys);
 
             foreach (var filterKeyValuePair in FilterList.GetFilters())
             {
@@ -613,7 +614,7 @@ namespace Efrpg.Generators
                 // Mappings tables can only be true for Ef6 and EFCore 5 onwards
                 if (Settings.UseMappingTables && !(Settings.IsEf6() || Settings.IsEfCore8Plus()))
                     Settings.UseMappingTables = false;
-                
+
                 if (Settings.UseMappingTables)
                     filter.Tables.IdentifyMappingTables(foreignKeys, true, DatabaseReader.IncludeSchema);
 
@@ -644,14 +645,14 @@ namespace Efrpg.Generators
                 }
 
                 // Matches without 'id'
-                if(fkColumn.EndsWith("id") && fkColumn.Remove(fkColumn.Length - 2, 2) == pkTable)
+                if (fkColumn.EndsWith("id") && fkColumn.Remove(fkColumn.Length - 2, 2) == pkTable)
                 {
                     fk.SortOrder = 2;
                     continue;
                 }
 
                 // Matches if trimmed
-                if(fkColumn.Length > pkTable.Length && fkColumn.Substring(0, pkTable.Length) == pkTable)
+                if (fkColumn.Length > pkTable.Length && fkColumn.Substring(0, pkTable.Length) == pkTable)
                 {
                     fk.SortOrder = 3;
                     continue;
@@ -714,8 +715,8 @@ namespace Efrpg.Generators
                 return;
 
             var commentsInSummaryBlock = Settings.IncludeExtendedPropertyComments == CommentsStyle.InSummaryBlock;
-            var multiLine              = new Regex("[\r\n]+", RegexOptions.Compiled);
-            var whiteSpace             = new Regex("\\s+", RegexOptions.Compiled);
+            var multiLine = new Regex("[\r\n]+", RegexOptions.Compiled);
+            var whiteSpace = new Regex("\\s+", RegexOptions.Compiled);
 
             foreach (var filterKeyValuePair in FilterList.GetFilters())
             {
@@ -827,12 +828,12 @@ namespace Efrpg.Generators
                 {
                     var sp = new StoredProcedure
                     {
-                        DbName                 = proc.Name,
-                        NameHumanCase          = (Settings.UsePascalCase ? Inflector.ToTitleCase(proc.Name) : proc.Name).Replace(" ", "").Replace("$", ""),
-                        Schema                 = new Schema(proc.Schema),
-                        IsTableValuedFunction  = proc.IsTableValuedFunction,
+                        DbName = proc.Name,
+                        NameHumanCase = (Settings.UsePascalCase ? Inflector.ToTitleCase(proc.Name) : proc.Name).Replace(" ", "").Replace("$", ""),
+                        Schema = new Schema(proc.Schema),
+                        IsTableValuedFunction = proc.IsTableValuedFunction,
                         IsScalarValuedFunction = proc.IsScalarValuedFunction,
-                        IsStoredProcedure      = proc.IsStoredProcedure
+                        IsStoredProcedure = proc.IsStoredProcedure
                     };
                     sp.NameHumanCase = DatabaseReader.CleanUp(sp.NameHumanCase);
                     if (Settings.PrependSchemaName && (string.Compare(proc.Schema, Settings.DefaultSchema, StringComparison.OrdinalIgnoreCase) != 0) && Settings.PrependSchemaNameForStoredProcedure(sp))
@@ -852,7 +853,7 @@ namespace Efrpg.Generators
                     // Check to see if this stored proc is to be kept by any of the filters
                     if (spFilters.All(x => x.Value.IsExcluded(sp)))
                     {
-                        if(deleteFilteredOutFiles)
+                        if (deleteFilteredOutFiles)
                             FileManagementService.DeleteFile(sp.WriteStoredProcReturnModelName(spFilters[0].Value) + Settings.FileExtension);
 
                         continue; // All Db Context exclude this stored proc, ignore it as nobody wants it
@@ -943,8 +944,8 @@ namespace Efrpg.Generators
             AddRelationship(filter, fkList, tablesAndViews, name, pkSchema, pkTable, new[] { pkColumn }, fkSchema, fkTable, new[] { fkColumn }, parentName, childName, isUnique);
         }
 
-        public void AddRelationship(IDbContextFilter filter, List<ForeignKey> fkList, Tables tablesAndViews, string relationshipName, 
-            string pkSchema, string pkTableName, string[] pkColumns, 
+        public void AddRelationship(IDbContextFilter filter, List<ForeignKey> fkList, Tables tablesAndViews, string relationshipName,
+            string pkSchema, string pkTableName, string[] pkColumns,
             string fkSchema, string fkTableName, string[] fkColumns,
             string parentName, string childName, bool isUnique)
         {
@@ -1008,7 +1009,8 @@ namespace Efrpg.Generators
                     parentName,
                     childName,
                     isUnique
-                ) { IncludeReverseNavigation = true };
+                )
+                { IncludeReverseNavigation = true };
 
                 fkList.Add(fk);
                 fkTable.HasForeignKey = true;
@@ -1034,10 +1036,10 @@ namespace Efrpg.Generators
                     continue;
 
                 var fkCols = foreignKeys.Select(x => new ColumnAndForeignKey
-                    {
-                        ForeignKey = x,
-                        Column = fkTable.Columns.Find(n => string.Equals(n.DbName, x.FkColumn, StringComparison.InvariantCultureIgnoreCase))
-                    })
+                {
+                    ForeignKey = x,
+                    Column = fkTable.Columns.Find(n => string.Equals(n.DbName, x.FkColumn, StringComparison.InvariantCultureIgnoreCase))
+                })
                     .Where(x => x.Column != null)
                     .OrderBy(o => o.ForeignKey.Ordinal)
                     .ToList();
@@ -1048,7 +1050,7 @@ namespace Efrpg.Generators
                 if (FkMustHaveSameNumberOfColumnsAsPrimaryKey() || AllowFkToNonPrimaryKey())
                 {
                     // Check FK has same number of columns as the primary key it points to
-                    var pks  = pkTable.PrimaryKeys         .OrderBy(x => x.PropertyType).ThenBy(y => y.DbName).ToArray();
+                    var pks = pkTable.PrimaryKeys.OrderBy(x => x.PropertyType).ThenBy(y => y.DbName).ToArray();
                     var cols = fkCols.Select(x => x.Column).OrderBy(x => x.PropertyType).ThenBy(y => y.DbName).ToArray();
 
                     if (FkMustHaveSameNumberOfColumnsAsPrimaryKey() && pks.Length != cols.Length)
@@ -1057,7 +1059,7 @@ namespace Efrpg.Generators
                         if (!AllowFkToNonPrimaryKey())
                             continue;
 
-                        if(!fkCols.All(x => x.ForeignKey.HasUniqueConstraint))
+                        if (!fkCols.All(x => x.ForeignKey.HasUniqueConstraint))
                             continue;
                     }
 
@@ -1066,10 +1068,10 @@ namespace Efrpg.Generators
                 }
 
                 var pkCols = foreignKeys.Select(x => new ColumnAndForeignKey
-                    {
-                        ForeignKey = x,
-                        Column = pkTable.Columns.Find(n => string.Equals(n.DbName, x.PkColumn, StringComparison.InvariantCultureIgnoreCase))
-                    })
+                {
+                    ForeignKey = x,
+                    Column = pkTable.Columns.Find(n => string.Equals(n.DbName, x.PkColumn, StringComparison.InvariantCultureIgnoreCase))
+                })
                     .Where(x => x.Column != null)
                     .OrderBy(o => o.ForeignKey.Ordinal)
                     .ToList();
@@ -1086,16 +1088,16 @@ namespace Efrpg.Generators
                     continue;
 
                 var pkTableHumanCaseWithSuffix = pkTable.NameHumanCaseWithSuffix();//foreignKey.PkTableHumanCase(pkTable.Suffix);
-                var pkTableHumanCase           = foreignKey.PkTableHumanCase(null);
-                var fkHasUniqueConstraint      = pkCols.All(x => x.ForeignKey.HasUniqueConstraint) && relationship == Relationship.OneToOne;
+                var pkTableHumanCase = foreignKey.PkTableHumanCase(null);
+                var fkHasUniqueConstraint = pkCols.All(x => x.ForeignKey.HasUniqueConstraint) && relationship == Relationship.OneToOne;
 
                 if (fkHasUniqueConstraint && pkCols.Any(x => x.Column.IsNullable))
                     continue; // This would force the column to be not null
 
-                var flipRelationship       = FlipRelationship(relationship);
+                var flipRelationship = FlipRelationship(relationship);
                 var fkMakePropNameSingular = relationship == Relationship.OneToOne;
-                var pkPropName             = fkTable.GetUniqueForeignKeyName(true,  pkTableHumanCase,      foreignKey, checkForFkNameClashes, true,                   relationship);
-                var fkPropName             = pkTable.GetUniqueForeignKeyName(false, fkTable.NameHumanCase, foreignKey, checkForFkNameClashes, fkMakePropNameSingular, flipRelationship);
+                var pkPropName = fkTable.GetUniqueForeignKeyName(true, pkTableHumanCase, foreignKey, checkForFkNameClashes, true, relationship);
+                var fkPropName = pkTable.GetUniqueForeignKeyName(false, fkTable.NameHumanCase, foreignKey, checkForFkNameClashes, fkMakePropNameSingular, flipRelationship);
 
                 // Determine if the foreign key navigation property needs null-forgiving operator or nullable marker
                 // If all FK columns are nullable, the navigation property can be marked nullable (requires AllowNullStrings).
@@ -1108,10 +1110,10 @@ namespace Efrpg.Generators
                 var fkd = new PropertyAndComments
                 {
                     AdditionalDataAnnotations = filter.ForeignKeyAnnotationsProcessing(fkTable, pkTable, pkPropName, fkPropName),
-                    
+
                     PropertyName = pkPropName,
 
-                    Definition = string.Format("public {0}{1}{2} {3} {4}{5}{6}", 
+                    Definition = string.Format("public {0}{1}{2} {3} {4}{5}{6}",
                         Table.GetLazyLoadingMarker(),
                         pkTableHumanCaseWithSuffix,
                         nullableMarker,
@@ -1144,7 +1146,7 @@ namespace Efrpg.Generators
 
                 var primaryKeyColumns = string.Empty;
                 if (!allPkColsArePrimaryKeys)
-                { 
+                {
                     if (pkCols.Count > 1)
                         primaryKeyColumns = string.Format("p => new {{ {0} }}", string.Join(", ", pkCols.Select(x => "p." + x.Column.NameHumanCase).Distinct().ToArray()));
                     else
@@ -1208,7 +1210,7 @@ namespace Efrpg.Generators
         // Calculates the relationship between a child table and it's parent table.
         public static Relationship CalcRelationship(Table parentTable, Table childTable, List<ColumnAndForeignKey> fkCols, List<ColumnAndForeignKey> pkCols)
         {
-            var childTableCols  = fkCols.Select(c => c.Column).ToList();
+            var childTableCols = fkCols.Select(c => c.Column).ToList();
             var parentTableCols = pkCols.Select(c => c.Column).ToList();
 
             if (childTableCols.Count == 1 && parentTableCols.Count == 1)
@@ -1218,12 +1220,12 @@ namespace Efrpg.Generators
 
             // childTable FK columns are exactly the primary key (they are part of primary key, and no other columns are primary keys)
             // TODO: we could also check if they are a unique index
-            var childTableColumnsAllPrimaryKeys = (childTableCols.Count == childTableCols.Count(x => x.IsPrimaryKey)) && 
+            var childTableColumnsAllPrimaryKeys = (childTableCols.Count == childTableCols.Count(x => x.IsPrimaryKey)) &&
                                                   (childTableCols.Count == childTable.PrimaryKeys.Count());
 
             // parentTable columns are exactly the primary key (they are part of primary key, and no other columns are primary keys)
             // TODO: we could also check if they are a unique index
-            var parentTableColumnsAllPrimaryKeys = (parentTableCols.Count == parentTableCols.Count(x => x.IsPrimaryKey)) && 
+            var parentTableColumnsAllPrimaryKeys = (parentTableCols.Count == parentTableCols.Count(x => x.IsPrimaryKey)) &&
                                                    (parentTableCols.Count == parentTable.PrimaryKeys.Count());
 
             // childTable FK columns are not only FK but also the whole PK (not only part of PK); parentTable columns are the whole PK (not only part of PK) - so it's 1:1
@@ -1231,7 +1233,7 @@ namespace Efrpg.Generators
                 return Relationship.OneToOne;
 
             // Check if covered by a unique constraint
-            if(fkCols.All(x => x.ForeignKey.HasUniqueConstraint))
+            if (fkCols.All(x => x.ForeignKey.HasUniqueConstraint))
                 return Relationship.OneToOne;
 
             // Check if covered by a unique index on PK table
@@ -1263,12 +1265,12 @@ namespace Efrpg.Generators
         {
             switch (relationship)
             {
-                case Relationship.OneToOne:   return Relationship.OneToOne;
-                case Relationship.OneToMany:  return Relationship.ManyToOne;
-                case Relationship.ManyToOne:  return Relationship.OneToMany;
+                case Relationship.OneToOne: return Relationship.OneToOne;
+                case Relationship.OneToMany: return Relationship.ManyToOne;
+                case Relationship.ManyToOne: return Relationship.OneToMany;
                 case Relationship.ManyToMany: return Relationship.ManyToMany;
-                case Relationship.DoNotUse:   return Relationship.DoNotUse;
-                
+                case Relationship.DoNotUse: return Relationship.DoNotUse;
+
                 default:
                     throw new ArgumentOutOfRangeException(nameof(relationship), relationship, null);
             }
@@ -1356,21 +1358,21 @@ namespace Efrpg.Generators
         {
             var codeGenerator = new CodeGenerator(this, filter);
 
-            const string contextInterface  = "contextInterface:";
-            const string contextFactory    = "contextFactory:";
-            const string contextClass      = "contextClass:";
-            const string contextFakeClass  = "contextFakeClass:";
-            const string contextFakeDbSet  = "contextFakeDbSet:";
-            const string pocoClass         = "pocoClass:";
+            const string contextInterface = "contextInterface:";
+            const string contextFactory = "contextFactory:";
+            const string contextClass = "contextClass:";
+            const string contextFakeClass = "contextFakeClass:";
+            const string contextFakeDbSet = "contextFakeDbSet:";
+            const string pocoClass = "pocoClass:";
             const string pocoConfiguration = "pocoConfiguration:";
-            const string spReturnModels    = "spReturnModel:";
-            const string enumType          = "enumType:";
-            const string ownedEntityClass  = "ownedEntityClass:";
+            const string spReturnModels = "spReturnModel:";
+            const string enumType = "enumType:";
+            const string ownedEntityClass = "ownedEntityClass:";
 
             var codeOutputList = new CodeOutputList();
             codeOutputList.Add(contextInterface, codeGenerator.GenerateInterface());
-            codeOutputList.Add(contextFactory,   codeGenerator.GenerateFactory());
-            codeOutputList.Add(contextClass,     codeGenerator.GenerateContext());
+            codeOutputList.Add(contextFactory, codeGenerator.GenerateFactory());
+            codeOutputList.Add(contextClass, codeGenerator.GenerateContext());
             codeOutputList.Add(contextFakeClass, codeGenerator.GenerateFakeContext());
             codeOutputList.Add(contextFakeDbSet, codeGenerator.GenerateFakeDbSet());
 
@@ -1389,9 +1391,9 @@ namespace Efrpg.Generators
             }
 
             foreach (var sp in filter.StoredProcs
-                .Where(x => x.ReturnModels.Count > 0 && 
-                            x.ReturnModels.Any(returnColumns => returnColumns.Any()) && 
-                            !Settings.StoredProcedureReturnTypes.ContainsKey(x.NameHumanCase) && 
+                .Where(x => x.ReturnModels.Count > 0 &&
+                            x.ReturnModels.Any(returnColumns => returnColumns.Any()) &&
+                            !Settings.StoredProcedureReturnTypes.ContainsKey(x.NameHumanCase) &&
                             !Settings.StoredProcedureReturnTypes.ContainsKey(x.DbName))
                 .OrderBy(x => x.NameHumanCase))
             {
@@ -1425,7 +1427,7 @@ namespace Efrpg.Generators
             if (!Settings.GenerateSeparateFiles)
             {
                 var preHeader = _preHeaderInfo.ToString();
-                if(!string.IsNullOrWhiteSpace(preHeader))
+                if (!string.IsNullOrWhiteSpace(preHeader))
                     _fileManagementService.WriteLine(preHeader.Trim());
 
                 var header = _fileHeaderFooter.Header;
@@ -1448,11 +1450,11 @@ namespace Efrpg.Generators
             }
 
             // Write the pre header info with the database context and it's interface
-            if(codeOutputList.Files.ContainsKey(contextInterface)) WriteCodeOutput(codeGenerator, codeOutputList.Files[contextInterface], true, firstInGroup: true);
-            if(codeOutputList.Files.ContainsKey(contextClass))     WriteCodeOutput(codeGenerator, codeOutputList.Files[contextClass], true, firstInGroup: true);
-            if(codeOutputList.Files.ContainsKey(contextFactory))   WriteCodeOutput(codeGenerator, codeOutputList.Files[contextFactory], true);
-            if(codeOutputList.Files.ContainsKey(contextFakeClass)) WriteCodeOutput(codeGenerator, codeOutputList.Files[contextFakeClass], true, firstInGroup: true);
-            if(codeOutputList.Files.ContainsKey(contextFakeDbSet)) WriteCodeOutput(codeGenerator, codeOutputList.Files[contextFakeDbSet], true);
+            if (codeOutputList.Files.ContainsKey(contextInterface)) WriteCodeOutput(codeGenerator, codeOutputList.Files[contextInterface], true, firstInGroup: true);
+            if (codeOutputList.Files.ContainsKey(contextClass)) WriteCodeOutput(codeGenerator, codeOutputList.Files[contextClass], true, firstInGroup: true);
+            if (codeOutputList.Files.ContainsKey(contextFactory)) WriteCodeOutput(codeGenerator, codeOutputList.Files[contextFactory], true);
+            if (codeOutputList.Files.ContainsKey(contextFakeClass)) WriteCodeOutput(codeGenerator, codeOutputList.Files[contextFakeClass], true, firstInGroup: true);
+            if (codeOutputList.Files.ContainsKey(contextFakeDbSet)) WriteCodeOutput(codeGenerator, codeOutputList.Files[contextFakeDbSet], true);
 
             WriteCodeOutputForGroup(codeGenerator, "POCO classes", true,
                 codeOutputList.Files

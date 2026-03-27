@@ -22,7 +22,7 @@ namespace Efrpg.Readers
                     return new SqlServerCeDatabaseReader(factory, databaseToPropertyType);
 
                 case DatabaseType.Plugin:
-                    if(string.IsNullOrWhiteSpace(Settings.DatabaseReaderPlugin))
+                    if (string.IsNullOrWhiteSpace(Settings.DatabaseReaderPlugin))
                         throw new ArgumentOutOfRangeException();
                     return new PluginDatabaseReader(null);
 

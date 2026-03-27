@@ -15,21 +15,21 @@ namespace Efrpg
     {
         // Main settings **********************************************************************************************************************
         // The following entries are the only required settings.
-        public static DatabaseType DatabaseType                         = DatabaseType.SqlServer; // SqlServer, SqlCe, SQLite, PostgreSQL. Coming next: MySql, Oracle
-        public static TemplateType TemplateType                         = TemplateType.EfCore10; // EfCore8-10, Ef6, FileBasedCore8-10. FileBased specify folder using Settings.TemplateFolder
-        public static GeneratorType GeneratorType                       = GeneratorType.EfCore; // EfCore, Ef6, Custom. Custom edit GeneratorCustom class to provide your own implementation
+        public static DatabaseType DatabaseType = DatabaseType.SqlServer; // SqlServer, SqlCe, SQLite, PostgreSQL. Coming next: MySql, Oracle
+        public static TemplateType TemplateType = TemplateType.EfCore10; // EfCore8-10, Ef6, FileBasedCore8-10. FileBased specify folder using Settings.TemplateFolder
+        public static GeneratorType GeneratorType = GeneratorType.EfCore; // EfCore, Ef6, Custom. Custom edit GeneratorCustom class to provide your own implementation
         public static ForeignKeyNamingStrategy ForeignKeyNamingStrategy = ForeignKeyNamingStrategy.Current; // Please use Legacy for now, Latest (not yet ready)
-        public static bool UseMappingTables                             = false; // Can only be set to true for EF6. If true, mapping will be used and no mapping tables will be generated. If false, all tables will be generated.
-        public static FileManagerType FileManagerType                   = FileManagerType.EfCore; // .NET Core project = EfCore; .NET 4.x project = VisualStudio; No output (testing only) = Null
-        public static string ConnectionString                           = ""; // This is used by the generator to reverse engineer your database
-        public static string ConnectionStringActions                    = ""; // EFCore only. Additional method chain to append to the database provider setup in OnConfiguring. e.g. ".EnableRetryOnFailure(maxRetryCount: 10, maxRetryDelay: TimeSpan.FromSeconds(30), errorNumbersToAdd: null)"
-        public static string ConnectionStringName                       = "MyDbContext"; // ConnectionString key as specified in your app.config/web.config/appsettings.json
-        public static string DbContextName                              = "MyDbContext"; // Class name for the DbContext to be generated.
-        public static bool GenerateSeparateFiles                        = false;
-        public static string Namespace                                  = typeof(Settings).Namespace; // Override the default namespace here. Example: Namespace = "CustomNamespace";
-        public static string TemplateFolder                             = ""; // Only used if Settings.TemplateType = TemplateType.FileBased. Specify folder name where the mustache folders can be found. Please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Custom-file-based-templates
-        public static bool AddUnitTestingDbContext                      = true; // Will add a FakeDbContext and FakeDbSet for easy unit testing
-        public static bool FakeDbContextInDebugOnlyMode                = false; // If true, wraps Fake* classes in #if DEBUG / #endif so they are excluded from Release builds
+        public static bool UseMappingTables = false; // Can only be set to true for EF6. If true, mapping will be used and no mapping tables will be generated. If false, all tables will be generated.
+        public static FileManagerType FileManagerType = FileManagerType.EfCore; // .NET Core project = EfCore; .NET 4.x project = VisualStudio; No output (testing only) = Null
+        public static string ConnectionString = ""; // This is used by the generator to reverse engineer your database
+        public static string ConnectionStringActions = ""; // EFCore only. Additional method chain to append to the database provider setup in OnConfiguring. e.g. ".EnableRetryOnFailure(maxRetryCount: 10, maxRetryDelay: TimeSpan.FromSeconds(30), errorNumbersToAdd: null)"
+        public static string ConnectionStringName = "MyDbContext"; // ConnectionString key as specified in your app.config/web.config/appsettings.json
+        public static string DbContextName = "MyDbContext"; // Class name for the DbContext to be generated.
+        public static bool GenerateSeparateFiles = false;
+        public static string Namespace = typeof(Settings).Namespace; // Override the default namespace here. Example: Namespace = "CustomNamespace";
+        public static string TemplateFolder = ""; // Only used if Settings.TemplateType = TemplateType.FileBased. Specify folder name where the mustache folders can be found. Please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Custom-file-based-templates
+        public static bool AddUnitTestingDbContext = true; // Will add a FakeDbContext and FakeDbSet for easy unit testing
+        public static bool FakeDbContextInDebugOnlyMode = false; // If true, wraps Fake* classes in #if DEBUG / #endif so they are excluded from Release builds
 
         // Elements to generate ***************************************************************************************************************
         // Add the elements that should be generated when the template is executed.
@@ -38,70 +38,70 @@ namespace Efrpg
 
         // Generate files in sub-folders ******************************************************************************************************
         // Only activated if Settings.FileManagerType = FileManagerType.EfCore && Settings.GenerateSeparateFiles = true
-        public static string ContextFolder              = ""; // Sub-folder you would like your DbContext to be added to.              e.g. @"Data"
-        public static string InterfaceFolder            = ""; // Sub-folder you would like your Interface to be added to.              e.g. @"Data\Interface"
-        public static string PocoFolder                 = ""; // Sub-folder you would like your Poco's to be added to.                 e.g. @"Data\Entities"
-        public static string PocoConfigurationFolder    = ""; // Sub-folder you would like your Configuration mappings to be added to. e.g. @"Data\Configuration"
-        public static string OwnedEntityFolder          = ""; // Sub-folder for auto-generated owned entity classes; defaults to PocoFolder if empty.   e.g. @"Data\Entities"
-        public static bool   UseFolderNameInNamespace   = false; // If true, appends the sub-folder name to the namespace of each generated file. e.g. PocoFolder = "Entities" => namespace MyProject.Entities
+        public static string ContextFolder = ""; // Sub-folder you would like your DbContext to be added to.              e.g. @"Data"
+        public static string InterfaceFolder = ""; // Sub-folder you would like your Interface to be added to.              e.g. @"Data\Interface"
+        public static string PocoFolder = ""; // Sub-folder you would like your Poco's to be added to.                 e.g. @"Data\Entities"
+        public static string PocoConfigurationFolder = ""; // Sub-folder you would like your Configuration mappings to be added to. e.g. @"Data\Configuration"
+        public static string OwnedEntityFolder = ""; // Sub-folder for auto-generated owned entity classes; defaults to PocoFolder if empty.   e.g. @"Data\Entities"
+        public static bool UseFolderNameInNamespace = false; // If true, appends the sub-folder name to the namespace of each generated file. e.g. PocoFolder = "Entities" => namespace MyProject.Entities
 
 
-        public static int    CommandTimeout                         = 600; // SQL Command timeout in seconds. 600 is 10 minutes, 0 will wait indefinitely. Some databases can be slow retrieving schema information.
-        public static string DbContextInterfaceBaseClasses          = "IDisposable"; // Specify what the base classes are for your database context interface
-        public static string DbContextBaseClass                     = "DbContext"; // Specify what the base class is for your DbContext. For ASP.NET Identity use "IdentityDbContext<ApplicationUser>";
-        public static OnConfiguration OnConfiguration               = OnConfiguration.ConnectionString; // EFCore only. Determines the code generated within DbContext.OnConfiguration(). Please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Settings.OnConfiguration
-        public static bool   AddParameterlessConstructorToDbContext = true; // If true, then DbContext will have a default (parameter-less) constructor which automatically passes in the connection string name, if false then no parameter-less constructor will be created.
-        public static string ConfigurationClassName                 = "Configuration"; // Configuration, Mapping, Map, etc. This is appended to the Poco class name to configure the mappings.
-        public static string DatabaseReaderPlugin                   = ""; // Eg, "c:\\Path\\YourDatabaseReader.dll,Full.Name.Of.Class.Including.Namespace". See #501. This will allow you to specify a pluggable provider for reading your database.
+        public static int CommandTimeout = 600; // SQL Command timeout in seconds. 600 is 10 minutes, 0 will wait indefinitely. Some databases can be slow retrieving schema information.
+        public static string DbContextInterfaceBaseClasses = "IDisposable"; // Specify what the base classes are for your database context interface
+        public static string DbContextBaseClass = "DbContext"; // Specify what the base class is for your DbContext. For ASP.NET Identity use "IdentityDbContext<ApplicationUser>";
+        public static OnConfiguration OnConfiguration = OnConfiguration.ConnectionString; // EFCore only. Determines the code generated within DbContext.OnConfiguration(). Please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Settings.OnConfiguration
+        public static bool AddParameterlessConstructorToDbContext = true; // If true, then DbContext will have a default (parameter-less) constructor which automatically passes in the connection string name, if false then no parameter-less constructor will be created.
+        public static string ConfigurationClassName = "Configuration"; // Configuration, Mapping, Map, etc. This is appended to the Poco class name to configure the mappings.
+        public static string DatabaseReaderPlugin = ""; // Eg, "c:\\Path\\YourDatabaseReader.dll,Full.Name.Of.Class.Including.Namespace". See #501. This will allow you to specify a pluggable provider for reading your database.
 
-        public static string EntityClassesModifiers        = "public"; // "public partial";
+        public static string EntityClassesModifiers = "public"; // "public partial";
         public static string ConfigurationClassesModifiers = "public"; // "public partial";
-        public static string DbContextClassModifiers       = "public"; // "public partial";
-        public static string DbContextInterfaceModifiers   = "public"; // "public partial";
-        public static string ResultClassModifiers          = "public"; // "public partial";
+        public static string DbContextClassModifiers = "public"; // "public partial";
+        public static string DbContextInterfaceModifiers = "public"; // "public partial";
+        public static string ResultClassModifiers = "public"; // "public partial";
 
-        public static bool UsePascalCase                            = true; // This will rename the generated C# tables & properties to use PascalCase. If false table & property names will be left alone.
-        public static bool UsePascalCaseForEnumMembers              = true; // This will rename the generated Enum Members to use PascalCase. If false Enum members will be left alone.
-        public static bool UseDataAnnotations                       = false; // If true, will add data annotations to the poco classes.
-        public static bool UsePropertyInitialisers                  = false; // Removes POCO constructor and instead uses C# 6 property initialisers to set defaults
-        public static bool UseLazyLoading                           = true; // Marks all navigation properties as virtual or not, to support or disable EF Lazy Loading feature
-        public static bool UseInheritedBaseInterfaceFunctions       = false; // If true, the main DBContext interface functions will come from the DBContextInterfaceBaseClasses and not generated. If false, the functions will be generated.
-        public static CommentsStyle IncludeComments                 = CommentsStyle.AtEndOfField; // Adds comments to the generated code
+        public static bool UsePascalCase = true; // This will rename the generated C# tables & properties to use PascalCase. If false table & property names will be left alone.
+        public static bool UsePascalCaseForEnumMembers = true; // This will rename the generated Enum Members to use PascalCase. If false Enum members will be left alone.
+        public static bool UseDataAnnotations = false; // If true, will add data annotations to the poco classes.
+        public static bool UsePropertyInitialisers = false; // Removes POCO constructor and instead uses C# 6 property initialisers to set defaults
+        public static bool UseLazyLoading = true; // Marks all navigation properties as virtual or not, to support or disable EF Lazy Loading feature
+        public static bool UseInheritedBaseInterfaceFunctions = false; // If true, the main DBContext interface functions will come from the DBContextInterfaceBaseClasses and not generated. If false, the functions will be generated.
+        public static CommentsStyle IncludeComments = CommentsStyle.AtEndOfField; // Adds comments to the generated code
         public static CommentsStyle IncludeExtendedPropertyComments = CommentsStyle.InSummaryBlock; // Adds extended properties as comments to the generated code
-        public static bool DisableGeographyTypes                    = false; // Turns off use of System.Data.Entity.Spatial.DbGeography and System.Data.Entity.Spatial.DbGeometry as OData doesn't support entities with geometry/geography types.
-        public static string CollectionInterfaceType                = "ICollection"; //  = "System.Collections.Generic.List"; // Determines the declaration type of collections for the Navigation Properties. ICollection is used if not set.
-        public static string CollectionType                         = "List"; // Determines the type of collection for the Navigation Properties. "ObservableCollection" for example. Add "System.Collections.ObjectModel" to AdditionalNamespaces if setting the CollectionType = "ObservableCollection".
-        public static bool NullableShortHand                        = true; // true => T?, false => Nullable<T>
-        public static bool AddIDbContextFactory                     = true; // Will add a default IDbContextFactory<DbContextName> implementation for easy dependency injection
-        public static bool IncludeQueryTraceOn9481Flag              = false; // If SqlServer 2014 appears frozen / take a long time when this file is saved, try setting this to true (you will also need elevated privileges).
-        public static bool UsePrivateSetterForComputedColumns       = true; // If the columns is computed, use a private setter.
-        public static bool IncludeGeneratorVersionInCode            = false; // If true, will include the version number of the generator in the generated code (Settings.ShowLicenseInfo must also be true).
-        public static bool TrimCharFields                           = false; // EF Core option only. If true, will TrimEnd() 'char' fields when read from the database.
-        public static bool IncludeFieldNameConstants                = false; // Will include public const string {{NameHumanCase}}Field = "{{NameHumanCase}}"; in the generated POCO class. It allows you to use a constant instead of magic strings.
-        public static bool UsePropertiesForStoredProcResultSets     = false; // Stored procedure result set return models are rendered as fields (false) or properties (true).
-        public static bool MergeMultipleStoredProcModelsIfAllSame   = true; // Some stored procedures are reported as having multiple result sets when in fact there is only one. Set this to true to merge identical result sets.
-        public static List<string> AdditionalNamespaces          = new List<string>(); // To include extra namespaces, include them here. i.e. "Microsoft.AspNet.Identity.EntityFramework"
-        public static List<string> AdditionalContextInterfaceItems  = new List<string>(); //  example: "void SetAutoDetectChangesEnabled(bool flag);"
-        public static List<string> AdditionalFileHeaderText         = new List<string>(); // This will put additional lines verbatim at the top of each file under the comments, 1 line per entry
-        public static List<string> AdditionalFileFooterText         = new List<string>(); // This will put additional lines verbatim at the end of each file above the // </auto-generated>, 1 line per entry
-        public static OrderProperties OrderProperties               = OrderProperties.Ordinal; // Order the properties in the generated POCO classes. Ordinal, Alphabetical
+        public static bool DisableGeographyTypes = false; // Turns off use of System.Data.Entity.Spatial.DbGeography and System.Data.Entity.Spatial.DbGeometry as OData doesn't support entities with geometry/geography types.
+        public static string CollectionInterfaceType = "ICollection"; //  = "System.Collections.Generic.List"; // Determines the declaration type of collections for the Navigation Properties. ICollection is used if not set.
+        public static string CollectionType = "List"; // Determines the type of collection for the Navigation Properties. "ObservableCollection" for example. Add "System.Collections.ObjectModel" to AdditionalNamespaces if setting the CollectionType = "ObservableCollection".
+        public static bool NullableShortHand = true; // true => T?, false => Nullable<T>
+        public static bool AddIDbContextFactory = true; // Will add a default IDbContextFactory<DbContextName> implementation for easy dependency injection
+        public static bool IncludeQueryTraceOn9481Flag = false; // If SqlServer 2014 appears frozen / take a long time when this file is saved, try setting this to true (you will also need elevated privileges).
+        public static bool UsePrivateSetterForComputedColumns = true; // If the columns is computed, use a private setter.
+        public static bool IncludeGeneratorVersionInCode = false; // If true, will include the version number of the generator in the generated code (Settings.ShowLicenseInfo must also be true).
+        public static bool TrimCharFields = false; // EF Core option only. If true, will TrimEnd() 'char' fields when read from the database.
+        public static bool IncludeFieldNameConstants = false; // Will include public const string {{NameHumanCase}}Field = "{{NameHumanCase}}"; in the generated POCO class. It allows you to use a constant instead of magic strings.
+        public static bool UsePropertiesForStoredProcResultSets = false; // Stored procedure result set return models are rendered as fields (false) or properties (true).
+        public static bool MergeMultipleStoredProcModelsIfAllSame = true; // Some stored procedures are reported as having multiple result sets when in fact there is only one. Set this to true to merge identical result sets.
+        public static List<string> AdditionalNamespaces = new List<string>(); // To include extra namespaces, include them here. i.e. "Microsoft.AspNet.Identity.EntityFramework"
+        public static List<string> AdditionalContextInterfaceItems = new List<string>(); //  example: "void SetAutoDetectChangesEnabled(bool flag);"
+        public static List<string> AdditionalFileHeaderText = new List<string>(); // This will put additional lines verbatim at the top of each file under the comments, 1 line per entry
+        public static List<string> AdditionalFileFooterText = new List<string>(); // This will put additional lines verbatim at the end of each file above the // </auto-generated>, 1 line per entry
+        public static OrderProperties OrderProperties = OrderProperties.Ordinal; // Order the properties in the generated POCO classes. Ordinal, Alphabetical
 
         // Language choices
         public static GenerationLanguage GenerationLanguage = GenerationLanguage.CSharp;
-        public static string FileExtension                  = ".cs";
+        public static string FileExtension = ".cs";
 
         // Code suppression *******************************************************************************
-        public static bool UseRegions                          = true;  // If false, suppresses the use of #region
-        public static bool UseNamespace                        = true;  // If false, suppresses the writing of a namespace
-        public static bool UsePragma                           = false; // If false, suppresses the writing of #pragma
-        public static bool AllowNullStrings                    = false; // If true, will allow string? properties and will add '#nullable enable' to the top of each file
+        public static bool UseRegions = true;  // If false, suppresses the use of #region
+        public static bool UseNamespace = true;  // If false, suppresses the writing of a namespace
+        public static bool UsePragma = false; // If false, suppresses the writing of #pragma
+        public static bool AllowNullStrings = false; // If true, will allow string? properties and will add '#nullable enable' to the top of each file
         public static bool NullableReverseNavigationProperties = false; // If true, reverse navigation properties for one-to-one relationships will be nullable (e.g. MyEntity? MyEntity). The parent entity can exist without the child entity.
-        public static bool UseResharper                        = false; // If true, will add a list of 'ReSharper disable' comments to the top of each file
-        public static bool ShowLicenseInfo                     = false; // If true, will add the licence info comment to the top of each file
-        public static bool IncludeConnectionSettingComments    = false; // Add comments describing connection settings used to generate file
-        public static bool IncludeCodeGeneratedAttribute       = false; // If true, will include the [GeneratedCode] attribute before classes, false to remove it.
-        public static bool IncludeColumnsWithDefaults          = true;  // If true, will set properties to the default value from the database.
-        public static bool GenerateHasDefaultValueSql          = false; // EFCore only. If true, will emit .HasDefaultValueSql() in the entity configuration for all columns that have a SQL default, making defaults queryable via EF model reflection.
+        public static bool UseResharper = false; // If true, will add a list of 'ReSharper disable' comments to the top of each file
+        public static bool ShowLicenseInfo = false; // If true, will add the licence info comment to the top of each file
+        public static bool IncludeConnectionSettingComments = false; // Add comments describing connection settings used to generate file
+        public static bool IncludeCodeGeneratedAttribute = false; // If true, will include the [GeneratedCode] attribute before classes, false to remove it.
+        public static bool IncludeColumnsWithDefaults = true;  // If true, will set properties to the default value from the database.
+        public static bool GenerateHasDefaultValueSql = false; // EFCore only. If true, will emit .HasDefaultValueSql() in the entity configuration for all columns that have a SQL default, making defaults queryable via EF model reflection.
 
         // Create enumerations from database tables
         // List the enumeration tables you want read and generated for
@@ -181,9 +181,9 @@ namespace Efrpg
         //      ElementsToGenerate = Elements.Context | Elements.Interface; in your Context folder,
         //      ElementsToGenerate = Elements.PocoConfiguration; in your Configuration folder.
         // You also need to set the following to the namespace where they now live:
-        public static string ContextNamespace           = ""; // "YourProject.Data";
-        public static string InterfaceNamespace         = ""; // "YourProject.Data";
-        public static string PocoNamespace              = ""; // "YourProject.Data.Entities";
+        public static string ContextNamespace = ""; // "YourProject.Data";
+        public static string InterfaceNamespace = ""; // "YourProject.Data";
+        public static string PocoNamespace = ""; // "YourProject.Data.Entities";
         public static string PocoConfigurationNamespace = ""; // "YourProject.Data.Configuration";
 
 
@@ -191,8 +191,8 @@ namespace Efrpg
         // If there are multiple schemas, then the table name is prefixed with the schema, except for dbo.
         // Ie. dbo.hello will be Hello.
         //     abc.hello will be Abc_Hello.
-        public static bool   PrependSchemaName = true; // Control if the schema name is prepended to the table name
-        public static string DefaultSchema     = null; // Set via DatabaseReader.DefaultSchema()
+        public static bool PrependSchemaName = true; // Control if the schema name is prepended to the table name
+        public static string DefaultSchema = null; // Set via DatabaseReader.DefaultSchema()
 
         // Enables more granular control if the schema name should be prepended depending on the table
         public static Func<Table, bool> PrependSchemaNameForTable = delegate (Table table)
@@ -490,7 +490,7 @@ namespace Efrpg
                 var schemaMatches = string.IsNullOrEmpty(mapping.Schema) || mapping.Schema == "*" ||
                     mapping.Schema.Equals(table.Schema?.DbName ?? string.Empty, StringComparison.InvariantCultureIgnoreCase);
                 var tableMatches = schemaMatches &&
-                    (mapping.Table  == "*" || mapping.Table.Equals(table.DbName, StringComparison.InvariantCultureIgnoreCase) ||
+                    (mapping.Table == "*" || mapping.Table.Equals(table.DbName, StringComparison.InvariantCultureIgnoreCase) ||
                                              mapping.Table.Equals(table.NameHumanCase, StringComparison.InvariantCultureIgnoreCase));
 
                 if (!tableMatches)
@@ -531,7 +531,7 @@ namespace Efrpg
                     PropertyName = mapping.PropertyName,
                     PropertyType = mapping.PropertyType,
                     ColumnPrefix = mapping.ColumnPrefix,
-                    Columns      = matchedColumns
+                    Columns = matchedColumns
                 });
 
             }
@@ -561,7 +561,7 @@ namespace Efrpg
         // Configures the key property to either use IDENTITY or HILO database feature to generate values for new entities.
         public static Func<Column, string> ColumnIdentity = delegate (Column c)
         {
-            if(!IsEfCore8Plus())
+            if (!IsEfCore8Plus())
                 return ".UseSqlServerIdentityColumn()";
 
             // At this point we are using EFCore 3, 5+ which supports HiLo sequences.
@@ -927,10 +927,10 @@ namespace Efrpg
         // As this generator can now generate multiple db contexts in a single go, filtering is done a per db context, and no longer global.
         // If GenerateSingleDbContext = true (default), please modify SingleContextFilter, this is where your previous global settings should go.
         // If GenerateSingleDbContext = false, this will generate multiple db contexts. Please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Generating-multiple-database-contexts-in-a-single-go
-        public static bool GenerateSingleDbContext                = true;
+        public static bool GenerateSingleDbContext = true;
         public static string MultiContextSettingsConnectionString = ""; // Leave empty to read data from same database in ConnectionString above. If settings are in another database, specify the connection string here.
-        public static string MultiContextSettingsPlugin           = ""; // Only used for unit testing Generator project as you can't (yet) inherit from IMultiContextSettingsPlugin. "c:\\Path\\YourMultiDbSettingsReader.dll,Full.Name.Of.Class.Including.Namespace". This will allow you to specify a pluggable provider for reading your MultiContext settings.
-        public static char MultiContextAttributeDelimiter         = '~'; // The delimiter used for splitting MultiContext attributes
+        public static string MultiContextSettingsPlugin = ""; // Only used for unit testing Generator project as you can't (yet) inherit from IMultiContextSettingsPlugin. "c:\\Path\\YourMultiDbSettingsReader.dll,Full.Name.Of.Class.Including.Namespace". This will allow you to specify a pluggable provider for reading your MultiContext settings.
+        public static char MultiContextAttributeDelimiter = '~'; // The delimiter used for splitting MultiContext attributes
 
         public static Action<Column, Table, Dictionary<string, object>> MultiContextAllFieldsColumnProcessing = delegate (Column column, Table table, Dictionary<string, object> allFields)
         {
@@ -1076,7 +1076,7 @@ namespace Efrpg
                     return "UseSqlServer";
             }
         }
-        
+
         public static string SqlParameter()
         {
             switch (DatabaseType)
@@ -1096,8 +1096,8 @@ namespace Efrpg
                 default:
                     return "SqlParameter";
             }
-        }     
-        
+        }
+
         public static string SqlParameterValue()
         {
             switch (DatabaseType)
@@ -1124,5 +1124,16 @@ namespace Efrpg
         public static int FilterCount;
 
         public static bool NeedsNullForgiving() => AllowNullStrings || NullableReverseNavigationProperties;
+
+        public static void CheckSettings()
+        {
+            if (TemplateType == TemplateType.Ef6 ||
+                TemplateType == TemplateType.FileBasedEf6)
+            {
+                // Nullable reference types are only supported in language version 8.0 or greater
+                AllowNullStrings = false;
+                NullableReverseNavigationProperties = false;
+            }
+        }
     }
 }

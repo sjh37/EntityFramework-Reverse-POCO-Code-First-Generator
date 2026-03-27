@@ -54,7 +54,7 @@ namespace Efrpg.Mustache
         /// <returns>A dictionary associating the parameter name to the associated value.</returns>
         public Dictionary<string, object> GetArguments(Scope keyScope, Scope contextScope)
         {
-            Dictionary<string, object> arguments = new Dictionary<string,object>();
+            Dictionary<string, object> arguments = new Dictionary<string, object>();
             foreach (KeyValuePair<TagParameter, IArgument> pair in _argumentLookup)
             {
                 object value;
@@ -73,7 +73,7 @@ namespace Efrpg.Mustache
 
         public Dictionary<string, object> GetArgumentKeyNames()
         {
-            return _argumentLookup.ToDictionary(p => p.Key.Name, p => (object)GetKey(p.Key));
+            return _argumentLookup.ToDictionary(p => p.Key.Name, p => (object) GetKey(p.Key));
         }
     }
 }

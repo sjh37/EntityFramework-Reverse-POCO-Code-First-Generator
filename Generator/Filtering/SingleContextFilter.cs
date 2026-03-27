@@ -14,26 +14,26 @@ namespace Efrpg.Filtering
         public List<JsonColumnMapping> JsonColumnMappings;
         public List<OwnedEntityMapping> OwnedEntityMappings;
 
-        protected readonly List<IFilterType<Schema>>          SchemaFilters;
-        protected readonly List<IFilterType<Table>>           TableFilters;
-        protected readonly List<IFilterType<Column>>          ColumnFilters;
+        protected readonly List<IFilterType<Schema>> SchemaFilters;
+        protected readonly List<IFilterType<Table>> TableFilters;
+        protected readonly List<IFilterType<Column>> ColumnFilters;
         protected readonly List<IFilterType<StoredProcedure>> StoredProcedureFilters;
 
         private bool _hasMergedIncludeFilters;
 
         public SingleContextFilter()
         {
-            IncludeViews                 = FilterSettings.IncludeViews;
-            IncludeSynonyms              = FilterSettings.IncludeSynonyms;
-            IncludeTableValuedFunctions  = FilterSettings.IncludeTableValuedFunctions;
+            IncludeViews = FilterSettings.IncludeViews;
+            IncludeSynonyms = FilterSettings.IncludeSynonyms;
+            IncludeTableValuedFunctions = FilterSettings.IncludeTableValuedFunctions;
             IncludeScalarValuedFunctions = FilterSettings.IncludeScalarValuedFunctions;
-            IncludeStoredProcedures      = IncludeScalarValuedFunctions || IncludeTableValuedFunctions || FilterSettings.IncludeStoredProcedures;
+            IncludeStoredProcedures = IncludeScalarValuedFunctions || IncludeTableValuedFunctions || FilterSettings.IncludeStoredProcedures;
 
-            SchemaFilters           = FilterSettings.SchemaFilters;
-            TableFilters            = FilterSettings.TableFilters;
-            ColumnFilters           = FilterSettings.ColumnFilters;
-            StoredProcedureFilters  = FilterSettings.StoredProcedureFilters;
-            
+            SchemaFilters = FilterSettings.SchemaFilters;
+            TableFilters = FilterSettings.TableFilters;
+            ColumnFilters = FilterSettings.ColumnFilters;
+            StoredProcedureFilters = FilterSettings.StoredProcedureFilters;
+
             _hasMergedIncludeFilters = false;
 
             EnumDefinitions = new List<EnumDefinition>();
@@ -48,7 +48,7 @@ namespace Efrpg.Filtering
 
         public override bool IsExcluded(EntityName item)
         {
-            if(!_hasMergedIncludeFilters)
+            if (!_hasMergedIncludeFilters)
             {
                 MergeIncludeFilters();
                 _hasMergedIncludeFilters = true;

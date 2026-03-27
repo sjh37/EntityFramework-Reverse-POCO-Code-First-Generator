@@ -47,9 +47,9 @@ namespace Efrpg
         public Table(IDbContextFilter filter, Schema schema, string dbName, bool isView)
         {
             _filter = filter;
-            Schema  = schema;
-            DbName  = dbName;
-            IsView  = isView;
+            Schema = schema;
+            DbName = dbName;
+            IsView = isView;
             Columns = new List<Column>();
 
             _foreignKeyNamingStrategy = ForeignKeyNamingStrategyFactory.Create(filter, this);
@@ -73,9 +73,9 @@ namespace Efrpg
         {
             _foreignKeyNamingStrategy.ResetNavigationProperties();
 
-            MappingConfiguration      = new List<string>();
+            MappingConfiguration = new List<string>();
             ReverseNavigationProperty = new List<PropertyAndComments>();
-            ReverseNavigationCtor     = new List<string>();
+            ReverseNavigationCtor = new List<string>();
 
             foreach (var col in Columns)
                 col.ResetNavigationProperties();
@@ -267,8 +267,8 @@ namespace Efrpg
             leftTable.AddMappingConfiguration(left, right, leftPropName, rightPropName, includeSchema, leftTable.NameHumanCase, rightTable.NameHumanCase);
 
             IsMapping = true;
-            rightTable.AddReverseNavigation(Relationship.ManyToMany, leftTable,  rightPropName, null, null, this);
-            leftTable.AddReverseNavigation (Relationship.ManyToMany, rightTable, leftPropName,  null, null, this);
+            rightTable.AddReverseNavigation(Relationship.ManyToMany, leftTable, rightPropName, null, null, this);
+            leftTable.AddReverseNavigation(Relationship.ManyToMany, rightTable, leftPropName, null, null, this);
         }
 
         private void AddMappingConfiguration(ForeignKey left, ForeignKey right, string leftPropName, string rightPropName, bool includeSchema, string leftNameHumanCase, string rightNameHumanCase)
@@ -282,11 +282,11 @@ namespace Efrpg
             m.MapRightKey(""{4}"");
         }});", leftPropName, rightPropName, left.FkTableName, left.FkColumn, right.FkColumn,
                     !includeSchema ? string.Empty : ", \"" + left.FkSchema + "\""));
-                
+
                 return;
             }
-            
-            if(Settings.IsEfCore8Plus())
+
+            if (Settings.IsEfCore8Plus())
             {
                 UsesDictionary = true;
                 MappingConfiguration.Add(string.Format(@"HasMany<{6}>(t => t.{0}).WithMany(t => t.{1}).UsingEntity<Dictionary<string, object>>(""{2}"",
@@ -325,7 +325,7 @@ namespace Efrpg
         // This method will be called right before we write the POCO class
         public string WriteComments()
         {
-            if(Settings.IncludeComments == CommentsStyle.None)
+            if (Settings.IncludeComments == CommentsStyle.None)
                 return string.Empty;
 
             var comment = "// " + DbName + Environment.NewLine;
@@ -334,7 +334,7 @@ namespace Efrpg
 
             return comment + "// " + AdditionalComment + Environment.NewLine;
         }
-        
+
         // This method will be called right before we write the POCO class
         public string WriteExtendedComments()
         {

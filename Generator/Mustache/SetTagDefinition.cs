@@ -37,7 +37,7 @@ namespace Efrpg.Mustache
         /// <param name="contextScope">Extra data passed along with the context.</param>
         public override void GetText(TextWriter writer, Dictionary<string, object> arguments, Scope contextScope)
         {
-            string name = (string)arguments[nameParameter];
+            string name = (string) arguments[nameParameter];
             contextScope.Set(name);
         }
     }

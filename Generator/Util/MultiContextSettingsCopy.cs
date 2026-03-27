@@ -20,7 +20,7 @@ namespace Efrpg.Util
         private static void CopyPropertiesFrom(object source, object dest)
         {
             var fromProperties = source.GetType().GetProperties();
-            var toProperties   = dest  .GetType().GetProperties();
+            var toProperties = dest.GetType().GetProperties();
 
             foreach (var fromProperty in fromProperties)
             {

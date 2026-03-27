@@ -9,7 +9,7 @@ namespace Efrpg.Generators
 {
     public class GeneratorEf6 : Generator
     {
-        public GeneratorEf6(FileManagementService fileManagementService, Type fileManagerType) 
+        public GeneratorEf6(FileManagementService fileManagementService, Type fileManagerType)
             : base(fileManagementService, fileManagerType)
         {
         }
@@ -96,7 +96,7 @@ namespace Efrpg.Generators
             var excludedHasColumnType = string.Empty;
             if (!Settings.UseDataAnnotations && !string.IsNullOrEmpty(c.SqlPropertyType))
             {
-                if(Column.ExcludedHasColumnType.Contains(c.SqlPropertyType))
+                if (Column.ExcludedHasColumnType.Contains(c.SqlPropertyType))
                     excludedHasColumnType = string.Format(" // .HasColumnType(\"{0}\") was excluded", c.SqlPropertyType);
                 else
                     sb.AppendFormat(".HasColumnType(\"{0}\")", c.SqlPropertyType);
@@ -139,7 +139,7 @@ namespace Efrpg.Generators
 
             if (databaseGeneratedOption != null)
                 sb.Append(databaseGeneratedOption);
-            
+
             var config = sb.ToString();
             if (!string.IsNullOrEmpty(config))
                 c.Config = string.Format("Property(x => x.{0}){1};{2}", c.NameHumanCase, config, excludedHasColumnType);

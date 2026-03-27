@@ -39,21 +39,21 @@
     {
         // Main settings **********************************************************************************************************************
         // The following entries are the only required settings.
-        public static DatabaseType DatabaseType                         = DatabaseType.SqlServer; // SqlServer, SqlCe, SQLite, PostgreSQL. Coming next: MySql, Oracle
-        public static TemplateType TemplateType                         = TemplateType.EfCore10; // EfCore8-10, Ef6, FileBasedCore8-10. FileBased specify folder using Settings.TemplateFolder
-        public static GeneratorType GeneratorType                       = GeneratorType.EfCore; // EfCore, Ef6, Custom. Custom edit GeneratorCustom class to provide your own implementation
+        public static DatabaseType DatabaseType = DatabaseType.SqlServer; // SqlServer, SqlCe, SQLite, PostgreSQL. Coming next: MySql, Oracle
+        public static TemplateType TemplateType = TemplateType.EfCore10; // EfCore8-10, Ef6, FileBasedCore8-10. FileBased specify folder using Settings.TemplateFolder
+        public static GeneratorType GeneratorType = GeneratorType.EfCore; // EfCore, Ef6, Custom. Custom edit GeneratorCustom class to provide your own implementation
         public static ForeignKeyNamingStrategy ForeignKeyNamingStrategy = ForeignKeyNamingStrategy.Current; // Please use Legacy for now, Latest (not yet ready)
-        public static bool UseMappingTables                             = false; // Can only be set to true for EF6. If true, mapping will be used and no mapping tables will be generated. If false, all tables will be generated.
-        public static FileManagerType FileManagerType                   = FileManagerType.EfCore; // .NET Core project = EfCore; .NET 4.x project = VisualStudio; No output (testing only) = Null
-        public static string ConnectionString                           = ""; // This is used by the generator to reverse engineer your database
-        public static string ConnectionStringActions                    = ""; // EFCore only. Additional method chain to append to the database provider setup in OnConfiguring. e.g. ".EnableRetryOnFailure(maxRetryCount: 10, maxRetryDelay: TimeSpan.FromSeconds(30), errorNumbersToAdd: null)"
-        public static string ConnectionStringName                       = "MyDbContext"; // ConnectionString key as specified in your app.config/web.config/appsettings.json
-        public static string DbContextName                              = "MyDbContext"; // Class name for the DbContext to be generated.
-        public static bool GenerateSeparateFiles                        = false;
-        public static string Namespace                                  = typeof(Settings).Namespace; // Override the default namespace here. Example: Namespace = "CustomNamespace";
-        public static string TemplateFolder                             = ""; // Only used if Settings.TemplateType = TemplateType.FileBased. Specify folder name where the mustache folders can be found. Please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Custom-file-based-templates
-        public static bool AddUnitTestingDbContext                      = true; // Will add a FakeDbContext and FakeDbSet for easy unit testing
-        public static bool FakeDbContextInDebugOnlyMode                = false; // If true, wraps Fake* classes in #if DEBUG / #endif so they are excluded from Release builds
+        public static bool UseMappingTables = false; // Can only be set to true for EF6. If true, mapping will be used and no mapping tables will be generated. If false, all tables will be generated.
+        public static FileManagerType FileManagerType = FileManagerType.EfCore; // .NET Core project = EfCore; .NET 4.x project = VisualStudio; No output (testing only) = Null
+        public static string ConnectionString = ""; // This is used by the generator to reverse engineer your database
+        public static string ConnectionStringActions = ""; // EFCore only. Additional method chain to append to the database provider setup in OnConfiguring. e.g. ".EnableRetryOnFailure(maxRetryCount: 10, maxRetryDelay: TimeSpan.FromSeconds(30), errorNumbersToAdd: null)"
+        public static string ConnectionStringName = "MyDbContext"; // ConnectionString key as specified in your app.config/web.config/appsettings.json
+        public static string DbContextName = "MyDbContext"; // Class name for the DbContext to be generated.
+        public static bool GenerateSeparateFiles = false;
+        public static string Namespace = typeof(Settings).Namespace; // Override the default namespace here. Example: Namespace = "CustomNamespace";
+        public static string TemplateFolder = ""; // Only used if Settings.TemplateType = TemplateType.FileBased. Specify folder name where the mustache folders can be found. Please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Custom-file-based-templates
+        public static bool AddUnitTestingDbContext = true; // Will add a FakeDbContext and FakeDbSet for easy unit testing
+        public static bool FakeDbContextInDebugOnlyMode = false; // If true, wraps Fake* classes in #if DEBUG / #endif so they are excluded from Release builds
 
         // Elements to generate ***************************************************************************************************************
         // Add the elements that should be generated when the template is executed.
@@ -62,70 +62,70 @@
 
         // Generate files in sub-folders ******************************************************************************************************
         // Only activated if Settings.FileManagerType = FileManagerType.EfCore && Settings.GenerateSeparateFiles = true
-        public static string ContextFolder              = ""; // Sub-folder you would like your DbContext to be added to.              e.g. @"Data"
-        public static string InterfaceFolder            = ""; // Sub-folder you would like your Interface to be added to.              e.g. @"Data\Interface"
-        public static string PocoFolder                 = ""; // Sub-folder you would like your Poco's to be added to.                 e.g. @"Data\Entities"
-        public static string PocoConfigurationFolder    = ""; // Sub-folder you would like your Configuration mappings to be added to. e.g. @"Data\Configuration"
-        public static string OwnedEntityFolder          = ""; // Sub-folder for auto-generated owned entity classes; defaults to PocoFolder if empty.   e.g. @"Data\Entities"
-        public static bool   UseFolderNameInNamespace   = false; // If true, appends the sub-folder name to the namespace of each generated file. e.g. PocoFolder = "Entities" => namespace MyProject.Entities
+        public static string ContextFolder = ""; // Sub-folder you would like your DbContext to be added to.              e.g. @"Data"
+        public static string InterfaceFolder = ""; // Sub-folder you would like your Interface to be added to.              e.g. @"Data\Interface"
+        public static string PocoFolder = ""; // Sub-folder you would like your Poco's to be added to.                 e.g. @"Data\Entities"
+        public static string PocoConfigurationFolder = ""; // Sub-folder you would like your Configuration mappings to be added to. e.g. @"Data\Configuration"
+        public static string OwnedEntityFolder = ""; // Sub-folder for auto-generated owned entity classes; defaults to PocoFolder if empty.   e.g. @"Data\Entities"
+        public static bool UseFolderNameInNamespace = false; // If true, appends the sub-folder name to the namespace of each generated file. e.g. PocoFolder = "Entities" => namespace MyProject.Entities
 
 
-        public static int    CommandTimeout                         = 600; // SQL Command timeout in seconds. 600 is 10 minutes, 0 will wait indefinitely. Some databases can be slow retrieving schema information.
-        public static string DbContextInterfaceBaseClasses          = "IDisposable"; // Specify what the base classes are for your database context interface
-        public static string DbContextBaseClass                     = "DbContext"; // Specify what the base class is for your DbContext. For ASP.NET Identity use "IdentityDbContext<ApplicationUser>";
-        public static OnConfiguration OnConfiguration               = OnConfiguration.ConnectionString; // EFCore only. Determines the code generated within DbContext.OnConfiguration(). Please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Settings.OnConfiguration
-        public static bool   AddParameterlessConstructorToDbContext = true; // If true, then DbContext will have a default (parameter-less) constructor which automatically passes in the connection string name, if false then no parameter-less constructor will be created.
-        public static string ConfigurationClassName                 = "Configuration"; // Configuration, Mapping, Map, etc. This is appended to the Poco class name to configure the mappings.
-        public static string DatabaseReaderPlugin                   = ""; // Eg, "c:\\Path\\YourDatabaseReader.dll,Full.Name.Of.Class.Including.Namespace". See #501. This will allow you to specify a pluggable provider for reading your database.
+        public static int CommandTimeout = 600; // SQL Command timeout in seconds. 600 is 10 minutes, 0 will wait indefinitely. Some databases can be slow retrieving schema information.
+        public static string DbContextInterfaceBaseClasses = "IDisposable"; // Specify what the base classes are for your database context interface
+        public static string DbContextBaseClass = "DbContext"; // Specify what the base class is for your DbContext. For ASP.NET Identity use "IdentityDbContext<ApplicationUser>";
+        public static OnConfiguration OnConfiguration = OnConfiguration.ConnectionString; // EFCore only. Determines the code generated within DbContext.OnConfiguration(). Please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Settings.OnConfiguration
+        public static bool AddParameterlessConstructorToDbContext = true; // If true, then DbContext will have a default (parameter-less) constructor which automatically passes in the connection string name, if false then no parameter-less constructor will be created.
+        public static string ConfigurationClassName = "Configuration"; // Configuration, Mapping, Map, etc. This is appended to the Poco class name to configure the mappings.
+        public static string DatabaseReaderPlugin = ""; // Eg, "c:\\Path\\YourDatabaseReader.dll,Full.Name.Of.Class.Including.Namespace". See #501. This will allow you to specify a pluggable provider for reading your database.
 
-        public static string EntityClassesModifiers        = "public"; // "public partial";
+        public static string EntityClassesModifiers = "public"; // "public partial";
         public static string ConfigurationClassesModifiers = "public"; // "public partial";
-        public static string DbContextClassModifiers       = "public"; // "public partial";
-        public static string DbContextInterfaceModifiers   = "public"; // "public partial";
-        public static string ResultClassModifiers          = "public"; // "public partial";
+        public static string DbContextClassModifiers = "public"; // "public partial";
+        public static string DbContextInterfaceModifiers = "public"; // "public partial";
+        public static string ResultClassModifiers = "public"; // "public partial";
 
-        public static bool UsePascalCase                            = true; // This will rename the generated C# tables & properties to use PascalCase. If false table & property names will be left alone.
-        public static bool UsePascalCaseForEnumMembers              = true; // This will rename the generated Enum Members to use PascalCase. If false Enum members will be left alone.
-        public static bool UseDataAnnotations                       = false; // If true, will add data annotations to the poco classes.
-        public static bool UsePropertyInitialisers                  = false; // Removes POCO constructor and instead uses C# 6 property initialisers to set defaults
-        public static bool UseLazyLoading                           = true; // Marks all navigation properties as virtual or not, to support or disable EF Lazy Loading feature
-        public static bool UseInheritedBaseInterfaceFunctions       = false; // If true, the main DBContext interface functions will come from the DBContextInterfaceBaseClasses and not generated. If false, the functions will be generated.
-        public static CommentsStyle IncludeComments                 = CommentsStyle.AtEndOfField; // Adds comments to the generated code
+        public static bool UsePascalCase = true; // This will rename the generated C# tables & properties to use PascalCase. If false table & property names will be left alone.
+        public static bool UsePascalCaseForEnumMembers = true; // This will rename the generated Enum Members to use PascalCase. If false Enum members will be left alone.
+        public static bool UseDataAnnotations = false; // If true, will add data annotations to the poco classes.
+        public static bool UsePropertyInitialisers = false; // Removes POCO constructor and instead uses C# 6 property initialisers to set defaults
+        public static bool UseLazyLoading = true; // Marks all navigation properties as virtual or not, to support or disable EF Lazy Loading feature
+        public static bool UseInheritedBaseInterfaceFunctions = false; // If true, the main DBContext interface functions will come from the DBContextInterfaceBaseClasses and not generated. If false, the functions will be generated.
+        public static CommentsStyle IncludeComments = CommentsStyle.AtEndOfField; // Adds comments to the generated code
         public static CommentsStyle IncludeExtendedPropertyComments = CommentsStyle.InSummaryBlock; // Adds extended properties as comments to the generated code
-        public static bool DisableGeographyTypes                    = false; // Turns off use of System.Data.Entity.Spatial.DbGeography and System.Data.Entity.Spatial.DbGeometry as OData doesn't support entities with geometry/geography types.
-        public static string CollectionInterfaceType                = "ICollection"; //  = "System.Collections.Generic.List"; // Determines the declaration type of collections for the Navigation Properties. ICollection is used if not set.
-        public static string CollectionType                         = "List"; // Determines the type of collection for the Navigation Properties. "ObservableCollection" for example. Add "System.Collections.ObjectModel" to AdditionalNamespaces if setting the CollectionType = "ObservableCollection".
-        public static bool NullableShortHand                        = true; // true => T?, false => Nullable<T>
-        public static bool AddIDbContextFactory                     = true; // Will add a default IDbContextFactory<DbContextName> implementation for easy dependency injection
-        public static bool IncludeQueryTraceOn9481Flag              = false; // If SqlServer 2014 appears frozen / take a long time when this file is saved, try setting this to true (you will also need elevated privileges).
-        public static bool UsePrivateSetterForComputedColumns       = true; // If the columns is computed, use a private setter.
-        public static bool IncludeGeneratorVersionInCode            = false; // If true, will include the version number of the generator in the generated code (Settings.ShowLicenseInfo must also be true).
-        public static bool TrimCharFields                           = false; // EF Core option only. If true, will TrimEnd() 'char' fields when read from the database.
-        public static bool IncludeFieldNameConstants                = false; // Will include public const string {{NameHumanCase}}Field = "{{NameHumanCase}}"; in the generated POCO class. It allows you to use a constant instead of magic strings.
-        public static bool UsePropertiesForStoredProcResultSets     = false; // Stored procedure result set return models are rendered as fields (false) or properties (true).
-        public static bool MergeMultipleStoredProcModelsIfAllSame   = true; // Some stored procedures are reported as having multiple result sets when in fact there is only one. Set this to true to merge identical result sets.
-        public static List<string> AdditionalNamespaces          = new List<string>(); // To include extra namespaces, include them here. i.e. "Microsoft.AspNet.Identity.EntityFramework"
-        public static List<string> AdditionalContextInterfaceItems  = new List<string>(); //  example: "void SetAutoDetectChangesEnabled(bool flag);"
-        public static List<string> AdditionalFileHeaderText         = new List<string>(); // This will put additional lines verbatim at the top of each file under the comments, 1 line per entry
-        public static List<string> AdditionalFileFooterText         = new List<string>(); // This will put additional lines verbatim at the end of each file above the // </auto-generated>, 1 line per entry
-        public static OrderProperties OrderProperties               = OrderProperties.Ordinal; // Order the properties in the generated POCO classes. Ordinal, Alphabetical
+        public static bool DisableGeographyTypes = false; // Turns off use of System.Data.Entity.Spatial.DbGeography and System.Data.Entity.Spatial.DbGeometry as OData doesn't support entities with geometry/geography types.
+        public static string CollectionInterfaceType = "ICollection"; //  = "System.Collections.Generic.List"; // Determines the declaration type of collections for the Navigation Properties. ICollection is used if not set.
+        public static string CollectionType = "List"; // Determines the type of collection for the Navigation Properties. "ObservableCollection" for example. Add "System.Collections.ObjectModel" to AdditionalNamespaces if setting the CollectionType = "ObservableCollection".
+        public static bool NullableShortHand = true; // true => T?, false => Nullable<T>
+        public static bool AddIDbContextFactory = true; // Will add a default IDbContextFactory<DbContextName> implementation for easy dependency injection
+        public static bool IncludeQueryTraceOn9481Flag = false; // If SqlServer 2014 appears frozen / take a long time when this file is saved, try setting this to true (you will also need elevated privileges).
+        public static bool UsePrivateSetterForComputedColumns = true; // If the columns is computed, use a private setter.
+        public static bool IncludeGeneratorVersionInCode = false; // If true, will include the version number of the generator in the generated code (Settings.ShowLicenseInfo must also be true).
+        public static bool TrimCharFields = false; // EF Core option only. If true, will TrimEnd() 'char' fields when read from the database.
+        public static bool IncludeFieldNameConstants = false; // Will include public const string {{NameHumanCase}}Field = "{{NameHumanCase}}"; in the generated POCO class. It allows you to use a constant instead of magic strings.
+        public static bool UsePropertiesForStoredProcResultSets = false; // Stored procedure result set return models are rendered as fields (false) or properties (true).
+        public static bool MergeMultipleStoredProcModelsIfAllSame = true; // Some stored procedures are reported as having multiple result sets when in fact there is only one. Set this to true to merge identical result sets.
+        public static List<string> AdditionalNamespaces = new List<string>(); // To include extra namespaces, include them here. i.e. "Microsoft.AspNet.Identity.EntityFramework"
+        public static List<string> AdditionalContextInterfaceItems = new List<string>(); //  example: "void SetAutoDetectChangesEnabled(bool flag);"
+        public static List<string> AdditionalFileHeaderText = new List<string>(); // This will put additional lines verbatim at the top of each file under the comments, 1 line per entry
+        public static List<string> AdditionalFileFooterText = new List<string>(); // This will put additional lines verbatim at the end of each file above the // </auto-generated>, 1 line per entry
+        public static OrderProperties OrderProperties = OrderProperties.Ordinal; // Order the properties in the generated POCO classes. Ordinal, Alphabetical
 
         // Language choices
         public static GenerationLanguage GenerationLanguage = GenerationLanguage.CSharp;
-        public static string FileExtension                  = ".cs";
+        public static string FileExtension = ".cs";
 
         // Code suppression *******************************************************************************
-        public static bool UseRegions                          = true;  // If false, suppresses the use of #region
-        public static bool UseNamespace                        = true;  // If false, suppresses the writing of a namespace
-        public static bool UsePragma                           = false; // If false, suppresses the writing of #pragma
-        public static bool AllowNullStrings                    = false; // If true, will allow string? properties and will add '#nullable enable' to the top of each file
+        public static bool UseRegions = true;  // If false, suppresses the use of #region
+        public static bool UseNamespace = true;  // If false, suppresses the writing of a namespace
+        public static bool UsePragma = false; // If false, suppresses the writing of #pragma
+        public static bool AllowNullStrings = false; // If true, will allow string? properties and will add '#nullable enable' to the top of each file
         public static bool NullableReverseNavigationProperties = false; // If true, reverse navigation properties for one-to-one relationships will be nullable (e.g. MyEntity? MyEntity). The parent entity can exist without the child entity.
-        public static bool UseResharper                        = false; // If true, will add a list of 'ReSharper disable' comments to the top of each file
-        public static bool ShowLicenseInfo                     = false; // If true, will add the licence info comment to the top of each file
-        public static bool IncludeConnectionSettingComments    = false; // Add comments describing connection settings used to generate file
-        public static bool IncludeCodeGeneratedAttribute       = false; // If true, will include the [GeneratedCode] attribute before classes, false to remove it.
-        public static bool IncludeColumnsWithDefaults          = true;  // If true, will set properties to the default value from the database.
-        public static bool GenerateHasDefaultValueSql          = false; // EFCore only. If true, will emit .HasDefaultValueSql() in the entity configuration for all columns that have a SQL default, making defaults queryable via EF model reflection.
+        public static bool UseResharper = false; // If true, will add a list of 'ReSharper disable' comments to the top of each file
+        public static bool ShowLicenseInfo = false; // If true, will add the licence info comment to the top of each file
+        public static bool IncludeConnectionSettingComments = false; // Add comments describing connection settings used to generate file
+        public static bool IncludeCodeGeneratedAttribute = false; // If true, will include the [GeneratedCode] attribute before classes, false to remove it.
+        public static bool IncludeColumnsWithDefaults = true;  // If true, will set properties to the default value from the database.
+        public static bool GenerateHasDefaultValueSql = false; // EFCore only. If true, will emit .HasDefaultValueSql() in the entity configuration for all columns that have a SQL default, making defaults queryable via EF model reflection.
 
         // Create enumerations from database tables
         // List the enumeration tables you want read and generated for
@@ -205,9 +205,9 @@
         //      ElementsToGenerate = Elements.Context | Elements.Interface; in your Context folder,
         //      ElementsToGenerate = Elements.PocoConfiguration; in your Configuration folder.
         // You also need to set the following to the namespace where they now live:
-        public static string ContextNamespace           = ""; // "YourProject.Data";
-        public static string InterfaceNamespace         = ""; // "YourProject.Data";
-        public static string PocoNamespace              = ""; // "YourProject.Data.Entities";
+        public static string ContextNamespace = ""; // "YourProject.Data";
+        public static string InterfaceNamespace = ""; // "YourProject.Data";
+        public static string PocoNamespace = ""; // "YourProject.Data.Entities";
         public static string PocoConfigurationNamespace = ""; // "YourProject.Data.Configuration";
 
 
@@ -215,8 +215,8 @@
         // If there are multiple schemas, then the table name is prefixed with the schema, except for dbo.
         // Ie. dbo.hello will be Hello.
         //     abc.hello will be Abc_Hello.
-        public static bool   PrependSchemaName = true; // Control if the schema name is prepended to the table name
-        public static string DefaultSchema     = null; // Set via DatabaseReader.DefaultSchema()
+        public static bool PrependSchemaName = true; // Control if the schema name is prepended to the table name
+        public static string DefaultSchema = null; // Set via DatabaseReader.DefaultSchema()
 
         // Enables more granular control if the schema name should be prepended depending on the table
         public static Func<Table, bool> PrependSchemaNameForTable = delegate (Table table)
@@ -514,7 +514,7 @@
                 var schemaMatches = string.IsNullOrEmpty(mapping.Schema) || mapping.Schema == "*" ||
                     mapping.Schema.Equals(table.Schema?.DbName ?? string.Empty, StringComparison.InvariantCultureIgnoreCase);
                 var tableMatches = schemaMatches &&
-                    (mapping.Table  == "*" || mapping.Table.Equals(table.DbName, StringComparison.InvariantCultureIgnoreCase) ||
+                    (mapping.Table == "*" || mapping.Table.Equals(table.DbName, StringComparison.InvariantCultureIgnoreCase) ||
                                              mapping.Table.Equals(table.NameHumanCase, StringComparison.InvariantCultureIgnoreCase));
 
                 if (!tableMatches)
@@ -555,7 +555,7 @@
                     PropertyName = mapping.PropertyName,
                     PropertyType = mapping.PropertyType,
                     ColumnPrefix = mapping.ColumnPrefix,
-                    Columns      = matchedColumns
+                    Columns = matchedColumns
                 });
 
             }
@@ -585,7 +585,7 @@
         // Configures the key property to either use IDENTITY or HILO database feature to generate values for new entities.
         public static Func<Column, string> ColumnIdentity = delegate (Column c)
         {
-            if(!IsEfCore8Plus())
+            if (!IsEfCore8Plus())
                 return ".UseSqlServerIdentityColumn()";
 
             // At this point we are using EFCore 3, 5+ which supports HiLo sequences.
@@ -951,10 +951,10 @@
         // As this generator can now generate multiple db contexts in a single go, filtering is done a per db context, and no longer global.
         // If GenerateSingleDbContext = true (default), please modify SingleContextFilter, this is where your previous global settings should go.
         // If GenerateSingleDbContext = false, this will generate multiple db contexts. Please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Generating-multiple-database-contexts-in-a-single-go
-        public static bool GenerateSingleDbContext                = true;
+        public static bool GenerateSingleDbContext = true;
         public static string MultiContextSettingsConnectionString = ""; // Leave empty to read data from same database in ConnectionString above. If settings are in another database, specify the connection string here.
-        public static string MultiContextSettingsPlugin           = ""; // Only used for unit testing Generator project as you can't (yet) inherit from IMultiContextSettingsPlugin. "c:\\Path\\YourMultiDbSettingsReader.dll,Full.Name.Of.Class.Including.Namespace". This will allow you to specify a pluggable provider for reading your MultiContext settings.
-        public static char MultiContextAttributeDelimiter         = '~'; // The delimiter used for splitting MultiContext attributes
+        public static string MultiContextSettingsPlugin = ""; // Only used for unit testing Generator project as you can't (yet) inherit from IMultiContextSettingsPlugin. "c:\\Path\\YourMultiDbSettingsReader.dll,Full.Name.Of.Class.Including.Namespace". This will allow you to specify a pluggable provider for reading your MultiContext settings.
+        public static char MultiContextAttributeDelimiter = '~'; // The delimiter used for splitting MultiContext attributes
 
         public static Action<Column, Table, Dictionary<string, object>> MultiContextAllFieldsColumnProcessing = delegate (Column column, Table table, Dictionary<string, object> allFields)
         {
@@ -1100,7 +1100,7 @@
                     return "UseSqlServer";
             }
         }
-        
+
         public static string SqlParameter()
         {
             switch (DatabaseType)
@@ -1120,8 +1120,8 @@
                 default:
                     return "SqlParameter";
             }
-        }     
-        
+        }
+
         public static string SqlParameterValue()
         {
             switch (DatabaseType)
@@ -1148,6 +1148,17 @@
         public static int FilterCount;
 
         public static bool NeedsNullForgiving() => AllowNullStrings || NullableReverseNavigationProperties;
+
+        public static void CheckSettings()
+        {
+            if (TemplateType == TemplateType.Ef6 ||
+                TemplateType == TemplateType.FileBasedEf6)
+            {
+                // Nullable reference types are only supported in language version 8.0 or greater
+                AllowNullStrings = false;
+                NullableReverseNavigationProperties = false;
+            }
+        }
     }
 
     // Filtering **************************************************************************************************************************
@@ -1166,33 +1177,33 @@
         public static bool IncludeTableValuedFunctions;
         public static bool IncludeScalarValuedFunctions;
 
-        public static readonly List<IFilterType<Schema>>          SchemaFilters;
-        public static readonly List<IFilterType<Table>>           TableFilters;
-        public static readonly List<IFilterType<Column>>          ColumnFilters;
+        public static readonly List<IFilterType<Schema>> SchemaFilters;
+        public static readonly List<IFilterType<Table>> TableFilters;
+        public static readonly List<IFilterType<Column>> ColumnFilters;
         public static readonly List<IFilterType<StoredProcedure>> StoredProcedureFilters;
 
         static FilterSettings()
         {
-            SchemaFilters          = new List<IFilterType<Schema>>();
-            TableFilters           = new List<IFilterType<Table>>();
-            ColumnFilters          = new List<IFilterType<Column>>();
+            SchemaFilters = new List<IFilterType<Schema>>();
+            TableFilters = new List<IFilterType<Table>>();
+            ColumnFilters = new List<IFilterType<Column>>();
             StoredProcedureFilters = new List<IFilterType<StoredProcedure>>();
         }
 
         public static void Reset()
         {
-            SchemaFilters         .RemoveAll(x => true);
-            TableFilters          .RemoveAll(x => true);
-            ColumnFilters         .RemoveAll(x => true);
+            SchemaFilters.RemoveAll(x => true);
+            TableFilters.RemoveAll(x => true);
+            ColumnFilters.RemoveAll(x => true);
             StoredProcedureFilters.RemoveAll(x => true);
         }
 
         public static void AddDefaults()
         {
-            IncludeViews                 = true;
-            IncludeSynonyms              = false;
-            IncludeStoredProcedures      = true;
-            IncludeTableValuedFunctions  = false; // If true, for EF6 install the "EntityFramework.CodeFirstStoreFunctions" NuGet Package.
+            IncludeViews = true;
+            IncludeSynonyms = false;
+            IncludeStoredProcedures = true;
+            IncludeTableValuedFunctions = false; // If true, for EF6 install the "EntityFramework.CodeFirstStoreFunctions" NuGet Package.
             IncludeScalarValuedFunctions = false;
 
             AddDefaultSchemaFilters();
@@ -1282,26 +1293,26 @@
         public List<JsonColumnMapping> JsonColumnMappings;
         public List<OwnedEntityMapping> OwnedEntityMappings;
 
-        protected readonly List<IFilterType<Schema>>          SchemaFilters;
-        protected readonly List<IFilterType<Table>>           TableFilters;
-        protected readonly List<IFilterType<Column>>          ColumnFilters;
+        protected readonly List<IFilterType<Schema>> SchemaFilters;
+        protected readonly List<IFilterType<Table>> TableFilters;
+        protected readonly List<IFilterType<Column>> ColumnFilters;
         protected readonly List<IFilterType<StoredProcedure>> StoredProcedureFilters;
 
         private bool _hasMergedIncludeFilters;
 
         public SingleContextFilter()
         {
-            IncludeViews                 = FilterSettings.IncludeViews;
-            IncludeSynonyms              = FilterSettings.IncludeSynonyms;
-            IncludeTableValuedFunctions  = FilterSettings.IncludeTableValuedFunctions;
+            IncludeViews = FilterSettings.IncludeViews;
+            IncludeSynonyms = FilterSettings.IncludeSynonyms;
+            IncludeTableValuedFunctions = FilterSettings.IncludeTableValuedFunctions;
             IncludeScalarValuedFunctions = FilterSettings.IncludeScalarValuedFunctions;
-            IncludeStoredProcedures      = IncludeScalarValuedFunctions || IncludeTableValuedFunctions || FilterSettings.IncludeStoredProcedures;
+            IncludeStoredProcedures = IncludeScalarValuedFunctions || IncludeTableValuedFunctions || FilterSettings.IncludeStoredProcedures;
 
-            SchemaFilters           = FilterSettings.SchemaFilters;
-            TableFilters            = FilterSettings.TableFilters;
-            ColumnFilters           = FilterSettings.ColumnFilters;
-            StoredProcedureFilters  = FilterSettings.StoredProcedureFilters;
-            
+            SchemaFilters = FilterSettings.SchemaFilters;
+            TableFilters = FilterSettings.TableFilters;
+            ColumnFilters = FilterSettings.ColumnFilters;
+            StoredProcedureFilters = FilterSettings.StoredProcedureFilters;
+
             _hasMergedIncludeFilters = false;
 
             EnumDefinitions = new List<EnumDefinition>();
@@ -1316,7 +1327,7 @@
 
         public override bool IsExcluded(EntityName item)
         {
-            if(!_hasMergedIncludeFilters)
+            if (!_hasMergedIncludeFilters)
             {
                 MergeIncludeFilters();
                 _hasMergedIncludeFilters = true;
@@ -2200,7 +2211,7 @@
 
             if (fileManagerType == typeof(VisualStudioFileManager))
             {
-                _visualStudioFileManager = (VisualStudioFileManager)Activator.CreateInstance(fileManagerType);
+                _visualStudioFileManager = (VisualStudioFileManager) Activator.CreateInstance(fileManagerType);
                 _visualStudioFileManager.Init(_outer);
 
                 // Switch to the EfCoreFileManager for the rest
@@ -2209,7 +2220,7 @@
 
             foreach (var filter in filters)
             {
-                var fileManager = (IFileManager)Activator.CreateInstance(fileManagerType);
+                var fileManager = (IFileManager) Activator.CreateInstance(fileManagerType);
                 fileManager.Init(_outer);
                 if (!string.IsNullOrWhiteSpace(filter.Key))
                     fileManager.StartNewFile(filter.Key + Settings.FileExtension);
@@ -2269,7 +2280,7 @@
                 }
 
                 if (fileManager.Value.GetType() == typeof(EfCoreFileManager))
-                    ((EfCoreFileManager)fileManager.Value).ProcessToAnotherFileManager(_visualStudioFileManager, _outer);
+                    ((EfCoreFileManager) fileManager.Value).ProcessToAnotherFileManager(_visualStudioFileManager, _outer);
                 else
                     fileManager.Value.Process(split);
             }
@@ -2510,7 +2521,7 @@
             foreach (var setting in _multiContextSettings)
             {
                 var filter = new MultiContextFilter(setting);
-                if(!string.IsNullOrWhiteSpace(setting.Filename) && !_filters.ContainsKey(setting.Filename))
+                if (!string.IsNullOrWhiteSpace(setting.Filename) && !_filters.ContainsKey(setting.Filename))
                     _filters.Add(setting.Filename, filter);
                 else
                     _filters.Add(setting.Name, filter);
@@ -2655,18 +2666,18 @@
         {
             _settings = settings;
 
-            IncludeViews                 = settings.IncludeViews();
-            IncludeSynonyms              = false;
-            IncludeTableValuedFunctions  = settings.IncludeFunctions(); // If true, for EF6 install the "EntityFramework.CodeFirstStoreFunctions" Nuget Package.
+            IncludeViews = settings.IncludeViews();
+            IncludeSynonyms = false;
+            IncludeTableValuedFunctions = settings.IncludeFunctions(); // If true, for EF6 install the "EntityFramework.CodeFirstStoreFunctions" Nuget Package.
             IncludeScalarValuedFunctions = IncludeTableValuedFunctions; // Scalar/Table function filters are not separate in this filter.
-            IncludeStoredProcedures      = IncludeScalarValuedFunctions || IncludeTableValuedFunctions || settings.IncludeStoredProcedures();
-            SubNamespace                 = settings.GetNamespace();
+            IncludeStoredProcedures = IncludeScalarValuedFunctions || IncludeTableValuedFunctions || settings.IncludeStoredProcedures();
+            SubNamespace = settings.GetNamespace();
 
-            _allowedSchemas     = new List<string>();
-            _allowedTables      = new List<string>();
-            _allowedColumns     = new Dictionary<string, List<string>>();
+            _allowedSchemas = new List<string>();
+            _allowedTables = new List<string>();
+            _allowedColumns = new Dictionary<string, List<string>>();
             _allowedStoredProcs = new List<string>();
-            _allowedFunctions   = new List<string>();
+            _allowedFunctions = new List<string>();
 
             // Pre-process the settings
             _normalisation = new MultiContextNameNormalisation(settings.BaseSchema);
@@ -2986,7 +2997,7 @@
         {
 
         }
-        
+
         public override void UpdateEnum(Enumeration enumeration)
         {
 
@@ -3008,8 +3019,8 @@
                     .Where(c => c.IsPrimaryKey.HasValue)
                     .Select(c => new
                     {
-                        Name         = _normalisation.Normalise(c.Name, c.DbName).Name.ToLowerInvariant(),
-                        DbName       = _normalisation.Normalise(c.DbName)?.Name.ToLowerInvariant(),
+                        Name = _normalisation.Normalise(c.Name, c.DbName).Name.ToLowerInvariant(),
+                        DbName = _normalisation.Normalise(c.DbName)?.Name.ToLowerInvariant(),
                         IsPrimaryKey = c.IsPrimaryKey.Value
                     })
                     .ToList();
@@ -3019,11 +3030,11 @@
 
                 // Find the column settings which have an IsPrimaryKey set to true/false;
                 var requiredFalse = requiredPrimaryKeys.Where(x => !x.IsPrimaryKey).ToList();
-                var requiredTrue  = requiredPrimaryKeys.Where(x => x.IsPrimaryKey).ToList();
-                var dbNamesFalse  = requiredFalse.Where(x => !string.IsNullOrEmpty(x.DbName)).Select(x => x.DbName).ToList();
-                var dbNamesTrue   = requiredTrue .Where(x => !string.IsNullOrEmpty(x.DbName)).Select(x => x.DbName).ToList();
-                var colFalse      = requiredFalse.Select(x => x.Name).ToList();
-                var colTrue       = requiredTrue .Select(x => x.Name).ToList();
+                var requiredTrue = requiredPrimaryKeys.Where(x => x.IsPrimaryKey).ToList();
+                var dbNamesFalse = requiredFalse.Where(x => !string.IsNullOrEmpty(x.DbName)).Select(x => x.DbName).ToList();
+                var dbNamesTrue = requiredTrue.Where(x => !string.IsNullOrEmpty(x.DbName)).Select(x => x.DbName).ToList();
+                var colFalse = requiredFalse.Select(x => x.Name).ToList();
+                var colTrue = requiredTrue.Select(x => x.Name).ToList();
 
                 foreach (var col in view.Columns.Where(c => dbNamesFalse.Contains(c.DbName.ToLowerInvariant()) || colFalse.Contains(c.NameHumanCase.ToLowerInvariant())))
                     col.IsPrimaryKey = false;
@@ -3031,7 +3042,7 @@
                 foreach (var col in view.Columns.Where(c => dbNamesTrue.Contains(c.DbName.ToLowerInvariant()) || colTrue.Contains(c.NameHumanCase.ToLowerInvariant())))
                 {
                     col.IsPrimaryKey = true;
-                    col.IsNullable   = false;
+                    col.IsNullable = false;
                 }
             }
 
@@ -3137,7 +3148,7 @@
         {
             return table.Columns
                 .FirstOrDefault(t => nameHumanCase == _normalisation.Normalise(t.Name, t.DbName).Name.ToLowerInvariant() ||
-                                     dbName        == _normalisation.Normalise(t.DbName)?.Name.ToLowerInvariant());
+                                     dbName == _normalisation.Normalise(t.DbName)?.Name.ToLowerInvariant());
         }
 
         private MultiContextStoredProcedureSettings FindStoredProcSetting(StoredProcedure sp)
@@ -4870,14 +4881,14 @@
 
         protected Generator(FileManagementService fileManagementService, Type fileManagerType)
         {
-            _fileManagementService  = fileManagementService;
-            _fileManagerType        = fileManagerType;
-            InitialisationOk        = false;
-            DatabaseReader          = null;
-            _fileHeaderFooter        = null;
-            _preHeaderInfo          = new StringBuilder(1024);
+            _fileManagementService = fileManagementService;
+            _fileManagerType = fileManagerType;
+            InitialisationOk = false;
+            DatabaseReader = null;
+            _fileHeaderFooter = null;
+            _preHeaderInfo = new StringBuilder(1024);
             _codeGeneratedAttribute = string.Format("[GeneratedCode(\"EF.Reverse.POCO.Generator\", \"{0}\")]", EfrpgVersion.Version());
-            FilterList              = new DbContextFilterList();
+            FilterList = new DbContextFilterList();
         }
 
         public void Init(DatabaseReader databaseReader, string singleDbContextSubNamespace)
@@ -4889,7 +4900,7 @@
             }
 
             var licence = ReadAndValidateLicence();
-            if(licence == null)
+            if (licence == null)
                 return;
 
             BuildPreHeaderInfo(licence);
@@ -4913,7 +4924,7 @@
             }
 
             _hasAcademicLicence = licence.LicenceType == LicenceType.Academic;
-            _hasTrialLicence    = licence.LicenceType == LicenceType.Trial;
+            _hasTrialLicence = licence.LicenceType == LicenceType.Trial;
             InitialisationOk = FilterList.ReadDbContextSettings(DatabaseReader, singleDbContextSubNamespace);
             _fileManagementService.Init(FilterList.GetFilters(), _fileManagerType);
         }
@@ -4937,7 +4948,7 @@
             }
 
             var validator = new LicenceValidator();
-            if(!validator.Validate(File.ReadAllText(file)))
+            if (!validator.Validate(File.ReadAllText(file)))
             {
                 _fileManagementService.Error(validator.Expired
                     ? string.Format("// Your licence file {0} has expired.", file)
@@ -5038,7 +5049,7 @@
                 _fileManagementService.Error(string.Empty);
             }
         }
-        
+
         public void LoadSequences()
         {
             if (DatabaseReader == null || !Settings.ElementsToGenerate.HasFlag(Elements.Context))
@@ -5049,7 +5060,7 @@
                 var sequences = DatabaseReader.ReadSequences();
                 if (sequences.Count <= 0)
                     return; // No sequences in database
-                
+
                 foreach (var filterKeyValuePair in FilterList.GetFilters())
                 {
                     // Only add sequences where the table is used by this filter
@@ -5075,15 +5086,16 @@
                 _fileManagementService.Error(string.Empty);
             }
         }
-        
+
         public void ReadDatabase()
         {
+            Settings.CheckSettings();
             LoadTables();
             LoadStoredProcs();
             LoadEnums();
             LoadSequences();
         }
-        
+
         public void LoadTables()
         {
             if (DatabaseReader == null ||
@@ -5097,8 +5109,8 @@
             {
                 var includeSynonyms = FilterList.IncludeSynonyms();
 
-                var rawTables      = DatabaseReader.ReadTables(includeSynonyms);
-                var rawIndexes     = DatabaseReader.ReadIndexes();
+                var rawTables = DatabaseReader.ReadTables(includeSynonyms);
+                var rawIndexes = DatabaseReader.ReadIndexes();
                 var rawForeignKeys = DatabaseReader.ReadForeignKeys(includeSynonyms);
 
                 // For unit testing
@@ -5148,9 +5160,9 @@
                 return;
 
             var uniqueForeignKeys = from i in rawIndexes.Where(x => x.IsUniqueConstraint)
-                join fk1 in rawForeignKeys
-                    on new { X1 = i.Schema, X2 = i.TableName } equals new { X1 = fk1.PkSchema, X2 = fk1.PkTableName }
-                select fk1;
+                                    join fk1 in rawForeignKeys
+                                        on new { X1 = i.Schema, X2 = i.TableName } equals new { X1 = fk1.PkSchema, X2 = fk1.PkTableName }
+                                    select fk1;
 
             foreach (var fk in uniqueForeignKeys)
                 fk.HasUniqueConstraint = true;
@@ -5181,7 +5193,7 @@
                 foreach (var tn in tablesNames)
                 {
                     var exclude = tn.IsView && !filter.IncludeViews;
-                    if(exclude && !deleteFilteredOutFiles)
+                    if (exclude && !deleteFilteredOutFiles)
                         continue;
 
                     // Check if schema is excluded
@@ -5217,7 +5229,7 @@
                             continue;
                     }
 
-                    if(exclude)
+                    if (exclude)
                     {
                         FileManagementService.DeleteFile(table.NameHumanCaseWithSuffix() + Settings.FileExtension); // Poco
                         FileManagementService.DeleteFile(table.NameHumanCaseWithSuffix() + Settings.ConfigurationClassName + Settings.FileExtension); // Poco config
@@ -5340,9 +5352,9 @@
 
                         col.Indexes.Add(index);
 
-                        col.IsPrimaryKey       = col.IsPrimaryKey       || index.IsPrimaryKey;
+                        col.IsPrimaryKey = col.IsPrimaryKey || index.IsPrimaryKey;
                         col.IsUniqueConstraint = col.IsUniqueConstraint || (index.IsUniqueConstraint && index.ColumnCount == 1);
-                        col.IsUnique           = col.IsUnique           || (index.IsUnique           && index.ColumnCount == 1);
+                        col.IsUnique = col.IsUnique || (index.IsUnique && index.ColumnCount == 1);
                     }
 
                     // Check if table has any primary keys
@@ -5368,10 +5380,10 @@
                         var col = t.Columns.Find(x => x.DbName == key.ColumnName);
                         if (col != null && !col.IsNullable && !col.Hidden && !col.IsPrimaryKey)
                         {
-                            col.IsPrimaryKey       = true;
+                            col.IsPrimaryKey = true;
                             col.IsUniqueConstraint = true;
-                            col.IsUnique           = true;
-                            col.UniqueIndexName    = indexName;
+                            col.IsUnique = true;
+                            col.UniqueIndexName = indexName;
                         }
                     }
                 }
@@ -5386,7 +5398,7 @@
             if (rawForeignKeys == null)
                 rawForeignKeys = new List<RawForeignKey>();
             //else
-                //SortForeignKeys(rawForeignKeys);
+            //SortForeignKeys(rawForeignKeys);
 
             foreach (var filterKeyValuePair in FilterList.GetFilters())
             {
@@ -5438,7 +5450,7 @@
                 // Mappings tables can only be true for Ef6 and EFCore 5 onwards
                 if (Settings.UseMappingTables && !(Settings.IsEf6() || Settings.IsEfCore8Plus()))
                     Settings.UseMappingTables = false;
-                
+
                 if (Settings.UseMappingTables)
                     filter.Tables.IdentifyMappingTables(foreignKeys, true, DatabaseReader.IncludeSchema);
 
@@ -5469,14 +5481,14 @@
                 }
 
                 // Matches without 'id'
-                if(fkColumn.EndsWith("id") && fkColumn.Remove(fkColumn.Length - 2, 2) == pkTable)
+                if (fkColumn.EndsWith("id") && fkColumn.Remove(fkColumn.Length - 2, 2) == pkTable)
                 {
                     fk.SortOrder = 2;
                     continue;
                 }
 
                 // Matches if trimmed
-                if(fkColumn.Length > pkTable.Length && fkColumn.Substring(0, pkTable.Length) == pkTable)
+                if (fkColumn.Length > pkTable.Length && fkColumn.Substring(0, pkTable.Length) == pkTable)
                 {
                     fk.SortOrder = 3;
                     continue;
@@ -5539,8 +5551,8 @@
                 return;
 
             var commentsInSummaryBlock = Settings.IncludeExtendedPropertyComments == CommentsStyle.InSummaryBlock;
-            var multiLine              = new Regex("[\r\n]+", RegexOptions.Compiled);
-            var whiteSpace             = new Regex("\\s+", RegexOptions.Compiled);
+            var multiLine = new Regex("[\r\n]+", RegexOptions.Compiled);
+            var whiteSpace = new Regex("\\s+", RegexOptions.Compiled);
 
             foreach (var filterKeyValuePair in FilterList.GetFilters())
             {
@@ -5652,12 +5664,12 @@
                 {
                     var sp = new StoredProcedure
                     {
-                        DbName                 = proc.Name,
-                        NameHumanCase          = (Settings.UsePascalCase ? Inflector.ToTitleCase(proc.Name) : proc.Name).Replace(" ", "").Replace("$", ""),
-                        Schema                 = new Schema(proc.Schema),
-                        IsTableValuedFunction  = proc.IsTableValuedFunction,
+                        DbName = proc.Name,
+                        NameHumanCase = (Settings.UsePascalCase ? Inflector.ToTitleCase(proc.Name) : proc.Name).Replace(" ", "").Replace("$", ""),
+                        Schema = new Schema(proc.Schema),
+                        IsTableValuedFunction = proc.IsTableValuedFunction,
                         IsScalarValuedFunction = proc.IsScalarValuedFunction,
-                        IsStoredProcedure      = proc.IsStoredProcedure
+                        IsStoredProcedure = proc.IsStoredProcedure
                     };
                     sp.NameHumanCase = DatabaseReader.CleanUp(sp.NameHumanCase);
                     if (Settings.PrependSchemaName && (string.Compare(proc.Schema, Settings.DefaultSchema, StringComparison.OrdinalIgnoreCase) != 0) && Settings.PrependSchemaNameForStoredProcedure(sp))
@@ -5677,7 +5689,7 @@
                     // Check to see if this stored proc is to be kept by any of the filters
                     if (spFilters.All(x => x.Value.IsExcluded(sp)))
                     {
-                        if(deleteFilteredOutFiles)
+                        if (deleteFilteredOutFiles)
                             FileManagementService.DeleteFile(sp.WriteStoredProcReturnModelName(spFilters[0].Value) + Settings.FileExtension);
 
                         continue; // All Db Context exclude this stored proc, ignore it as nobody wants it
@@ -5768,8 +5780,8 @@
             AddRelationship(filter, fkList, tablesAndViews, name, pkSchema, pkTable, new[] { pkColumn }, fkSchema, fkTable, new[] { fkColumn }, parentName, childName, isUnique);
         }
 
-        public void AddRelationship(IDbContextFilter filter, List<ForeignKey> fkList, Tables tablesAndViews, string relationshipName, 
-            string pkSchema, string pkTableName, string[] pkColumns, 
+        public void AddRelationship(IDbContextFilter filter, List<ForeignKey> fkList, Tables tablesAndViews, string relationshipName,
+            string pkSchema, string pkTableName, string[] pkColumns,
             string fkSchema, string fkTableName, string[] fkColumns,
             string parentName, string childName, bool isUnique)
         {
@@ -5833,7 +5845,8 @@
                     parentName,
                     childName,
                     isUnique
-                ) { IncludeReverseNavigation = true };
+                )
+                { IncludeReverseNavigation = true };
 
                 fkList.Add(fk);
                 fkTable.HasForeignKey = true;
@@ -5859,10 +5872,10 @@
                     continue;
 
                 var fkCols = foreignKeys.Select(x => new ColumnAndForeignKey
-                    {
-                        ForeignKey = x,
-                        Column = fkTable.Columns.Find(n => string.Equals(n.DbName, x.FkColumn, StringComparison.InvariantCultureIgnoreCase))
-                    })
+                {
+                    ForeignKey = x,
+                    Column = fkTable.Columns.Find(n => string.Equals(n.DbName, x.FkColumn, StringComparison.InvariantCultureIgnoreCase))
+                })
                     .Where(x => x.Column != null)
                     .OrderBy(o => o.ForeignKey.Ordinal)
                     .ToList();
@@ -5873,7 +5886,7 @@
                 if (FkMustHaveSameNumberOfColumnsAsPrimaryKey() || AllowFkToNonPrimaryKey())
                 {
                     // Check FK has same number of columns as the primary key it points to
-                    var pks  = pkTable.PrimaryKeys         .OrderBy(x => x.PropertyType).ThenBy(y => y.DbName).ToArray();
+                    var pks = pkTable.PrimaryKeys.OrderBy(x => x.PropertyType).ThenBy(y => y.DbName).ToArray();
                     var cols = fkCols.Select(x => x.Column).OrderBy(x => x.PropertyType).ThenBy(y => y.DbName).ToArray();
 
                     if (FkMustHaveSameNumberOfColumnsAsPrimaryKey() && pks.Length != cols.Length)
@@ -5882,7 +5895,7 @@
                         if (!AllowFkToNonPrimaryKey())
                             continue;
 
-                        if(!fkCols.All(x => x.ForeignKey.HasUniqueConstraint))
+                        if (!fkCols.All(x => x.ForeignKey.HasUniqueConstraint))
                             continue;
                     }
 
@@ -5891,10 +5904,10 @@
                 }
 
                 var pkCols = foreignKeys.Select(x => new ColumnAndForeignKey
-                    {
-                        ForeignKey = x,
-                        Column = pkTable.Columns.Find(n => string.Equals(n.DbName, x.PkColumn, StringComparison.InvariantCultureIgnoreCase))
-                    })
+                {
+                    ForeignKey = x,
+                    Column = pkTable.Columns.Find(n => string.Equals(n.DbName, x.PkColumn, StringComparison.InvariantCultureIgnoreCase))
+                })
                     .Where(x => x.Column != null)
                     .OrderBy(o => o.ForeignKey.Ordinal)
                     .ToList();
@@ -5911,16 +5924,16 @@
                     continue;
 
                 var pkTableHumanCaseWithSuffix = pkTable.NameHumanCaseWithSuffix();//foreignKey.PkTableHumanCase(pkTable.Suffix);
-                var pkTableHumanCase           = foreignKey.PkTableHumanCase(null);
-                var fkHasUniqueConstraint      = pkCols.All(x => x.ForeignKey.HasUniqueConstraint) && relationship == Relationship.OneToOne;
+                var pkTableHumanCase = foreignKey.PkTableHumanCase(null);
+                var fkHasUniqueConstraint = pkCols.All(x => x.ForeignKey.HasUniqueConstraint) && relationship == Relationship.OneToOne;
 
                 if (fkHasUniqueConstraint && pkCols.Any(x => x.Column.IsNullable))
                     continue; // This would force the column to be not null
 
-                var flipRelationship       = FlipRelationship(relationship);
+                var flipRelationship = FlipRelationship(relationship);
                 var fkMakePropNameSingular = relationship == Relationship.OneToOne;
-                var pkPropName             = fkTable.GetUniqueForeignKeyName(true,  pkTableHumanCase,      foreignKey, checkForFkNameClashes, true,                   relationship);
-                var fkPropName             = pkTable.GetUniqueForeignKeyName(false, fkTable.NameHumanCase, foreignKey, checkForFkNameClashes, fkMakePropNameSingular, flipRelationship);
+                var pkPropName = fkTable.GetUniqueForeignKeyName(true, pkTableHumanCase, foreignKey, checkForFkNameClashes, true, relationship);
+                var fkPropName = pkTable.GetUniqueForeignKeyName(false, fkTable.NameHumanCase, foreignKey, checkForFkNameClashes, fkMakePropNameSingular, flipRelationship);
 
                 // Determine if the foreign key navigation property needs null-forgiving operator or nullable marker
                 // If all FK columns are nullable, the navigation property can be marked nullable (requires AllowNullStrings).
@@ -5933,10 +5946,10 @@
                 var fkd = new PropertyAndComments
                 {
                     AdditionalDataAnnotations = filter.ForeignKeyAnnotationsProcessing(fkTable, pkTable, pkPropName, fkPropName),
-                    
+
                     PropertyName = pkPropName,
 
-                    Definition = string.Format("public {0}{1}{2} {3} {4}{5}{6}", 
+                    Definition = string.Format("public {0}{1}{2} {3} {4}{5}{6}",
                         Table.GetLazyLoadingMarker(),
                         pkTableHumanCaseWithSuffix,
                         nullableMarker,
@@ -5969,7 +5982,7 @@
 
                 var primaryKeyColumns = string.Empty;
                 if (!allPkColsArePrimaryKeys)
-                { 
+                {
                     if (pkCols.Count > 1)
                         primaryKeyColumns = string.Format("p => new {{ {0} }}", string.Join(", ", pkCols.Select(x => "p." + x.Column.NameHumanCase).Distinct().ToArray()));
                     else
@@ -6033,7 +6046,7 @@
         // Calculates the relationship between a child table and it's parent table.
         public static Relationship CalcRelationship(Table parentTable, Table childTable, List<ColumnAndForeignKey> fkCols, List<ColumnAndForeignKey> pkCols)
         {
-            var childTableCols  = fkCols.Select(c => c.Column).ToList();
+            var childTableCols = fkCols.Select(c => c.Column).ToList();
             var parentTableCols = pkCols.Select(c => c.Column).ToList();
 
             if (childTableCols.Count == 1 && parentTableCols.Count == 1)
@@ -6043,12 +6056,12 @@
 
             // childTable FK columns are exactly the primary key (they are part of primary key, and no other columns are primary keys)
             // TODO: we could also check if they are a unique index
-            var childTableColumnsAllPrimaryKeys = (childTableCols.Count == childTableCols.Count(x => x.IsPrimaryKey)) && 
+            var childTableColumnsAllPrimaryKeys = (childTableCols.Count == childTableCols.Count(x => x.IsPrimaryKey)) &&
                                                   (childTableCols.Count == childTable.PrimaryKeys.Count());
 
             // parentTable columns are exactly the primary key (they are part of primary key, and no other columns are primary keys)
             // TODO: we could also check if they are a unique index
-            var parentTableColumnsAllPrimaryKeys = (parentTableCols.Count == parentTableCols.Count(x => x.IsPrimaryKey)) && 
+            var parentTableColumnsAllPrimaryKeys = (parentTableCols.Count == parentTableCols.Count(x => x.IsPrimaryKey)) &&
                                                    (parentTableCols.Count == parentTable.PrimaryKeys.Count());
 
             // childTable FK columns are not only FK but also the whole PK (not only part of PK); parentTable columns are the whole PK (not only part of PK) - so it's 1:1
@@ -6056,7 +6069,7 @@
                 return Relationship.OneToOne;
 
             // Check if covered by a unique constraint
-            if(fkCols.All(x => x.ForeignKey.HasUniqueConstraint))
+            if (fkCols.All(x => x.ForeignKey.HasUniqueConstraint))
                 return Relationship.OneToOne;
 
             // Check if covered by a unique index on PK table
@@ -6088,12 +6101,12 @@
         {
             switch (relationship)
             {
-                case Relationship.OneToOne:   return Relationship.OneToOne;
-                case Relationship.OneToMany:  return Relationship.ManyToOne;
-                case Relationship.ManyToOne:  return Relationship.OneToMany;
+                case Relationship.OneToOne: return Relationship.OneToOne;
+                case Relationship.OneToMany: return Relationship.ManyToOne;
+                case Relationship.ManyToOne: return Relationship.OneToMany;
                 case Relationship.ManyToMany: return Relationship.ManyToMany;
-                case Relationship.DoNotUse:   return Relationship.DoNotUse;
-                
+                case Relationship.DoNotUse: return Relationship.DoNotUse;
+
                 default:
                     throw new ArgumentOutOfRangeException(nameof(relationship), relationship, null);
             }
@@ -6181,21 +6194,21 @@
         {
             var codeGenerator = new CodeGenerator(this, filter);
 
-            const string contextInterface  = "contextInterface:";
-            const string contextFactory    = "contextFactory:";
-            const string contextClass      = "contextClass:";
-            const string contextFakeClass  = "contextFakeClass:";
-            const string contextFakeDbSet  = "contextFakeDbSet:";
-            const string pocoClass         = "pocoClass:";
+            const string contextInterface = "contextInterface:";
+            const string contextFactory = "contextFactory:";
+            const string contextClass = "contextClass:";
+            const string contextFakeClass = "contextFakeClass:";
+            const string contextFakeDbSet = "contextFakeDbSet:";
+            const string pocoClass = "pocoClass:";
             const string pocoConfiguration = "pocoConfiguration:";
-            const string spReturnModels    = "spReturnModel:";
-            const string enumType          = "enumType:";
-            const string ownedEntityClass  = "ownedEntityClass:";
+            const string spReturnModels = "spReturnModel:";
+            const string enumType = "enumType:";
+            const string ownedEntityClass = "ownedEntityClass:";
 
             var codeOutputList = new CodeOutputList();
             codeOutputList.Add(contextInterface, codeGenerator.GenerateInterface());
-            codeOutputList.Add(contextFactory,   codeGenerator.GenerateFactory());
-            codeOutputList.Add(contextClass,     codeGenerator.GenerateContext());
+            codeOutputList.Add(contextFactory, codeGenerator.GenerateFactory());
+            codeOutputList.Add(contextClass, codeGenerator.GenerateContext());
             codeOutputList.Add(contextFakeClass, codeGenerator.GenerateFakeContext());
             codeOutputList.Add(contextFakeDbSet, codeGenerator.GenerateFakeDbSet());
 
@@ -6214,9 +6227,9 @@
             }
 
             foreach (var sp in filter.StoredProcs
-                .Where(x => x.ReturnModels.Count > 0 && 
-                            x.ReturnModels.Any(returnColumns => returnColumns.Any()) && 
-                            !Settings.StoredProcedureReturnTypes.ContainsKey(x.NameHumanCase) && 
+                .Where(x => x.ReturnModels.Count > 0 &&
+                            x.ReturnModels.Any(returnColumns => returnColumns.Any()) &&
+                            !Settings.StoredProcedureReturnTypes.ContainsKey(x.NameHumanCase) &&
                             !Settings.StoredProcedureReturnTypes.ContainsKey(x.DbName))
                 .OrderBy(x => x.NameHumanCase))
             {
@@ -6250,7 +6263,7 @@
             if (!Settings.GenerateSeparateFiles)
             {
                 var preHeader = _preHeaderInfo.ToString();
-                if(!string.IsNullOrWhiteSpace(preHeader))
+                if (!string.IsNullOrWhiteSpace(preHeader))
                     _fileManagementService.WriteLine(preHeader.Trim());
 
                 var header = _fileHeaderFooter.Header;
@@ -6273,11 +6286,11 @@
             }
 
             // Write the pre header info with the database context and it's interface
-            if(codeOutputList.Files.ContainsKey(contextInterface)) WriteCodeOutput(codeGenerator, codeOutputList.Files[contextInterface], true, firstInGroup: true);
-            if(codeOutputList.Files.ContainsKey(contextClass))     WriteCodeOutput(codeGenerator, codeOutputList.Files[contextClass], true, firstInGroup: true);
-            if(codeOutputList.Files.ContainsKey(contextFactory))   WriteCodeOutput(codeGenerator, codeOutputList.Files[contextFactory], true);
-            if(codeOutputList.Files.ContainsKey(contextFakeClass)) WriteCodeOutput(codeGenerator, codeOutputList.Files[contextFakeClass], true, firstInGroup: true);
-            if(codeOutputList.Files.ContainsKey(contextFakeDbSet)) WriteCodeOutput(codeGenerator, codeOutputList.Files[contextFakeDbSet], true);
+            if (codeOutputList.Files.ContainsKey(contextInterface)) WriteCodeOutput(codeGenerator, codeOutputList.Files[contextInterface], true, firstInGroup: true);
+            if (codeOutputList.Files.ContainsKey(contextClass)) WriteCodeOutput(codeGenerator, codeOutputList.Files[contextClass], true, firstInGroup: true);
+            if (codeOutputList.Files.ContainsKey(contextFactory)) WriteCodeOutput(codeGenerator, codeOutputList.Files[contextFactory], true);
+            if (codeOutputList.Files.ContainsKey(contextFakeClass)) WriteCodeOutput(codeGenerator, codeOutputList.Files[contextFakeClass], true, firstInGroup: true);
+            if (codeOutputList.Files.ContainsKey(contextFakeDbSet)) WriteCodeOutput(codeGenerator, codeOutputList.Files[contextFakeDbSet], true);
 
             WriteCodeOutputForGroup(codeGenerator, "POCO classes", true,
                 codeOutputList.Files
@@ -6581,7 +6594,7 @@
 
     public class GeneratorEf6 : Generator
     {
-        public GeneratorEf6(FileManagementService fileManagementService, Type fileManagerType) 
+        public GeneratorEf6(FileManagementService fileManagementService, Type fileManagerType)
             : base(fileManagementService, fileManagerType)
         {
         }
@@ -6668,7 +6681,7 @@
             var excludedHasColumnType = string.Empty;
             if (!Settings.UseDataAnnotations && !string.IsNullOrEmpty(c.SqlPropertyType))
             {
-                if(Column.ExcludedHasColumnType.Contains(c.SqlPropertyType))
+                if (Column.ExcludedHasColumnType.Contains(c.SqlPropertyType))
                     excludedHasColumnType = string.Format(" // .HasColumnType(\"{0}\") was excluded", c.SqlPropertyType);
                 else
                     sb.AppendFormat(".HasColumnType(\"{0}\")", c.SqlPropertyType);
@@ -6711,7 +6724,7 @@
 
             if (databaseGeneratedOption != null)
                 sb.Append(databaseGeneratedOption);
-            
+
             var config = sb.ToString();
             if (!string.IsNullOrEmpty(config))
                 c.Config = string.Format("Property(x => x.{0}){1};{2}", c.NameHumanCase, config, excludedHasColumnType);
@@ -6949,7 +6962,7 @@
                 if (c.IsIdentity || isNewSequentialId || isTemporalColumn)
                 {
                     databaseGeneratedOption = ".ValueGeneratedOnAdd()";
-                    
+
                     if (c.IsIdentity && DatabaseReader.HasIdentityColumnSupport() && Column.CanUseSqlServerIdentityColumn.Contains(c.PropertyType))
                         databaseGeneratedOption += Settings.ColumnIdentity(c);
                 }
@@ -6981,7 +6994,7 @@
             if (!string.IsNullOrEmpty(c.SqlPropertyType))
             {
                 var columnTypeParameters = string.Empty;
-            
+
                 if ((c.Precision > 0 || c.Scale > 0) && (c.SqlPropertyType == "decimal" || c.SqlPropertyType == "numeric"))
                     columnTypeParameters = $"({c.Precision},{c.Scale})";
                 else if (!c.IsMaxLength && c.MaxLength > 0 && !doNotSpecifySize && !isVectorType && !c.IsRowVersion) // Vector types already include dimension in SqlPropertyType; timestamp/rowversion width is invalid in SQL Server
@@ -7092,7 +7105,7 @@
                 return defaultKey + ";";
 
             var indexName = t.Indexes.Where(x => x.IsPrimaryKey).Select(x => x.IndexName).Distinct().FirstOrDefault();
-            if(string.IsNullOrEmpty(indexName))
+            if (string.IsNullOrEmpty(indexName))
                 return defaultKey + ";";
 
             var indexesForName = t.Indexes
@@ -7164,7 +7177,7 @@
 
                 sb.Append(")"); // Close bracket for HasIndex()
 
-                
+
                 sb.Append(isEfCore8Plus ? ".HasDatabaseName(\"" : ".HasName(\"");
                 sb.Append(indexName);
                 sb.Append("\")");
@@ -7719,8 +7732,8 @@
 
             return Regex.Replace(
                 Regex.Replace(
-                    Regex.Replace(pascalCasedWord, @"([A-Z]+)([A-Z][a-z])", "$1_$2"), 
-                    @"([a-z\d])([A-Z])","$1_$2"), 
+                    Regex.Replace(pascalCasedWord, @"([A-Z]+)([A-Z][a-z])", "$1_$2"),
+                    @"([a-z\d])([A-Z])", "$1_$2"),
                 @"[-\s]", "_")
                 .ToLowerInvariant();
         }
@@ -8870,7 +8883,7 @@
         /// <returns>A dictionary associating the parameter name to the associated value.</returns>
         public Dictionary<string, object> GetArguments(Scope keyScope, Scope contextScope)
         {
-            Dictionary<string, object> arguments = new Dictionary<string,object>();
+            Dictionary<string, object> arguments = new Dictionary<string, object>();
             foreach (KeyValuePair<TagParameter, IArgument> pair in _argumentLookup)
             {
                 object value;
@@ -8889,7 +8902,7 @@
 
         public Dictionary<string, object> GetArgumentKeyNames()
         {
-            return _argumentLookup.ToDictionary(p => p.Key.Name, p => (object)GetKey(p.Key));
+            return _argumentLookup.ToDictionary(p => p.Key.Name, p => (object) GetKey(p.Key));
         }
     }
 
@@ -9050,12 +9063,12 @@
 
             if (condition is char)
             {
-                return (char)condition != '\0';
+                return (char) condition != '\0';
             }
 
             try
             {
-                decimal number = (decimal)Convert.ChangeType(condition, typeof(decimal));
+                decimal number = (decimal) Convert.ChangeType(condition, typeof(decimal));
                 return number != 0.0m;
             }
             catch
@@ -9728,7 +9741,7 @@
             // provide default values for missing arguments
             if (captures.Count < parameters.Count)
             {
-                captures.AddRange(Enumerable.Repeat((Capture)null, parameters.Count - captures.Count));
+                captures.AddRange(Enumerable.Repeat((Capture) null, parameters.Count - captures.Count));
             }
 
             // pair up the parameters to the given arguments
@@ -9740,7 +9753,7 @@
                 string value = null;
                 if (pair.Capture != null)
                 {
-                    value = pair.Capture.Value;                    
+                    value = pair.Capture.Value;
                 }
                 else if (pair.Parameter.IsRequired)
                 {
@@ -11099,7 +11112,7 @@
         /// <param name="contextScope">Extra data passed along with the context.</param>
         public override void GetText(TextWriter writer, Dictionary<string, object> arguments, Scope contextScope)
         {
-            string name = (string)arguments[nameParameter];
+            string name = (string) arguments[nameParameter];
             contextScope.Set(name);
         }
     }
@@ -11511,7 +11524,7 @@
                                let valueType = getValueType(type)
                                where valueType != null
                                let upcastType = typeof(UpcastDictionary<>).MakeGenericType(valueType)
-                               select (IDictionary<string, object>)Activator.CreateInstance(upcastType, source);
+                               select (IDictionary<string, object>) Activator.CreateInstance(upcastType, source);
             return dictionaries.FirstOrDefault();
         }
 
@@ -11625,7 +11638,7 @@
             {
                 return false;
             }
-            KeyValuePair<string, TValue> pair = new KeyValuePair<string,TValue>(item.Key, (TValue)item.Value);
+            KeyValuePair<string, TValue> pair = new KeyValuePair<string, TValue>(item.Key, (TValue) item.Value);
             ICollection<KeyValuePair<string, TValue>> collection = dictionary;
             return dictionary.Contains(pair);
         }
@@ -14943,7 +14956,7 @@ and limitations under the License.
                     return new SqlServerCeDatabaseReader(factory, databaseToPropertyType);
 
                 case DatabaseType.Plugin:
-                    if(string.IsNullOrWhiteSpace(Settings.DatabaseReaderPlugin))
+                    if (string.IsNullOrWhiteSpace(Settings.DatabaseReaderPlugin))
                         throw new ArgumentOutOfRangeException();
                     return new PluginDatabaseReader(null);
 
@@ -15313,7 +15326,7 @@ and limitations under the License.
             DatabaseReaderPlugin = (IDatabaseReaderPlugin) AssemblyHelper.LoadPlugin(Settings.DatabaseReaderPlugin);
 
             var databaseToPropertyType = DatabaseReaderPlugin.GetDatabaseToPropertyTypeMapping();
-            if(databaseToPropertyType != null)
+            if (databaseToPropertyType != null)
                 DbTypeToPropertyType = databaseToPropertyType.GetMapping(); // Override default with plugin version
         }
 
@@ -15633,8 +15646,8 @@ ORDER BY R.specific_schema, R.routine_name, R.routine_type;";
                 ? $@"""{table.Split('.')[0]}"".""{table.Split('.')[1]}"""
                 : $@"""{table}""";
 
-            return !string.IsNullOrEmpty(groupField) ? 
-                $@"SELECT ""{nameField}"" AS ""NameField"", ""{valueField}"" AS ""ValueField"", ""{groupField}"" AS ""GroupField"", * FROM {formattedTable};" : 
+            return !string.IsNullOrEmpty(groupField) ?
+                $@"SELECT ""{nameField}"" AS ""NameField"", ""{valueField}"" AS ""ValueField"", ""{groupField}"" AS ""GroupField"", * FROM {formattedTable};" :
                 $@"SELECT ""{nameField}"" AS ""NameField"", ""{valueField}"" AS ""ValueField"", * FROM {formattedTable};";
         }
 
@@ -15778,7 +15791,7 @@ ORDER BY SchemaName, TableName, TriggerName;";
                     {
                         cmd.CommandText = sb.ToString();
                         sqlAdapter.SelectCommand = cmd;
-                        if(cmd.Connection.State != ConnectionState.Open)
+                        if (cmd.Connection.State != ConnectionState.Open)
                             cmd.Connection.Open();
                         sqlAdapter.SelectCommand.ExecuteReader(CommandBehavior.SchemaOnly | CommandBehavior.KeyInfo);
                         cmd.Connection.Close();
@@ -15798,7 +15811,7 @@ ORDER BY SchemaName, TableName, TriggerName;";
                 {
                     proc.ReturnModels.Add(ds.Tables[count].Columns.Cast<DataColumn>().ToList());
                 }
-                
+
                 proc.MergeModelsIfAllSame();
                 Settings.ReadStoredProcReturnObjectCompleted(proc);
             }
@@ -17900,7 +17913,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
 
         public void MergeModelsIfAllSame()
         {
-            if(Settings.MergeMultipleStoredProcModelsIfAllSame && ReturnModels.Count < 2)
+            if (Settings.MergeMultipleStoredProcModelsIfAllSame && ReturnModels.Count < 2)
                 return;
 
             if (ReturnModels.Select(x => x.Count).Distinct().Count() != 1)
@@ -18011,31 +18024,112 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
         }
 
         // Converts a StoredProcedureParameter's stored DefaultValue to a valid C# literal.
-        // p.DefaultValue == null  → "null"
-        // p.DefaultValue == "'FCV'" → "\"FCV\""
-        // p.DefaultValue == "12"  → "12" (with optional type suffix for decimal/float)
+        // Uses a whitelist: only types whose values are valid C# compile-time constants get
+        // a non-null default; everything else falls back to null.
+        //
+        // Valid compile-time constants in C#: numeric primitives, bool, string, enum, null.
+        // NOT valid: DateTime, DateTimeOffset, Guid, TimeSpan, DateOnly, TimeOnly, byte[],
+        //            object, spatial types, or SQL expressions (getdate(), newid(), etc.).
         private static string ToCSharpDefault(StoredProcedureParameter p)
         {
             if (p.DefaultValue == null)
                 return "null";
 
             var raw = p.DefaultValue.Trim();
+            var propertyType = p.PropertyType?.ToLower() ?? string.Empty;
 
-            // SQL string literal: strip surrounding single quotes and escape for C#
+            // SQL string literal (single-quoted): only usable when the C# type is string
             if (raw.Length >= 2 && raw[0] == '\'' && raw[raw.Length - 1] == '\'')
             {
-                var str = raw.Substring(1, raw.Length - 2).Replace("''", "'");
-                return "\"" + str.Replace("\\", "\\\\").Replace("\"", "\\\"") + "\"";
+                if (propertyType == "string")
+                {
+                    var str = raw.Substring(1, raw.Length - 2).Replace("''", "'");
+                    return "\"" + str.Replace("\\", "\\\\").Replace("\"", "\\\"") + "\"";
+                }
+                return "null"; // DateTime?, Guid?, etc. stored as SQL string literals → null
             }
 
-            // Numeric value: add C# type suffix where needed
-            var propertyType = p.PropertyType?.ToLower() ?? string.Empty;
-            if (propertyType == "decimal?" || propertyType == "decimal")
-                return raw + "m";
-            if (propertyType == "float?" || propertyType == "float")
-                return raw + "f";
+            // Unicode string prefix N'...' — not a valid C# literal for any type
+            if (raw.Length >= 3 && (raw[0] == 'N' || raw[0] == 'n') &&
+                raw[1] == '\'' && raw[raw.Length - 1] == '\'')
+            {
+                if (propertyType == "string")
+                {
+                    var str = raw.Substring(2, raw.Length - 3).Replace("''", "'");
+                    return "\"" + str.Replace("\\", "\\\\").Replace("\"", "\\\"") + "\"";
+                }
+                return "null";
+            }
 
-            return raw; // int, double, bool, etc. – use as-is
+            // bool: SQL bit (0/1) or PostgreSQL true/false keywords
+            if (propertyType == "bool?" || propertyType == "bool")
+            {
+                if (raw == "0" || raw.Equals("false", StringComparison.OrdinalIgnoreCase)) return "false";
+                if (raw == "1" || raw.Equals("true", StringComparison.OrdinalIgnoreCase)) return "true";
+                return "null";
+            }
+
+            // decimal / float: only emit if the raw value is actually numeric
+            if (propertyType == "decimal?" || propertyType == "decimal")
+                return IsSqlNumericLiteral(raw) ? raw + "m" : "null";
+            if (propertyType == "float?" || propertyType == "float")
+                return IsSqlNumericLiteral(raw) ? raw + "f" : "null";
+
+            // Remaining integer/floating-point value types: only emit a raw numeric literal.
+            // Anything else (getdate(), newid(), expressions, etc.) falls back to null.
+            if (IsCSharpNumericValueType(propertyType))
+                return IsSqlNumericLiteral(raw) ? raw : "null";
+
+            // All other types (DateTime, DateTimeOffset, Guid, TimeSpan, DateOnly, TimeOnly,
+            // string with non-string default, byte[], object, spatial types, etc.) → null.
+            return "null";
+        }
+
+        // Returns true for C# integer/floating-point value types that accept a numeric literal
+        // as a compile-time default parameter value.
+        private static bool IsCSharpNumericValueType(string lowerPropertyType)
+        {
+            switch (lowerPropertyType)
+            {
+                case "byte":
+                case "byte?":
+                case "sbyte":
+                case "sbyte?":
+                case "short":
+                case "short?":
+                case "int":
+                case "int?":
+                case "long":
+                case "long?":
+                case "ushort":
+                case "ushort?":
+                case "uint":
+                case "uint?":
+                case "ulong":
+                case "ulong?":
+                case "double":
+                case "double?":
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        // Returns true when raw looks like a plain SQL numeric literal (optional sign, digits,
+        // optional single decimal point). Rejects SQL expressions, identifiers, etc.
+        private static bool IsSqlNumericLiteral(string raw)
+        {
+            if (string.IsNullOrEmpty(raw)) return false;
+            var i = 0;
+            if (raw[i] == '-' || raw[i] == '+') i++;
+            if (i >= raw.Length) return false;
+            var hasDot = false;
+            for (; i < raw.Length; i++)
+            {
+                if (raw[i] == '.') { if (hasDot) return false; hasDot = true; }
+                else if (!char.IsDigit(raw[i])) return false;
+            }
+            return true;
         }
 
         // Returns the minimum nullable parameter, counting from 1. 0 Means no column is nullable.
@@ -18094,7 +18188,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
         {
             var sb = new StringBuilder(255);
             var count = Parameters.Count;
-            for(var n = 0; n < count; n++)
+            for (var n = 0; n < count; n++)
             {
                 sb.AppendFormat("{{{0}}}{1}",
                     n,
@@ -18118,10 +18212,10 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 var isNullable = !Column.StoredProcedureNotNullable.Contains(lowerPropertyType);
                 var getValueOrDefault = isNullable ? ".GetValueOrDefault()" : string.Empty;
                 var isDbGeography = lowerPropertyType == "dbgeography";
-                var isDbGeometry  = lowerPropertyType == "dbgeometry";
-                var isSpatialEf6  = isDbGeography || isDbGeometry;
+                var isDbGeometry = lowerPropertyType == "dbgeometry";
+                var isSpatialEf6 = isDbGeography || isDbGeometry;
                 var spatialSqlType = isDbGeography ? "SqlGeography" : "SqlGeometry";
-                var spatialUdtName = isDbGeography ? "geography"    : "geometry";
+                var spatialUdtName = isDbGeography ? "geography" : "geometry";
 
                 sb.AppendLine(
                     string.Format("        var {0} = new {1}", WriteStoredProcSqlParameterName(p), Settings.SqlParameter())
@@ -18366,7 +18460,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
         private static bool IsReferenceType(string propertyType)
         {
             var lowerType = propertyType.ToLower();
-            
+
             // List of known reference types
             return lowerType == "string" ||
                    lowerType == "byte[]" ||
@@ -18391,7 +18485,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
         private string ConvertDataColumnType(Type type)
         {
             var isEfCore8Plus = Settings.IsEfCore8Plus();
-            
+
             if (type.Name.Equals("SqlHierarchyId"))
                 return isEfCore8Plus ? "HierarchyId" : "Microsoft.SqlServer.Types.SqlHierarchyId";
 
@@ -18403,7 +18497,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             var isArray = typeName.EndsWith("[]");
             if (isArray)
                 typeName = typeName.Replace("[]", string.Empty);
-            
+
             switch (typeName.ToLower())
             {
                 case "int16":
@@ -18453,7 +18547,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                         typeNamespace = "NetTopologySuite.Geometries.";
                         typeName = "Point";
                         break;
-                    
+
                     case "microsoft.sqlserver.types.sqlgeometry":
                     case "sqlgeometry":
                         typeNamespace = "NetTopologySuite.Geometries.";
@@ -18544,9 +18638,9 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
         public Table(IDbContextFilter filter, Schema schema, string dbName, bool isView)
         {
             _filter = filter;
-            Schema  = schema;
-            DbName  = dbName;
-            IsView  = isView;
+            Schema = schema;
+            DbName = dbName;
+            IsView = isView;
             Columns = new List<Column>();
 
             _foreignKeyNamingStrategy = ForeignKeyNamingStrategyFactory.Create(filter, this);
@@ -18570,9 +18664,9 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
         {
             _foreignKeyNamingStrategy.ResetNavigationProperties();
 
-            MappingConfiguration      = new List<string>();
+            MappingConfiguration = new List<string>();
             ReverseNavigationProperty = new List<PropertyAndComments>();
-            ReverseNavigationCtor     = new List<string>();
+            ReverseNavigationCtor = new List<string>();
 
             foreach (var col in Columns)
                 col.ResetNavigationProperties();
@@ -18764,8 +18858,8 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             leftTable.AddMappingConfiguration(left, right, leftPropName, rightPropName, includeSchema, leftTable.NameHumanCase, rightTable.NameHumanCase);
 
             IsMapping = true;
-            rightTable.AddReverseNavigation(Relationship.ManyToMany, leftTable,  rightPropName, null, null, this);
-            leftTable.AddReverseNavigation (Relationship.ManyToMany, rightTable, leftPropName,  null, null, this);
+            rightTable.AddReverseNavigation(Relationship.ManyToMany, leftTable, rightPropName, null, null, this);
+            leftTable.AddReverseNavigation(Relationship.ManyToMany, rightTable, leftPropName, null, null, this);
         }
 
         private void AddMappingConfiguration(ForeignKey left, ForeignKey right, string leftPropName, string rightPropName, bool includeSchema, string leftNameHumanCase, string rightNameHumanCase)
@@ -18779,11 +18873,11 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             m.MapRightKey(""{4}"");
         }});", leftPropName, rightPropName, left.FkTableName, left.FkColumn, right.FkColumn,
                     !includeSchema ? string.Empty : ", \"" + left.FkSchema + "\""));
-                
+
                 return;
             }
-            
-            if(Settings.IsEfCore8Plus())
+
+            if (Settings.IsEfCore8Plus())
             {
                 UsesDictionary = true;
                 MappingConfiguration.Add(string.Format(@"HasMany<{6}>(t => t.{0}).WithMany(t => t.{1}).UsingEntity<Dictionary<string, object>>(""{2}"",
@@ -18822,7 +18916,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
         // This method will be called right before we write the POCO class
         public string WriteComments()
         {
-            if(Settings.IncludeComments == CommentsStyle.None)
+            if (Settings.IncludeComments == CommentsStyle.None)
                 return string.Empty;
 
             var comment = "// " + DbName + Environment.NewLine;
@@ -18831,7 +18925,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
 
             return comment + "// " + AdditionalComment + Environment.NewLine;
         }
-        
+
         // This method will be called right before we write the POCO class
         public string WriteExtendedComments()
         {
@@ -22534,7 +22628,7 @@ public enum {{EnumName}}{{#newline}}
         private static void CopyPropertiesFrom(object source, object dest)
         {
             var fromProperties = source.GetType().GetProperties();
-            var toProperties   = dest  .GetType().GetProperties();
+            var toProperties = dest.GetType().GetProperties();
 
             foreach (var fromProperty in fromProperties)
             {
@@ -22667,7 +22761,6 @@ public enum {{EnumName}}{{#newline}}
                 var columnsSettings = new MultiContextColumnSettings();
                 CopyPropertiesFrom(item, columnsSettings);
                 dest.Columns.Add(columnsSettings);
-            }
         }
     }
 

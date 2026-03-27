@@ -89,7 +89,7 @@ namespace Efrpg.Generators
                 if (c.IsIdentity || isNewSequentialId || isTemporalColumn)
                 {
                     databaseGeneratedOption = ".ValueGeneratedOnAdd()";
-                    
+
                     if (c.IsIdentity && DatabaseReader.HasIdentityColumnSupport() && Column.CanUseSqlServerIdentityColumn.Contains(c.PropertyType))
                         databaseGeneratedOption += Settings.ColumnIdentity(c);
                 }
@@ -121,7 +121,7 @@ namespace Efrpg.Generators
             if (!string.IsNullOrEmpty(c.SqlPropertyType))
             {
                 var columnTypeParameters = string.Empty;
-            
+
                 if ((c.Precision > 0 || c.Scale > 0) && (c.SqlPropertyType == "decimal" || c.SqlPropertyType == "numeric"))
                     columnTypeParameters = $"({c.Precision},{c.Scale})";
                 else if (!c.IsMaxLength && c.MaxLength > 0 && !doNotSpecifySize && !isVectorType && !c.IsRowVersion) // Vector types already include dimension in SqlPropertyType; timestamp/rowversion width is invalid in SQL Server
@@ -232,7 +232,7 @@ namespace Efrpg.Generators
                 return defaultKey + ";";
 
             var indexName = t.Indexes.Where(x => x.IsPrimaryKey).Select(x => x.IndexName).Distinct().FirstOrDefault();
-            if(string.IsNullOrEmpty(indexName))
+            if (string.IsNullOrEmpty(indexName))
                 return defaultKey + ";";
 
             var indexesForName = t.Indexes
@@ -304,7 +304,7 @@ namespace Efrpg.Generators
 
                 sb.Append(")"); // Close bracket for HasIndex()
 
-                
+
                 sb.Append(isEfCore8Plus ? ".HasDatabaseName(\"" : ".HasName(\"");
                 sb.Append(indexName);
                 sb.Append("\")");
