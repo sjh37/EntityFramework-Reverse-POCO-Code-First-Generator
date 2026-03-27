@@ -22761,6 +22761,7 @@ public enum {{EnumName}}{{#newline}}
                 var columnsSettings = new MultiContextColumnSettings();
                 CopyPropertiesFrom(item, columnsSettings);
                 dest.Columns.Add(columnsSettings);
+            }
         }
     }
 
