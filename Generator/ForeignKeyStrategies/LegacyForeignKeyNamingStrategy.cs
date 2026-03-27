@@ -4,7 +4,7 @@ using Efrpg.Filtering;
 
 namespace Efrpg.ForeignKeyStrategies
 {
-    // v0.0.0 <= v3.12.0
+    // v0.0.0 <= v3.13.0
     public class LegacyForeignKeyNamingStrategy : BaseForeignKeyNamingStrategy, IForeignKeyNamingStrategy
     {
         public List<string> ReverseNavigationUniquePropName;
