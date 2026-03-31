@@ -142,5 +142,22 @@ namespace Generator.Tests.Unit
 
             Assert.AreEqual(string.Empty, block);
         }
+
+        // IndentCode indentNum logic — Generator.cs: (UseNamespace && !UseFileScopedNamespaces) ? 1 : 0
+        // IndentCode is private so we test the boolean expression directly.
+
+        [TestCase(true,  false, 1, Description = "Block-scoped namespace: indent by 1")]
+        [TestCase(true,  true,  0, Description = "File-scoped namespace: no extra indent")]
+        [TestCase(false, false, 0, Description = "No namespace, block-scoped: no indent")]
+        [TestCase(false, true,  0, Description = "No namespace, file-scoped: no indent")]
+        public void IndentNum_IsOneOnlyWhenBlockScopedNamespaceIsUsed(bool useNamespace, bool useFileScopedNamespaces, int expectedIndentNum)
+        {
+            Settings.UseNamespace            = useNamespace;
+            Settings.UseFileScopedNamespaces = useFileScopedNamespaces;
+
+            var indentNum = (Settings.UseNamespace && !Settings.UseFileScopedNamespaces) ? 1 : 0;
+
+            Assert.AreEqual(expectedIndentNum, indentNum);
+        }
     }
 }
