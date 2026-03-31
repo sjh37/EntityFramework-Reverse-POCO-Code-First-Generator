@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 <#@ include file ="..\EntityFramework.Reverse.POCO.Generator\EF.Reverse.POCO.v3.ttinclude" #>
 <#
     // Please make changes to the settings below.
@@ -24,6 +22,7 @@ using System.Collections.Generic;
     Settings.OnConfiguration              = OnConfiguration.ConnectionString; // EFCore only. Determines the code generated within DbContext.OnConfiguration(). Please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/OnConfiguration    Settings.GenerateSeparateFiles   = false;
     Settings.GenerateSeparateFiles        = false;
     Settings.Namespace                    = "V10EfrpgTest"; // Override the default namespace here
+    Settings.UseFileScopedNamespaces      = true; // If true, uses C# 10 file-scoped namespace syntax (namespace X;) instead of block-scoped (namespace X { })
     Settings.AddUnitTestingDbContext      = true; // Will add a FakeDbContext and FakeDbSet for easy unit testing. Read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/FakeDbContext
     Settings.FakeDbContextInDebugOnlyMode = true; // If true, wraps Fake* classes in #if DEBUG / #endif so they are excluded from Release builds.
     Settings.TrimCharFields               = true; // EF Core option only. If true, will TrimEnd() 'char' fields when read from the database.
