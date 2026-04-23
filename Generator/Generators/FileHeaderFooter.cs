@@ -36,14 +36,21 @@ namespace Efrpg.Generators
             if (Settings.UseNamespace)
             {
                 _baseNamespaceName = (Settings.Namespace + subNamespace).Trim().Replace(' ', '_');
-                header.AppendLine("namespace " + _baseNamespaceName);
-                header.Append("{");
+                if (Settings.UseFileScopedNamespaces)
+                {
+                    header.Append("namespace " + _baseNamespaceName + ";");
+                }
+                else
+                {
+                    header.AppendLine("namespace " + _baseNamespaceName);
+                    header.Append("{");
+                }
             }
 
             Namespace = header.ToString();
 
             var footer = new StringBuilder(30);
-            if (Settings.UseNamespace)
+            if (Settings.UseNamespace && !Settings.UseFileScopedNamespaces)
                 footer.AppendLine("}");
             foreach (var additionalHeader in Settings.AdditionalFileFooterText)
             {
@@ -73,8 +80,15 @@ namespace Efrpg.Generators
                 return string.Empty;
 
             var sb = new StringBuilder(500);
-            sb.AppendLine("namespace " + GetNamespaceName(subFolder));
-            sb.Append("{");
+            if (Settings.UseFileScopedNamespaces)
+            {
+                sb.Append("namespace " + GetNamespaceName(subFolder) + ";");
+            }
+            else
+            {
+                sb.AppendLine("namespace " + GetNamespaceName(subFolder));
+                sb.Append("{");
+            }
             return sb.ToString();
         }
     }

@@ -93,6 +93,7 @@ namespace Efrpg
         // Code suppression *******************************************************************************
         public static bool UseRegions = true;  // If false, suppresses the use of #region
         public static bool UseNamespace = true;  // If false, suppresses the writing of a namespace
+        public static bool UseFileScopedNamespaces = false; // If true, uses C# 10 file-scoped namespace syntax (namespace X;) instead of block-scoped (namespace X { })
         public static bool UsePragma = false; // If false, suppresses the writing of #pragma
         public static bool AllowNullStrings = false; // If true, will allow string? properties and will add '#nullable enable' to the top of each file
         public static bool NullableReverseNavigationProperties = false; // If true, reverse navigation properties for one-to-one relationships will be nullable (e.g. MyEntity? MyEntity). The parent entity can exist without the child entity.

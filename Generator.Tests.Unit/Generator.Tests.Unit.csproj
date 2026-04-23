@@ -112,6 +112,7 @@
     <Compile Include="FakeDbParameter.cs" />
     <Compile Include="FakeDbProviderFactory.cs" />
     <Compile Include="FakeDbTransaction.cs" />
+    <Compile Include="FileScopedNamespaceTests.cs" />
     <Compile Include="FilterSettingsTests.cs" />
     <Compile Include="ForeignKeyTests.cs" />
     <Compile Include="MinMaxValueCacheTests.cs" />

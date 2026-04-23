@@ -1565,7 +1565,7 @@ namespace Efrpg.Generators
             if (output == null)
                 return null;
 
-            var indentNum = Settings.UseNamespace ? 1 : 0;
+            var indentNum = (Settings.UseNamespace && !Settings.UseFileScopedNamespaces) ? 1 : 0;
             var useRegion = !Settings.GenerateSeparateFiles && !string.IsNullOrEmpty(output.Region);
 
             var lines = new List<string>();
