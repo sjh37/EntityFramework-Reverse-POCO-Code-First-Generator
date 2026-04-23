@@ -4210,8 +4210,8 @@
                 SqlParameter = Settings.SqlParameter(),
                 SqlParameterValue = Settings.SqlParameterValue(),
                 Triggers = _tables.Where(x => !string.IsNullOrEmpty(x.Table.TriggerName) || x.Table.Columns.Any(c => c.IsComputed))
-                                                                .Select(x => new Trigger { TableName = x.Table.NameHumanCase, TriggerName = x.Table.TriggerName ?? "HasComputedColumn" }).ToList(),
-                MemoryOptimisedTables = _tables.Where(x => x.Table.IsMemoryOptimised).Select(x => x.Table.NameHumanCase).ToList()
+                                                                .Select(x => new Trigger { TableName = x.Table.NameHumanCaseWithSuffix(), TriggerName = x.Table.TriggerName ?? "HasComputedColumn" }).ToList(),
+                MemoryOptimisedTables = _tables.Where(x => x.Table.IsMemoryOptimised).Select(x => x.Table.NameHumanCaseWithSuffix()).ToList()
             };
 
             data.hasIndexes = data.indexes.Any();
