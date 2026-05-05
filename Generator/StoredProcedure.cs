@@ -553,6 +553,17 @@ namespace Efrpg
                 var effectiveName = sanitized.TrimStart('@');
                 if (effectiveName != rawName)
                     mappings.Add(string.Format("modelBuilder.{0}<{1}>().Property(e => e.{2}).HasColumnName(\"{3}\");", builderCmd, returnModelName, sanitized, rawName));
+
+                // HasPrecision for fluent API mode (EF Core only; [Precision] handles data annotations mode)
+                if (!Settings.IsEf6() && !Settings.UseDataAnnotations &&
+                    col.DataType == typeof(decimal) &&
+                    col.ExtendedProperties.Contains("Precision") && col.ExtendedProperties.Contains("Scale"))
+                {
+                    var p = (byte)col.ExtendedProperties["Precision"];
+                    var s = (byte)col.ExtendedProperties["Scale"];
+                    if (p > 0 || s > 0)
+                        mappings.Add(string.Format("modelBuilder.{0}<{1}>().Property(e => e.{2}).HasPrecision({3}, {4});", builderCmd, returnModelName, sanitized, p, s));
+                }
             }
             return mappings;
         }
@@ -573,16 +584,29 @@ namespace Efrpg
                     nullForgivingOperator = " = null!;";
             }
 
+            var attributeLines = new System.Text.StringBuilder();
+
             // When UseDataAnnotations=true and the C# name differs from the DB column name,
             // add [Column("original")] so EF Core can map the result set column to this property.
             // When UseDataAnnotations=false, HasColumnName is emitted in OnModelCreating instead.
             var effectiveName = columnName.TrimStart('@');
-            var columnAttribute = Settings.UseDataAnnotations && effectiveName != rawColumnName
-                ? string.Format("[Column(\"{0}\")]{1}    ", rawColumnName, Environment.NewLine)
-                : string.Empty;
+            if (Settings.UseDataAnnotations && effectiveName != rawColumnName)
+                attributeLines.AppendFormat("[Column(\"{0}\")]{1}    ", rawColumnName, Environment.NewLine);
+
+            // [Precision(p, s)] for decimal/numeric columns on EF Core with data annotations.
+            // Precision/scale are set by EnrichFirstResultSetWithPrecision when SQL Server 2012+ is detected.
+            if (!Settings.IsEf6() && Settings.UseDataAnnotations &&
+                col.DataType == typeof(decimal) &&
+                col.ExtendedProperties.Contains("Precision") && col.ExtendedProperties.Contains("Scale"))
+            {
+                var p = (byte)col.ExtendedProperties["Precision"];
+                var s = (byte)col.ExtendedProperties["Scale"];
+                if (p > 0 || s > 0)
+                    attributeLines.AppendFormat("[Precision({0}, {1})]{2}    ", p, s, Environment.NewLine);
+            }
 
             return string.Format("{0}public {1} {2} {{ get; set; }}{3}",
-                columnAttribute,
+                attributeLines,
                 propertyType,
                 columnName,
                 nullForgivingOperator);

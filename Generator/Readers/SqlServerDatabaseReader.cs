@@ -1168,6 +1168,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 const string structured = "Structured";
                 var sb = new StringBuilder(255);
                 sb.AppendLine();
+
                 sb.AppendLine("SET FMTONLY OFF; SET FMTONLY ON;");
 
                 if (proc.IsTableValuedFunction)
@@ -1210,6 +1211,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
 
                     sb.AppendLine(";");
                 }
+
                 sb.AppendLine("SET FMTONLY OFF; SET FMTONLY OFF;");
 
                 var ds = new DataSet();
@@ -1242,6 +1244,11 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                     proc.ReturnModels.Add(ds.Tables[count].Columns.Cast<DataColumn>().ToList());
                 }
 
+                // Enrich first result set columns with SQL precision/scale (SQL Server 2012+).
+                // sys.dm_exec_describe_first_result_set returns this info which ADO.NET FillSchema discards.
+                if (DatabaseProductMajorVersion >= 11 && proc.ReturnModels.Count > 0)
+                    EnrichFirstResultSetWithPrecision(sqlConnection, proc);
+
                 proc.MergeModelsIfAllSame();
                 Settings.ReadStoredProcReturnObjectCompleted(proc);
             }
@@ -1249,6 +1256,62 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             {
                 // Stored procedure does not have a return type
                 Settings.ReadStoredProcReturnObjectException(ex, proc);
+            }
+        }
+
+        private void EnrichFirstResultSetWithPrecision(DbConnection sqlConnection, StoredProcedure proc)
+        {
+            try
+            {
+                string dmvStatement;
+                if (proc.IsTableValuedFunction)
+                {
+                    var paramList = string.Join(", ", proc.Parameters.Select(_ => "default"));
+                    dmvStatement = $"SELECT * FROM [{proc.Schema.DbName}].[{proc.DbName}]({paramList})";
+                }
+                else
+                {
+                    var paramList = string.Join(", ", proc.Parameters.Select(_ => "default"));
+                    dmvStatement = string.IsNullOrEmpty(paramList)
+                        ? $"EXEC [{proc.Schema.DbName}].[{proc.DbName}]"
+                        : $"EXEC [{proc.Schema.DbName}].[{proc.DbName}] {paramList}";
+                }
+
+                // Escape single quotes in the statement for embedding in the DMV query string
+                dmvStatement = dmvStatement.Replace("'", "''");
+
+                var sql = $"SELECT column_ordinal, precision, scale FROM sys.dm_exec_describe_first_result_set(N'{dmvStatement}', NULL, 0) WHERE is_hidden = 0 ORDER BY column_ordinal;";
+
+                using (var cmd = _factory.CreateCommand())
+                {
+                    cmd.CommandText = sql;
+                    cmd.Connection = sqlConnection;
+                    if (sqlConnection.State != ConnectionState.Open)
+                        sqlConnection.Open();
+
+                    using (var rdr = cmd.ExecuteReader())
+                    {
+                        var firstResultSet = proc.ReturnModels[0];
+                        while (rdr.Read())
+                        {
+                            var ordinal = rdr.GetInt32(0) - 1; // DMV is 1-based, DataColumn list is 0-based
+                            if (ordinal < 0 || ordinal >= firstResultSet.Count)
+                                continue;
+
+                            var precision = rdr.GetByte(1);
+                            var scale     = rdr.GetByte(2);
+                            if (precision > 0 || scale > 0)
+                            {
+                                firstResultSet[ordinal].ExtendedProperties["Precision"] = precision;
+                                firstResultSet[ordinal].ExtendedProperties["Scale"]     = scale;
+                            }
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                // DMV unavailable or failed - precision/scale simply won't be emitted
             }
         }
 
