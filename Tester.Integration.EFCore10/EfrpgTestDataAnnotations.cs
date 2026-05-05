@@ -694,6 +694,7 @@ namespace V10EfrpgTestDataAnnotations
             modelBuilder.Entity<FFRS_DataFromDboAndFfrsReturnModel>().HasNoKey();
             modelBuilder.Entity<FkTest_HelloReturnModel>().HasNoKey();
             modelBuilder.Entity<GetSmallDecimalTestReturnModel>().HasNoKey();
+            modelBuilder.Entity<GetSmallDecimalTestReturnModel>().Property(e => e.KoeffVed).HasPrecision(4, 4);
             modelBuilder.Entity<SpatialTypesNoParamsReturnModel>().HasNoKey();
             modelBuilder.Entity<SpatialTypesWithParamsReturnModel>().HasNoKey();
             modelBuilder.Entity<StoredProcWithDefaultsReturnModel>().HasNoKey();
@@ -8058,13 +8059,21 @@ namespace V10EfrpgTestDataAnnotations
         public Single? afloat20 { get; set; }
         public Single? afloat24 { get; set; }
         public double? afloat53 { get; set; }
+        [Precision(18, 0)]
         public decimal? adecimal { get; set; }
+        [Precision(19, 4)]
         public decimal? adecimal_19_4 { get; set; }
+        [Precision(10, 3)]
         public decimal? adecimal_10_3 { get; set; }
+        [Precision(18, 0)]
         public decimal? anumeric { get; set; }
+        [Precision(5, 2)]
         public decimal? anumeric_5_2 { get; set; }
+        [Precision(11, 3)]
         public decimal? anumeric_11_3 { get; set; }
+        [Precision(19, 4)]
         public decimal? amoney { get; set; }
+        [Precision(10, 4)]
         public decimal? asmallmoney { get; set; }
         public NetTopologySuite.Geometries.Point GeographyType { get; set; }
         public NetTopologySuite.Geometries.Geometry GeometryType { get; set; }
@@ -8137,6 +8146,7 @@ namespace V10EfrpgTestDataAnnotations
     public class GetSmallDecimalTestReturnModel
     {
         public int id { get; set; }
+        [Precision(4, 4)]
         public decimal? KoeffVed { get; set; }
     }
 

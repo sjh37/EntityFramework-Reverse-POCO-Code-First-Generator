@@ -671,6 +671,14 @@ namespace V8_Efrpg_Test
             modelBuilder.Entity<CheckIfApplicationIsCompleteReturnModel>().HasNoKey();
             modelBuilder.Entity<ColourPivotReturnModel>().HasNoKey();
             modelBuilder.Entity<ColumnNameAndTypesProcReturnModel>().HasNoKey();
+            modelBuilder.Entity<ColumnNameAndTypesProcReturnModel>().Property(e => e.adecimal).HasPrecision(18, 0);
+            modelBuilder.Entity<ColumnNameAndTypesProcReturnModel>().Property(e => e.adecimal_19_4).HasPrecision(19, 4);
+            modelBuilder.Entity<ColumnNameAndTypesProcReturnModel>().Property(e => e.adecimal_10_3).HasPrecision(10, 3);
+            modelBuilder.Entity<ColumnNameAndTypesProcReturnModel>().Property(e => e.anumeric).HasPrecision(18, 0);
+            modelBuilder.Entity<ColumnNameAndTypesProcReturnModel>().Property(e => e.anumeric_5_2).HasPrecision(5, 2);
+            modelBuilder.Entity<ColumnNameAndTypesProcReturnModel>().Property(e => e.anumeric_11_3).HasPrecision(11, 3);
+            modelBuilder.Entity<ColumnNameAndTypesProcReturnModel>().Property(e => e.amoney).HasPrecision(19, 4);
+            modelBuilder.Entity<ColumnNameAndTypesProcReturnModel>().Property(e => e.asmallmoney).HasPrecision(10, 4);
             modelBuilder.Entity<dbo_proc_data_from_ffrsReturnModel>().HasNoKey();
             modelBuilder.Entity<dbo_proc_data_from_ffrs_and_dboReturnModel>().HasNoKey();
             modelBuilder.Entity<DSOpeProcReturnModel>().HasNoKey();
@@ -679,6 +687,7 @@ namespace V8_Efrpg_Test
             modelBuilder.Entity<FFRS_data_from_dbo_and_ffrsReturnModel>().HasNoKey();
             modelBuilder.Entity<FkTest_HelloReturnModel>().HasNoKey();
             modelBuilder.Entity<GetSmallDecimalTestReturnModel>().HasNoKey();
+            modelBuilder.Entity<GetSmallDecimalTestReturnModel>().Property(e => e.KoeffVed).HasPrecision(4, 4);
             modelBuilder.Entity<SpatialTypesNoParamsReturnModel>().HasNoKey();
             modelBuilder.Entity<SpatialTypesWithParamsReturnModel>().HasNoKey();
             modelBuilder.Entity<StoredProcWithDefaultsReturnModel>().HasNoKey();

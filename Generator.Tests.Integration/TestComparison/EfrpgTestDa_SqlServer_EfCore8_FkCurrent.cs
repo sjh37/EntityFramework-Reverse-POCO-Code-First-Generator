@@ -9309,6 +9309,7 @@ namespace Efrpg.V3TestE8Da
     public class GetSmallDecimalTestReturnModel
     {
         public int id { get; set; }
+        [Precision(4, 4)]
         public decimal? KoeffVed { get; set; }
     }
 

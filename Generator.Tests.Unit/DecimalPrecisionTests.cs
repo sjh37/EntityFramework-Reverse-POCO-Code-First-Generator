@@ -147,7 +147,7 @@ namespace Generator.Tests.Unit
         }
 
         [Test]
-        public void DecimalColumn_WithNoPrecisionOrScale_OmitsPrecisionFromConfig(TemplateType templateType)
+        public void DecimalColumn_WithNoPrecisionOrScale_OmitsPrecisionFromConfig()
         {
             // Arrange: decimal with Precision=0 and Scale=0 - precision not specified in DB schema
             Settings.TemplateType       = TemplateType.EfCore10;

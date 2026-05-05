@@ -683,6 +683,7 @@ namespace Efrpg.V4TestE8
             modelBuilder.Entity<FFRS_data_from_dbo_and_ffrsReturnModel>().HasNoKey();
             modelBuilder.Entity<FkTest_HelloReturnModel>().HasNoKey();
             modelBuilder.Entity<GetSmallDecimalTestReturnModel>().HasNoKey();
+            modelBuilder.Entity<GetSmallDecimalTestReturnModel>().Property(e => e.KoeffVed).HasPrecision(4, 4);
             modelBuilder.Entity<StoredProcWithDefaultsReturnModel>().HasNoKey();
             modelBuilder.Entity<stp_multiple_identical_resultsReturnModel>().HasNoKey();
             modelBuilder.Entity<stp_no_params_testReturnModel>().HasNoKey();

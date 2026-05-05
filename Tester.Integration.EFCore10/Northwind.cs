@@ -234,11 +234,17 @@ namespace Tester.Integration.EFCore10.Northwind
 
             modelBuilder.Entity<CustOrderHistReturnModel>().HasNoKey();
             modelBuilder.Entity<CustOrdersDetailReturnModel>().HasNoKey();
+            modelBuilder.Entity<CustOrdersDetailReturnModel>().Property(e => e.UnitPrice).HasPrecision(19, 4);
+            modelBuilder.Entity<CustOrdersDetailReturnModel>().Property(e => e.ExtendedPrice).HasPrecision(19, 4);
             modelBuilder.Entity<CustOrdersOrdersReturnModel>().HasNoKey();
             modelBuilder.Entity<EmployeeSalesByCountryReturnModel>().HasNoKey();
+            modelBuilder.Entity<EmployeeSalesByCountryReturnModel>().Property(e => e.SaleAmount).HasPrecision(19, 4);
             modelBuilder.Entity<SalesByCategoryReturnModel>().HasNoKey();
+            modelBuilder.Entity<SalesByCategoryReturnModel>().Property(e => e.TotalPurchase).HasPrecision(38, 2);
             modelBuilder.Entity<SalesByYearReturnModel>().HasNoKey();
+            modelBuilder.Entity<SalesByYearReturnModel>().Property(e => e.Subtotal).HasPrecision(19, 4);
             modelBuilder.Entity<TenMostExpensiveProductsReturnModel>().HasNoKey();
+            modelBuilder.Entity<TenMostExpensiveProductsReturnModel>().Property(e => e.UnitPrice).HasPrecision(19, 4);
         }
 
 

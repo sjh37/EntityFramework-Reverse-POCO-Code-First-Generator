@@ -285,6 +285,7 @@ namespace Efrpg.V8FilterTest
             modelBuilder.Entity<DboProcDataFromFfrsAndDboReturnModel>().HasNoKey();
             modelBuilder.Entity<DsOpeProcReturnModel>().HasNoKey();
             modelBuilder.Entity<GetSmallDecimalTestReturnModel>().HasNoKey();
+            modelBuilder.Entity<GetSmallDecimalTestReturnModel>().Property(e => e.KoeffVed).HasPrecision(4, 4);
             modelBuilder.Entity<StoredProcWithDefaultsReturnModel>().HasNoKey();
             modelBuilder.Entity<StpMultipleIdenticalResultsReturnModel>().HasNoKey();
             modelBuilder.Entity<StpNoParamsTestReturnModel>().HasNoKey();
