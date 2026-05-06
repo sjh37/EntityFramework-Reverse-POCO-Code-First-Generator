@@ -9,31 +9,39 @@ namespace Efrpg.LanguageMapping
         {
             return new Dictionary<string, string>
             {
-                { string.Empty,                     "string" }, // default
-                { "binary_double",                  "decimal" },
-                { "binary_float",                   "double" },
-                { "binary_integer",                 "long" },
+                { string.Empty,                     "string" },   // default
+                { "bfile",                          "byte[]" },
+                { "binary_double",                  "double" },   // IEEE 754 double precision
+                { "binary_float",                   "float" },    // IEEE 754 single precision
+                { "binary_integer",                 "int" },      // PL/SQL 32-bit integer
                 { "blob",                           "byte[]" },
                 { "char",                           "string" },
                 { "clob",                           "string" },
-                { "date",                           "DateTime" },
-                { "float",                          "double" },
-                { "interval day to second",         "decimal" },
-                { "interval year to month",         "decimal" },
+                { "date",                           "DateTime" }, // Oracle DATE includes time component
+                { "decimal",                        "decimal" },
+                { "double precision",               "double" },   // alias for BINARY_DOUBLE
+                { "float",                          "double" },   // ANSI float = binary double
+                { "int",                            "long" },     // Oracle INT = NUMBER(38)
+                { "integer",                        "long" },     // Oracle INTEGER = NUMBER(38)
+                { "interval day to second",         "TimeSpan" },
+                { "interval year to month",         "string" },   // no .NET equivalent; use string
                 { "long raw",                       "byte[]" },
-                { "long",                           "long" },
+                { "long",                           "string" },   // Oracle LONG is a deprecated character type
                 { "nchar",                          "string" },
                 { "nclob",                          "string" },
                 { "number",                         "decimal" },
+                { "numeric",                        "decimal" },
                 { "nvarchar2",                      "string" },
-                { "pls_integer",                    "long" },
+                { "pls_integer",                    "int" },      // PL/SQL 32-bit integer
                 { "raw",                            "byte[]" },
-                { "real",                           "float" },
+                { "real",                           "float" },    // ANSI REAL = single precision
                 { "rowid",                          "string" },
-                { "timestamp with local time zone", "DateTime" },
-                { "timestamp with time zone",       "DateTime" },
+                { "smallint",                       "long" },     // Oracle SMALLINT = NUMBER(38)
+                { "timestamp with local time zone", "DateTimeOffset" },
+                { "timestamp with time zone",       "DateTimeOffset" },
                 { "timestamp",                      "DateTime" },
                 { "urowid",                         "string" },
+                { "varchar",                        "string" },
                 { "varchar2",                       "string" },
                 { "xmltype",                        "string" }
             };
@@ -51,7 +59,7 @@ namespace Efrpg.LanguageMapping
 
         public List<string> PrecisionAndScaleTypes()
         {
-            return new List<string> { "number" };
+            return new List<string> { "number", "decimal", "numeric" };
         }
     }
 }
