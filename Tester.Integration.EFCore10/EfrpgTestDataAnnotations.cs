@@ -694,7 +694,6 @@ namespace V10EfrpgTestDataAnnotations
             modelBuilder.Entity<FFRS_DataFromDboAndFfrsReturnModel>().HasNoKey();
             modelBuilder.Entity<FkTest_HelloReturnModel>().HasNoKey();
             modelBuilder.Entity<GetSmallDecimalTestReturnModel>().HasNoKey();
-            modelBuilder.Entity<GetSmallDecimalTestReturnModel>().Property(e => e.KoeffVed).HasPrecision(4, 4);
             modelBuilder.Entity<SpatialTypesNoParamsReturnModel>().HasNoKey();
             modelBuilder.Entity<SpatialTypesWithParamsReturnModel>().HasNoKey();
             modelBuilder.Entity<StoredProcWithDefaultsReturnModel>().HasNoKey();
@@ -7581,7 +7580,7 @@ namespace V10EfrpgTestDataAnnotations
             builder.HasOne(a => a.TableA_TableAId).WithMany(b => b.TableBs).HasForeignKey(c => c.TableAId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_TableA_CompositeKey_Req");
             builder.HasOne(a => a.TableB1).WithOne(b => b.TableB2).HasForeignKey<TableB>(c => new { c.TableAId, c.TableBId }).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("ParentTableB_Hierarchy");
 
-            builder.HasIndex(x => x.TableAId).HasDatabaseName("fki_ParentTableA_FK_Constraint");
+            builder.HasIndex(x => x.TableAId).HasDatabaseName("fki_ParentTableA_FK_Constraint").IncludeProperties("ParentTableAId", "TableBDesc");
         }
     }
 

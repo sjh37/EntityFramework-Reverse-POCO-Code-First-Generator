@@ -7207,6 +7207,19 @@
                 if (!string.IsNullOrEmpty(filterDefinition))
                     sb.AppendFormat(".HasFilter(@\"{0}\")", filterDefinition.Replace("\"", "\"\""));
 
+                var includedColumns = indexesForName.Select(x => x.IncludedColumns).FirstOrDefault(x => x != null && x.Count > 0);
+                if (includedColumns != null && includedColumns.Count > 0)
+                {
+                    var validIncludes = includedColumns
+                        .Select(ic => t.Columns.Find(x => x.DbName == ic))
+                        .Where(col => col != null && !col.Hidden && !string.IsNullOrEmpty(col.Config))
+                        .Select(col => "\"" + col.NameHumanCase + "\"")
+                        .ToList();
+
+                    if (validIncludes.Count > 0)
+                        sb.AppendFormat(".IncludeProperties({0})", string.Join(", ", validIncludes));
+                }
+
                 sb.Append(";");
                 indexes.Add(sb.ToString());
             }
@@ -13989,7 +14002,8 @@ and limitations under the License.
                             ChangeType<bool>(rdr["IsPrimaryKey"]),
                             ChangeType<bool>(rdr["IsUniqueConstraint"]),
                             ChangeType<int>(rdr["IsClustered"]) == 1,
-                            rdr["FilterDefinition"].ToString().Trim()
+                            rdr["FilterDefinition"].ToString().Trim(),
+                            rdr["IncludedColumns"].ToString().Trim()
                         );
 
                         result.Add(index);
@@ -15585,6 +15599,53 @@ FROM    pg_catalog.pg_statio_all_tables st
 
         protected override string IndexSQL()
         {
+            // indnkeyatts was added in PostgreSQL 11 and distinguishes key columns from include columns.
+            // DatabaseProductMajorVersion is 0 when version detection failed; treat unknown as modern.
+            if (DatabaseProductMajorVersion > 0 && DatabaseProductMajorVersion < 11)
+                return IndexSQLPre11();
+
+            return @"
+SELECT n.nspname AS ""TableSchema"",
+    t.relname AS ""TableName"",
+    i.relname AS ""IndexName"",
+    k.pos::smallint AS ""KeyOrdinal"",
+    a.attname AS ""ColumnName"",
+    ix.indisunique AS ""IsUnique"",
+    ix.indisprimary AS ""IsPrimaryKey"",
+    0 AS ""IsUniqueConstraint"",
+    ix.indisclustered AS ""IsClustered"",
+    ix.indnkeyatts AS ""ColumnCount"",
+    '' AS ""FilterDefinition"",
+    COALESCE((
+        SELECT string_agg(ac.attname, ',' ORDER BY ac.attname)
+        FROM unnest(ix.indkey::smallint[]) WITH ORDINALITY u(attnum, pos)
+        INNER JOIN pg_attribute ac
+            ON ac.attrelid = t.oid AND ac.attnum = u.attnum
+        WHERE u.pos > ix.indnkeyatts
+          AND u.attnum > 0
+    ), '') AS ""IncludedColumns""
+FROM
+    pg_index ix
+    INNER JOIN pg_class t
+        ON t.oid = ix.indrelid AND LOWER(t.relkind) = 'r'
+    INNER JOIN pg_class i
+        ON i.oid = ix.indexrelid
+    CROSS JOIN LATERAL unnest(ix.indkey::smallint[]) WITH ORDINALITY AS k(attnum, pos)
+    INNER JOIN pg_attribute a
+        ON a.attrelid = t.oid AND a.attnum = k.attnum
+    INNER JOIN pg_namespace n
+        ON n.oid = t.relnamespace
+WHERE LOWER(n.nspname) NOT IN ('pg_catalog', 'information_schema')
+      AND LOWER(t.relname) NOT IN ('edmmetadata', '__migrationhistory', '__efmigrationshistory', '__refactorlog')
+      AND ix.indcheckxmin = false
+      AND ix.indisvalid = true
+      AND k.pos <= ix.indnkeyatts
+      AND k.attnum > 0
+ORDER BY t.relname, i.relname;";
+        }
+
+        private string IndexSQLPre11()
+        {
             return @"
 SELECT n.nspname AS ""TableSchema"",
     t.relname AS ""TableName"",
@@ -15596,7 +15657,8 @@ SELECT n.nspname AS ""TableSchema"",
     0 AS ""IsUniqueConstraint"",
     ix.indisclustered AS ""IsClustered"",
     ix.indnatts AS ""ColumnCount"",
-    '' AS ""FilterDefinition""
+    '' AS ""FilterDefinition"",
+    '' AS ""IncludedColumns""
 FROM
     pg_index ix
     INNER JOIN pg_class t
@@ -15647,7 +15709,7 @@ ORDER BY R.specific_schema, R.routine_name, R.routine_type;";
 
         protected override string ReadDatabaseEditionSQL()
         {
-            return @"SELECT version() as ""Edition"", '' as ""EngineEdition"", '' as ""ProductVersion"";";
+            return @"SELECT version() as ""Edition"", '' as ""EngineEdition"", CAST(current_setting('server_version_num')::integer / 10000 AS VARCHAR) as ""ProductVersion"";";
         }
 
         protected override string MultiContextSQL()
@@ -15916,6 +15978,7 @@ ORDER BY SchemaName, TableName, TriggerName;";
                 FkSchema, FkTableName, Ordinal, CascadeOnDelete ? "true" : "false", IsNotEnforced ? "true" : "false", HasUniqueConstraint ? "true" : "false");
         }
     }
+
     public class RawIndex
     {
         public readonly string Schema;
@@ -15929,10 +15992,11 @@ ORDER BY SchemaName, TableName, TriggerName;";
         public readonly bool IsUniqueConstraint;
         public readonly bool IsClustered;
         public readonly string FilterDefinition;
+        public readonly List<string> IncludedColumns;
 
         public RawIndex(string schema, string tableName, string indexName, byte keyOrdinal,
             string columnName, int columnCount, bool isUnique, bool isPrimaryKey,
-            bool isUniqueConstraint, bool isClustered, string filterDefinition = "")
+            bool isUniqueConstraint, bool isClustered, string filterDefinition = "", string includedColumns = "")
         {
             Schema = schema;
             TableName = tableName;
@@ -15945,13 +16009,17 @@ ORDER BY SchemaName, TableName, TriggerName;";
             IsUniqueConstraint = isUniqueConstraint;
             IsClustered = isClustered;
             FilterDefinition = filterDefinition ?? string.Empty;
+            var included = includedColumns ?? string.Empty;
+            IncludedColumns = string.IsNullOrEmpty(included)
+                ? new List<string>()
+                : included.Split(',').Select(x => x.Trim()).Where(x => !string.IsNullOrEmpty(x)).ToList();
         }
 
         public string Dump()
         {
-            return string.Format("new RawIndex(\"{0}\", \"{1}\", \"{2}\", {3}, \"{4}\", {5}, {6}, {7}, {8}, {9}, \"{10}\"),",
+            return string.Format("new RawIndex(\"{0}\", \"{1}\", \"{2}\", {3}, \"{4}\", {5}, {6}, {7}, {8}, {9}, \"{10}\", \"{11}\"),",
                 Schema, TableName, IndexName, KeyOrdinal, ColumnName, ColumnCount, IsUnique ? "true" : "false", IsPrimaryKey ? "true" : "false",
-                IsUniqueConstraint ? "true" : "false", IsClustered ? "true" : "false", FilterDefinition);
+                IsUniqueConstraint ? "true" : "false", IsClustered ? "true" : "false", FilterDefinition, string.Join(",", IncludedColumns));
         }
     }
     public class RawMemoryOptimisedTable
@@ -16257,7 +16325,8 @@ SELECT 'main' AS TableSchema,
        0 AS IsPrimaryKey,
        0 AS IsUniqueConstraint,
        0 as IsClustered,
-       '' AS FilterDefinition
+       '' AS FilterDefinition,
+       '' AS IncludedColumns
 FROM split s
 WHERE ColumnName != ''";
         }
@@ -16930,8 +16999,22 @@ SELECT  SCHEMA_NAME(t.schema_id) AS TableSchema,
         FROM   sys.index_columns i
         WHERE  i.object_id = ind.object_id
             AND i.index_id = ind.index_id
+            AND i.is_included_column = 0
     ) AS ColumnCount,
-    ISNULL(ind.filter_definition, '') AS FilterDefinition
+    ISNULL(ind.filter_definition, '') AS FilterDefinition,
+    ISNULL((
+        SELECT STUFF((
+            SELECT ',' + col2.name
+            FROM   sys.index_columns ic2
+                   INNER JOIN sys.columns col2
+                       ON ic2.object_id = col2.object_id
+                          AND ic2.column_id = col2.column_id
+            WHERE  ic2.object_id = ind.object_id
+                   AND ic2.index_id = ind.index_id
+                   AND ic2.is_included_column = 1
+            ORDER BY col2.name
+            FOR XML PATH(''), TYPE).value('.', 'NVARCHAR(MAX)'), 1, 1, '')
+    ), '') AS IncludedColumns
 FROM    sys.tables t
     INNER JOIN sys.indexes ind
         ON ind.object_id = t.object_id
@@ -16943,7 +17026,7 @@ FROM    sys.tables t
             AND ic.column_id = col.column_id
 WHERE   t.is_ms_shipped = 0
     AND ind.ignore_dup_key = 0
-    AND ic.key_ordinal > 0
+    AND ic.is_included_column = 0
     AND t.name NOT LIKE 'sysdiagram%'";
         }
 

@@ -1107,7 +1107,7 @@ CREATE TABLE TableB
 	CONSTRAINT ParentTableB_Hierarchy FOREIGN KEY (TableAId, TableBId) REFERENCES TableB
 );
 GO
-CREATE INDEX fki_ParentTableA_FK_Constraint ON TableB (TableAId);
+CREATE INDEX fki_ParentTableA_FK_Constraint ON TableB (TableAId) INCLUDE (TableBDesc, ParentTableAId);
 GO
 
 

@@ -124,6 +124,53 @@ FROM    pg_catalog.pg_statio_all_tables st
 
         protected override string IndexSQL()
         {
+            // indnkeyatts was added in PostgreSQL 11 and distinguishes key columns from include columns.
+            // DatabaseProductMajorVersion is 0 when version detection failed; treat unknown as modern.
+            if (DatabaseProductMajorVersion > 0 && DatabaseProductMajorVersion < 11)
+                return IndexSQLPre11();
+
+            return @"
+SELECT n.nspname AS ""TableSchema"",
+    t.relname AS ""TableName"",
+    i.relname AS ""IndexName"",
+    k.pos::smallint AS ""KeyOrdinal"",
+    a.attname AS ""ColumnName"",
+    ix.indisunique AS ""IsUnique"",
+    ix.indisprimary AS ""IsPrimaryKey"",
+    0 AS ""IsUniqueConstraint"",
+    ix.indisclustered AS ""IsClustered"",
+    ix.indnkeyatts AS ""ColumnCount"",
+    '' AS ""FilterDefinition"",
+    COALESCE((
+        SELECT string_agg(ac.attname, ',' ORDER BY ac.attname)
+        FROM unnest(ix.indkey::smallint[]) WITH ORDINALITY u(attnum, pos)
+        INNER JOIN pg_attribute ac
+            ON ac.attrelid = t.oid AND ac.attnum = u.attnum
+        WHERE u.pos > ix.indnkeyatts
+          AND u.attnum > 0
+    ), '') AS ""IncludedColumns""
+FROM
+    pg_index ix
+    INNER JOIN pg_class t
+        ON t.oid = ix.indrelid AND LOWER(t.relkind) = 'r'
+    INNER JOIN pg_class i
+        ON i.oid = ix.indexrelid
+    CROSS JOIN LATERAL unnest(ix.indkey::smallint[]) WITH ORDINALITY AS k(attnum, pos)
+    INNER JOIN pg_attribute a
+        ON a.attrelid = t.oid AND a.attnum = k.attnum
+    INNER JOIN pg_namespace n
+        ON n.oid = t.relnamespace
+WHERE LOWER(n.nspname) NOT IN ('pg_catalog', 'information_schema')
+      AND LOWER(t.relname) NOT IN ('edmmetadata', '__migrationhistory', '__efmigrationshistory', '__refactorlog')
+      AND ix.indcheckxmin = false
+      AND ix.indisvalid = true
+      AND k.pos <= ix.indnkeyatts
+      AND k.attnum > 0
+ORDER BY t.relname, i.relname;";
+        }
+
+        private string IndexSQLPre11()
+        {
             return @"
 SELECT n.nspname AS ""TableSchema"",
     t.relname AS ""TableName"",
@@ -135,7 +182,8 @@ SELECT n.nspname AS ""TableSchema"",
     0 AS ""IsUniqueConstraint"",
     ix.indisclustered AS ""IsClustered"",
     ix.indnatts AS ""ColumnCount"",
-    '' AS ""FilterDefinition""
+    '' AS ""FilterDefinition"",
+    '' AS ""IncludedColumns""
 FROM
     pg_index ix
     INNER JOIN pg_class t
@@ -186,7 +234,7 @@ ORDER BY R.specific_schema, R.routine_name, R.routine_type;";
 
         protected override string ReadDatabaseEditionSQL()
         {
-            return @"SELECT version() as ""Edition"", '' as ""EngineEdition"", '' as ""ProductVersion"";";
+            return @"SELECT version() as ""Edition"", '' as ""EngineEdition"", CAST(current_setting('server_version_num')::integer / 10000 AS VARCHAR) as ""ProductVersion"";";
         }
 
         protected override string MultiContextSQL()

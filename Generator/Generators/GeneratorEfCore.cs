@@ -319,6 +319,19 @@ namespace Efrpg.Generators
                 if (!string.IsNullOrEmpty(filterDefinition))
                     sb.AppendFormat(".HasFilter(@\"{0}\")", filterDefinition.Replace("\"", "\"\""));
 
+                var includedColumns = indexesForName.Select(x => x.IncludedColumns).FirstOrDefault(x => x != null && x.Count > 0);
+                if (includedColumns != null && includedColumns.Count > 0)
+                {
+                    var validIncludes = includedColumns
+                        .Select(ic => t.Columns.Find(x => x.DbName == ic))
+                        .Where(col => col != null && !col.Hidden && !string.IsNullOrEmpty(col.Config))
+                        .Select(col => "\"" + col.NameHumanCase + "\"")
+                        .ToList();
+
+                    if (validIncludes.Count > 0)
+                        sb.AppendFormat(".IncludeProperties({0})", string.Join(", ", validIncludes));
+                }
+
                 sb.Append(";");
                 indexes.Add(sb.ToString());
             }

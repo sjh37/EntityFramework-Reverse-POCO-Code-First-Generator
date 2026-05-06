@@ -311,8 +311,22 @@ SELECT  SCHEMA_NAME(t.schema_id) AS TableSchema,
         FROM   sys.index_columns i
         WHERE  i.object_id = ind.object_id
             AND i.index_id = ind.index_id
+            AND i.is_included_column = 0
     ) AS ColumnCount,
-    ISNULL(ind.filter_definition, '') AS FilterDefinition
+    ISNULL(ind.filter_definition, '') AS FilterDefinition,
+    ISNULL((
+        SELECT STUFF((
+            SELECT ',' + col2.name
+            FROM   sys.index_columns ic2
+                   INNER JOIN sys.columns col2
+                       ON ic2.object_id = col2.object_id
+                          AND ic2.column_id = col2.column_id
+            WHERE  ic2.object_id = ind.object_id
+                   AND ic2.index_id = ind.index_id
+                   AND ic2.is_included_column = 1
+            ORDER BY col2.name
+            FOR XML PATH(''), TYPE).value('.', 'NVARCHAR(MAX)'), 1, 1, '')
+    ), '') AS IncludedColumns
 FROM    sys.tables t
     INNER JOIN sys.indexes ind
         ON ind.object_id = t.object_id
@@ -324,7 +338,7 @@ FROM    sys.tables t
             AND ic.column_id = col.column_id
 WHERE   t.is_ms_shipped = 0
     AND ind.ignore_dup_key = 0
-    AND ic.key_ordinal > 0
+    AND ic.is_included_column = 0
     AND t.name NOT LIKE 'sysdiagram%'";
         }
 
