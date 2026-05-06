@@ -7,7 +7,7 @@
         SQLite,
         Plugin,     // See Settings.DatabaseReaderPlugin
         PostgreSQL,
-        MySql,      // Not yet implemented
-        Oracle      // Not yet implemented
+        MySql,
+        Oracle
     }
 }

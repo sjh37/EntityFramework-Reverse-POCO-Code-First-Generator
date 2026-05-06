@@ -136,6 +136,7 @@
     <Compile Include="SchemaReaderTests.cs" />
     <Compile Include="PluralisationTests.cs" />
     <Compile Include="DecimalPrecisionTests.cs" />
+    <Compile Include="MySqlTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
