@@ -21,6 +21,14 @@
 {{/if}}
     }{{#newline}}{{#newline}}
 
+    protected {{DbContextName}}(DbContextOptions options){{#newline}}
+        : base(options){{#newline}}
+    {{{#newline}}
+{{#if DbContextClassIsPartial}}
+        InitializePartial();{{#newline}}
+{{/if}}
+    }{{#newline}}{{#newline}}
+
 {{#if OnConfigurationUsesConfiguration}}
     public {{DbContextName}}(IConfiguration configuration){{#newline}}
     {{{#newline}}
@@ -191,6 +199,9 @@
 {{/if}}
 
 {{#else}}
+{{#if HasError}}
+    // Unable to determine return model for '{{FunctionName}}'. Error: {{Error}}{{#newline}}
+{{/if}}
     public int {{FunctionName}}({{WriteStoredProcFunctionParamsTrueFalse}}){{#newline}}
     {{{#newline}}
 {{WriteStoredProcFunctionDeclareSqlParameterTrue}}{{#newline}}

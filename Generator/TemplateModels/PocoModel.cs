@@ -27,6 +27,8 @@ namespace Efrpg.TemplateModels
         public bool HasHierarchyId { get; set; }
         public bool HasSpatial { get; set; }
         public bool HasSqlVector { get; set; }
+        public bool HasOwnedEntities { get; set; }
+        public List<PocoOwnedEntityModel> OwnedEntities { get; set; }
     }
 
     public class PocoColumnModel
@@ -67,5 +69,12 @@ namespace Efrpg.TemplateModels
     {
         public string NameHumanCase { get; set; }
         public string Default { get; set; }
+    }
+
+    public class PocoOwnedEntityModel
+    {
+        public string PropertyType { get; set; }
+        public string PropertyName { get; set; }
+        public string PropertyInitialiser { get; set; }
     }
 }

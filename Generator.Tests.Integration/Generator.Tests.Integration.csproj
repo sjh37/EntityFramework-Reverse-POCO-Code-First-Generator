@@ -153,6 +153,33 @@
     <Compile Include="SingleDatabaseTestSqlCeServer.cs" />
     <Compile Include="SingleDatabaseTestSQLite.cs" />
     <Compile Include="SingleDatabaseTestSqlServer.cs" />
+    <None Include="TestComparison\NorthwindAns_PostgreSQL_EfCore8_FkCurrent.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="TestComparison\NorthwindNrnp_PostgreSQL_EfCore8_FkCurrent.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="TestComparison\NorthwindAnsNrnp_PostgreSQL_EfCore8_FkCurrent.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="TestComparison\EfrpgTestDaNrnp_SqlServer_EfCore8_FkCurrent.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="TestComparison\EfrpgTestDaAns_SqlServer_EfCore8_FkCurrent.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="TestComparison\EfrpgTestDaAnsNrnp_SqlServer_EfCore8_FkCurrent.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="TestComparison\EfrpgTestAnsNrnp_SqlServer_EfCore8_FkCurrent.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="TestComparison\EfrpgTestNrnp_SqlServer_EfCore8_FkCurrent.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="TestComparison\EfrpgTestAns_SqlServer_EfCore8_FkCurrent.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="TestComparison\SpacedColumnTvf_SqlServer_EfCore8_FkCurrent.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

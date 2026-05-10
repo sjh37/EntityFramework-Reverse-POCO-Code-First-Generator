@@ -18,33 +18,33 @@ namespace Efrpg.Filtering
         public static bool IncludeTableValuedFunctions;
         public static bool IncludeScalarValuedFunctions;
 
-        public static readonly List<IFilterType<Schema>>          SchemaFilters;
-        public static readonly List<IFilterType<Table>>           TableFilters;
-        public static readonly List<IFilterType<Column>>          ColumnFilters;
+        public static readonly List<IFilterType<Schema>> SchemaFilters;
+        public static readonly List<IFilterType<Table>> TableFilters;
+        public static readonly List<IFilterType<Column>> ColumnFilters;
         public static readonly List<IFilterType<StoredProcedure>> StoredProcedureFilters;
 
         static FilterSettings()
         {
-            SchemaFilters          = new List<IFilterType<Schema>>();
-            TableFilters           = new List<IFilterType<Table>>();
-            ColumnFilters          = new List<IFilterType<Column>>();
+            SchemaFilters = new List<IFilterType<Schema>>();
+            TableFilters = new List<IFilterType<Table>>();
+            ColumnFilters = new List<IFilterType<Column>>();
             StoredProcedureFilters = new List<IFilterType<StoredProcedure>>();
         }
 
         public static void Reset()
         {
-            SchemaFilters         .RemoveAll(x => true);
-            TableFilters          .RemoveAll(x => true);
-            ColumnFilters         .RemoveAll(x => true);
+            SchemaFilters.RemoveAll(x => true);
+            TableFilters.RemoveAll(x => true);
+            ColumnFilters.RemoveAll(x => true);
             StoredProcedureFilters.RemoveAll(x => true);
         }
 
         public static void AddDefaults()
         {
-            IncludeViews                 = true;
-            IncludeSynonyms              = false;
-            IncludeStoredProcedures      = true;
-            IncludeTableValuedFunctions  = false; // If true, for EF6 install the "EntityFramework.CodeFirstStoreFunctions" NuGet Package.
+            IncludeViews = true;
+            IncludeSynonyms = false;
+            IncludeStoredProcedures = true;
+            IncludeTableValuedFunctions = false; // If true, for EF6 install the "EntityFramework.CodeFirstStoreFunctions" NuGet Package.
             IncludeScalarValuedFunctions = false;
 
             AddDefaultSchemaFilters();

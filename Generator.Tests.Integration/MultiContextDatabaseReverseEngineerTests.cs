@@ -36,7 +36,7 @@ namespace Generator.Tests.Integration
             Settings.GenerateSeparateFiles      = generateSeparateFiles;
             Settings.MultiContextSettingsPlugin = null;
             Settings.AdditionalNamespaces.Clear();
-            Settings.NullableReverseNavigationProperties = true;
+            Settings.NullableReverseNavigationProperties = false;
 
             if (!string.IsNullOrWhiteSpace(plugin))
                 SetupPlugin(plugin);

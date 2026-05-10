@@ -80,7 +80,7 @@ namespace Efrpg.Templates
             var usings = new List<string>(CacheList(TemplateFileBasedConstants.Text.PocoUsings));
 
             // Add dynamic namespaces based on column types
-            if (data.HasHierarchyId && !usings.Contains("Microsoft.EntityFrameworkCore"))
+            if ((data.HasHierarchyId || Settings.UseDataAnnotations) && !usings.Contains("Microsoft.EntityFrameworkCore"))
                 usings.Add("Microsoft.EntityFrameworkCore");
 
             if (data.HasSqlVector && !usings.Contains("Microsoft.Data.SqlTypes"))
@@ -123,6 +123,11 @@ namespace Efrpg.Templates
         {
             return CacheText(TemplateFileBasedConstants.Mustache.Enums);
         }
+
+        // Owned entity class generation via file-based templates is not yet supported.
+        // To generate owned entity classes, use the EfCore template type and set Settings.GenerateOwnedEntityClasses = true.
+        public override List<string> OwnedEntityClassUsings(OwnedEntityClassModel data) => new List<string>();
+        public override string OwnedEntityClass() => string.Empty;
 
         private string CacheText(string filename)
         {

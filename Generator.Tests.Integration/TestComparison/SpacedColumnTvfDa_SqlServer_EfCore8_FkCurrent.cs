@@ -86,6 +86,11 @@ namespace Efrpg.V9SpacedTvfDa
         {
         }
 
+        protected EfrpgTestDbContext(DbContextOptions options)
+            : base(options)
+        {
+        }
+
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

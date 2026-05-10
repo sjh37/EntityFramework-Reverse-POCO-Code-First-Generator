@@ -75,12 +75,12 @@ namespace Efrpg.Mustache
 
             if (condition is char)
             {
-                return (char)condition != '\0';
+                return (char) condition != '\0';
             }
 
             try
             {
-                decimal number = (decimal)Convert.ChangeType(condition, typeof(decimal));
+                decimal number = (decimal) Convert.ChangeType(condition, typeof(decimal));
                 return number != 0.0m;
             }
             catch

@@ -1,7 +1,7 @@
 <#@ include file="EF.Reverse.POCO.v3.ttinclude" #>
 <#
     Settings.DatabaseType            = DatabaseType.SqlCe;
-    Settings.ConnectionString        = @"Data Source=C:\S\Source (open source)\EntityFramework-Reverse-POCO-Code-First-Generator\EntityFramework.Reverse.POCO.Generator\App_Data\NorthwindSqlCe40.sdf";
+    Settings.ConnectionString        = @"Data Source=C:\S\Source (open source)\EntityFramework Reverse POCO Code Generator\EntityFramework.Reverse.POCO.Generator\App_Data\NorthwindSqlCe40.sdf";
     Settings.ConnectionStringName    = "MyDbContextSqlCE4";
     Settings.DbContextName           = "MyDbContextSqlCE4";
     Settings.Namespace               = "EntityFramework_Reverse_POCO_Generator.SqlCe4";

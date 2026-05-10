@@ -19,18 +19,18 @@ namespace Efrpg.Filtering
         {
             _settings = settings;
 
-            IncludeViews                 = settings.IncludeViews();
-            IncludeSynonyms              = false;
-            IncludeTableValuedFunctions  = settings.IncludeFunctions(); // If true, for EF6 install the "EntityFramework.CodeFirstStoreFunctions" Nuget Package.
+            IncludeViews = settings.IncludeViews();
+            IncludeSynonyms = false;
+            IncludeTableValuedFunctions = settings.IncludeFunctions(); // If true, for EF6 install the "EntityFramework.CodeFirstStoreFunctions" Nuget Package.
             IncludeScalarValuedFunctions = IncludeTableValuedFunctions; // Scalar/Table function filters are not separate in this filter.
-            IncludeStoredProcedures      = IncludeScalarValuedFunctions || IncludeTableValuedFunctions || settings.IncludeStoredProcedures();
-            SubNamespace                 = settings.GetNamespace();
+            IncludeStoredProcedures = IncludeScalarValuedFunctions || IncludeTableValuedFunctions || settings.IncludeStoredProcedures();
+            SubNamespace = settings.GetNamespace();
 
-            _allowedSchemas     = new List<string>();
-            _allowedTables      = new List<string>();
-            _allowedColumns     = new Dictionary<string, List<string>>();
+            _allowedSchemas = new List<string>();
+            _allowedTables = new List<string>();
+            _allowedColumns = new Dictionary<string, List<string>>();
             _allowedStoredProcs = new List<string>();
-            _allowedFunctions   = new List<string>();
+            _allowedFunctions = new List<string>();
 
             // Pre-process the settings
             _normalisation = new MultiContextNameNormalisation(settings.BaseSchema);
@@ -350,7 +350,7 @@ namespace Efrpg.Filtering
         {
 
         }
-        
+
         public override void UpdateEnum(Enumeration enumeration)
         {
 
@@ -372,8 +372,8 @@ namespace Efrpg.Filtering
                     .Where(c => c.IsPrimaryKey.HasValue)
                     .Select(c => new
                     {
-                        Name         = _normalisation.Normalise(c.Name, c.DbName).Name.ToLowerInvariant(),
-                        DbName       = _normalisation.Normalise(c.DbName)?.Name.ToLowerInvariant(),
+                        Name = _normalisation.Normalise(c.Name, c.DbName).Name.ToLowerInvariant(),
+                        DbName = _normalisation.Normalise(c.DbName)?.Name.ToLowerInvariant(),
                         IsPrimaryKey = c.IsPrimaryKey.Value
                     })
                     .ToList();
@@ -383,11 +383,11 @@ namespace Efrpg.Filtering
 
                 // Find the column settings which have an IsPrimaryKey set to true/false;
                 var requiredFalse = requiredPrimaryKeys.Where(x => !x.IsPrimaryKey).ToList();
-                var requiredTrue  = requiredPrimaryKeys.Where(x => x.IsPrimaryKey).ToList();
-                var dbNamesFalse  = requiredFalse.Where(x => !string.IsNullOrEmpty(x.DbName)).Select(x => x.DbName).ToList();
-                var dbNamesTrue   = requiredTrue .Where(x => !string.IsNullOrEmpty(x.DbName)).Select(x => x.DbName).ToList();
-                var colFalse      = requiredFalse.Select(x => x.Name).ToList();
-                var colTrue       = requiredTrue .Select(x => x.Name).ToList();
+                var requiredTrue = requiredPrimaryKeys.Where(x => x.IsPrimaryKey).ToList();
+                var dbNamesFalse = requiredFalse.Where(x => !string.IsNullOrEmpty(x.DbName)).Select(x => x.DbName).ToList();
+                var dbNamesTrue = requiredTrue.Where(x => !string.IsNullOrEmpty(x.DbName)).Select(x => x.DbName).ToList();
+                var colFalse = requiredFalse.Select(x => x.Name).ToList();
+                var colTrue = requiredTrue.Select(x => x.Name).ToList();
 
                 foreach (var col in view.Columns.Where(c => dbNamesFalse.Contains(c.DbName.ToLowerInvariant()) || colFalse.Contains(c.NameHumanCase.ToLowerInvariant())))
                     col.IsPrimaryKey = false;
@@ -395,7 +395,7 @@ namespace Efrpg.Filtering
                 foreach (var col in view.Columns.Where(c => dbNamesTrue.Contains(c.DbName.ToLowerInvariant()) || colTrue.Contains(c.NameHumanCase.ToLowerInvariant())))
                 {
                     col.IsPrimaryKey = true;
-                    col.IsNullable   = false;
+                    col.IsNullable = false;
                 }
             }
 
@@ -501,7 +501,7 @@ namespace Efrpg.Filtering
         {
             return table.Columns
                 .FirstOrDefault(t => nameHumanCase == _normalisation.Normalise(t.Name, t.DbName).Name.ToLowerInvariant() ||
-                                     dbName        == _normalisation.Normalise(t.DbName)?.Name.ToLowerInvariant());
+                                     dbName == _normalisation.Normalise(t.DbName)?.Name.ToLowerInvariant());
         }
 
         private MultiContextStoredProcedureSettings FindStoredProcSetting(StoredProcedure sp)

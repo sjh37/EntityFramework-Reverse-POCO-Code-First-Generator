@@ -5,6 +5,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data;
 using System.Data.Common;
@@ -65,6 +66,7 @@ namespace Efrpg.V3TestE1
         DbSet<ComplexView> ComplexViews { get; set; } // ComplexView
         DbSet<Country> Countries { get; set; } // Country
         DbSet<CrossDatabaseSynonym> CrossDatabaseSynonyms { get; set; } // cross_database_synonym
+        DbSet<Customer> Customers { get; set; } // Customer
         DbSet<DateTimeDefaultTest> DateTimeDefaultTests { get; set; } // DateTimeDefaultTest
         DbSet<dcg_RovColumnDefinition> dcg_RovColumnDefinitions { get; set; } // rov_ColumnDefinitions
         DbSet<DefaultCheckForNull> DefaultCheckForNulls { get; set; } // DefaultCheckForNull
@@ -88,6 +90,7 @@ namespace Efrpg.V3TestE1
         DbSet<InflectorData> InflectorData { get; set; } // InflectorData
         DbSet<InflectorStatus> InflectorStatus { get; set; } // InflectorStatus
         DbSet<InflectorTo> InflectorTo { get; set; } // InflectorTo
+        DbSet<Invoice> Invoices { get; set; } // Invoice
         DbSet<Issue47_Role> Issue47_Roles { get; set; } // Role
         DbSet<Issue47_User> Issue47_Users { get; set; } // Users
         DbSet<Issue47_UserRole> Issue47_UserRoles { get; set; } // UserRoles
@@ -400,6 +403,7 @@ namespace Efrpg.V3TestE1
         public DbSet<ComplexView> ComplexViews { get; set; } // ComplexView
         public DbSet<Country> Countries { get; set; } // Country
         public DbSet<CrossDatabaseSynonym> CrossDatabaseSynonyms { get; set; } // cross_database_synonym
+        public DbSet<Customer> Customers { get; set; } // Customer
         public DbSet<DateTimeDefaultTest> DateTimeDefaultTests { get; set; } // DateTimeDefaultTest
         public DbSet<dcg_RovColumnDefinition> dcg_RovColumnDefinitions { get; set; } // rov_ColumnDefinitions
         public DbSet<DefaultCheckForNull> DefaultCheckForNulls { get; set; } // DefaultCheckForNull
@@ -423,6 +427,7 @@ namespace Efrpg.V3TestE1
         public DbSet<InflectorData> InflectorData { get; set; } // InflectorData
         public DbSet<InflectorStatus> InflectorStatus { get; set; } // InflectorStatus
         public DbSet<InflectorTo> InflectorTo { get; set; } // InflectorTo
+        public DbSet<Invoice> Invoices { get; set; } // Invoice
         public DbSet<Issue47_Role> Issue47_Roles { get; set; } // Role
         public DbSet<Issue47_User> Issue47_Users { get; set; } // Users
         public DbSet<Issue47_UserRole> Issue47_UserRoles { get; set; } // UserRoles
@@ -581,6 +586,7 @@ namespace Efrpg.V3TestE1
             modelBuilder.Configurations.Add(new ComplexViewConfiguration());
             modelBuilder.Configurations.Add(new CountryConfiguration());
             modelBuilder.Configurations.Add(new CrossDatabaseSynonymConfiguration());
+            modelBuilder.Configurations.Add(new CustomerConfiguration());
             modelBuilder.Configurations.Add(new DateTimeDefaultTestConfiguration());
             modelBuilder.Configurations.Add(new dcg_RovColumnDefinitionConfiguration());
             modelBuilder.Configurations.Add(new DefaultCheckForNullConfiguration());
@@ -604,6 +610,7 @@ namespace Efrpg.V3TestE1
             modelBuilder.Configurations.Add(new InflectorDataConfiguration());
             modelBuilder.Configurations.Add(new InflectorStatusConfiguration());
             modelBuilder.Configurations.Add(new InflectorToConfiguration());
+            modelBuilder.Configurations.Add(new InvoiceConfiguration());
             modelBuilder.Configurations.Add(new Issue47_RoleConfiguration());
             modelBuilder.Configurations.Add(new Issue47_UserConfiguration());
             modelBuilder.Configurations.Add(new Issue47_UserRoleConfiguration());
@@ -877,6 +884,7 @@ namespace Efrpg.V3TestE1
             modelBuilder.Configurations.Add(new ComplexViewConfiguration(schema));
             modelBuilder.Configurations.Add(new CountryConfiguration(schema));
             modelBuilder.Configurations.Add(new CrossDatabaseSynonymConfiguration(schema));
+            modelBuilder.Configurations.Add(new CustomerConfiguration(schema));
             modelBuilder.Configurations.Add(new DateTimeDefaultTestConfiguration(schema));
             modelBuilder.Configurations.Add(new dcg_RovColumnDefinitionConfiguration(schema));
             modelBuilder.Configurations.Add(new DefaultCheckForNullConfiguration(schema));
@@ -900,6 +908,7 @@ namespace Efrpg.V3TestE1
             modelBuilder.Configurations.Add(new InflectorDataConfiguration(schema));
             modelBuilder.Configurations.Add(new InflectorStatusConfiguration(schema));
             modelBuilder.Configurations.Add(new InflectorToConfiguration(schema));
+            modelBuilder.Configurations.Add(new InvoiceConfiguration(schema));
             modelBuilder.Configurations.Add(new Issue47_RoleConfiguration(schema));
             modelBuilder.Configurations.Add(new Issue47_UserConfiguration(schema));
             modelBuilder.Configurations.Add(new Issue47_UserRoleConfiguration(schema));
@@ -1678,11 +1687,11 @@ namespace Efrpg.V3TestE1
 
         public int SpatialTypesWithParams(DbGeometry geometry, DbGeography geography)
         {
-            var geometryParam = new SqlParameter { ParameterName = "@geometry", SqlDbType = SqlDbType.VarChar, Direction = ParameterDirection.Input, Value = geometry, Size = -1 };
+            var geometryParam = new SqlParameter { ParameterName = "@geometry", UdtTypeName = "geometry", Direction = ParameterDirection.Input, Value = geometry == null ? (object)DBNull.Value : Microsoft.SqlServer.Types.SqlGeometry.Parse(geometry.AsText()), Size = -1 };
             if (geometryParam.Value == null)
                 geometryParam.Value = DBNull.Value;
 
-            var geographyParam = new SqlParameter { ParameterName = "@geography", UdtTypeName = "geography", Direction = ParameterDirection.Input, Value = Microsoft.SqlServer.Types.SqlGeography.Parse(geography.AsText()), Size = -1 };
+            var geographyParam = new SqlParameter { ParameterName = "@geography", UdtTypeName = "geography", Direction = ParameterDirection.Input, Value = geography == null ? (object)DBNull.Value : Microsoft.SqlServer.Types.SqlGeography.Parse(geography.AsText()), Size = -1 };
             if (geographyParam.Value == null)
                 geographyParam.Value = DBNull.Value;
 
@@ -1695,11 +1704,11 @@ namespace Efrpg.V3TestE1
 
         public async Task<int> SpatialTypesWithParamsAsync(DbGeometry geometry, DbGeography geography, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var geometryParam = new SqlParameter { ParameterName = "@geometry", SqlDbType = SqlDbType.VarChar, Direction = ParameterDirection.Input, Value = geometry, Size = -1 };
+            var geometryParam = new SqlParameter { ParameterName = "@geometry", UdtTypeName = "geometry", Direction = ParameterDirection.Input, Value = geometry == null ? (object)DBNull.Value : Microsoft.SqlServer.Types.SqlGeometry.Parse(geometry.AsText()), Size = -1 };
             if (geometryParam.Value == null)
                 geometryParam.Value = DBNull.Value;
 
-            var geographyParam = new SqlParameter { ParameterName = "@geography", UdtTypeName = "geography", Direction = ParameterDirection.Input, Value = Microsoft.SqlServer.Types.SqlGeography.Parse(geography.AsText()), Size = -1 };
+            var geographyParam = new SqlParameter { ParameterName = "@geography", UdtTypeName = "geography", Direction = ParameterDirection.Input, Value = geography == null ? (object)DBNull.Value : Microsoft.SqlServer.Types.SqlGeography.Parse(geography.AsText()), Size = -1 };
             if (geographyParam.Value == null)
                 geographyParam.Value = DBNull.Value;
 
@@ -2571,6 +2580,7 @@ namespace Efrpg.V3TestE1
         public DbSet<ComplexView> ComplexViews { get; set; } // ComplexView
         public DbSet<Country> Countries { get; set; } // Country
         public DbSet<CrossDatabaseSynonym> CrossDatabaseSynonyms { get; set; } // cross_database_synonym
+        public DbSet<Customer> Customers { get; set; } // Customer
         public DbSet<DateTimeDefaultTest> DateTimeDefaultTests { get; set; } // DateTimeDefaultTest
         public DbSet<dcg_RovColumnDefinition> dcg_RovColumnDefinitions { get; set; } // rov_ColumnDefinitions
         public DbSet<DefaultCheckForNull> DefaultCheckForNulls { get; set; } // DefaultCheckForNull
@@ -2594,6 +2604,7 @@ namespace Efrpg.V3TestE1
         public DbSet<InflectorData> InflectorData { get; set; } // InflectorData
         public DbSet<InflectorStatus> InflectorStatus { get; set; } // InflectorStatus
         public DbSet<InflectorTo> InflectorTo { get; set; } // InflectorTo
+        public DbSet<Invoice> Invoices { get; set; } // Invoice
         public DbSet<Issue47_Role> Issue47_Roles { get; set; } // Role
         public DbSet<Issue47_User> Issue47_Users { get; set; } // Users
         public DbSet<Issue47_UserRole> Issue47_UserRoles { get; set; } // UserRoles
@@ -2691,6 +2702,7 @@ namespace Efrpg.V3TestE1
             ComplexViews = new FakeDbSet<ComplexView>("LicenseType");
             Countries = new FakeDbSet<Country>("CountryId");
             CrossDatabaseSynonyms = new FakeDbSet<CrossDatabaseSynonym>("Id");
+            Customers = new FakeDbSet<Customer>("CustomerId");
             DateTimeDefaultTests = new FakeDbSet<DateTimeDefaultTest>("Id");
             dcg_RovColumnDefinitions = new FakeDbSet<dcg_RovColumnDefinition>("TableName");
             DefaultCheckForNulls = new FakeDbSet<DefaultCheckForNull>("Id");
@@ -2714,6 +2726,7 @@ namespace Efrpg.V3TestE1
             InflectorData = new FakeDbSet<InflectorData>("Id");
             InflectorStatus = new FakeDbSet<InflectorStatus>("Id");
             InflectorTo = new FakeDbSet<InflectorTo>("Id");
+            Invoices = new FakeDbSet<Invoice>("InvoiceId");
             Issue47_Roles = new FakeDbSet<Issue47_Role>("RoleId");
             Issue47_Users = new FakeDbSet<Issue47_User>("UserId");
             Issue47_UserRoles = new FakeDbSet<Issue47_UserRole>("UserRoleId");
@@ -4442,6 +4455,13 @@ namespace Efrpg.V3TestE1
         public string Forename { get; set; } // Forename (length: 20)
     }
 
+    // Customer
+    public class Customer
+    {
+        public int CustomerId { get; set; } // CustomerId (Primary key)
+        public string Name { get; set; } // Name (length: 100)
+    }
+
     // DateTimeDefaultTest
     public class DateTimeDefaultTest
     {
@@ -4516,6 +4536,7 @@ namespace Efrpg.V3TestE1
     {
         public string EnumName { get; set; } // enum_name (Primary key) (length: 50)
         public string Value { get; set; } // value (Primary key) (length: 10)
+        public string Description { get; set; } // description (length: 50)
     }
 
     // DaysOfWeek
@@ -4523,6 +4544,7 @@ namespace Efrpg.V3TestE1
     {
         public string TypeName { get; set; } // TypeName (length: 50)
         public int TypeId { get; set; } // TypeId (Primary key)
+        public string Description { get; set; } // Description (length: 50)
 
         // Reverse navigation
 
@@ -4750,6 +4772,13 @@ namespace Efrpg.V3TestE1
     public class InflectorTo
     {
         public int Id { get; set; } // Id (Primary key)
+    }
+
+    // Invoice
+    public class Invoice
+    {
+        public int InvoiceId { get; set; } // InvoiceId (Primary key)
+        public string Description { get; set; } // Description (length: 200)
     }
 
     // Role
@@ -6306,6 +6335,24 @@ namespace Efrpg.V3TestE1
         }
     }
 
+    // Customer
+    public class CustomerConfiguration : EntityTypeConfiguration<Customer>
+    {
+        public CustomerConfiguration()
+            : this("dbo")
+        {
+        }
+
+        public CustomerConfiguration(string schema)
+        {
+            ToTable("Customer", schema);
+            HasKey(x => x.CustomerId);
+
+            Property(x => x.CustomerId).HasColumnName(@"CustomerId").HasColumnType("int").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
+            Property(x => x.Name).HasColumnName(@"Name").HasColumnType("nvarchar").IsRequired().HasMaxLength(100);
+        }
+    }
+
     // DateTimeDefaultTest
     public class DateTimeDefaultTestConfiguration : EntityTypeConfiguration<DateTimeDefaultTest>
     {
@@ -6422,6 +6469,7 @@ namespace Efrpg.V3TestE1
 
             Property(x => x.EnumName).HasColumnName(@"enum_name").HasColumnType("varchar").IsRequired().IsUnicode(false).HasMaxLength(50).HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
             Property(x => x.Value).HasColumnName(@"value").HasColumnType("varchar").IsRequired().IsUnicode(false).HasMaxLength(10).HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
+            Property(x => x.Description).HasColumnName(@"description").HasColumnType("varchar").IsOptional().IsUnicode(false).HasMaxLength(50);
         }
     }
 
@@ -6440,6 +6488,7 @@ namespace Efrpg.V3TestE1
 
             Property(x => x.TypeName).HasColumnName(@"TypeName").HasColumnType("varchar").IsRequired().IsUnicode(false).HasMaxLength(50);
             Property(x => x.TypeId).HasColumnName(@"TypeId").HasColumnType("int").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
+            Property(x => x.Description).HasColumnName(@"Description").HasColumnType("varchar").IsOptional().IsUnicode(false).HasMaxLength(50);
         }
     }
 
@@ -6777,6 +6826,24 @@ namespace Efrpg.V3TestE1
             HasKey(x => x.Id);
 
             Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
+        }
+    }
+
+    // Invoice
+    public class InvoiceConfiguration : EntityTypeConfiguration<Invoice>
+    {
+        public InvoiceConfiguration()
+            : this("dbo")
+        {
+        }
+
+        public InvoiceConfiguration(string schema)
+        {
+            ToTable("Invoice", schema);
+            HasKey(x => x.InvoiceId);
+
+            Property(x => x.InvoiceId).HasColumnName(@"InvoiceId").HasColumnType("int").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
+            Property(x => x.Description).HasColumnName(@"Description").HasColumnType("nvarchar").IsRequired().HasMaxLength(200);
         }
     }
 
@@ -7882,20 +7949,31 @@ namespace Efrpg.V3TestE1
 
     public enum CarOptions
     {
+        [Description("Sun roof")]
         SunRoof = 0x01,
+        [Description("Spoiler")]
         Spoiler = 0x02,
+        [Description("Fog lights")]
         FogLights = 0x04,
+        [Description("Tinted windows")]
         TintedWindows = 0x08,
     }
 
     public enum DaysOfWeek
     {
+        [Description("Sunday")]
         Sun = 0,
+        [Description("Money")]
         Mon = 1,
+        [Description("Tuesday")]
         Tue = 2,
+        [Description("Wednesday")]
         Wed = 3,
+        [Description("Thursday")]
         Thu = 4,
+        [Description("Friday")]
         Fri = 6,
+        [Description("Sat")]
         Sat = 7,
     }
 

@@ -153,7 +153,8 @@ SELECT 'main' AS TableSchema,
        0 AS IsPrimaryKey,
        0 AS IsUniqueConstraint,
        0 as IsClustered,
-       '' AS FilterDefinition
+       '' AS FilterDefinition,
+       '' AS IncludedColumns
 FROM split s
 WHERE ColumnName != ''";
         }

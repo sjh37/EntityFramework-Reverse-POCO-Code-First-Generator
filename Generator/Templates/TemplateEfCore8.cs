@@ -134,6 +134,9 @@ using {{this}};{{#newline}}
     {{ReturnType}} {{FunctionName}}({{WriteStoredProcFunctionParamsTrueTrue}});{{#newline}}
 {{/if}}
 {{#else}}
+{{#if HasError}}
+    // Unable to determine return model for '{{FunctionName}}'. Error: {{Error}}{{#newline}}
+{{/if}}
     int {{FunctionName}}({{WriteStoredProcFunctionParamsTrueTrue}});{{#newline}}
 {{/if}}
 
@@ -243,6 +246,14 @@ using {{this}};{{#newline}}
 {{/if}}
 
     public {{DbContextName}}(DbContextOptions<{{DbContextName}}> options){{#newline}}
+        : base(options){{#newline}}
+    {{{#newline}}
+{{#if DbContextClassIsPartial}}
+        InitializePartial();{{#newline}}
+{{/if}}
+    }{{#newline}}{{#newline}}
+
+    protected {{DbContextName}}(DbContextOptions options){{#newline}}
         : base(options){{#newline}}
     {{{#newline}}
 {{#if DbContextClassIsPartial}}
@@ -420,6 +431,9 @@ using {{this}};{{#newline}}
 {{/if}}
 
 {{#else}}
+{{#if HasError}}
+    // Unable to determine return model for '{{FunctionName}}'. Error: {{Error}}{{#newline}}
+{{/if}}
     public int {{FunctionName}}({{WriteStoredProcFunctionParamsTrueFalse}}){{#newline}}
     {{{#newline}}
 {{WriteStoredProcFunctionDeclareSqlParameterTrue}}{{#newline}}
@@ -851,6 +865,9 @@ using {{this}};{{#newline}}
 
 {{#else}}
 {{#newline}}
+{{#if HasError}}
+    // Unable to determine return model for '{{FunctionName}}'. Error: {{Error}}{{#newline}}
+{{/if}}
     public int {{FunctionName}}({{WriteStoredProcFunctionParamsTrueFalse}}){{#newline}}
     {{{#newline}}
 {{WriteStoredProcFunctionSetSqlParametersTrue}}
@@ -1441,7 +1458,7 @@ public class FakeDbContextTransaction : IDbContextTransaction{{#newline}}
             if (Settings.IncludeCodeGeneratedAttribute)
                 usings.Add("System.CodeDom.Compiler");
 
-            if (data.HasHierarchyId)
+            if (data.HasHierarchyId || Settings.UseDataAnnotations)
                 usings.Add("Microsoft.EntityFrameworkCore");
 
             if (data.HasSqlVector)
@@ -1481,6 +1498,14 @@ public class FakeDbContextTransaction : IDbContextTransaction{{#newline}}
     public {{#if OverrideModifier}}override {{/if}}{{#if IsPartial}}partial {{/if}}{{WrapIfNullable}} {{NameHumanCase}} { get; {{PrivateSetterForComputedColumns}}set; }{{PropertyInitialisers}}{{InlineComments}}{{#newline}}
 {{#if IncludeFieldNameConstants}}    public const string {{NameHumanCase}}Field = ""{{NameHumanCase}}"";{{#newline}}{{/if}}
 {{/each}}
+
+{{#if HasOwnedEntities}}
+{{#newline}}
+    // Owned entities{{#newline}}
+{{#each OwnedEntities}}
+    public {{PropertyType}} {{PropertyName}} { get; set; }{{PropertyInitialiser}}{{#newline}}
+{{/each}}
+{{/if}}
 
 {{#if HasReverseNavigation}}
 {{#newline}}
@@ -1599,6 +1624,9 @@ public class FakeDbContextTransaction : IDbContextTransaction{{#newline}}
         builder.{{ToTableOrView}}(""{{Name}}"");{{#newline}}
 {{/if}}
 {{/if}}
+{{#if HasTableComment}}
+        builder.HasComment(@""{{TableComment}}"");{{#newline}}
+{{/if}}
         {{PrimaryKeyNameHumanCase}}{{#newline}}{{#newline}}
 
 {{#each Columns}}
@@ -1609,6 +1637,14 @@ public class FakeDbContextTransaction : IDbContextTransaction{{#newline}}
 {{#newline}}
         // Foreign keys{{#newline}}
 {{#each ForeignKeys}}
+        {{this}}{{#newline}}
+{{/each}}
+{{/if}}
+
+{{#if HasOwnedEntityConfigs}}
+{{#newline}}
+        // Owned entities{{#newline}}
+{{#each OwnedEntityConfigs}}
         {{this}}{{#newline}}
 {{/each}}
 {{/if}}
@@ -1703,6 +1739,28 @@ public enum {{EnumName}}{{#newline}}
     {{this}}{{#newline}}
 {{/each}}
     {{Key}} = {{Value}},{{#newline}}
+{{/each}}
+}{{#newline}}
+";
+        }
+
+        public override List<string> OwnedEntityClassUsings(OwnedEntityClassModel data)
+        {
+            var usings = new List<string>();
+
+            if (Settings.IncludeCodeGeneratedAttribute)
+                usings.Add("System.CodeDom.Compiler");
+
+            return usings;
+        }
+
+        public override string OwnedEntityClass()
+        {
+            return @"
+{{ClassModifier}} class {{ClassName}}{{#newline}}
+{{{#newline}}
+{{#each Properties}}
+    public {{WrappedType}} {{PropertyName}} { get; set; }{{PropertyInitialiser}}{{#newline}}
 {{/each}}
 }{{#newline}}
 ";

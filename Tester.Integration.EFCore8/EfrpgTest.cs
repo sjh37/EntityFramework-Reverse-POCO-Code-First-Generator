@@ -70,6 +70,7 @@ namespace V8EfrpgTest
         DbSet<ComplexView> ComplexViews { get; set; } // ComplexView
         DbSet<Country> Countries { get; set; } // Country
         DbSet<CrossDatabaseSynonym> CrossDatabaseSynonyms { get; set; } // cross_database_synonym
+        DbSet<Customer> Customers { get; set; } // Customer
         DbSet<DateTimeDefaultTest> DateTimeDefaultTests { get; set; } // DateTimeDefaultTest
         DbSet<dcg_RovColumnDefinition> dcg_RovColumnDefinitions { get; set; } // rov_ColumnDefinitions
         DbSet<DefaultCheckForNull> DefaultCheckForNulls { get; set; } // DefaultCheckForNull
@@ -93,6 +94,7 @@ namespace V8EfrpgTest
         DbSet<InflectorData> InflectorData { get; set; } // InflectorData
         DbSet<InflectorStatus> InflectorStatus { get; set; } // InflectorStatus
         DbSet<InflectorTo> InflectorTo { get; set; } // InflectorTo
+        DbSet<Invoice> Invoices { get; set; } // Invoice
         DbSet<Issue47_Role> Issue47_Roles { get; set; } // Role
         DbSet<Issue47_User> Issue47_Users { get; set; } // Users
         DbSet<Issue47_UserRole> Issue47_UserRoles { get; set; } // UserRoles
@@ -399,6 +401,11 @@ namespace V8EfrpgTest
         {
         }
 
+        protected V8EfrpgTestDbContext(DbContextOptions options)
+            : base(options)
+        {
+        }
+
         public DbSet<A> A { get; set; } // A
         public DbSet<Aaref> Aarefs { get; set; } // AAREF
         public DbSet<AbOrderLinesAb> AbOrderLinesAbs { get; set; } // AB_OrderLinesAB_
@@ -435,6 +442,7 @@ namespace V8EfrpgTest
         public DbSet<ComplexView> ComplexViews { get; set; } // ComplexView
         public DbSet<Country> Countries { get; set; } // Country
         public DbSet<CrossDatabaseSynonym> CrossDatabaseSynonyms { get; set; } // cross_database_synonym
+        public DbSet<Customer> Customers { get; set; } // Customer
         public DbSet<DateTimeDefaultTest> DateTimeDefaultTests { get; set; } // DateTimeDefaultTest
         public DbSet<dcg_RovColumnDefinition> dcg_RovColumnDefinitions { get; set; } // rov_ColumnDefinitions
         public DbSet<DefaultCheckForNull> DefaultCheckForNulls { get; set; } // DefaultCheckForNull
@@ -458,6 +466,7 @@ namespace V8EfrpgTest
         public DbSet<InflectorData> InflectorData { get; set; } // InflectorData
         public DbSet<InflectorStatus> InflectorStatus { get; set; } // InflectorStatus
         public DbSet<InflectorTo> InflectorTo { get; set; } // InflectorTo
+        public DbSet<Invoice> Invoices { get; set; } // Invoice
         public DbSet<Issue47_Role> Issue47_Roles { get; set; } // Role
         public DbSet<Issue47_User> Issue47_Users { get; set; } // Users
         public DbSet<Issue47_UserRole> Issue47_UserRoles { get; set; } // UserRoles
@@ -580,6 +589,7 @@ namespace V8EfrpgTest
             modelBuilder.ApplyConfiguration(new ComplexViewConfiguration());
             modelBuilder.ApplyConfiguration(new CountryConfiguration());
             modelBuilder.ApplyConfiguration(new CrossDatabaseSynonymConfiguration());
+            modelBuilder.ApplyConfiguration(new CustomerConfiguration());
             modelBuilder.ApplyConfiguration(new DateTimeDefaultTestConfiguration());
             modelBuilder.ApplyConfiguration(new dcg_RovColumnDefinitionConfiguration());
             modelBuilder.ApplyConfiguration(new DefaultCheckForNullConfiguration());
@@ -603,6 +613,7 @@ namespace V8EfrpgTest
             modelBuilder.ApplyConfiguration(new InflectorDataConfiguration());
             modelBuilder.ApplyConfiguration(new InflectorStatusConfiguration());
             modelBuilder.ApplyConfiguration(new InflectorToConfiguration());
+            modelBuilder.ApplyConfiguration(new InvoiceConfiguration());
             modelBuilder.ApplyConfiguration(new Issue47_RoleConfiguration());
             modelBuilder.ApplyConfiguration(new Issue47_UserConfiguration());
             modelBuilder.ApplyConfiguration(new Issue47_UserRoleConfiguration());
@@ -671,6 +682,14 @@ namespace V8EfrpgTest
             modelBuilder.Entity<CheckIfApplicationIsCompleteReturnModel>().HasNoKey();
             modelBuilder.Entity<ColourPivotReturnModel>().HasNoKey();
             modelBuilder.Entity<ColumnNameAndTypesProcReturnModel>().HasNoKey();
+            modelBuilder.Entity<ColumnNameAndTypesProcReturnModel>().Property(e => e.adecimal).HasPrecision(18, 0);
+            modelBuilder.Entity<ColumnNameAndTypesProcReturnModel>().Property(e => e.adecimal_19_4).HasPrecision(19, 4);
+            modelBuilder.Entity<ColumnNameAndTypesProcReturnModel>().Property(e => e.adecimal_10_3).HasPrecision(10, 3);
+            modelBuilder.Entity<ColumnNameAndTypesProcReturnModel>().Property(e => e.anumeric).HasPrecision(18, 0);
+            modelBuilder.Entity<ColumnNameAndTypesProcReturnModel>().Property(e => e.anumeric_5_2).HasPrecision(5, 2);
+            modelBuilder.Entity<ColumnNameAndTypesProcReturnModel>().Property(e => e.anumeric_11_3).HasPrecision(11, 3);
+            modelBuilder.Entity<ColumnNameAndTypesProcReturnModel>().Property(e => e.amoney).HasPrecision(19, 4);
+            modelBuilder.Entity<ColumnNameAndTypesProcReturnModel>().Property(e => e.asmallmoney).HasPrecision(10, 4);
             modelBuilder.Entity<DboProcDataFromFfrsReturnModel>().HasNoKey();
             modelBuilder.Entity<DboProcDataFromFfrsAndDboReturnModel>().HasNoKey();
             modelBuilder.Entity<DsOpeProcReturnModel>().HasNoKey();
@@ -679,6 +698,7 @@ namespace V8EfrpgTest
             modelBuilder.Entity<FFRS_DataFromDboAndFfrsReturnModel>().HasNoKey();
             modelBuilder.Entity<FkTest_HelloReturnModel>().HasNoKey();
             modelBuilder.Entity<GetSmallDecimalTestReturnModel>().HasNoKey();
+            modelBuilder.Entity<GetSmallDecimalTestReturnModel>().Property(e => e.KoeffVed).HasPrecision(4, 4);
             modelBuilder.Entity<SpatialTypesNoParamsReturnModel>().HasNoKey();
             modelBuilder.Entity<SpatialTypesWithParamsReturnModel>().HasNoKey();
             modelBuilder.Entity<StoredProcWithDefaultsReturnModel>().HasNoKey();
@@ -2390,6 +2410,7 @@ namespace V8EfrpgTest
         public DbSet<ComplexView> ComplexViews { get; set; } = null!; // ComplexView
         public DbSet<Country> Countries { get; set; } = null!; // Country
         public DbSet<CrossDatabaseSynonym> CrossDatabaseSynonyms { get; set; } = null!; // cross_database_synonym
+        public DbSet<Customer> Customers { get; set; } = null!; // Customer
         public DbSet<DateTimeDefaultTest> DateTimeDefaultTests { get; set; } = null!; // DateTimeDefaultTest
         public DbSet<dcg_RovColumnDefinition> dcg_RovColumnDefinitions { get; set; } = null!; // rov_ColumnDefinitions
         public DbSet<DefaultCheckForNull> DefaultCheckForNulls { get; set; } = null!; // DefaultCheckForNull
@@ -2413,6 +2434,7 @@ namespace V8EfrpgTest
         public DbSet<InflectorData> InflectorData { get; set; } = null!; // InflectorData
         public DbSet<InflectorStatus> InflectorStatus { get; set; } = null!; // InflectorStatus
         public DbSet<InflectorTo> InflectorTo { get; set; } = null!; // InflectorTo
+        public DbSet<Invoice> Invoices { get; set; } = null!; // Invoice
         public DbSet<Issue47_Role> Issue47_Roles { get; set; } = null!; // Role
         public DbSet<Issue47_User> Issue47_Users { get; set; } = null!; // Users
         public DbSet<Issue47_UserRole> Issue47_UserRoles { get; set; } = null!; // UserRoles
@@ -2510,6 +2532,7 @@ namespace V8EfrpgTest
             ComplexViews = new FakeDbSet<ComplexView>();
             Countries = new FakeDbSet<Country>("CountryId");
             CrossDatabaseSynonyms = new FakeDbSet<CrossDatabaseSynonym>("Id");
+            Customers = new FakeDbSet<Customer>("CustomerId");
             DateTimeDefaultTests = new FakeDbSet<DateTimeDefaultTest>("Id");
             dcg_RovColumnDefinitions = new FakeDbSet<dcg_RovColumnDefinition>();
             DefaultCheckForNulls = new FakeDbSet<DefaultCheckForNull>("Id");
@@ -2533,6 +2556,7 @@ namespace V8EfrpgTest
             InflectorData = new FakeDbSet<InflectorData>("Id");
             InflectorStatus = new FakeDbSet<InflectorStatus>("Id");
             InflectorTo = new FakeDbSet<InflectorTo>("Id");
+            Invoices = new FakeDbSet<Invoice>("InvoiceId");
             Issue47_Roles = new FakeDbSet<Issue47_Role>("RoleId");
             Issue47_Users = new FakeDbSet<Issue47_User>("UserId");
             Issue47_UserRoles = new FakeDbSet<Issue47_UserRole>("UserRoleId");
@@ -4402,12 +4426,12 @@ namespace V8EfrpgTest
         /// <summary>
         /// Parent (One-to-One) Burak2 pointed by [Burak1].([id], [num]) (FK_Burak_Test2)
         /// </summary>
-        public virtual Burak1? Burak1_Id { get; set; } // Burak1.FK_Burak_Test2
+        public virtual Burak1 Burak1_Id { get; set; } = null!; // Burak1.FK_Burak_Test2
 
         /// <summary>
         /// Parent (One-to-One) Burak2 pointed by [Burak1].([id_t], [num]) (FK_Burak_Test1)
         /// </summary>
-        public virtual Burak1? Burak1_IdT { get; set; } // Burak1.FK_Burak_Test1
+        public virtual Burak1 Burak1_IdT { get; set; } = null!; // Burak1.FK_Burak_Test1
     }
 
     // CalculatedColumnNotNull
@@ -4695,6 +4719,19 @@ namespace V8EfrpgTest
         public string? Forename { get; set; } // Forename (length: 20)
     }
 
+    // Customer
+    public class Customer
+    {
+        public int CustomerId { get; set; } // CustomerId (Primary key)
+        public string Name { get; set; } = null!; // Name (length: 100)
+        public string BillingAddressStreet { get; set; } = null!; // BillingAddress_Street (length: 100)
+        public string BillingAddressCity { get; set; } = null!; // BillingAddress_City (length: 50)
+        public string BillingAddressPostcode { get; set; } = null!; // BillingAddress_Postcode (length: 10)
+        public string ShippingAddressStreet { get; set; } = null!; // ShippingAddress_Street (length: 100)
+        public string ShippingAddressCity { get; set; } = null!; // ShippingAddress_City (length: 50)
+        public string? ShippingAddressPostcode { get; set; } // ShippingAddress_Postcode (length: 10)
+    }
+
     // DateTimeDefaultTest
     public class DateTimeDefaultTest
     {
@@ -4769,6 +4806,7 @@ namespace V8EfrpgTest
     {
         public string EnumName { get; set; } = null!; // enum_name (Primary key) (length: 50)
         public string Value { get; set; } = null!; // value (Primary key) (length: 10)
+        public string? Description { get; set; } // description (length: 50)
     }
 
     // DaysOfWeek
@@ -4776,6 +4814,7 @@ namespace V8EfrpgTest
     {
         public string TypeName { get; set; } = null!; // TypeName (length: 50)
         public int TypeId { get; set; } // TypeId (Primary key)
+        public string? Description { get; set; } // Description (length: 50)
 
         // Reverse navigation
 
@@ -4927,12 +4966,12 @@ namespace V8EfrpgTest
         /// <summary>
         /// Parent (One-to-One) ForeignKeyIsNotEnforced pointed by [ForeignKeyIsNotEnforcedItem].[not_null_value] (FK_ForeignKeyIsNotEnforcedItem_notnull_notnull)
         /// </summary>
-        public virtual ForeignKeyIsNotEnforcedItem? ForeignKeyIsNotEnforcedItem_NotNullValue { get; set; } // ForeignKeyIsNotEnforcedItem.FK_ForeignKeyIsNotEnforcedItem_notnull_notnull
+        public virtual ForeignKeyIsNotEnforcedItem ForeignKeyIsNotEnforcedItem_NotNullValue { get; set; } = null!; // ForeignKeyIsNotEnforcedItem.FK_ForeignKeyIsNotEnforcedItem_notnull_notnull
 
         /// <summary>
         /// Parent (One-to-One) ForeignKeyIsNotEnforced pointed by [ForeignKeyIsNotEnforcedItem].[null_value] (FK_ForeignKeyIsNotEnforcedItem_null_notnull)
         /// </summary>
-        public virtual ForeignKeyIsNotEnforcedItem? ForeignKeyIsNotEnforcedItem_NullValue { get; set; } // ForeignKeyIsNotEnforcedItem.FK_ForeignKeyIsNotEnforcedItem_null_notnull
+        public virtual ForeignKeyIsNotEnforcedItem ForeignKeyIsNotEnforcedItem_NullValue { get; set; } = null!; // ForeignKeyIsNotEnforcedItem.FK_ForeignKeyIsNotEnforcedItem_null_notnull
     }
 
     // ForeignKeyIsNotEnforcedItem
@@ -4986,7 +5025,7 @@ namespace V8EfrpgTest
         /// <summary>
         /// Parent (One-to-One) HasPrincipalKeyTestParent pointed by [HasPrincipalKeyTestChild].([A], [B]) (FK_HasPrincipalKey_AB)
         /// </summary>
-        public virtual HasPrincipalKeyTestChild? HasPrincipalKeyTestChild { get; set; } // HasPrincipalKeyTestChild.FK_HasPrincipalKey_AB
+        public virtual HasPrincipalKeyTestChild HasPrincipalKeyTestChild { get; set; } = null!; // HasPrincipalKeyTestChild.FK_HasPrincipalKey_AB
     }
 
     // header
@@ -5039,6 +5078,15 @@ namespace V8EfrpgTest
     public class InflectorTo
     {
         public int Id { get; set; } // Id (Primary key)
+    }
+
+    // Invoice
+    public class Invoice
+    {
+        public int InvoiceId { get; set; } // InvoiceId (Primary key)
+        public string Description { get; set; } = null!; // Description (length: 200)
+        public decimal TotalAmountValue { get; set; } // TotalAmount_Value
+        public string TotalAmountCurrency { get; set; } = null!; // TotalAmount_Currency (length: 3)
     }
 
     // Role
@@ -5130,7 +5178,7 @@ namespace V8EfrpgTest
         /// <summary>
         /// Parent (One-to-One) NullableReverseNavigationA pointed by [NullableReverseNavigationB].[Id] (FK_NullableReverseNavigationB_Id)
         /// </summary>
-        public virtual NullableReverseNavigationB? NullableReverseNavigationB { get; set; } // NullableReverseNavigationB.FK_NullableReverseNavigationB_Id
+        public virtual NullableReverseNavigationB NullableReverseNavigationB { get; set; } = null!; // NullableReverseNavigationB.FK_NullableReverseNavigationB_Id
     }
 
     // NullableReverseNavigationB
@@ -5329,7 +5377,7 @@ namespace V8EfrpgTest
         /// <summary>
         /// Parent (One-to-One) SmallDecimalTest pointed by [SmallDecimalTestAttribute].[FkID] (KateFK)
         /// </summary>
-        public virtual FkTest_SmallDecimalTestAttribute? FkTest_SmallDecimalTestAttribute { get; set; } // SmallDecimalTestAttribute.KateFK
+        public virtual FkTest_SmallDecimalTestAttribute FkTest_SmallDecimalTestAttribute { get; set; } = null!; // SmallDecimalTestAttribute.KateFK
 
         public SmallDecimalTest()
         {
@@ -5361,7 +5409,7 @@ namespace V8EfrpgTest
         /// <summary>
         /// Parent (One-to-One) Sorters pointed by [SorterScannerGroup].[SorterName] (FK_SorterScannerGroup_Sorters)
         /// </summary>
-        public virtual SorterScannerGroup? SorterScannerGroup { get; set; } // SorterScannerGroup.FK_SorterScannerGroup_Sorters
+        public virtual SorterScannerGroup SorterScannerGroup { get; set; } = null!; // SorterScannerGroup.FK_SorterScannerGroup_Sorters
     }
 
     // SorterScannerGroup
@@ -5388,7 +5436,7 @@ namespace V8EfrpgTest
         /// <summary>
         /// Parent (One-to-One) Stafford_Boo pointed by [Foo].[id] (FK_Foo_Boo)
         /// </summary>
-        public virtual Stafford_Foo? Stafford_Foo { get; set; } // Foo.FK_Foo_Boo
+        public virtual Stafford_Foo Stafford_Foo { get; set; } = null!; // Foo.FK_Foo_Boo
     }
 
     // ComputedColumns
@@ -5479,7 +5527,7 @@ namespace V8EfrpgTest
         /// <summary>
         /// Parent (One-to-One) TableB pointed by [TableB].([TableAId], [TableBId]) (ParentTableB_Hierarchy)
         /// </summary>
-        public virtual TableB? TableB2 { get; set; } // TableB.ParentTableB_Hierarchy
+        public virtual TableB TableB2 { get; set; } = null!; // TableB.ParentTableB_Hierarchy
 
         // Foreign keys
 
@@ -6300,6 +6348,7 @@ namespace V8EfrpgTest
         public void Configure(EntityTypeBuilder<CodeObject> builder)
         {
             builder.ToTable("CodeObject", "dbo");
+            builder.HasComment(@"This is a test");
             builder.HasKey(x => x.CodeObjectNo).HasName("aaaaaObject_PK");
 
             builder.Property(x => x.CodeObjectNo).HasColumnName(@"codeObjectNo").HasColumnType("int").IsRequired().ValueGeneratedNever();
@@ -6311,7 +6360,7 @@ namespace V8EfrpgTest
             builder.Property(x => x.CodeName).HasColumnName(@"codeName").HasColumnType("nvarchar(250)").IsRequired(false).HasMaxLength(250);
             builder.Property(x => x.Note).HasColumnName(@"note").HasColumnType("nvarchar(250)").IsRequired(false).HasMaxLength(250);
             builder.Property(x => x.IsObject).HasColumnName(@"isObject").HasColumnType("bit").IsRequired();
-            builder.Property(x => x.VersionNumber).HasColumnName(@"versionNumber").HasColumnType("timestamp(8)").IsRequired(false).IsFixedLength().HasMaxLength(8).IsRowVersion().IsConcurrencyToken();
+            builder.Property(x => x.VersionNumber).HasColumnName(@"versionNumber").HasColumnType("timestamp").IsRequired(false).IsFixedLength().IsRowVersion().IsConcurrencyToken();
         }
     }
 
@@ -6355,6 +6404,10 @@ namespace V8EfrpgTest
         public void Configure(EntityTypeBuilder<ColumnNameAndType> builder)
         {
             builder.ToTable("ColumnNameAndTypes", "dbo");
+            builder.HasComment(@"This is to document the
+
+
+        table with poor column name choices");
             builder.HasKey(x => x.C36).HasName("PK_ColumnNameAndTypes").IsClustered();
 
             builder.Property(x => x.C36).HasColumnName(@"$").HasColumnType("int").IsRequired().ValueGeneratedNever();
@@ -6429,6 +6482,25 @@ namespace V8EfrpgTest
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.Forename).HasColumnName(@"Forename").HasColumnType("varchar(20)").IsRequired(false).IsUnicode(false).HasMaxLength(20);
+        }
+    }
+
+    // Customer
+    public class CustomerConfiguration : IEntityTypeConfiguration<Customer>
+    {
+        public void Configure(EntityTypeBuilder<Customer> builder)
+        {
+            builder.ToTable("Customer", "dbo");
+            builder.HasKey(x => x.CustomerId).HasName("PK_Customer").IsClustered();
+
+            builder.Property(x => x.CustomerId).HasColumnName(@"CustomerId").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.Name).HasColumnName(@"Name").HasColumnType("nvarchar(100)").IsRequired().HasMaxLength(100);
+            builder.Property(x => x.BillingAddressStreet).HasColumnName(@"BillingAddress_Street").HasColumnType("nvarchar(100)").IsRequired().HasMaxLength(100);
+            builder.Property(x => x.BillingAddressCity).HasColumnName(@"BillingAddress_City").HasColumnType("nvarchar(50)").IsRequired().HasMaxLength(50);
+            builder.Property(x => x.BillingAddressPostcode).HasColumnName(@"BillingAddress_Postcode").HasColumnType("nvarchar(10)").IsRequired().HasMaxLength(10);
+            builder.Property(x => x.ShippingAddressStreet).HasColumnName(@"ShippingAddress_Street").HasColumnType("nvarchar(100)").IsRequired().HasMaxLength(100);
+            builder.Property(x => x.ShippingAddressCity).HasColumnName(@"ShippingAddress_City").HasColumnType("nvarchar(50)").IsRequired().HasMaxLength(50);
+            builder.Property(x => x.ShippingAddressPostcode).HasColumnName(@"ShippingAddress_Postcode").HasColumnType("nvarchar(10)").IsRequired(false).HasMaxLength(10);
         }
     }
 
@@ -6523,6 +6595,7 @@ namespace V8EfrpgTest
 
             builder.Property(x => x.EnumName).HasColumnName(@"enum_name").HasColumnType("varchar(50)").IsRequired().IsUnicode(false).HasMaxLength(50).ValueGeneratedNever();
             builder.Property(x => x.Value).HasColumnName(@"value").HasColumnType("varchar(10)").IsRequired().IsUnicode(false).HasMaxLength(10).ValueGeneratedNever();
+            builder.Property(x => x.Description).HasColumnName(@"description").HasColumnType("varchar(50)").IsRequired(false).IsUnicode(false).HasMaxLength(50);
         }
     }
 
@@ -6536,6 +6609,7 @@ namespace V8EfrpgTest
 
             builder.Property(x => x.TypeName).HasColumnName(@"TypeName").HasColumnType("varchar(50)").IsRequired().IsUnicode(false).HasMaxLength(50);
             builder.Property(x => x.TypeId).HasColumnName(@"TypeId").HasColumnType("int").IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.Description).HasColumnName(@"Description").HasColumnType("varchar(50)").IsRequired(false).IsUnicode(false).HasMaxLength(50);
         }
     }
 
@@ -6809,6 +6883,21 @@ namespace V8EfrpgTest
             builder.HasKey(x => x.Id).HasName("PK_InflectorTo").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+        }
+    }
+
+    // Invoice
+    public class InvoiceConfiguration : IEntityTypeConfiguration<Invoice>
+    {
+        public void Configure(EntityTypeBuilder<Invoice> builder)
+        {
+            builder.ToTable("Invoice", "dbo");
+            builder.HasKey(x => x.InvoiceId).HasName("PK_Invoice").IsClustered();
+
+            builder.Property(x => x.InvoiceId).HasColumnName(@"InvoiceId").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
+            builder.Property(x => x.Description).HasColumnName(@"Description").HasColumnType("nvarchar(200)").IsRequired().HasMaxLength(200);
+            builder.Property(x => x.TotalAmountValue).HasColumnName(@"TotalAmount_Value").HasColumnType("decimal(18,2)").HasPrecision(18,2).IsRequired();
+            builder.Property(x => x.TotalAmountCurrency).HasColumnName(@"TotalAmount_Currency").HasColumnType("char(3)").HasConversion(new ValueConverter<string, string>(v => v.TrimEnd(), v => v.TrimEnd())).IsRequired().IsFixedLength().IsUnicode(false).HasMaxLength(3);
         }
     }
 
@@ -7229,7 +7318,7 @@ namespace V8EfrpgTest
             builder.HasOne(a => a.TableA_TableAId).WithMany(b => b.TableBs).HasForeignKey(c => c.TableAId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_TableA_CompositeKey_Req");
             builder.HasOne(a => a.TableB1).WithOne(b => b.TableB2).HasForeignKey<TableB>(c => new { c.TableAId, c.TableBId }).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("ParentTableB_Hierarchy");
 
-            builder.HasIndex(x => x.TableAId).HasDatabaseName("fki_ParentTableA_FK_Constraint");
+            builder.HasIndex(x => x.TableAId).HasDatabaseName("fki_ParentTableA_FK_Constraint").IncludeProperties("ParentTableAId", "TableBDesc");
         }
     }
 
@@ -7462,7 +7551,7 @@ namespace V8EfrpgTest
             builder.HasKey(x => x.Id).HasName("PK_TimestampNotNull").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.Version).HasColumnName(@"Version").HasColumnType("timestamp(8)").IsRequired().IsFixedLength().HasMaxLength(8).IsRowVersion().IsConcurrencyToken();
+            builder.Property(x => x.Version).HasColumnName(@"Version").HasColumnType("timestamp").IsRequired().IsFixedLength().IsRowVersion().IsConcurrencyToken();
             builder.Property(x => x.Number).HasColumnName(@"Number").HasColumnType("int").IsRequired();
         }
     }
@@ -7476,7 +7565,7 @@ namespace V8EfrpgTest
             builder.HasKey(x => x.Id).HasName("PK_TTimestampNullable").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.Version).HasColumnName(@"Version").HasColumnType("timestamp(8)").IsRequired(false).IsFixedLength().HasMaxLength(8).IsRowVersion().IsConcurrencyToken();
+            builder.Property(x => x.Version).HasColumnName(@"Version").HasColumnType("timestamp").IsRequired(false).IsFixedLength().IsRowVersion().IsConcurrencyToken();
             builder.Property(x => x.Number).HasColumnName(@"Number").HasColumnType("int").IsRequired();
         }
     }
@@ -7552,7 +7641,7 @@ namespace V8EfrpgTest
             builder.HasKey(x => x.Id).HasName("PK_Versioned").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.Version).HasColumnName(@"Version").HasColumnType("timestamp(8)").IsRequired().IsFixedLength().HasMaxLength(8).IsRowVersion().IsConcurrencyToken();
+            builder.Property(x => x.Version).HasColumnName(@"Version").HasColumnType("timestamp").IsRequired().IsFixedLength().IsRowVersion().IsConcurrencyToken();
             builder.Property(x => x.Number).HasColumnName(@"Number").HasColumnType("int").IsRequired();
         }
     }
@@ -7566,7 +7655,7 @@ namespace V8EfrpgTest
             builder.HasKey(x => x.Id).HasName("PK_VersionedNullable").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
-            builder.Property(x => x.Version).HasColumnName(@"Version").HasColumnType("timestamp(8)").IsRequired(false).IsFixedLength().HasMaxLength(8).IsRowVersion().IsConcurrencyToken();
+            builder.Property(x => x.Version).HasColumnName(@"Version").HasColumnType("timestamp").IsRequired(false).IsFixedLength().IsRowVersion().IsConcurrencyToken();
             builder.Property(x => x.Number).HasColumnName(@"Number").HasColumnType("int").IsRequired();
         }
     }
@@ -7601,7 +7690,7 @@ namespace V8EfrpgTest
             builder.Property(x => x.CodeName).HasColumnName(@"codeName").HasColumnType("nvarchar(250)").IsRequired(false).HasMaxLength(250);
             builder.Property(x => x.Note).HasColumnName(@"note").HasColumnType("nvarchar(250)").IsRequired(false).HasMaxLength(250);
             builder.Property(x => x.IsObject).HasColumnName(@"isObject").HasColumnType("bit").IsRequired();
-            builder.Property(x => x.VersionNumber).HasColumnName(@"versionNumber").HasColumnType("timestamp(8)").IsRequired(false).IsFixedLength().HasMaxLength(8).IsRowVersion().IsConcurrencyToken();
+            builder.Property(x => x.VersionNumber).HasColumnName(@"versionNumber").HasColumnType("timestamp").IsRequired(false).IsFixedLength().IsRowVersion().IsConcurrencyToken();
         }
     }
 

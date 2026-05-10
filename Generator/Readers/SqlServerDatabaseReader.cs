@@ -311,8 +311,22 @@ SELECT  SCHEMA_NAME(t.schema_id) AS TableSchema,
         FROM   sys.index_columns i
         WHERE  i.object_id = ind.object_id
             AND i.index_id = ind.index_id
+            AND i.is_included_column = 0
     ) AS ColumnCount,
-    ISNULL(ind.filter_definition, '') AS FilterDefinition
+    ISNULL(ind.filter_definition, '') AS FilterDefinition,
+    ISNULL((
+        SELECT STUFF((
+            SELECT ',' + col2.name
+            FROM   sys.index_columns ic2
+                   INNER JOIN sys.columns col2
+                       ON ic2.object_id = col2.object_id
+                          AND ic2.column_id = col2.column_id
+            WHERE  ic2.object_id = ind.object_id
+                   AND ic2.index_id = ind.index_id
+                   AND ic2.is_included_column = 1
+            ORDER BY col2.name
+            FOR XML PATH(''), TYPE).value('.', 'NVARCHAR(MAX)'), 1, 1, '')
+    ), '') AS IncludedColumns
 FROM    sys.tables t
     INNER JOIN sys.indexes ind
         ON ind.object_id = t.object_id
@@ -324,7 +338,7 @@ FROM    sys.tables t
             AND ic.column_id = col.column_id
 WHERE   t.is_ms_shipped = 0
     AND ind.ignore_dup_key = 0
-    AND ic.key_ordinal > 0
+    AND ic.is_included_column = 0
     AND t.name NOT LIKE 'sysdiagram%'";
         }
 
@@ -1168,6 +1182,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 const string structured = "Structured";
                 var sb = new StringBuilder(255);
                 sb.AppendLine();
+
                 sb.AppendLine("SET FMTONLY OFF; SET FMTONLY ON;");
 
                 if (proc.IsTableValuedFunction)
@@ -1210,6 +1225,7 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
 
                     sb.AppendLine(";");
                 }
+
                 sb.AppendLine("SET FMTONLY OFF; SET FMTONLY OFF;");
 
                 var ds = new DataSet();
@@ -1242,6 +1258,11 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                     proc.ReturnModels.Add(ds.Tables[count].Columns.Cast<DataColumn>().ToList());
                 }
 
+                // Enrich first result set columns with SQL precision/scale (SQL Server 2012+).
+                // sys.dm_exec_describe_first_result_set returns this info which ADO.NET FillSchema discards.
+                if (DatabaseProductMajorVersion >= 11 && proc.ReturnModels.Count > 0)
+                    EnrichFirstResultSetWithPrecision(sqlConnection, proc);
+
                 proc.MergeModelsIfAllSame();
                 Settings.ReadStoredProcReturnObjectCompleted(proc);
             }
@@ -1249,6 +1270,62 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
             {
                 // Stored procedure does not have a return type
                 Settings.ReadStoredProcReturnObjectException(ex, proc);
+            }
+        }
+
+        private void EnrichFirstResultSetWithPrecision(DbConnection sqlConnection, StoredProcedure proc)
+        {
+            try
+            {
+                string dmvStatement;
+                if (proc.IsTableValuedFunction)
+                {
+                    var paramList = string.Join(", ", proc.Parameters.Select(_ => "default"));
+                    dmvStatement = $"SELECT * FROM [{proc.Schema.DbName}].[{proc.DbName}]({paramList})";
+                }
+                else
+                {
+                    var paramList = string.Join(", ", proc.Parameters.Select(_ => "default"));
+                    dmvStatement = string.IsNullOrEmpty(paramList)
+                        ? $"EXEC [{proc.Schema.DbName}].[{proc.DbName}]"
+                        : $"EXEC [{proc.Schema.DbName}].[{proc.DbName}] {paramList}";
+                }
+
+                // Escape single quotes in the statement for embedding in the DMV query string
+                dmvStatement = dmvStatement.Replace("'", "''");
+
+                var sql = $"SELECT column_ordinal, precision, scale FROM sys.dm_exec_describe_first_result_set(N'{dmvStatement}', NULL, 0) WHERE is_hidden = 0 ORDER BY column_ordinal;";
+
+                using (var cmd = _factory.CreateCommand())
+                {
+                    cmd.CommandText = sql;
+                    cmd.Connection = sqlConnection;
+                    if (sqlConnection.State != ConnectionState.Open)
+                        sqlConnection.Open();
+
+                    using (var rdr = cmd.ExecuteReader())
+                    {
+                        var firstResultSet = proc.ReturnModels[0];
+                        while (rdr.Read())
+                        {
+                            var ordinal = rdr.GetInt32(0) - 1; // DMV is 1-based, DataColumn list is 0-based
+                            if (ordinal < 0 || ordinal >= firstResultSet.Count)
+                                continue;
+
+                            var precision = rdr.GetByte(1);
+                            var scale     = rdr.GetByte(2);
+                            if (precision > 0 || scale > 0)
+                            {
+                                firstResultSet[ordinal].ExtendedProperties["Precision"] = precision;
+                                firstResultSet[ordinal].ExtendedProperties["Scale"]     = scale;
+                            }
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                // DMV unavailable or failed - precision/scale simply won't be emitted
             }
         }
 

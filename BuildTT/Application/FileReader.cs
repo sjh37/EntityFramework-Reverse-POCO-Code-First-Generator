@@ -95,7 +95,7 @@ namespace BuildTT.Application
                 if (count < 2 && line.StartsWith("}"))
                     return; // namespace ending brace
 
-                if(!isUsing)
+                if (!isUsing)
                     _code.Add(line);
             }
         }

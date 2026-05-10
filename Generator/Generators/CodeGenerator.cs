@@ -87,7 +87,9 @@ namespace Efrpg.Generators
                         sp.WriteStoredProcFunctionDeclareSqlParameter(false),
                         sp.Parameters.OrderBy(x => x.Ordinal).Select(sp.WriteStoredProcSqlParameterName).ToList(),
                         sp.ReturnModels.Count,
-                        string.Format("EXEC @procResult = [{0}].[{1}] {2}", sp.Schema.DbName, sp.DbName, sp.WriteStoredProcFunctionSqlAtParams())
+                        string.Format("EXEC @procResult = [{0}].[{1}] {2}", sp.Schema.DbName, sp.DbName, sp.WriteStoredProcFunctionSqlAtParams()),
+                        !string.IsNullOrEmpty(sp.Error),
+                        sp.Error ?? string.Empty
                     ))
                     .ToList();
             }
@@ -286,6 +288,12 @@ namespace Efrpg.Generators
             return Settings.ElementsToGenerate.HasFlag(Elements.Enum) && _hasEnums;
         }
 
+        private bool CanWriteOwnedEntityClasses()
+        {
+            return Settings.GeneratorType == GeneratorType.EfCore &&
+                   Settings.ElementsToGenerate.HasFlag(Elements.Poco);
+        }
+
         public string GenerateUsings(List<string> usings)
         {
             return !usings.Any() ? null : Template.Transform(_template.Usings(), usings).Trim();
@@ -401,8 +409,8 @@ namespace Efrpg.Generators
                 SqlParameter = Settings.SqlParameter(),
                 SqlParameterValue = Settings.SqlParameterValue(),
                 Triggers = _tables.Where(x => !string.IsNullOrEmpty(x.Table.TriggerName) || x.Table.Columns.Any(c => c.IsComputed))
-                                                                .Select(x => new Trigger { TableName = x.Table.NameHumanCase, TriggerName = x.Table.TriggerName ?? "HasComputedColumn" }).ToList(),
-                MemoryOptimisedTables = _tables.Where(x => x.Table.IsMemoryOptimised).Select(x => x.Table.NameHumanCase).ToList()
+                                                                .Select(x => new Trigger { TableName = x.Table.NameHumanCaseWithSuffix(), TriggerName = x.Table.TriggerName ?? "HasComputedColumn" }).ToList(),
+                MemoryOptimisedTables = _tables.Where(x => x.Table.IsMemoryOptimised).Select(x => x.Table.NameHumanCaseWithSuffix()).ToList()
             };
 
             data.hasIndexes = data.indexes.Any();
@@ -509,7 +517,11 @@ namespace Efrpg.Generators
 
             var co = new CodeOutput(string.Empty, filename, "Fake Database context", Settings.ContextFolder, _globalUsings);
             co.AddUsings(_template.FakeDatabaseContextUsings(data, _filter));
+            if (Settings.FakeDbContextInDebugOnlyMode)
+                co.AddCode("#if DEBUG");
             co.AddCode(Template.Transform(_template.FakeDatabaseContext(), data));
+            if (Settings.FakeDbContextInDebugOnlyMode)
+                co.AddCode("#endif");
 
             return co;
         }
@@ -531,7 +543,11 @@ namespace Efrpg.Generators
 
             var co = new CodeOutput(string.Empty, filename, "Fake DbSet", Settings.ContextFolder, _globalUsings);
             co.AddUsings(_template.FakeDbSetUsings(data));
+            if (Settings.FakeDbContextInDebugOnlyMode)
+                co.AddCode("#if DEBUG");
             co.AddCode(Template.Transform(_template.FakeDbSet(), data));
+            if (Settings.FakeDbContextInDebugOnlyMode)
+                co.AddCode("#endif");
 
             return co;
         }
@@ -642,7 +658,16 @@ namespace Efrpg.Generators
                     .ToList(),
                 ReverseNavigationCtor = table.ReverseNavigationCtor,
                 EntityClassesArePartial = Settings.EntityClassesArePartial(),
-                HasSpatial = table.Columns.Any(x => x.IsSpatial)
+                HasSpatial = table.Columns.Any(x => x.IsSpatial),
+                HasOwnedEntities = table.OwnedEntities.Any(),
+                OwnedEntities = table.OwnedEntities
+                    .Select(oe => new PocoOwnedEntityModel
+                    {
+                        PropertyType        = oe.PropertyType,
+                        PropertyName        = oe.PropertyName,
+                        PropertyInitialiser = Settings.NeedsNullForgiving() ? " = null!;" : string.Empty
+                    })
+                    .ToList()
             };
 
             var co = new CodeOutput(table.DbName, filename, null, Settings.PocoFolder, _globalUsings);
@@ -709,8 +734,42 @@ namespace Efrpg.Generators
                 MappingConfiguration = table.MappingConfiguration,
                 ConfigurationClassesArePartial = Settings.ConfigurationClassesArePartial(),
                 Indexes = indexes,
-                HasIndexes = hasIndexes
+                HasIndexes = hasIndexes,
+                HasTableComment = !Settings.UseDataAnnotations &&
+                                  Settings.GeneratorType == GeneratorType.EfCore &&
+                                  Settings.IncludeExtendedPropertyComments != CommentsStyle.None &&
+                                  !string.IsNullOrEmpty(table.Description),
+                TableComment = table.Description?.Replace("\"", "\"\"")
             };
+
+            // Build builder.OwnsOne(...) blocks for any owned entity mappings
+            var ownedEntityConfigs = new List<string>();
+            if (table.OwnedEntities.Any())
+            {
+                var orderByOrdinal = Settings.OrderProperties == OrderProperties.Ordinal;
+                foreach (var oe in table.OwnedEntities)
+                {
+                    var sb = new System.Text.StringBuilder();
+                    sb.AppendLine("builder.OwnsOne(x => x." + oe.PropertyName + ", b =>");
+                    sb.AppendLine("        {");
+
+                    var oeCols = orderByOrdinal
+                        ? oe.Columns.OrderBy(c => c.Ordinal).ToList()
+                        : oe.Columns.OrderBy(c => c.OwnedEntityPropertyName).ToList();
+
+                    foreach (var col in oeCols)
+                    {
+                        if (!string.IsNullOrEmpty(col.OwnedEntityConfig))
+                            sb.AppendLine("            " + col.OwnedEntityConfig);
+                    }
+
+                    sb.Append("        });");
+                    ownedEntityConfigs.Add(sb.ToString());
+                }
+            }
+
+            data.HasOwnedEntityConfigs = ownedEntityConfigs.Any();
+            data.OwnedEntityConfigs    = ownedEntityConfigs;
 
             var co = new CodeOutput(table.DbName, filename, null, Settings.PocoConfigurationFolder, _globalUsings);
             co.AddUsings(_template.PocoConfigurationUsings(data));
@@ -745,9 +804,9 @@ namespace Efrpg.Generators
                 PropertyGetSet = useProperties 
                     ? " { get; set; }"              // Properties: always include { get; set; }
                     : (needsNullForgiving ? "" : ";"),  // Fields: skip ; if NRT enabled (will be added with = null!;)
-                NullForgivingOperator = needsNullForgiving 
-                    ? " = null!;"                       // Always add = null!; when NRT is enabled
-                    : (useProperties ? ";" : ""),       // Add ; for properties only when NRT is disabled
+                NullForgivingOperator = needsNullForgiving
+                    ? " = null!;"                       // Add = null!; when NRT is enabled
+                    : string.Empty,                     // Nothing extra needed; PropertyGetSet already terminates the declaration
                 SingleModel = sp.ReturnModels.Count == 1,
                 SingleModelReturnColumns = sp.ReturnModels
                     .First()
@@ -773,7 +832,50 @@ namespace Efrpg.Generators
 
             var co = new CodeOutput(enumeration.EnumName, filename, null, Settings.PocoFolder, null);
             co.AddUsings(_template.EnumUsings());
+            if (enumeration.Items.Any(i => i.Attributes.Any(a => a.StartsWith("[Description"))))
+                co.AddUsings(new List<string> { "System.ComponentModel" });
             co.AddCode(Template.Transform(_template.Enums(), enumeration));
+            return co;
+        }
+
+        public CodeOutput GenerateOwnedEntityClass(string typeName, IList<OwnedEntity> instances)
+        {
+            var filename = typeName + Settings.FileExtension;
+            if (!CanWriteOwnedEntityClasses())
+            {
+                FileManagementService.DeleteFile(filename);
+                return null;
+            }
+
+            var seen = new HashSet<string>(StringComparer.Ordinal);
+            var props = new List<OwnedEntityPropertyItem>();
+            foreach (var oe in instances)
+            {
+                foreach (var col in oe.Columns)
+                {
+                    var propName = col.OwnedEntityPropertyName;
+                    if (string.IsNullOrEmpty(propName) || !seen.Add(propName))
+                        continue;
+                    props.Add(new OwnedEntityPropertyItem
+                    {
+                        WrappedType = col.WrapIfNullable(),
+                        PropertyName = propName,
+                        PropertyInitialiser = GetPropertyInitialiser(col)
+                    });
+                }
+            }
+
+            var data = new OwnedEntityClassModel
+            {
+                ClassModifier = Settings.EntityClassesModifiers,
+                ClassName = typeName,
+                Properties = props
+            };
+
+            var folder = string.IsNullOrEmpty(Settings.OwnedEntityFolder) ? Settings.PocoFolder : Settings.OwnedEntityFolder;
+            var co = new CodeOutput(typeName, filename, null, folder, _globalUsings);
+            co.AddUsings(_template.OwnedEntityClassUsings(data));
+            co.AddCode(Template.Transform(_template.OwnedEntityClass(), data));
             return co;
         }
     }

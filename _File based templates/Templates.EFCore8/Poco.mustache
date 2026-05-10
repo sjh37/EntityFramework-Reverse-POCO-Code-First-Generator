@@ -27,6 +27,14 @@
 {{#if IncludeFieldNameConstants}}    public const string {{NameHumanCase}}Field = "{{NameHumanCase}}";{{#newline}}{{/if}}
 {{/each}}
 
+{{#if HasOwnedEntities}}
+{{#newline}}
+    // Owned entities{{#newline}}
+{{#each OwnedEntities}}
+    public {{PropertyType}} {{PropertyName}} { get; set; }{{PropertyInitialiser}}{{#newline}}
+{{/each}}
+{{/if}}
+
 {{#if HasReverseNavigation}}
 {{#newline}}
     // Reverse navigation{{#newline}}

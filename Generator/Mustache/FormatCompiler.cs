@@ -424,7 +424,7 @@ namespace Efrpg.Mustache
             // provide default values for missing arguments
             if (captures.Count < parameters.Count)
             {
-                captures.AddRange(Enumerable.Repeat((Capture)null, parameters.Count - captures.Count));
+                captures.AddRange(Enumerable.Repeat((Capture) null, parameters.Count - captures.Count));
             }
 
             // pair up the parameters to the given arguments
@@ -436,7 +436,7 @@ namespace Efrpg.Mustache
                 string value = null;
                 if (pair.Capture != null)
                 {
-                    value = pair.Capture.Value;                    
+                    value = pair.Capture.Value;
                 }
                 else if (pair.Parameter.IsRequired)
                 {

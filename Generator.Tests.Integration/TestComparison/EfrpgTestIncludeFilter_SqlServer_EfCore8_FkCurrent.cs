@@ -241,6 +241,11 @@ namespace Efrpg.V8FilterTest
         {
         }
 
+        protected EfrpgDbContext(DbContextOptions options)
+            : base(options)
+        {
+        }
+
         public DbSet<Beta_Harish3485> Beta_Harish3485 { get; set; } // Harish3485
         public DbSet<Car> Cars { get; set; } // Car
         public DbSet<CarToColour> CarToColours { get; set; } // CarToColour
@@ -280,6 +285,7 @@ namespace Efrpg.V8FilterTest
             modelBuilder.Entity<DboProcDataFromFfrsAndDboReturnModel>().HasNoKey();
             modelBuilder.Entity<DsOpeProcReturnModel>().HasNoKey();
             modelBuilder.Entity<GetSmallDecimalTestReturnModel>().HasNoKey();
+            modelBuilder.Entity<GetSmallDecimalTestReturnModel>().Property(e => e.KoeffVed).HasPrecision(4, 4);
             modelBuilder.Entity<StoredProcWithDefaultsReturnModel>().HasNoKey();
             modelBuilder.Entity<StpMultipleIdenticalResultsReturnModel>().HasNoKey();
             modelBuilder.Entity<StpNoParamsTestReturnModel>().HasNoKey();
@@ -331,7 +337,7 @@ namespace Efrpg.V8FilterTest
 
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
 
-            await Database.ExecuteSqlRawAsync("EXEC @procResult = [dbo].[AddTwoValues] @a, @b",  new[] {(object?)aParam, (object?)bParam, procResultParam}, cancellationToken);
+            await Database.ExecuteSqlRawAsync("EXEC @procResult = [dbo].[AddTwoValues] @a, @b",  new[] {aParam, bParam, procResultParam}, cancellationToken);
 
             return (int)procResultParam.Value;
         }
@@ -416,7 +422,7 @@ namespace Efrpg.V8FilterTest
 
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
 
-            await Database.ExecuteSqlRawAsync("EXEC @procResult = [Beta].[Overclock] @Parameter",  new[] {(object?)parameterParam, procResultParam}, cancellationToken);
+            await Database.ExecuteSqlRawAsync("EXEC @procResult = [Beta].[Overclock] @Parameter",  new[] {parameterParam, procResultParam}, cancellationToken);
 
             return (int)procResultParam.Value;
         }
@@ -810,7 +816,7 @@ namespace Efrpg.V8FilterTest
 
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
 
-            await Database.ExecuteSqlRawAsync("EXEC @procResult = [dbo].[NvarcharTest] @maxOutputParam, @normalOutputParam",  new[] {(object?)maxOutputParamParam, (object?)normalOutputParamParam, procResultParam}, cancellationToken);
+            await Database.ExecuteSqlRawAsync("EXEC @procResult = [dbo].[NvarcharTest] @maxOutputParam, @normalOutputParam",  new[] {maxOutputParamParam, normalOutputParamParam, procResultParam}, cancellationToken);
 
             return (int)procResultParam.Value;
         }
@@ -913,12 +919,12 @@ namespace Efrpg.V8FilterTest
 
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
 
-            await Database.ExecuteSqlRawAsync("EXEC @procResult = [dbo].[SpatialTypesWithParams] @geometry, @geography",  new[] {(object?)geometryParam, (object?)geographyParam, procResultParam}, cancellationToken);
+            await Database.ExecuteSqlRawAsync("EXEC @procResult = [dbo].[SpatialTypesWithParams] @geometry, @geography",  new[] {geometryParam, geographyParam, procResultParam}, cancellationToken);
 
             return (int)procResultParam.Value;
         }
 
-        public List<StoredProcWithDefaultsReturnModel> StoredProcWithDefaults(int? userId = 12, int? userIdNull = null, string clientName = "Hello", string? clientNameNull = null, string? clientNameMaxNull = null, string clientDesc = "World", string? clientDescNull = null, decimal? decimalValue = 1.234m, decimal? decimalValueNull = null, decimal? money = 4.56m, decimal? moneyNull = null, decimal? smallMoney = 7.89m, decimal? smallMoneyNull = null, float? realValue = 9.876f, float? realValueNull = null, double? floatValue = 6.54, double? floatValueNull = null)
+        public List<StoredProcWithDefaultsReturnModel> StoredProcWithDefaults(int? userId = 12, int? userIdNull = null, string clientName = "Hello", string clientNameNull = null, string clientNameMaxNull = null, string clientDesc = "World", string clientDescNull = null, decimal? decimalValue = 1.234m, decimal? decimalValueNull = null, decimal? money = 4.56m, decimal? moneyNull = null, decimal? smallMoney = 7.89m, decimal? smallMoneyNull = null, float? realValue = 9.876f, float? realValueNull = null, double? floatValue = 6.54, double? floatValueNull = null)
         {
             int procResult;
             return StoredProcWithDefaults(userId, userIdNull, clientName, clientNameNull, clientNameMaxNull, clientDesc, clientDescNull, decimalValue, decimalValueNull, money, moneyNull, smallMoney, smallMoneyNull, realValue, realValueNull, floatValue, floatValueNull, out procResult);
@@ -1004,7 +1010,7 @@ namespace Efrpg.V8FilterTest
             return procResultData;
         }
 
-        public async Task<List<StoredProcWithDefaultsReturnModel>> StoredProcWithDefaultsAsync(int? userId = 12, int? userIdNull = null, string clientName = "Hello", string? clientNameNull = null, string? clientNameMaxNull = null, string clientDesc = "World", string? clientDescNull = null, decimal? decimalValue = 1.234m, decimal? decimalValueNull = null, decimal? money = 4.56m, decimal? moneyNull = null, decimal? smallMoney = 7.89m, decimal? smallMoneyNull = null, float? realValue = 9.876f, float? realValueNull = null, double? floatValue = 6.54, double? floatValueNull = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<List<StoredProcWithDefaultsReturnModel>> StoredProcWithDefaultsAsync(int? userId = 12, int? userIdNull = null, string clientName = "Hello", string clientNameNull = null, string clientNameMaxNull = null, string clientDesc = "World", string clientDescNull = null, decimal? decimalValue = 1.234m, decimal? decimalValueNull = null, decimal? money = 4.56m, decimal? moneyNull = null, decimal? smallMoney = 7.89m, decimal? smallMoneyNull = null, float? realValue = 9.876f, float? realValueNull = null, double? floatValue = 6.54, double? floatValueNull = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             var userIdParam = new SqlParameter { ParameterName = "@UserId", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Input, Value = userId.GetValueOrDefault(), Precision = 10, Scale = 0 };
             if (!userId.HasValue)
@@ -1387,7 +1393,7 @@ namespace Efrpg.V8FilterTest
 
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
 
-            await Database.ExecuteSqlRawAsync("EXEC @procResult = [dbo].[StupidStoredProcedureParams] @ReqType, @Dept, @Class, @Item",  new[] {(object?)reqTypeParam, (object?)deptParam, (object?)@classParam, (object?)itemParam, procResultParam}, cancellationToken);
+            await Database.ExecuteSqlRawAsync("EXEC @procResult = [dbo].[StupidStoredProcedureParams] @ReqType, @Dept, @Class, @Item",  new[] {reqTypeParam, deptParam, @classParam, itemParam, procResultParam}, cancellationToken);
 
             return (int)procResultParam.Value;
         }
@@ -1437,7 +1443,7 @@ namespace Efrpg.V8FilterTest
 
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
 
-            await Database.ExecuteSqlRawAsync("EXEC @procResult = [dbo].[StupidStoredProcedureParams2] @override, @readonly, @class, @enum",  new[] {(object?)@overrideParam, (object?)@readonlyParam, (object?)@classParam, (object?)@enumParam, procResultParam}, cancellationToken);
+            await Database.ExecuteSqlRawAsync("EXEC @procResult = [dbo].[StupidStoredProcedureParams2] @override, @readonly, @class, @enum",  new[] {@overrideParam, @readonlyParam, @classParam, @enumParam, procResultParam}, cancellationToken);
 
             return (int)procResultParam.Value;
         }
@@ -1542,7 +1548,7 @@ namespace Efrpg.V8FilterTest
 
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
 
-            await Database.ExecuteSqlRawAsync("EXEC @procResult = [dbo].[UserDefinedTypeSampleStoredProc] @a, @type, @b",  new[] {(object?)aParam, (object?)typeParam, (object?)bParam, procResultParam}, cancellationToken);
+            await Database.ExecuteSqlRawAsync("EXEC @procResult = [dbo].[UserDefinedTypeSampleStoredProc] @a, @type, @b",  new[] {aParam, typeParam, bParam, procResultParam}, cancellationToken);
 
             return (int)procResultParam.Value;
         }

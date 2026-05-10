@@ -12,7 +12,7 @@ namespace Efrpg.Readers
             DatabaseReaderPlugin = (IDatabaseReaderPlugin) AssemblyHelper.LoadPlugin(Settings.DatabaseReaderPlugin);
 
             var databaseToPropertyType = DatabaseReaderPlugin.GetDatabaseToPropertyTypeMapping();
-            if(databaseToPropertyType != null)
+            if (databaseToPropertyType != null)
                 DbTypeToPropertyType = databaseToPropertyType.GetMapping(); // Override default with plugin version
         }
 
