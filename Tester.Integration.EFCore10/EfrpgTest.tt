@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 <#@ include file ="..\EntityFramework.Reverse.POCO.Generator\EF.Reverse.POCO.v3.ttinclude" #>
 <#
     // Please make changes to the settings below.
@@ -12,22 +10,24 @@ using System.Collections.Generic;
     
     // For help on the various Types below, please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Common-Settings.*Types-explained
     // The following entries are the only required settings.
-    Settings.DatabaseType               = DatabaseType.SqlServer;
-    Settings.TemplateType               = TemplateType.EfCore10; 
-    Settings.GeneratorType              = GeneratorType.EfCore;
-    Settings.UseMappingTables           = true; // Must be false for TemplateType.EfCore2-4. If true, mapping will be used, and no mapping tables will be generated. If false, all tables will be generated.
-    Settings.FileManagerType            = FileManagerType.EfCore; // .NET project = VisualStudio; .NET Core project = EfCore; No output (testing only) = Null
-    Settings.ConnectionString           = "Data Source=(local);Initial Catalog=EfrpgTest;Integrated Security=True;MultipleActiveResultSets=True;Encrypt=false;TrustServerCertificate=true";
-    Settings.ConnectionStringActions    = ".EnableRetryOnFailure(maxRetryCount: 10, maxRetryDelay: TimeSpan.FromSeconds(30), errorNumbersToAdd: null)"; // EFCore only
-    Settings.ConnectionStringName       = "MyDbContext"; // ConnectionString key as specified in your app.config/web.config/appsettings.json
-    Settings.DbContextName              = "V10EfrpgTestDbContext"; // Class name for the DbContext to be generated. Note: If generating separate files, please give the db context a different name from this tt filename.
-    Settings.OnConfiguration            = OnConfiguration.ConnectionString; // EFCore only. Determines the code generated within DbContext.OnConfiguration(). Please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/OnConfiguration    Settings.GenerateSeparateFiles   = false;
-    Settings.GenerateSeparateFiles      = false;
-    Settings.Namespace                  = "V10EfrpgTest"; // Override the default namespace here
-    Settings.AddUnitTestingDbContext    = true; // Will add a FakeDbContext and FakeDbSet for easy unit testing. Read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/FakeDbContext
-    Settings.TrimCharFields             = true; // EF Core option only. If true, will TrimEnd() 'char' fields when read from the database.
-    Settings.DisableGeographyTypes      = false;
-    Settings.GenerateHasDefaultValueSql = true; // EFCore only. If true, will emit .HasDefaultValueSql() in the entity configuration for columns with a SQL default, making defaults queryable via EF model reflection.
+    Settings.DatabaseType                 = DatabaseType.SqlServer;
+    Settings.TemplateType                 = TemplateType.EfCore10; 
+    Settings.GeneratorType                = GeneratorType.EfCore;
+    Settings.UseMappingTables             = true; // Must be false for TemplateType.EfCore2-4. If true, mapping will be used, and no mapping tables will be generated. If false, all tables will be generated.
+    Settings.FileManagerType              = FileManagerType.EfCore; // .NET project = VisualStudio; .NET Core project = EfCore; No output (testing only) = Null
+    Settings.ConnectionString             = "Data Source=(local);Initial Catalog=EfrpgTest;Integrated Security=True;MultipleActiveResultSets=True;Encrypt=false;TrustServerCertificate=true";
+    Settings.ConnectionStringActions      = ".EnableRetryOnFailure(maxRetryCount: 10, maxRetryDelay: TimeSpan.FromSeconds(30), errorNumbersToAdd: null)"; // EFCore only
+    Settings.ConnectionStringName         = "MyDbContext"; // ConnectionString key as specified in your app.config/web.config/appsettings.json
+    Settings.DbContextName                = "V10EfrpgTestDbContext"; // Class name for the DbContext to be generated. Note: If generating separate files, please give the db context a different name from this tt filename.
+    Settings.OnConfiguration              = OnConfiguration.ConnectionString; // EFCore only. Determines the code generated within DbContext.OnConfiguration(). Please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/OnConfiguration    Settings.GenerateSeparateFiles   = false;
+    Settings.GenerateSeparateFiles        = false;
+    Settings.Namespace                    = "V10EfrpgTest"; // Override the default namespace here
+    Settings.UseFileScopedNamespaces      = true; // If true, uses C# 10 file-scoped namespace syntax (namespace X;) instead of block-scoped (namespace X { })
+    Settings.AddUnitTestingDbContext      = true; // Will add a FakeDbContext and FakeDbSet for easy unit testing. Read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/FakeDbContext
+    Settings.FakeDbContextInDebugOnlyMode = true; // If true, wraps Fake* classes in #if DEBUG / #endif so they are excluded from Release builds.
+    Settings.TrimCharFields               = true; // EF Core option only. If true, will TrimEnd() 'char' fields when read from the database.
+    Settings.DisableGeographyTypes        = false;
+    Settings.GenerateHasDefaultValueSql   = true; // EFCore only. If true, will emit .HasDefaultValueSql() in the entity configuration for columns with a SQL default, making defaults queryable via EF model reflection.
 
     // If GenerateSingleDbContext = false, this will generate multiple db contexts. Please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Generating-multiple-database-contexts-in-a-single-go
     Settings.GenerateSingleDbContext              = true; // Set this to false to generate multiple db contexts.
@@ -83,35 +83,67 @@ using System.Collections.Generic;
         }
     };
 
-Settings.UpdateColumn = delegate (Column column, Table table, List<EnumDefinition> enumDefinitions, List<JsonColumnMapping> jsonColumnMappings)
-{
-    // Make property partial, see https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Partial-properties
-    // if (table.NameHumanCase.Equals("AbOrderLinesAb", StringComparison.InvariantCultureIgnoreCase) && column.NameHumanCase.Equals("Sku", StringComparison.InvariantCultureIgnoreCase))
-    //    column.IsPartial = true;
-
-    // Perform Enum property type replacement
-    if (enumDefinitions != null)
+    Settings.AddOwnedEntityMappings = delegate (List<OwnedEntityMapping> mappings)
     {
-        var enumDefinition = enumDefinitions.FirstOrDefault(e =>
-            (e.Schema.Equals(table.Schema.DbName, StringComparison.InvariantCultureIgnoreCase)) &&
-            (e.Table == "*" || e.Table.Equals(table.DbName, StringComparison.InvariantCultureIgnoreCase) || e.Table.Equals(table.NameHumanCase, StringComparison.InvariantCultureIgnoreCase)) &&
-            (e.Column.Equals(column.DbName, StringComparison.InvariantCultureIgnoreCase) || e.Column.Equals(column.NameHumanCase, StringComparison.InvariantCultureIgnoreCase)));
-
-        if (enumDefinition != null)
+        // Customer table: two Address-typed owned entities (billing + shipping).
+        // ShippingAddress_Postcode is NULL vs BillingAddress_Postcode NOT NULL — billing wins on deduplication.
+        mappings.Add(new OwnedEntityMapping
         {
-            column.PropertyType = enumDefinition.EnumType;
-            if (!string.IsNullOrEmpty(column.Default))
-                column.Default = "(" + enumDefinition.EnumType + ") " + column.Default;
+            Schema       = Settings.DefaultSchema,
+            Table        = "Customer",
+            ColumnPrefix = "BillingAddress_",
+            PropertyName = "BillingAddress",
+            PropertyType = "Address"
+        });
+        mappings.Add(new OwnedEntityMapping
+        {
+            Schema       = Settings.DefaultSchema,
+            Table        = "Customer",
+            ColumnPrefix = "ShippingAddress_",
+            PropertyName = "ShippingAddress",
+            PropertyType = "Address"
+        });
+
+        // Invoice table: Money value object (decimal + fixed-length char).
+        mappings.Add(new OwnedEntityMapping
+        {
+            Schema       = Settings.DefaultSchema,
+            Table        = "Invoice",
+            ColumnPrefix = "TotalAmount_",
+            PropertyName = "TotalAmount",
+            PropertyType = "Money"
+        });
+    };
+
+    Settings.UpdateColumn = delegate (Column column, Table table, List<EnumDefinition> enumDefinitions, List<JsonColumnMapping> jsonColumnMappings)
+    {
+        // Make property partial, see https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Partial-properties
+        // if (table.NameHumanCase.Equals("AbOrderLinesAb", StringComparison.InvariantCultureIgnoreCase) && column.NameHumanCase.Equals("Sku", StringComparison.InvariantCultureIgnoreCase))
+        //    column.IsPartial = true;
+
+        // Perform Enum property type replacement
+        if (enumDefinitions != null)
+        {
+            var enumDefinition = enumDefinitions.FirstOrDefault(e =>
+                (e.Schema.Equals(table.Schema.DbName, StringComparison.InvariantCultureIgnoreCase)) &&
+                (e.Table == "*" || e.Table.Equals(table.DbName, StringComparison.InvariantCultureIgnoreCase) || e.Table.Equals(table.NameHumanCase, StringComparison.InvariantCultureIgnoreCase)) &&
+                (e.Column.Equals(column.DbName, StringComparison.InvariantCultureIgnoreCase) || e.Column.Equals(column.NameHumanCase, StringComparison.InvariantCultureIgnoreCase)));
+
+            if (enumDefinition != null)
+            {
+                column.PropertyType = enumDefinition.EnumType;
+                if (!string.IsNullOrEmpty(column.Default))
+                    column.Default = "(" + enumDefinition.EnumType + ") " + column.Default;
+            }
         }
-    }
 
-    // Use ExtendedProperties dictionary to access specific extended property by name
-    // Example: Add JsonPropertyName attribute from extended property
-    // In SQL Server, set extended property: EXEC sp_addextendedproperty @name = N'JsonPropertyName', @value = N'id', @level0type = N'SCHEMA', @level0name = N'dbo', @level1type = N'TABLE', @level1name = N'YourTable', @level2type = N'COLUMN', @level2name = N'SystemId'
-    Settings.ApplyJsonPropertyNameAttribute(column);
-};
+        // Use ExtendedProperties dictionary to access specific extended property by name
+        // Example: Add JsonPropertyName attribute from extended property
+        // In SQL Server, set extended property: EXEC sp_addextendedproperty @name = N'JsonPropertyName', @value = N'id', @level0type = N'SCHEMA', @level0name = N'dbo', @level1type = N'TABLE', @level1name = N'YourTable', @level2type = N'COLUMN', @level2name = N'SystemId'
+        Settings.ApplyJsonPropertyNameAttribute(column);
+    };
 
-FilterSettings.CheckSettings();
+    FilterSettings.CheckSettings();
     Inflector.IgnoreWordsThatEndWith = new List<string> { "Status", "To", "Data" };
     Inflector.PluralisationService = new EnglishPluralizationService();
     var outer = (GeneratedTextTransformation) this;
@@ -123,4 +155,3 @@ FilterSettings.CheckSettings();
         generator.GenerateCode();
     }
     fileManagement.Process(true);#>
-

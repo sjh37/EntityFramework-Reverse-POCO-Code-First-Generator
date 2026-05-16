@@ -63,7 +63,7 @@ namespace Efrpg.Mustache
                                let valueType = getValueType(type)
                                where valueType != null
                                let upcastType = typeof(UpcastDictionary<>).MakeGenericType(valueType)
-                               select (IDictionary<string, object>)Activator.CreateInstance(upcastType, source);
+                               select (IDictionary<string, object>) Activator.CreateInstance(upcastType, source);
             return dictionaries.FirstOrDefault();
         }
 
@@ -177,7 +177,7 @@ namespace Efrpg.Mustache
             {
                 return false;
             }
-            KeyValuePair<string, TValue> pair = new KeyValuePair<string,TValue>(item.Key, (TValue)item.Value);
+            KeyValuePair<string, TValue> pair = new KeyValuePair<string, TValue>(item.Key, (TValue) item.Value);
             ICollection<KeyValuePair<string, TValue>> collection = dictionary;
             return dictionary.Contains(pair);
         }

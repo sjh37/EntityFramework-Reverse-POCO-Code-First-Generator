@@ -1,6 +1,6 @@
 <#@ include file="EF.Reverse.POCO.v3.ttinclude" #>
 <#
-    // v3.12.0
+    // v3.13.0
     // Please make changes to the settings below.
     // All you have to do is save this file, and the output file(s) are generated. Compiling does not regenerate the file(s).
     // A course for the older v2 generator is available on Pluralsight at https://www.pluralsight.com/courses/code-first-entity-framework-legacy-databases
@@ -11,20 +11,21 @@
     
     // For help on the various Types below, please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Common-Settings.*Types-explained
     // The following entries are the only required settings.
-    Settings.DatabaseType            = DatabaseType.SqlServer; // SqlServer, SqlCe, SQLite, PostgreSQL. Coming next: MySql, Oracle
-    Settings.TemplateType            = TemplateType.EfCore10; // EfCore8-10, Ef6, FileBasedCore8-10. FileBased specify folder using Settings.TemplateFolder
-    Settings.GeneratorType           = GeneratorType.EfCore; // EfCore, Ef6, Custom. Custom edit GeneratorCustom class to provide your own implementation
-
-    Settings.FileManagerType         = FileManagerType.EfCore; // .NET Core project = EfCore; .NET 4.x project = VisualStudio; No output (testing only) = Null
-    Settings.ConnectionString        = "Data Source=(local);Initial Catalog=**TODO**;Integrated Security=True;MultipleActiveResultSets=True;Encrypt=false;TrustServerCertificate=true"; // This is used by the generator to reverse engineer your database
-    Settings.ConnectionStringActions = ""; // EFCore only. Additional method chain to append to the database provider setup in OnConfiguring. e.g. ".EnableRetryOnFailure(maxRetryCount: 10, maxRetryDelay: TimeSpan.FromSeconds(30), errorNumbersToAdd: null)"
-    Settings.ConnectionStringName    = "MyDbContext"; // ConnectionString key as specified in your app.config/web.config/appsettings.json. Not used by the generator, but is placed into the generated DbContext constructor.
-    Settings.DbContextName           = "MyDbContext"; // Class name for the DbContext to be generated.
-    //Settings.DbContextInterfaceName= "IMyDbContext"; // Defaults to "I" + DbContextName or set string empty to not implement any interface.
-    Settings.GenerateSeparateFiles   = false;
-    Settings.Namespace               = DefaultNamespace; // Override the default namespace here. Please use double quotes, example: "Accounts.Billing"
-    Settings.TemplateFolder          = Path.Combine(Settings.Root, "Templates"); // Only used if Settings.TemplateType = TemplateType.FileBased. Specify folder name where the mustache folders can be found. Please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Custom-file-based-templates
-    Settings.AddUnitTestingDbContext = true; // Will add a FakeDbContext and FakeDbSet for easy unit testing. Read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/FakeDbContext
+    Settings.DatabaseType                 = DatabaseType.SqlServer; // SqlServer, SqlCe, SQLite, PostgreSQL. Coming next: MySql, Oracle
+    Settings.TemplateType                 = TemplateType.EfCore10; // EfCore8-10, Ef6, FileBasedCore8-10. FileBased specify folder using Settings.TemplateFolder
+    Settings.GeneratorType                = GeneratorType.EfCore; // EfCore, Ef6, Custom. Custom edit GeneratorCustom class to provide your own implementation
+    Settings.FileManagerType              = FileManagerType.EfCore; // .NET Core project = EfCore; .NET 4.x project = VisualStudio; No output (testing only) = Null
+    Settings.ConnectionString             = "Data Source=(local);Initial Catalog=**TODO**;Integrated Security=True;MultipleActiveResultSets=True;Encrypt=false;TrustServerCertificate=true"; // This is used by the generator to reverse engineer your database
+    Settings.ConnectionStringActions      = ""; // EFCore only. Additional method chain to append to the database provider setup in OnConfiguring. e.g. ".EnableRetryOnFailure(maxRetryCount: 10, maxRetryDelay: TimeSpan.FromSeconds(30), errorNumbersToAdd: null)"
+    Settings.ConnectionStringName         = "MyDbContext"; // ConnectionString key as specified in your app.config/web.config/appsettings.json. Not used by the generator, but is placed into the generated DbContext constructor.
+    Settings.DbContextName                = "MyDbContext"; // Class name for the DbContext to be generated.
+    //Settings.DbContextInterfaceName     = "IMyDbContext"; // Defaults to "I" + DbContextName or set string empty to not implement any interface.
+    Settings.GenerateSeparateFiles        = false;
+    Settings.Namespace                    = DefaultNamespace; // Override the default namespace here. Please use double quotes, example: "Accounts.Billing"
+    Settings.UseFileScopedNamespaces      = false; // If true, uses C# 10 file-scoped namespace syntax (namespace X;) instead of block-scoped (namespace X { })
+    Settings.TemplateFolder               = Path.Combine(Settings.Root, "Templates"); // Only used if Settings.TemplateType = TemplateType.FileBased. Specify folder name where the mustache folders can be found. Please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Custom-file-based-templates
+    Settings.AddUnitTestingDbContext      = true;  // Will add a FakeDbContext and FakeDbSet for easy unit testing. Read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/FakeDbContext
+    Settings.FakeDbContextInDebugOnlyMode = false; // If true, wraps Fake* classes in #if DEBUG / #endif so they are excluded from Release builds.
 
 
     // Filtering **************************************************************************************************************************
@@ -124,7 +125,7 @@
     Settings.UseNamespace                        = true;  // If false, suppresses the writing of a namespace
     Settings.UsePragma                           = false; // If false, suppresses the writing of #pragma
     Settings.AllowNullStrings                    = false; // If true, will allow string? properties and will add '#nullable enable' to the top of each file
-    Settings.NullableReverseNavigationProperties = true;  // If true, reverse navigation properties for one-to-one relationships will be nullable (e.g. MyEntity? MyEntity). The parent entity can exist without the child entity.
+    Settings.NullableReverseNavigationProperties = false; // If true, reverse navigation properties for one-to-one relationships will be nullable (e.g. MyEntity? MyEntity). The parent entity can exist without the child entity.
     Settings.UseResharper                        = true;  // If true, will add a list of 'ReSharper disable' comments to the top of each file
     Settings.ShowLicenseInfo                     = false; // If true, will add the licence info comment to the top of each file
     Settings.IncludeConnectionSettingComments    = false; // Add comments describing connection settings used to generate file
@@ -141,11 +142,13 @@
         // Example
         /*new EnumerationSettings
         {
-            Name       = "DaysOfWeek",          // Enum to generate. e.g. "DaysOfWeek" would result in "public enum DaysOfWeek {...}" if the GroupField is set to a value then {GroupField} must be used in this name. e.g. "DaysOfWeek{GroupField}"
-            Table      = "EnumTest.DaysOfWeek", // Database table containing enum values. e.g. "DaysOfWeek"
-            NameField  = "TypeName",            // Column containing the name for the enum. e.g. "TypeName"
-            ValueField = "TypeId",              // Column containing the values for the enum. e.g. "TypeId"
-            GroupField = string.Empty           // [optional] Column containing the group name for the enum. This is used if multiple Enums are in the same table. if this is populated, use {GroupField} in the Name property. e.g. "{GroupField}Enum"
+            Name                        = "DaysOfWeek",          // Enum to generate. e.g. "DaysOfWeek" would result in "public enum DaysOfWeek {...}" if the GroupField is set to a value then {GroupField} must be used in this name. e.g. "DaysOfWeek{GroupField}"
+            Table                       = "EnumTest.DaysOfWeek", // Database table containing enum values. e.g. "DaysOfWeek"
+            NameField                   = "TypeName",            // Column containing the name for the enum. e.g. "TypeName"
+            ValueField                  = "TypeId",              // Column containing the values for the enum. e.g. "TypeId"
+            GroupField                  = string.Empty,          // [optional] Column containing the group name for the enum. This is used if multiple Enums are in the same table. if this is populated, use {GroupField} in the Name property. e.g. "{GroupField}Enum"
+            DescriptionField            = "Description",         // [optional] Column containing the description for each enum member. When set, emits [Description("...")] on members with a non-empty value.
+            GenerateDescriptionFromName = false                  // [optional] If true and no description is available from DescriptionField, generates [Description("...")] from the enum member name as human-readable text.
         },
         new EnumerationSettings
         {
@@ -248,6 +251,42 @@
         //    Column = "Preferences", 
         //    PropertyType = "MyApp.Models.UserPreferences" // Fully qualified type name
         //    ExcludePropertyConfiguration = false          // Optional: When true, suppresses the generated builder.Property(...) fluent configuration.
+        //});
+    };
+
+    // Owned entity mappings ***************************************************************************************************************
+    // Group database columns that share a common prefix into EF Core owned entities (OwnsOne).
+    // For full documentation see https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Owned-Entities
+    Settings.AddOwnedEntityMappings = delegate (List<OwnedEntityMapping> mappings)
+    {
+        // Examples:
+
+        // Customer table: two Address-typed owned entities (billing + shipping)
+        //mappings.Add(new OwnedEntityMapping
+        //{
+        //    Schema       = Settings.DefaultSchema, // "dbo", or use "*" to match any schema
+        //    Table        = "Customer",             // table name, or use "*" to match any table
+        //    ColumnPrefix = "BillingAddress_",      // DB column prefix — all matching columns are grouped
+        //    PropertyName = "BillingAddress",       // property name generated on the owning POCO
+        //    PropertyType = "Address",              // C# type name of the owned entity class (auto-generated)
+        //});
+        //mappings.Add(new OwnedEntityMapping
+        //{
+        //    Schema       = Settings.DefaultSchema,
+        //    Table        = "Customer",
+        //    ColumnPrefix = "ShippingAddress_",
+        //    PropertyName = "ShippingAddress",
+        //    PropertyType = "Address",
+        //});
+
+        // Invoice table: Money value object (Amount + Currency columns)
+        //mappings.Add(new OwnedEntityMapping
+        //{
+        //    Schema       = Settings.DefaultSchema,
+        //    Table        = "Invoice",
+        //    ColumnPrefix = "TotalAmount_",
+        //    PropertyName = "TotalAmount",
+        //    PropertyType = "Money",
         //});
     };
 

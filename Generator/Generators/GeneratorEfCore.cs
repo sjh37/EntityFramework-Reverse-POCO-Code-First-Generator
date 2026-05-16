@@ -66,6 +66,13 @@ namespace Efrpg.Generators
                 else
                     c.InlineComments += ". " + c.ExtendedProperty;
             }
+
+            if (Settings.UseDataAnnotations &&
+                Settings.IncludeExtendedPropertyComments != CommentsStyle.None &&
+                !string.IsNullOrEmpty(c.Description))
+            {
+                c.Attributes.Add($"[Comment(@\"{c.Description.Replace("\"", "\"\"")}\")]");
+            }
         }
 
         protected override void SetupConfig(Column c)
@@ -82,17 +89,23 @@ namespace Efrpg.Generators
                 if (c.IsIdentity || isNewSequentialId || isTemporalColumn)
                 {
                     databaseGeneratedOption = ".ValueGeneratedOnAdd()";
-                    
+
                     if (c.IsIdentity && DatabaseReader.HasIdentityColumnSupport() && Column.CanUseSqlServerIdentityColumn.Contains(c.PropertyType))
                         databaseGeneratedOption += Settings.ColumnIdentity(c);
                 }
                 else if (c.IsComputed)
                 {
-                    databaseGeneratedOption = ".ValueGeneratedOnAddOrUpdate()";
+                    if (Settings.UseDataAnnotations)
+                        c.Attributes.Add("[DatabaseGenerated(DatabaseGeneratedOption.Computed)]");
+                    else
+                        databaseGeneratedOption = ".ValueGeneratedOnAddOrUpdate()";
                 }
                 else if (c.IsPrimaryKey)
                 {
-                    databaseGeneratedOption = ".ValueGeneratedNever()";
+                    if (Settings.UseDataAnnotations)
+                        c.Attributes.Add("[DatabaseGenerated(DatabaseGeneratedOption.None)]");
+                    else
+                        databaseGeneratedOption = ".ValueGeneratedNever()";
                 }
             }
 
@@ -108,10 +121,10 @@ namespace Efrpg.Generators
             if (!string.IsNullOrEmpty(c.SqlPropertyType))
             {
                 var columnTypeParameters = string.Empty;
-            
+
                 if ((c.Precision > 0 || c.Scale > 0) && (c.SqlPropertyType == "decimal" || c.SqlPropertyType == "numeric"))
                     columnTypeParameters = $"({c.Precision},{c.Scale})";
-                else if (!c.IsMaxLength && c.MaxLength > 0 && !doNotSpecifySize && !isVectorType) // Vector types already include dimension in SqlPropertyType
+                else if (!c.IsMaxLength && c.MaxLength > 0 && !doNotSpecifySize && !isVectorType && !c.IsRowVersion) // Vector types already include dimension in SqlPropertyType; timestamp/rowversion width is invalid in SQL Server
                     columnTypeParameters = $"({c.MaxLength})";
 
                 if (Column.ExcludedHasColumnType.Contains(c.SqlPropertyType))
@@ -122,9 +135,19 @@ namespace Efrpg.Generators
                 if (Settings.IsEfCore8Plus())
                 {
                     if ((c.Precision > 0 || c.Scale > 0) && DatabaseReader.IsPrecisionAndScaleType(c.SqlPropertyType))
-                        sb.AppendFormat(".HasPrecision({0},{1})", c.Precision, c.Scale);
+                    {
+                        if (Settings.UseDataAnnotations)
+                            c.Attributes.Add($"[Precision({c.Precision}, {c.Scale})]");
+                        else
+                            sb.AppendFormat(".HasPrecision({0},{1})", c.Precision, c.Scale);
+                    }
                     else if (c.Precision > 0 && DatabaseReader.IsPrecisionType(c.SqlPropertyType))
-                        sb.AppendFormat(".HasPrecision({0})", c.Precision);
+                    {
+                        if (Settings.UseDataAnnotations)
+                            c.Attributes.Add($"[Precision({c.Precision})]");
+                        else
+                            sb.AppendFormat(".HasPrecision({0})", c.Precision);
+                    }
                 }
 
                 if (Settings.TrimCharFields && c.MaxLength > 1 && c.SqlPropertyType == "char")
@@ -133,15 +156,23 @@ namespace Efrpg.Generators
                 }
             }
 
-            sb.Append(c.IsNullable ? ".IsRequired(false)" : ".IsRequired()");
+            if (c.IsNullable)
+                sb.Append(".IsRequired(false)");
+            else if (!Settings.UseDataAnnotations || c.IsComputed)
+                sb.Append(".IsRequired()");
 
             if (c.IsFixedLength || c.IsRowVersion)
                 sb.Append(".IsFixedLength()");
 
             if (!c.IsUnicode)
-                sb.Append(".IsUnicode(false)");
+            {
+                if (Settings.UseDataAnnotations)
+                    c.Attributes.Add("[Unicode(false)]");
+                else
+                    sb.Append(".IsUnicode(false)");
+            }
 
-            if (!c.IsMaxLength && c.MaxLength > 0 && !doNotSpecifySize && !isVectorType) // Vector types use dimension in HasColumnType, not HasMaxLength
+            if (!c.IsMaxLength && c.MaxLength > 0 && !doNotSpecifySize && !isVectorType && !c.IsRowVersion && !Settings.UseDataAnnotations) // Vector types use dimension in HasColumnType, not HasMaxLength; timestamp/rowversion width is invalid in SQL Server
                 sb.AppendFormat(".HasMaxLength({0})", c.MaxLength);
 
             //if (c.IsMaxLength)
@@ -149,11 +180,14 @@ namespace Efrpg.Generators
 
             if (c.IsRowVersion)
             {
-                sb.Append(".IsRowVersion()");
+                if (!Settings.UseDataAnnotations)
+                    sb.Append(".IsRowVersion()");
                 c.IsConcurrencyToken = true;
             }
 
-            if (c.IsConcurrencyToken)
+            // [Timestamp, ConcurrencyCheck] covers both IsRowVersion and IsConcurrencyToken for row version columns.
+            // For manually-set IsConcurrencyToken (not via IsRowVersion), still emit the fluent call.
+            if (c.IsConcurrencyToken && (!Settings.UseDataAnnotations || !c.IsRowVersion))
                 sb.Append(".IsConcurrencyToken()");
 
             if (databaseGeneratedOption != null)
@@ -164,9 +198,24 @@ namespace Efrpg.Generators
             else if (Settings.GenerateHasDefaultValueSql && !string.IsNullOrEmpty(c.DefaultSql))
                 sb.AppendFormat(".HasDefaultValueSql(@\"{0}\")", c.DefaultSql.Replace("\"", "\"\""));
 
+            if (!Settings.UseDataAnnotations &&
+                Settings.IncludeExtendedPropertyComments != CommentsStyle.None &&
+                !string.IsNullOrEmpty(c.Description))
+            {
+                sb.AppendFormat(".HasComment(@\"{0}\")", c.Description.Replace("\"", "\"\""));
+            }
+
             var config = sb.ToString();
-            if (!string.IsNullOrEmpty(config) && !c.ExcludePropertyConfiguration)
+            if (!string.IsNullOrEmpty(c.OwnedEntityPropertyName))
+            {
+                // Column belongs to an owned entity; generate OwnedEntityConfig for use inside OwnsOne block
+                if (!string.IsNullOrEmpty(config))
+                    c.OwnedEntityConfig = string.Format("b.Property(x => x.{0}){1};{2}", c.OwnedEntityPropertyName, config, excludedHasColumnType);
+            }
+            else if (!string.IsNullOrEmpty(config) && !c.ExcludePropertyConfiguration)
+            {
                 c.Config = string.Format("builder.Property(x => x.{0}){1};{2}", c.NameHumanCase, config, excludedHasColumnType);
+            }
         }
 
         public override string PrimaryKeyModelBuilder(Table t)
@@ -183,7 +232,7 @@ namespace Efrpg.Generators
                 return defaultKey + ";";
 
             var indexName = t.Indexes.Where(x => x.IsPrimaryKey).Select(x => x.IndexName).Distinct().FirstOrDefault();
-            if(string.IsNullOrEmpty(indexName))
+            if (string.IsNullOrEmpty(indexName))
                 return defaultKey + ";";
 
             var indexesForName = t.Indexes
@@ -255,7 +304,7 @@ namespace Efrpg.Generators
 
                 sb.Append(")"); // Close bracket for HasIndex()
 
-                
+
                 sb.Append(isEfCore8Plus ? ".HasDatabaseName(\"" : ".HasName(\"");
                 sb.Append(indexName);
                 sb.Append("\")");
@@ -269,6 +318,19 @@ namespace Efrpg.Generators
                 var filterDefinition = indexesForName.Select(x => x.FilterDefinition).FirstOrDefault(x => !string.IsNullOrEmpty(x));
                 if (!string.IsNullOrEmpty(filterDefinition))
                     sb.AppendFormat(".HasFilter(@\"{0}\")", filterDefinition.Replace("\"", "\"\""));
+
+                var includedColumns = indexesForName.Select(x => x.IncludedColumns).FirstOrDefault(x => x != null && x.Count > 0);
+                if (includedColumns != null && includedColumns.Count > 0)
+                {
+                    var validIncludes = includedColumns
+                        .Select(ic => t.Columns.Find(x => x.DbName == ic))
+                        .Where(col => col != null && !col.Hidden && !string.IsNullOrEmpty(col.Config))
+                        .Select(col => "\"" + col.NameHumanCase + "\"")
+                        .ToList();
+
+                    if (validIncludes.Count > 0)
+                        sb.AppendFormat(".IncludeProperties({0})", string.Join(", ", validIncludes));
+                }
 
                 sb.Append(";");
                 indexes.Add(sb.ToString());

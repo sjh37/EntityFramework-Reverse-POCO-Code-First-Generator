@@ -11,6 +11,9 @@
         builder.{{ToTableOrView}}("{{Name}}");{{#newline}}
 {{/if}}
 {{/if}}
+{{#if HasTableComment}}
+        builder.HasComment(@"{{TableComment}}");{{#newline}}
+{{/if}}
         {{PrimaryKeyNameHumanCase}}{{#newline}}{{#newline}}
 
 {{#each Columns}}
@@ -21,6 +24,14 @@
 {{#newline}}
         // Foreign keys{{#newline}}
 {{#each ForeignKeys}}
+        {{this}}{{#newline}}
+{{/each}}
+{{/if}}
+
+{{#if HasOwnedEntityConfigs}}
+{{#newline}}
+        // Owned entities{{#newline}}
+{{#each OwnedEntityConfigs}}
         {{this}}{{#newline}}
 {{/each}}
 {{/if}}

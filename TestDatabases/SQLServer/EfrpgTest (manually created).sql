@@ -408,6 +408,16 @@ GO
 INSERT INTO EnumTest.DaysOfWeek (TypeName, TypeId)
 VALUES ('Sun', 0), ('Mon', 1), ('Tue', 2), ('Wed', 3), ('Thu', 4), ('Fri', 6), ('Sat', 7);
 GO
+ALTER TABLE EnumTest.DaysOfWeek ADD Description VARCHAR(50) NULL;
+GO
+UPDATE EnumTest.DaysOfWeek SET Description = 'Sunday' WHERE TypeName='Sun';
+UPDATE EnumTest.DaysOfWeek SET Description = 'Money' WHERE TypeName='Mon';
+UPDATE EnumTest.DaysOfWeek SET Description = 'Tuesday' WHERE TypeName='Tue';
+UPDATE EnumTest.DaysOfWeek SET Description = 'Wednesday' WHERE TypeName='Wed';
+UPDATE EnumTest.DaysOfWeek SET Description = 'Thursday' WHERE TypeName='Thu';
+UPDATE EnumTest.DaysOfWeek SET Description = 'Friday' WHERE TypeName='Fri';
+UPDATE EnumTest.DaysOfWeek SET Description = 'Sat' WHERE TypeName='Sat';
+GO
 -- Enum in default schema
 CREATE TABLE dbo.EnumsWithStringAsValue
 (
@@ -417,6 +427,10 @@ CREATE TABLE dbo.EnumsWithStringAsValue
 GO
 INSERT INTO EnumsWithStringAsValue
 VALUES ('SunRoof','0x01'), ('Spoiler', '0x02'), ('FogLights', '0x04'), ('TintedWindows', '0x08')
+GO
+ALTER TABLE EnumsWithStringAsValue ADD description VARCHAR(50) NULL;
+GO
+UPDATE EnumsWithStringAsValue SET description = 'Spoiler to add downforce' WHERE enum_name='Spoiler'
 GO
 CREATE TABLE EnumTest.OpenDays
 (
@@ -1093,7 +1107,7 @@ CREATE TABLE TableB
 	CONSTRAINT ParentTableB_Hierarchy FOREIGN KEY (TableAId, TableBId) REFERENCES TableB
 );
 GO
-CREATE INDEX fki_ParentTableA_FK_Constraint ON TableB (TableAId);
+CREATE INDEX fki_ParentTableA_FK_Constraint ON TableB (TableAId) INCLUDE (TableBDesc, ParentTableAId);
 GO
 
 
@@ -2786,6 +2800,34 @@ CREATE TABLE NullableReverseNavigationB
     [Data] NVARCHAR(100) NULL,
     CONSTRAINT PK_NullableReverseNavigationB PRIMARY KEY (Id),
     CONSTRAINT FK_NullableReverseNavigationB_Id FOREIGN KEY (Id) REFERENCES NullableReverseNavigationA (Id)
+);
+GO
+
+-- #690 Owned entity mapping: two Address-typed owned entities on a single table (billing + shipping).
+-- BillingAddress_Postcode is NOT NULL; ShippingAddress_Postcode is NULL — tests deduplication
+-- where the billing (first) mapping wins for nullability in the generated owned entity class.
+CREATE TABLE Customer
+(
+    CustomerId               INT           NOT NULL IDENTITY(1,1),
+    [Name]                   NVARCHAR(100) NOT NULL,
+    BillingAddress_Street    NVARCHAR(100) NOT NULL,
+    BillingAddress_City      NVARCHAR(50)  NOT NULL,
+    BillingAddress_Postcode  NVARCHAR(10)  NOT NULL,
+    ShippingAddress_Street   NVARCHAR(100) NOT NULL,
+    ShippingAddress_City     NVARCHAR(50)  NOT NULL,
+    ShippingAddress_Postcode NVARCHAR(10)  NULL,
+    CONSTRAINT PK_Customer PRIMARY KEY (CustomerId)
+);
+GO
+
+-- #690 Owned entity mapping: Money value object with a decimal and a fixed-length char column.
+CREATE TABLE Invoice
+(
+    InvoiceId            INT           NOT NULL IDENTITY(1,1),
+    [Description]        NVARCHAR(200) NOT NULL,
+    TotalAmount_Value    DECIMAL(18,2) NOT NULL,
+    TotalAmount_Currency CHAR(3)       NOT NULL,
+    CONSTRAINT PK_Invoice PRIMARY KEY (InvoiceId)
 );
 GO
 

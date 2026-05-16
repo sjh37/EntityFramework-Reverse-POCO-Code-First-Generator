@@ -1,3 +1,4 @@
+#if DEBUG
 using Generator.Tests.Common;
 using NUnit.Framework;
 using V10EfrpgTest;
@@ -215,4 +216,4 @@ namespace Tester.Integration.EFCore10
         }
     }
 }
-
+#endif

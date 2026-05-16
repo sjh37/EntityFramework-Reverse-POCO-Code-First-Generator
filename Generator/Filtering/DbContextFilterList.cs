@@ -60,7 +60,7 @@ namespace Efrpg.Filtering
             foreach (var setting in _multiContextSettings)
             {
                 var filter = new MultiContextFilter(setting);
-                if(!string.IsNullOrWhiteSpace(setting.Filename) && !_filters.ContainsKey(setting.Filename))
+                if (!string.IsNullOrWhiteSpace(setting.Filename) && !_filters.ContainsKey(setting.Filename))
                     _filters.Add(setting.Filename, filter);
                 else
                     _filters.Add(setting.Name, filter);

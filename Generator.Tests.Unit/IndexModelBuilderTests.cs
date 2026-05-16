@@ -146,5 +146,118 @@ namespace Generator.Tests.Unit
             Assert.AreEqual($@"builder.HasIndex(x => x.ProductID).{hasName}(""ProductID"");",             list[2]);
             Assert.AreEqual($@"builder.HasIndex(x => x.ProductID).{hasName}(""ProductsOrder_Details"");", list[3]);
         }
+
+        [Test]
+        [TestCase(TemplateType.EfCore8, "HasDatabaseName")]
+        [TestCase(TemplateType.EfCore9, "HasDatabaseName")]
+        public void EfCoreModelBuilder_WithIncludeColumns(TemplateType templateType, string hasName)
+        {
+            // Arrange
+            var fileManagement = new FileManagementService(new GeneratedTextTransformation());
+            var sut = new GeneratorEfCore(fileManagement, typeof(NullFileManager));
+            Settings.TemplateType = templateType;
+
+            var table = new Table(null, new Schema("dbo"), "orders", false)
+            {
+                NameHumanCase = "Orders",
+                Indexes = new List<RawIndex>
+                {
+                    new RawIndex("dbo", "orders", "IX_Orders_Customer", 1, "CustomerID", 1, false, false, false, false, "", "OrderDate,Amount"),
+                }
+            };
+
+            var customerId = new Column
+            {
+                ParentTable = table,
+                DbName = "CustomerID",
+                NameHumanCase = "CustomerId",
+                Config = "test",
+            };
+            table.Columns.Add(customerId);
+
+            var orderDate = new Column
+            {
+                ParentTable = table,
+                DbName = "OrderDate",
+                NameHumanCase = "OrderDate",
+                Config = "test",
+            };
+            table.Columns.Add(orderDate);
+
+            var amount = new Column
+            {
+                ParentTable = table,
+                DbName = "Amount",
+                NameHumanCase = "Amount",
+                Config = "test",
+            };
+            table.Columns.Add(amount);
+
+            // Act
+            var list = sut.IndexModelBuilder(table);
+            foreach (var str in list)
+                TestContext.Out.WriteLine(str);
+
+            // Assert
+            Assert.AreEqual(1, list.Count);
+            Assert.AreEqual($@"builder.HasIndex(x => x.CustomerId).{hasName}(""IX_Orders_Customer"").IncludeProperties(""OrderDate"", ""Amount"");", list[0]);
+        }
+
+        [Test]
+        [TestCase(TemplateType.EfCore8, "HasDatabaseName")]
+        [TestCase(TemplateType.EfCore9, "HasDatabaseName")]
+        public void EfCoreModelBuilder_IncludeColumns_HiddenColumnSkipped(TemplateType templateType, string hasName)
+        {
+            // Arrange
+            var fileManagement = new FileManagementService(new GeneratedTextTransformation());
+            var sut = new GeneratorEfCore(fileManagement, typeof(NullFileManager));
+            Settings.TemplateType = templateType;
+
+            var table = new Table(null, new Schema("dbo"), "orders", false)
+            {
+                NameHumanCase = "Orders",
+                Indexes = new List<RawIndex>
+                {
+                    new RawIndex("dbo", "orders", "IX_Orders_Customer", 1, "CustomerID", 1, false, false, false, false, "", "OrderDate,HiddenCol"),
+                }
+            };
+
+            var customerId = new Column
+            {
+                ParentTable = table,
+                DbName = "CustomerID",
+                NameHumanCase = "CustomerId",
+                Config = "test",
+            };
+            table.Columns.Add(customerId);
+
+            var orderDate = new Column
+            {
+                ParentTable = table,
+                DbName = "OrderDate",
+                NameHumanCase = "OrderDate",
+                Config = "test",
+            };
+            table.Columns.Add(orderDate);
+
+            var hiddenCol = new Column
+            {
+                ParentTable = table,
+                DbName = "HiddenCol",
+                NameHumanCase = "HiddenCol",
+                Config = "test",
+                Hidden = true,
+            };
+            table.Columns.Add(hiddenCol);
+
+            // Act
+            var list = sut.IndexModelBuilder(table);
+            foreach (var str in list)
+                TestContext.Out.WriteLine(str);
+
+            // Assert
+            Assert.AreEqual(1, list.Count);
+            Assert.AreEqual($@"builder.HasIndex(x => x.CustomerId).{hasName}(""IX_Orders_Customer"").IncludeProperties(""OrderDate"");", list[0]);
+        }
     }
 }

@@ -165,6 +165,7 @@
     <Compile Include="Readers\RawTable.cs" />
     <Compile Include="Readers\RawStoredProcedure.cs" />
     <Compile Include="Schema.cs" />
+    <Compile Include="TemplateModels\OwnedEntityClassModel.cs" />
     <Compile Include="TemplateModels\StoredProcReturnModel.cs" />
     <Compile Include="TemplateModels\PocoConfigurationModel.cs" />
     <Compile Include="TemplateModels\PocoModel.cs" />
@@ -233,6 +234,8 @@
     <Compile Include="Elements.cs" />
     <Compile Include="EnumDefinition.cs" />
     <Compile Include="JsonColumnMapping.cs" />
+    <Compile Include="OwnedEntityMapping.cs" />
+    <Compile Include="OwnedEntity.cs" />
     <Compile Include="ForeignKey.cs" />
     <Compile Include="GeneratedTextTransformation.cs" />
     <Compile Include="Generators\Generator.cs" />

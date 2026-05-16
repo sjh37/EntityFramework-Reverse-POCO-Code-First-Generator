@@ -12,27 +12,28 @@ namespace Efrpg.Filtering
     {
         public List<EnumDefinition> EnumDefinitions;
         public List<JsonColumnMapping> JsonColumnMappings;
+        public List<OwnedEntityMapping> OwnedEntityMappings;
 
-        protected readonly List<IFilterType<Schema>>          SchemaFilters;
-        protected readonly List<IFilterType<Table>>           TableFilters;
-        protected readonly List<IFilterType<Column>>          ColumnFilters;
+        protected readonly List<IFilterType<Schema>> SchemaFilters;
+        protected readonly List<IFilterType<Table>> TableFilters;
+        protected readonly List<IFilterType<Column>> ColumnFilters;
         protected readonly List<IFilterType<StoredProcedure>> StoredProcedureFilters;
 
         private bool _hasMergedIncludeFilters;
 
         public SingleContextFilter()
         {
-            IncludeViews                 = FilterSettings.IncludeViews;
-            IncludeSynonyms              = FilterSettings.IncludeSynonyms;
-            IncludeTableValuedFunctions  = FilterSettings.IncludeTableValuedFunctions;
+            IncludeViews = FilterSettings.IncludeViews;
+            IncludeSynonyms = FilterSettings.IncludeSynonyms;
+            IncludeTableValuedFunctions = FilterSettings.IncludeTableValuedFunctions;
             IncludeScalarValuedFunctions = FilterSettings.IncludeScalarValuedFunctions;
-            IncludeStoredProcedures      = IncludeScalarValuedFunctions || IncludeTableValuedFunctions || FilterSettings.IncludeStoredProcedures;
+            IncludeStoredProcedures = IncludeScalarValuedFunctions || IncludeTableValuedFunctions || FilterSettings.IncludeStoredProcedures;
 
-            SchemaFilters           = FilterSettings.SchemaFilters;
-            TableFilters            = FilterSettings.TableFilters;
-            ColumnFilters           = FilterSettings.ColumnFilters;
-            StoredProcedureFilters  = FilterSettings.StoredProcedureFilters;
-            
+            SchemaFilters = FilterSettings.SchemaFilters;
+            TableFilters = FilterSettings.TableFilters;
+            ColumnFilters = FilterSettings.ColumnFilters;
+            StoredProcedureFilters = FilterSettings.StoredProcedureFilters;
+
             _hasMergedIncludeFilters = false;
 
             EnumDefinitions = new List<EnumDefinition>();
@@ -40,11 +41,14 @@ namespace Efrpg.Filtering
 
             JsonColumnMappings = new List<JsonColumnMapping>();
             Settings.AddJsonColumnMappings?.Invoke(JsonColumnMappings);
+
+            OwnedEntityMappings = new List<OwnedEntityMapping>();
+            Settings.AddOwnedEntityMappings?.Invoke(OwnedEntityMappings);
         }
 
         public override bool IsExcluded(EntityName item)
         {
-            if(!_hasMergedIncludeFilters)
+            if (!_hasMergedIncludeFilters)
             {
                 MergeIncludeFilters();
                 _hasMergedIncludeFilters = true;
@@ -91,6 +95,9 @@ namespace Efrpg.Filtering
         {
             // Callback to Settings, which can be set within <database>.tt
             Settings.UpdateTable?.Invoke(table);
+
+            // Apply owned entity column groupings
+            Settings.ApplyOwnedEntityMappings(table, OwnedEntityMappings);
         }
 
         public override void UpdateColumn(Column column, Table table)

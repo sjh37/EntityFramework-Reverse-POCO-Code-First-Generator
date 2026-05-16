@@ -19,6 +19,7 @@ namespace Efrpg
         public bool IsStoredProcedure;
         public bool HasSpatialParameter;
         public bool HasSpatialReturnModel;
+        public string Error; // Set when an exception occurs reading the return model (e.g. SP uses temp tables)
 
         public StoredProcedure()
         {
@@ -43,7 +44,7 @@ namespace Efrpg
 
         public void MergeModelsIfAllSame()
         {
-            if(Settings.MergeMultipleStoredProcModelsIfAllSame && ReturnModels.Count < 2)
+            if (Settings.MergeMultipleStoredProcModelsIfAllSame && ReturnModels.Count < 2)
                 return;
 
             if (ReturnModels.Select(x => x.Count).Distinct().Count() != 1)
@@ -117,9 +118,9 @@ namespace Efrpg
                 var isOptional = isInParam && count >= firstOptionalIndex;
                 var isReferenceType = Column.StoredProcedureNotNullable.Contains(p.PropertyType.ToLower());
 
-                // A string param with a NULL DB default becomes nullable (string?) only when NRT is enabled.
-                // Without NRT (e.g. EF6 / C# 7.3), string? is not valid syntax.
-                var makeNullable = !isReferenceType || (useDbDefaults && isOptional && p.DefaultValue == null && Settings.NeedsNullForgiving());
+                // A string param with a NULL DB default becomes nullable (string?) only when AllowNullStrings is enabled.
+                // NullableReverseNavigationProperties only controls reverse nav props, not SP parameter types.
+                var makeNullable = !isReferenceType || (useDbDefaults && isOptional && p.DefaultValue == null && Settings.AllowNullStrings);
 
                 string defaultSuffix;
                 if (!isOptional)
@@ -154,31 +155,112 @@ namespace Efrpg
         }
 
         // Converts a StoredProcedureParameter's stored DefaultValue to a valid C# literal.
-        // p.DefaultValue == null  → "null"
-        // p.DefaultValue == "'FCV'" → "\"FCV\""
-        // p.DefaultValue == "12"  → "12" (with optional type suffix for decimal/float)
+        // Uses a whitelist: only types whose values are valid C# compile-time constants get
+        // a non-null default; everything else falls back to null.
+        //
+        // Valid compile-time constants in C#: numeric primitives, bool, string, enum, null.
+        // NOT valid: DateTime, DateTimeOffset, Guid, TimeSpan, DateOnly, TimeOnly, byte[],
+        //            object, spatial types, or SQL expressions (getdate(), newid(), etc.).
         private static string ToCSharpDefault(StoredProcedureParameter p)
         {
             if (p.DefaultValue == null)
                 return "null";
 
             var raw = p.DefaultValue.Trim();
+            var propertyType = p.PropertyType?.ToLower() ?? string.Empty;
 
-            // SQL string literal: strip surrounding single quotes and escape for C#
+            // SQL string literal (single-quoted): only usable when the C# type is string
             if (raw.Length >= 2 && raw[0] == '\'' && raw[raw.Length - 1] == '\'')
             {
-                var str = raw.Substring(1, raw.Length - 2).Replace("''", "'");
-                return "\"" + str.Replace("\\", "\\\\").Replace("\"", "\\\"") + "\"";
+                if (propertyType == "string")
+                {
+                    var str = raw.Substring(1, raw.Length - 2).Replace("''", "'");
+                    return "\"" + str.Replace("\\", "\\\\").Replace("\"", "\\\"") + "\"";
+                }
+                return "null"; // DateTime?, Guid?, etc. stored as SQL string literals → null
             }
 
-            // Numeric value: add C# type suffix where needed
-            var propertyType = p.PropertyType?.ToLower() ?? string.Empty;
-            if (propertyType == "decimal?" || propertyType == "decimal")
-                return raw + "m";
-            if (propertyType == "float?" || propertyType == "float")
-                return raw + "f";
+            // Unicode string prefix N'...' — not a valid C# literal for any type
+            if (raw.Length >= 3 && (raw[0] == 'N' || raw[0] == 'n') &&
+                raw[1] == '\'' && raw[raw.Length - 1] == '\'')
+            {
+                if (propertyType == "string")
+                {
+                    var str = raw.Substring(2, raw.Length - 3).Replace("''", "'");
+                    return "\"" + str.Replace("\\", "\\\\").Replace("\"", "\\\"") + "\"";
+                }
+                return "null";
+            }
 
-            return raw; // int, double, bool, etc. – use as-is
+            // bool: SQL bit (0/1) or PostgreSQL true/false keywords
+            if (propertyType == "bool?" || propertyType == "bool")
+            {
+                if (raw == "0" || raw.Equals("false", StringComparison.OrdinalIgnoreCase)) return "false";
+                if (raw == "1" || raw.Equals("true", StringComparison.OrdinalIgnoreCase)) return "true";
+                return "null";
+            }
+
+            // decimal / float: only emit if the raw value is actually numeric
+            if (propertyType == "decimal?" || propertyType == "decimal")
+                return IsSqlNumericLiteral(raw) ? raw + "m" : "null";
+            if (propertyType == "float?" || propertyType == "float")
+                return IsSqlNumericLiteral(raw) ? raw + "f" : "null";
+
+            // Remaining integer/floating-point value types: only emit a raw numeric literal.
+            // Anything else (getdate(), newid(), expressions, etc.) falls back to null.
+            if (IsCSharpNumericValueType(propertyType))
+                return IsSqlNumericLiteral(raw) ? raw : "null";
+
+            // All other types (DateTime, DateTimeOffset, Guid, TimeSpan, DateOnly, TimeOnly,
+            // string with non-string default, byte[], object, spatial types, etc.) → null.
+            return "null";
+        }
+
+        // Returns true for C# integer/floating-point value types that accept a numeric literal
+        // as a compile-time default parameter value.
+        private static bool IsCSharpNumericValueType(string lowerPropertyType)
+        {
+            switch (lowerPropertyType)
+            {
+                case "byte":
+                case "byte?":
+                case "sbyte":
+                case "sbyte?":
+                case "short":
+                case "short?":
+                case "int":
+                case "int?":
+                case "long":
+                case "long?":
+                case "ushort":
+                case "ushort?":
+                case "uint":
+                case "uint?":
+                case "ulong":
+                case "ulong?":
+                case "double":
+                case "double?":
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        // Returns true when raw looks like a plain SQL numeric literal (optional sign, digits,
+        // optional single decimal point). Rejects SQL expressions, identifiers, etc.
+        private static bool IsSqlNumericLiteral(string raw)
+        {
+            if (string.IsNullOrEmpty(raw)) return false;
+            var i = 0;
+            if (raw[i] == '-' || raw[i] == '+') i++;
+            if (i >= raw.Length) return false;
+            var hasDot = false;
+            for (; i < raw.Length; i++)
+            {
+                if (raw[i] == '.') { if (hasDot) return false; hasDot = true; }
+                else if (!char.IsDigit(raw[i])) return false;
+            }
+            return true;
         }
 
         // Returns the minimum nullable parameter, counting from 1. 0 Means no column is nullable.
@@ -237,7 +319,7 @@ namespace Efrpg
         {
             var sb = new StringBuilder(255);
             var count = Parameters.Count;
-            for(var n = 0; n < count; n++)
+            for (var n = 0; n < count; n++)
             {
                 sb.AppendFormat("{{{0}}}{1}",
                     n,
@@ -257,20 +339,25 @@ namespace Efrpg
             var sb = new StringBuilder(1024);
             foreach (var p in Parameters.OrderBy(x => x.Ordinal))
             {
-                var isNullable = !Column.StoredProcedureNotNullable.Contains(p.PropertyType.ToLower());
+                var lowerPropertyType = p.PropertyType.ToLower();
+                var isNullable = !Column.StoredProcedureNotNullable.Contains(lowerPropertyType);
                 var getValueOrDefault = isNullable ? ".GetValueOrDefault()" : string.Empty;
-                var isGeography = p.PropertyType == "DbGeography";
+                var isDbGeography = lowerPropertyType == "dbgeography";
+                var isDbGeometry = lowerPropertyType == "dbgeometry";
+                var isSpatialEf6 = isDbGeography || isDbGeometry;
+                var spatialSqlType = isDbGeography ? "SqlGeography" : "SqlGeometry";
+                var spatialUdtName = isDbGeography ? "geography" : "geometry";
 
                 sb.AppendLine(
                     string.Format("        var {0} = new {1}", WriteStoredProcSqlParameterName(p), Settings.SqlParameter())
                     + string.Format(" {{ ParameterName = \"{0}\", ", p.Name)
-                    + (isGeography ? "UdtTypeName = \"geography\"" : string.Format("SqlDbType = SqlDbType.{0}", p.SqlDbType))
+                    + (isSpatialEf6 ? string.Format("UdtTypeName = \"{0}\"", spatialUdtName) : string.Format("SqlDbType = SqlDbType.{0}", p.SqlDbType))
                     + ", Direction = ParameterDirection."
                     + (p.Mode == StoredProcedureParameterMode.In ? "Input" : "Output")
                     + (p.Mode == StoredProcedureParameterMode.In
-                        ? ", Value = " + (isGeography
-                            ? string.Format("Microsoft.SqlServer.Types.SqlGeography.Parse({0}.AsText())", p.NameHumanCase)
-                              : p.NameHumanCase + getValueOrDefault)
+                        ? ", Value = " + (isSpatialEf6
+                            ? string.Format("{0} == null ? (object)DBNull.Value : Microsoft.SqlServer.Types.{1}.Parse({0}.AsText())", p.NameHumanCase, spatialSqlType)
+                            : p.NameHumanCase + getValueOrDefault)
                         : string.Empty)
                     + (p.MaxLength != 0 ? ", Size = " + p.MaxLength : string.Empty)
                     + ((p.Precision > 0 || p.Scale > 0) ? ", Precision = " + p.Precision + ", Scale = " + p.Scale : string.Empty)
@@ -336,8 +423,9 @@ namespace Efrpg
             foreach (var p in Parameters.OrderBy(x => x.Ordinal))
             {
                 var paramName = string.Format("{0}{1}", p.NameHumanCase, appendParam ? "Param" : string.Empty);
-                // Cast to (object?) to allow null values when nullable reference types are enabled
-                if (IsEfCore8Plus && needsNullForgiving)
+                // Cast to (object?) to allow null values when nullable string params are used (AllowNullStrings only).
+                // NullableReverseNavigationProperties does not make SP params nullable, so no cast needed for it.
+                if (IsEfCore8Plus && Settings.AllowNullStrings)
                     paramName = string.Format("(object?){0}", paramName);
                 sb.Append(string.Format("{0}, ", paramName));
                 hasParam = true;
@@ -465,6 +553,17 @@ namespace Efrpg
                 var effectiveName = sanitized.TrimStart('@');
                 if (effectiveName != rawName)
                     mappings.Add(string.Format("modelBuilder.{0}<{1}>().Property(e => e.{2}).HasColumnName(\"{3}\");", builderCmd, returnModelName, sanitized, rawName));
+
+                // HasPrecision for fluent API mode (EF Core only; [Precision] handles data annotations mode)
+                if (!Settings.IsEf6() && !Settings.UseDataAnnotations &&
+                    col.DataType == typeof(decimal) &&
+                    col.ExtendedProperties.Contains("Precision") && col.ExtendedProperties.Contains("Scale"))
+                {
+                    var p = (byte)col.ExtendedProperties["Precision"];
+                    var s = (byte)col.ExtendedProperties["Scale"];
+                    if (p > 0 || s > 0)
+                        mappings.Add(string.Format("modelBuilder.{0}<{1}>().Property(e => e.{2}).HasPrecision({3}, {4});", builderCmd, returnModelName, sanitized, p, s));
+                }
             }
             return mappings;
         }
@@ -485,16 +584,29 @@ namespace Efrpg
                     nullForgivingOperator = " = null!;";
             }
 
+            var attributeLines = new System.Text.StringBuilder();
+
             // When UseDataAnnotations=true and the C# name differs from the DB column name,
             // add [Column("original")] so EF Core can map the result set column to this property.
             // When UseDataAnnotations=false, HasColumnName is emitted in OnModelCreating instead.
             var effectiveName = columnName.TrimStart('@');
-            var columnAttribute = Settings.UseDataAnnotations && effectiveName != rawColumnName
-                ? string.Format("[Column(\"{0}\")]{1}    ", rawColumnName, Environment.NewLine)
-                : string.Empty;
+            if (Settings.UseDataAnnotations && effectiveName != rawColumnName)
+                attributeLines.AppendFormat("[Column(\"{0}\")]{1}    ", rawColumnName, Environment.NewLine);
+
+            // [Precision(p, s)] for decimal/numeric columns on EF Core with data annotations.
+            // Precision/scale are set by EnrichFirstResultSetWithPrecision when SQL Server 2012+ is detected.
+            if (!Settings.IsEf6() && Settings.UseDataAnnotations &&
+                col.DataType == typeof(decimal) &&
+                col.ExtendedProperties.Contains("Precision") && col.ExtendedProperties.Contains("Scale"))
+            {
+                var p = (byte)col.ExtendedProperties["Precision"];
+                var s = (byte)col.ExtendedProperties["Scale"];
+                if (p > 0 || s > 0)
+                    attributeLines.AppendFormat("[Precision({0}, {1})]{2}    ", p, s, Environment.NewLine);
+            }
 
             return string.Format("{0}public {1} {2} {{ get; set; }}{3}",
-                columnAttribute,
+                attributeLines,
                 propertyType,
                 columnName,
                 nullForgivingOperator);
@@ -503,7 +615,7 @@ namespace Efrpg
         private static bool IsReferenceType(string propertyType)
         {
             var lowerType = propertyType.ToLower();
-            
+
             // List of known reference types
             return lowerType == "string" ||
                    lowerType == "byte[]" ||
@@ -528,7 +640,7 @@ namespace Efrpg
         private string ConvertDataColumnType(Type type)
         {
             var isEfCore8Plus = Settings.IsEfCore8Plus();
-            
+
             if (type.Name.Equals("SqlHierarchyId"))
                 return isEfCore8Plus ? "HierarchyId" : "Microsoft.SqlServer.Types.SqlHierarchyId";
 
@@ -540,7 +652,7 @@ namespace Efrpg
             var isArray = typeName.EndsWith("[]");
             if (isArray)
                 typeName = typeName.Replace("[]", string.Empty);
-            
+
             switch (typeName.ToLower())
             {
                 case "int16":
@@ -590,7 +702,7 @@ namespace Efrpg
                         typeNamespace = "NetTopologySuite.Geometries.";
                         typeName = "Point";
                         break;
-                    
+
                     case "microsoft.sqlserver.types.sqlgeometry":
                     case "sqlgeometry":
                         typeNamespace = "NetTopologySuite.Geometries.";

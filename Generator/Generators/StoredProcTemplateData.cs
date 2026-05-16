@@ -39,6 +39,8 @@ namespace Efrpg.Generators
         public bool CreateDbSetForReturnModel { get; set; }
         public List<string> ColumnMappings { get; set; } = new List<string>();
         public bool HasColumnMappings => ColumnMappings != null && ColumnMappings.Count > 0;
+        public bool HasError { get; }
+        public string Error { get; }
 
         public StoredProcTemplateData(
             bool hasNoReturnModels,
@@ -71,7 +73,9 @@ namespace Efrpg.Generators
             string writeStoredProcFunctionDeclareSqlParameterFalse,
             List<string> parameters,
             int returnModelsCount,
-            string execWithNoReturnModel)
+            string execWithNoReturnModel,
+            bool hasError,
+            string error)
         {
             HasNoReturnModels = hasNoReturnModels;
             HasReturnModels = hasReturnModels;
@@ -104,6 +108,8 @@ namespace Efrpg.Generators
             Parameters = parameters;
             ReturnModelsCount = returnModelsCount;
             ExecWithNoReturnModel = execWithNoReturnModel;
+            HasError = hasError;
+            Error = error;
 
             CreateDbSetForReturnModel = true;
 
