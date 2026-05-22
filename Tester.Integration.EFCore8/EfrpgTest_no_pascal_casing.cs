@@ -21,6 +21,7 @@ namespace V8_Efrpg_Test
 {
     #region Database context interface
 
+    #nullable enable
     public interface IV8_Efrpg_Test_Db_Context : IDisposable
     {
         DbSet<A> A { get; set; } // A
@@ -374,6 +375,7 @@ namespace V8_Efrpg_Test
         // Scalar Valued Functions
         decimal udfNetSale(int? quantity, decimal? list_price, decimal? discount); // dbo.udfNetSale
     }
+    #nullable restore
 
     #endregion
 

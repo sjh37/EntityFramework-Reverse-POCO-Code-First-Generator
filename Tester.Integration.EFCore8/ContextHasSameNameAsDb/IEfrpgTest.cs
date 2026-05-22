@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 
 namespace Tester.Integration.EFCore8.ContextHasSameNameAsDb
 {
+    #nullable enable
     public interface IEfrpgTest : IDisposable
     {
         DbSet<Car> Cars { get; set; } // Car
@@ -62,5 +63,6 @@ namespace Tester.Integration.EFCore8.ContextHasSameNameAsDb
 
         IQueryable<TResult> FromExpression<TResult> (Expression<Func<IQueryable<TResult>>> expression);
     }
+    #nullable restore
 }
 // </auto-generated>

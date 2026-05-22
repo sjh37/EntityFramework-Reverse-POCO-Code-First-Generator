@@ -299,6 +299,21 @@ namespace Efrpg.Generators
             return !usings.Any() ? null : Template.Transform(_template.Usings(), usings).Trim();
         }
 
+        // The EF Core interface, fake context and fake DbSet templates contain hard-coded nullable
+        // reference type annotations (Find/FindAsync return types, ToString). The compiler ignores
+        // the project-wide nullable setting for auto-generated files, so without an explicit
+        // '#nullable' directive those annotations raise CS8669. Bracket the code with one when the
+        // file header doesn't already carry it (i.e. when NeedsNullForgiving() is false).
+        private static void AddCodeWithNullableContext(CodeOutput co, string template, object data)
+        {
+            var bracket = !Settings.NeedsNullForgiving() && Settings.IsEfCore8Plus();
+            if (bracket)
+                co.AddCode("#nullable enable");
+            co.AddCode(Template.Transform(template, data));
+            if (bracket)
+                co.AddCode("#nullable restore");
+        }
+
         public CodeOutput GenerateInterface()
         {
             var filename = Settings.DbContextInterfaceName + Settings.FileExtension;
@@ -327,7 +342,7 @@ namespace Efrpg.Generators
 
             var co = new CodeOutput(string.Empty, filename, "Database context interface", Settings.InterfaceFolder, _globalUsings);
             co.AddUsings(_template.DatabaseContextInterfaceUsings(data));
-            co.AddCode(Template.Transform(_template.DatabaseContextInterface(), data));
+            AddCodeWithNullableContext(co, _template.DatabaseContextInterface(), data);
 
             return co;
         }
@@ -519,7 +534,7 @@ namespace Efrpg.Generators
             co.AddUsings(_template.FakeDatabaseContextUsings(data, _filter));
             if (Settings.FakeDbContextInDebugOnlyMode)
                 co.AddCode("#if DEBUG");
-            co.AddCode(Template.Transform(_template.FakeDatabaseContext(), data));
+            AddCodeWithNullableContext(co, _template.FakeDatabaseContext(), data);
             if (Settings.FakeDbContextInDebugOnlyMode)
                 co.AddCode("#endif");
 
@@ -545,7 +560,7 @@ namespace Efrpg.Generators
             co.AddUsings(_template.FakeDbSetUsings(data));
             if (Settings.FakeDbContextInDebugOnlyMode)
                 co.AddCode("#if DEBUG");
-            co.AddCode(Template.Transform(_template.FakeDbSet(), data));
+            AddCodeWithNullableContext(co, _template.FakeDbSet(), data);
             if (Settings.FakeDbContextInDebugOnlyMode)
                 co.AddCode("#endif");
 

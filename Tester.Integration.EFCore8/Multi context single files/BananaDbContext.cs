@@ -21,6 +21,7 @@ namespace Tester.Integration.EFCore8.Multi_context_single_filesBananaDbContext
 {
     #region Database context interface
 
+    #nullable enable
     public interface IBananaDbContext : IDisposable
     {
         DbSet<Stafford_ComputedColumn> Stafford_ComputedColumns { get; set; } // ComputedColumns
@@ -69,6 +70,7 @@ namespace Tester.Integration.EFCore8.Multi_context_single_filesBananaDbContext
 
         IQueryable<TResult> FromExpression<TResult> (Expression<Func<IQueryable<TResult>>> expression);
     }
+    #nullable restore
 
     #endregion
 

@@ -17,6 +17,7 @@ using Tester.Integration.EFCore8.Single_context_many_files.Interfaces;
 
 namespace Tester.Integration.EFCore8.Single_context_many_files.Contexts
 {
+    #nullable enable
     public class FakeEfCoreDbContext : IEfCoreDbContext
     {
         public DbSet<A> A { get; set; } = null!; // A
@@ -1219,5 +1220,6 @@ namespace Tester.Integration.EFCore8.Single_context_many_files.Contexts
             return default(decimal);
         }
     }
+    #nullable restore
 }
 // </auto-generated>

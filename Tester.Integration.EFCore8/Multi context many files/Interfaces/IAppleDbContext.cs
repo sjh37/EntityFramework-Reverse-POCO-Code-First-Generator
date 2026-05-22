@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 
 namespace Tester.Integration.EFCore8.Multi_context_many_filesAppleDbContext
 {
+    #nullable enable
     public interface IAppleDbContext : IDisposable
     {
         DbSet<Stafford_Boo> Stafford_Boos { get; set; } // Boo
@@ -64,5 +65,6 @@ namespace Tester.Integration.EFCore8.Multi_context_many_filesAppleDbContext
 
         IQueryable<TResult> FromExpression<TResult> (Expression<Func<IQueryable<TResult>>> expression);
     }
+    #nullable restore
 }
 // </auto-generated>

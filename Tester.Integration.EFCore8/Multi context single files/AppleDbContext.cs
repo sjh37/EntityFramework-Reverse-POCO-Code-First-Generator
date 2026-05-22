@@ -21,6 +21,7 @@ namespace Tester.Integration.EFCore8.Multi_context_single_filesAppleDbContext
 {
     #region Database context interface
 
+    #nullable enable
     public interface IAppleDbContext : IDisposable
     {
         DbSet<Stafford_Boo> Stafford_Boos { get; set; } // Boo
@@ -70,6 +71,7 @@ namespace Tester.Integration.EFCore8.Multi_context_single_filesAppleDbContext
 
         IQueryable<TResult> FromExpression<TResult> (Expression<Func<IQueryable<TResult>>> expression);
     }
+    #nullable restore
 
     #endregion
 

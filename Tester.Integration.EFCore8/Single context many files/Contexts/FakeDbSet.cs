@@ -24,6 +24,7 @@ using Tester.Integration.EFCore8.Single_context_many_files.Interfaces;
 
 namespace Tester.Integration.EFCore8.Single_context_many_files.Contexts
 {
+    #nullable enable
     // ************************************************************************
     // Fake DbSet
     // Implementing Find:
@@ -500,5 +501,6 @@ namespace Tester.Integration.EFCore8.Single_context_many_files.Contexts
         public void Dispose() { }
         public ValueTask DisposeAsync() => default;
     }
+    #nullable restore
 }
 // </auto-generated>

@@ -27,6 +27,7 @@ namespace TestSynonymsDatabase10
 {
     #region Database context interface
 
+    #nullable enable
     public interface ITestDbContext : IDisposable
     {
         DbSet<CarWithDifferentSynonymName> CarWithDifferentSynonymNames { get; set; } // CarWithDifferentSynonymName
@@ -89,6 +90,7 @@ namespace TestSynonymsDatabase10
         IQueryable<CsvToIntReturnModel> CsvToInt(string array, string array2); // dbo.CsvToInt
         IQueryable<CsvToIntWithSchemaReturnModel> CsvToIntWithSchema(string array, string array2); // CustomSchema.CsvToIntWithSchema
     }
+    #nullable restore
 
     #endregion
 
@@ -252,6 +254,7 @@ namespace TestSynonymsDatabase10
 
     #region Fake Database context
 
+    #nullable enable
     public class FakeTestDbContext : ITestDbContext
     {
         public DbSet<CarWithDifferentSynonymName> CarWithDifferentSynonymNames { get; set; } = null!; // CarWithDifferentSynonymName
@@ -501,11 +504,13 @@ namespace TestSynonymsDatabase10
             return new List<CsvToIntWithSchemaReturnModel>().AsQueryable();
         }
     }
+    #nullable restore
 
     #endregion
 
     #region Fake DbSet
 
+    #nullable enable
     // ************************************************************************
     // Fake DbSet
     // Implementing Find:
@@ -982,6 +987,7 @@ namespace TestSynonymsDatabase10
         public void Dispose() { }
         public ValueTask DisposeAsync() => default;
     }
+    #nullable restore
 
     #endregion
 

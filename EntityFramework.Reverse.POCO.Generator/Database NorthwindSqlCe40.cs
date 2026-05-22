@@ -27,6 +27,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
 {
     #region Database context interface
 
+    #nullable enable
     public interface IMyDbContextSqlCE4 : IDisposable
     {
         DbSet<Category> Categories { get; set; } // Categories
@@ -82,6 +83,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
 
         IQueryable<TResult> FromExpression<TResult> (Expression<Func<IQueryable<TResult>>> expression);
     }
+    #nullable restore
 
     #endregion
 
@@ -186,6 +188,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
 
     #region Fake Database context
 
+    #nullable enable
     public class FakeMyDbContextSqlCE4 : IMyDbContextSqlCE4
     {
         public DbSet<Category> Categories { get; set; } = null!; // Categories
@@ -406,11 +409,13 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
         }
 
     }
+    #nullable restore
 
     #endregion
 
     #region Fake DbSet
 
+    #nullable enable
     // ************************************************************************
     // Fake DbSet
     // Implementing Find:
@@ -887,6 +892,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
         public void Dispose() { }
         public ValueTask DisposeAsync() => default;
     }
+    #nullable restore
 
     #endregion
 

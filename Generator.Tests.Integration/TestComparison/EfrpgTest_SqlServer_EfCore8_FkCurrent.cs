@@ -28,6 +28,7 @@ namespace Efrpg.V3TestE8a
 {
     #region Database context interface
 
+    #nullable enable
     public interface IEfrpgTestDbContext : IDisposable
     {
         DbSet<A> A { get; set; } // A
@@ -378,6 +379,7 @@ namespace Efrpg.V3TestE8a
         // Scalar Valued Functions
         decimal UdfNetSale(int? quantity, decimal? listPrice, decimal? discount); // dbo.udfNetSale
     }
+    #nullable restore
 
     #endregion
 
@@ -2324,6 +2326,7 @@ namespace Efrpg.V3TestE8a
 
     #region Fake Database context
 
+    #nullable enable
     public class FakeEfrpgTestDbContext : IEfrpgTestDbContext
     {
         public DbSet<A> A { get; set; } = null!; // A
@@ -3497,11 +3500,13 @@ namespace Efrpg.V3TestE8a
             return default(decimal);
         }
     }
+    #nullable restore
 
     #endregion
 
     #region Fake DbSet
 
+    #nullable enable
     // ************************************************************************
     // Fake DbSet
     // Implementing Find:
@@ -3978,6 +3983,7 @@ namespace Efrpg.V3TestE8a
         public void Dispose() { }
         public ValueTask DisposeAsync() => default;
     }
+    #nullable restore
 
     #endregion
 

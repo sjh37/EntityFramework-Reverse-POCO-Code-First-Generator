@@ -17,6 +17,7 @@ using Tester.Integration.EFCore8.Single_context_many_files.Entities;
 
 namespace Tester.Integration.EFCore8.Single_context_many_files.Interfaces
 {
+    #nullable enable
     public interface IEfCoreDbContext : IDisposable
     {
         DbSet<A> A { get; set; } // A
@@ -371,5 +372,6 @@ namespace Tester.Integration.EFCore8.Single_context_many_files.Interfaces
         // Scalar Valued Functions
         decimal UdfNetSale(int? quantity, decimal? listPrice, decimal? discount); // dbo.udfNetSale
     }
+    #nullable restore
 }
 // </auto-generated>

@@ -30,6 +30,7 @@ namespace Tester.Integration.EFCore8.Northwind
 {
     #region Database context interface
 
+    #nullable enable
     public interface INorthwindDbContext : IDisposable
     {
         DbSet<AlphabeticalListOfProduct> AlphabeticalListOfProducts { get; set; } // Alphabetical list of products
@@ -134,6 +135,7 @@ namespace Tester.Integration.EFCore8.Northwind
         Task<List<TenMostExpensiveProductsReturnModel>> TenMostExpensiveProductsAsync(CancellationToken cancellationToken = default(CancellationToken));
 
     }
+    #nullable restore
 
     #endregion
 
@@ -559,6 +561,7 @@ namespace Tester.Integration.EFCore8.Northwind
 
     #region Fake Database context
 
+    #nullable enable
     public class FakeNorthwindDbContext : INorthwindDbContext
     {
         public DbSet<AlphabeticalListOfProduct> AlphabeticalListOfProducts { get; set; } = null!; // Alphabetical list of products
@@ -952,11 +955,13 @@ namespace Tester.Integration.EFCore8.Northwind
             return Task.FromResult(TenMostExpensiveProducts(out procResult));
         }
     }
+    #nullable restore
 
     #endregion
 
     #region Fake DbSet
 
+    #nullable enable
     // ************************************************************************
     // Fake DbSet
     // Implementing Find:
@@ -1433,6 +1438,7 @@ namespace Tester.Integration.EFCore8.Northwind
         public void Dispose() { }
         public ValueTask DisposeAsync() => default;
     }
+    #nullable restore
 
     #endregion
 

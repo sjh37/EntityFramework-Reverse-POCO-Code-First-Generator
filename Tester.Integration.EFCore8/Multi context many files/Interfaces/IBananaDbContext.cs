@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 
 namespace Tester.Integration.EFCore8.Multi_context_many_filesBananaDbContext
 {
+    #nullable enable
     public interface IBananaDbContext : IDisposable
     {
         DbSet<Stafford_ComputedColumn> Stafford_ComputedColumns { get; set; } // ComputedColumns
@@ -63,5 +64,6 @@ namespace Tester.Integration.EFCore8.Multi_context_many_filesBananaDbContext
 
         IQueryable<TResult> FromExpression<TResult> (Expression<Func<IQueryable<TResult>>> expression);
     }
+    #nullable restore
 }
 // </auto-generated>

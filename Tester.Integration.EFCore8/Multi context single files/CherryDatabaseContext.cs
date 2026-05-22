@@ -21,6 +21,7 @@ namespace Tester.Integration.EFCore8.Multi_context_single_filesCherry
 {
     #region Database context interface
 
+    #nullable enable
     public interface ICherryDbContext : IDisposable
     {
         DbSet<ColumnNameAndType> ColumnNameAndTypes { get; set; } // ColumnNameAndTypes
@@ -69,6 +70,7 @@ namespace Tester.Integration.EFCore8.Multi_context_single_filesCherry
 
         IQueryable<TResult> FromExpression<TResult> (Expression<Func<IQueryable<TResult>>> expression);
     }
+    #nullable restore
 
     #endregion
 

@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 
 namespace Tester.Integration.EFCore8.Multi_context_many_filesCherry
 {
+    #nullable enable
     public interface ICherryDbContext : IDisposable
     {
         DbSet<ColumnNameAndType> ColumnNameAndTypes { get; set; } // ColumnNameAndTypes
@@ -63,5 +64,6 @@ namespace Tester.Integration.EFCore8.Multi_context_many_filesCherry
 
         IQueryable<TResult> FromExpression<TResult> (Expression<Func<IQueryable<TResult>>> expression);
     }
+    #nullable restore
 }
 // </auto-generated>

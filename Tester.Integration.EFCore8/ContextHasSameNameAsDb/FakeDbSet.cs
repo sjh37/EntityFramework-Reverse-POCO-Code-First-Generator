@@ -21,6 +21,7 @@ using System.Threading.Tasks;
 
 namespace Tester.Integration.EFCore8.ContextHasSameNameAsDb
 {
+    #nullable enable
     // ************************************************************************
     // Fake DbSet
     // Implementing Find:
@@ -497,5 +498,6 @@ namespace Tester.Integration.EFCore8.ContextHasSameNameAsDb
         public void Dispose() { }
         public ValueTask DisposeAsync() => default;
     }
+    #nullable restore
 }
 // </auto-generated>

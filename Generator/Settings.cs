@@ -386,8 +386,12 @@ namespace Efrpg
             if (enumDefinition != null)
             {
                 column.PropertyType = enumDefinition.EnumType;
-                if (!string.IsNullOrEmpty(column.Default))
-                    column.Default = "(" + enumDefinition.EnumType + ") " + column.Default;
+
+                // Only prepend the cast if it isn't already present, otherwise a column whose enum
+                // type is configured via more than one mechanism ends up double-cast: (Type) (Type) 0
+                var cast = "(" + enumDefinition.EnumType + ")";
+                if (!string.IsNullOrEmpty(column.Default) && !column.Default.StartsWith(cast, StringComparison.Ordinal))
+                    column.Default = cast + " " + column.Default;
             }
         }
 

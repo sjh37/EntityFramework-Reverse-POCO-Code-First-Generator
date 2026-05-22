@@ -33,6 +33,7 @@ namespace V10EfrpgTestDataAnnotations
 {
     #region Database context interface
 
+    #nullable enable
     public interface IV10EfrpgTestDataAnnotationsDbContext : IDisposable
     {
         DbSet<A> A { get; set; } // A
@@ -386,6 +387,7 @@ namespace V10EfrpgTestDataAnnotations
         // Scalar Valued Functions
         decimal UdfNetSale(int? quantity, decimal? listPrice, decimal? discount); // dbo.udfNetSale
     }
+    #nullable restore
 
     #endregion
 
@@ -2370,6 +2372,7 @@ namespace V10EfrpgTestDataAnnotations
 
     #region Fake Database context
 
+    #nullable enable
     public partial class FakeV10EfrpgTestDataAnnotationsDbContext : IV10EfrpgTestDataAnnotationsDbContext
     {
         public DbSet<A> A { get; set; } = null!; // A
@@ -3573,11 +3576,13 @@ namespace V10EfrpgTestDataAnnotations
             return default(decimal);
         }
     }
+    #nullable restore
 
     #endregion
 
     #region Fake DbSet
 
+    #nullable enable
     // ************************************************************************
     // Fake DbSet
     // Implementing Find:
@@ -4058,6 +4063,7 @@ namespace V10EfrpgTestDataAnnotations
         public void Dispose() { }
         public ValueTask DisposeAsync() => default;
     }
+    #nullable restore
 
     #endregion
 

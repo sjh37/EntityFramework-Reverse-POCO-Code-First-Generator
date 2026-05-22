@@ -280,6 +280,9 @@ namespace Generator.Tests.Unit
         [TestCase("c", "view1", "d", "test", true, "int", false, true, "someEnum", true, "(someEnum) test")]
         [TestCase("c", "view1", "d", "test", false, "int", true, true, "someEnum", true, "(someEnum) test")]
 
+        // #884 An already-cast default must not be cast a second time: (someEnum) (someEnum) test
+        [TestCase("c", "view1", "d", "(someEnum) test", false, "int", false, true, "someEnum", true, "(someEnum) test")]
+
         [TestCase("c", "view1", "e", null, false, "int", false, true, "int", false, null)]
         [TestCase("c", "view1", "e", null, true, "int", false, true, "int", false, null)]
 

@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 
 namespace Tester.Integration.EFCore8.ContextHasSameNameAsDb
 {
+    #nullable enable
     public class FakeEfrpgTest : IEfrpgTest
     {
         public DbSet<Car> Cars { get; set; } = null!; // Car
@@ -220,5 +221,6 @@ namespace Tester.Integration.EFCore8.ContextHasSameNameAsDb
         }
 
     }
+    #nullable restore
 }
 // </auto-generated>

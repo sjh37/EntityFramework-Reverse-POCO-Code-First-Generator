@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -302,8 +303,12 @@ namespace Efrpg.Filtering
                     if (!string.IsNullOrEmpty(col.EnumType))
                     {
                         column.PropertyType = col.EnumType;
-                        if (!string.IsNullOrEmpty(column.Default))
-                            column.Default = "(" + col.EnumType + ") " + column.Default;
+
+                        // Only prepend the cast if it isn't already present, otherwise a column whose enum
+                        // type is configured via more than one mechanism ends up double-cast: (Type) (Type) 0
+                        var cast = "(" + col.EnumType + ")";
+                        if (!string.IsNullOrEmpty(column.Default) && !column.Default.StartsWith(cast, StringComparison.Ordinal))
+                            column.Default = cast + " " + column.Default;
                     }
 
                     if (col.IsNullable != null)

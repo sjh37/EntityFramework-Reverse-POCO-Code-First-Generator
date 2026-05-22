@@ -28,6 +28,7 @@ namespace TestDatabaseStandard
 {
     #region Database context interface
 
+    #nullable enable
     public interface ITestDbContext : IDisposable
     {
         DbSet<A> A { get; set; } // A
@@ -382,6 +383,7 @@ namespace TestDatabaseStandard
         // Scalar Valued Functions
         decimal UdfNetSale(int? quantity, decimal? listPrice, decimal? discount); // dbo.udfNetSale
     }
+    #nullable restore
 
     #endregion
 
@@ -2372,6 +2374,7 @@ namespace TestDatabaseStandard
 
     #region Fake Database context
 
+    #nullable enable
     public class FakeTestDbContext : ITestDbContext
     {
         public DbSet<A> A { get; set; } = null!; // A
@@ -3574,11 +3577,13 @@ namespace TestDatabaseStandard
             return default(decimal);
         }
     }
+    #nullable restore
 
     #endregion
 
     #region Fake DbSet
 
+    #nullable enable
     // ************************************************************************
     // Fake DbSet
     // Implementing Find:
@@ -4055,6 +4060,7 @@ namespace TestDatabaseStandard
         public void Dispose() { }
         public ValueTask DisposeAsync() => default;
     }
+    #nullable restore
 
     #endregion
 

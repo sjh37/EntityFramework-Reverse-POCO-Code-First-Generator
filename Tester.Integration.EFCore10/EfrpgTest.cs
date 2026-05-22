@@ -28,6 +28,7 @@ using System.Threading.Tasks;
 namespace V10EfrpgTest;
 #region Database context interface
 
+#nullable enable
 public interface IV10EfrpgTestDbContext : IDisposable
 {
     DbSet<A> A { get; set; } // A
@@ -381,6 +382,7 @@ public interface IV10EfrpgTestDbContext : IDisposable
     // Scalar Valued Functions
     decimal UdfNetSale(int? quantity, decimal? listPrice, decimal? discount); // dbo.udfNetSale
 }
+#nullable restore
 
 #endregion
 
@@ -2379,6 +2381,7 @@ public partial class V10EfrpgTestDbContextFactory : IDesignTimeDbContextFactory<
 #region Fake Database context
 
 #if DEBUG
+#nullable enable
 public partial class FakeV10EfrpgTestDbContext : IV10EfrpgTestDbContext
 {
     public DbSet<A> A { get; set; } = null!; // A
@@ -3582,6 +3585,7 @@ public partial class FakeV10EfrpgTestDbContext : IV10EfrpgTestDbContext
         return default(decimal);
     }
 }
+#nullable restore
 #endif
 
 #endregion
@@ -3589,6 +3593,7 @@ public partial class FakeV10EfrpgTestDbContext : IV10EfrpgTestDbContext
 #region Fake DbSet
 
 #if DEBUG
+#nullable enable
 // ************************************************************************
 // Fake DbSet
 // Implementing Find:
@@ -4069,6 +4074,7 @@ public class FakeDbContextTransaction : IDbContextTransaction
     public void Dispose() { }
     public ValueTask DisposeAsync() => default;
 }
+#nullable restore
 #endif
 
 #endregion

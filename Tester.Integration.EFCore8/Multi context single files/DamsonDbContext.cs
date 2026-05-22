@@ -21,6 +21,7 @@ namespace Tester.Integration.EFCore8.Multi_context_single_filesPlum
 {
     #region Database context interface
 
+    #nullable enable
     public interface IDamsonDbContext : IDisposable
     {
         DbSet<NoPrimaryKey> NoPrimaryKeys { get; set; } // NoPrimaryKeys
@@ -70,6 +71,7 @@ namespace Tester.Integration.EFCore8.Multi_context_single_filesPlum
 
         IQueryable<TResult> FromExpression<TResult> (Expression<Func<IQueryable<TResult>>> expression);
     }
+    #nullable restore
 
     #endregion
 
