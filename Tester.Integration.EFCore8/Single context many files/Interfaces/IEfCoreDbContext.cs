@@ -187,13 +187,13 @@ namespace Tester.Integration.EFCore8.Single_context_many_files.Interfaces
         int AddTwoValues(int? a, int? b);
         Task<int> AddTwoValuesAsync(int? a, int? b, CancellationToken cancellationToken = default(CancellationToken));
 
-        int AddTwoValuesWithResult(int? a, int? b, out int? result, out int? result2);
+        int AddTwoValuesWithResult(int? a, int? b, ref int? result, ref int? result2);
         // AddTwoValuesWithResultAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
         int Alpha_Overclock(DateTime? parameter);
         Task<int> Alpha_OverclockAsync(DateTime? parameter, CancellationToken cancellationToken = default(CancellationToken));
 
-        int App_UspCmtUserFsrUpdate(int? userId, int? fsrId, out int? ufsrId);
+        int App_UspCmtUserFsrUpdate(int? userId, int? fsrId, ref int? ufsrId);
         // App_UspCmtUserFsrUpdateAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
         List<ASimpleExampleReturnModel> ASimpleExample();
@@ -206,8 +206,8 @@ namespace Tester.Integration.EFCore8.Single_context_many_files.Interfaces
         // C182Test2ReturnModel C182Test2(int? flag); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
         // Task<C182Test2ReturnModel> C182Test2Async(int? flag); Cannot be created as EF Core does not yet support stored procedures with multiple result sets.
 
-        List<CheckIfApplicationIsCompleteReturnModel> CheckIfApplicationIsComplete(int? applicationId, out bool? isApplicationComplete);
-        List<CheckIfApplicationIsCompleteReturnModel> CheckIfApplicationIsComplete(int? applicationId, out bool? isApplicationComplete, out int procResult);
+        List<CheckIfApplicationIsCompleteReturnModel> CheckIfApplicationIsComplete(int? applicationId, ref bool? isApplicationComplete);
+        List<CheckIfApplicationIsCompleteReturnModel> CheckIfApplicationIsComplete(int? applicationId, ref bool? isApplicationComplete, out int procResult);
         // CheckIfApplicationIsCompleteAsync() cannot be created due to having out parameters, or is relying on the procedure result (List<CheckIfApplicationIsCompleteReturnModel>)
 
         List<ColourPivotReturnModel> ColourPivot();
@@ -218,7 +218,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files.Interfaces
         List<ColumnNameAndTypesProcReturnModel> ColumnNameAndTypesProc(out int procResult);
         Task<List<ColumnNameAndTypesProcReturnModel>> ColumnNameAndTypesProcAsync(CancellationToken cancellationToken = default(CancellationToken));
 
-        int ConvertToString(int? someValue, out string someString);
+        int ConvertToString(int? someValue, ref string someString);
         // ConvertToStringAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
         List<DboProcDataFromFfrsReturnModel> DboProcDataFromFfrs(int? maxId);
@@ -253,19 +253,19 @@ namespace Tester.Integration.EFCore8.Single_context_many_files.Interfaces
         List<GetSmallDecimalTestReturnModel> GetSmallDecimalTest(int? maxId, out int procResult);
         Task<List<GetSmallDecimalTestReturnModel>> GetSmallDecimalTestAsync(int? maxId, CancellationToken cancellationToken = default(CancellationToken));
 
-        int InsertRecord(string data, out int? insertedId);
+        int InsertRecord(string data, ref int? insertedId);
         // InsertRecordAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        int InsertRecordThree(string data, out int? insertedId, int? someId, out int? anotherInsertedId);
+        int InsertRecordThree(string data, ref int? insertedId, int? someId, ref int? anotherInsertedId);
         // InsertRecordThreeAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        int InsertRecordTwo(string data, out int? insertedId, out int? anotherInsertedId);
+        int InsertRecordTwo(string data, ref int? insertedId, ref int? anotherInsertedId);
         // InsertRecordTwoAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        int MinTripSequenceStart(out DateTime? minTripSequenceStartParam);
+        int MinTripSequenceStart(ref DateTime? minTripSequenceStartParam);
         // MinTripSequenceStartAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        int MinTripSequenceStartNull(out DateTime? minTripSequenceStartParam);
+        int MinTripSequenceStartNull(ref DateTime? minTripSequenceStartParam);
         // MinTripSequenceStartNullAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
         int MultipleReturnColumnsFromTempTable();
@@ -277,13 +277,13 @@ namespace Tester.Integration.EFCore8.Single_context_many_files.Interfaces
         int Omega_Overclock(DateTime? parameter);
         Task<int> Omega_OverclockAsync(DateTime? parameter, CancellationToken cancellationToken = default(CancellationToken));
 
-        int ProcTestDecimalOutput(out decimal? perfectNumber);
+        int ProcTestDecimalOutput(ref decimal? perfectNumber);
         // ProcTestDecimalOutputAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        int ProcTestDecimalOutputV2(out decimal? perfectNumber);
+        int ProcTestDecimalOutputV2(ref decimal? perfectNumber);
         // ProcTestDecimalOutputV2Async() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        int ProcTestDecimalOutputV3Default(out decimal? perfectNumber);
+        int ProcTestDecimalOutputV3Default(ref decimal? perfectNumber);
         // ProcTestDecimalOutputV3DefaultAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
         List<SpatialTypesNoParamsReturnModel> SpatialTypesNoParams();
@@ -322,8 +322,8 @@ namespace Tester.Integration.EFCore8.Single_context_many_files.Interfaces
         List<StpNullableParamsTestReturnModel> StpNullableParamsTest(int? aVal, int? bVal, out int procResult);
         Task<List<StpNullableParamsTestReturnModel>> StpNullableParamsTestAsync(int? aVal, int? bVal, CancellationToken cancellationToken = default(CancellationToken));
 
-        List<StpTestReturnModel> StpTest(string strDateFrom, string strDateTo, out bool? retBool);
-        List<StpTestReturnModel> StpTest(string strDateFrom, string strDateTo, out bool? retBool, out int procResult);
+        List<StpTestReturnModel> StpTest(string strDateFrom, string strDateTo, ref bool? retBool);
+        List<StpTestReturnModel> StpTest(string strDateFrom, string strDateTo, ref bool? retBool, out int procResult);
         // StpTestAsync() cannot be created due to having out parameters, or is relying on the procedure result (List<StpTestReturnModel>)
 
         List<StpTestSpaceTestReturnModel> StpTestSpaceTest(int? aVal, int? bVal);
@@ -348,7 +348,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files.Interfaces
         List<TestReturnStringReturnModel> TestReturnString(out int procResult);
         Task<List<TestReturnStringReturnModel>> TestReturnStringAsync(CancellationToken cancellationToken = default(CancellationToken));
 
-        int ThisHasMixedOutParameters(DateTime? foo, out int? firstOutParam, DateTime? bar, out int? secondOutParam, DateTime? baz);
+        int ThisHasMixedOutParameters(DateTime? foo, ref int? firstOutParam, DateTime? bar, ref int? secondOutParam, DateTime? baz);
         // ThisHasMixedOutParametersAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
         int UserDefinedTypeSampleStoredProc(int? a, DataTable type, int? b);

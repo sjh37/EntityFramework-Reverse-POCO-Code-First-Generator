@@ -133,7 +133,7 @@ namespace Efrpg
                     defaultSuffix = string.Empty; // reference types without DB info stay required
 
                 sb.AppendFormat("{0}{1}{2} {3}{4}, ",
-                    isInParam ? string.Empty : "out ",
+                    p.Mode == StoredProcedureParameterMode.In ? string.Empty : p.Mode == StoredProcedureParameterMode.InOut ? "ref " : "out ",
                     p.PropertyType,
                     makeNullable ? "?" : string.Empty,
                     p.NameHumanCase,
@@ -291,7 +291,7 @@ namespace Efrpg
             foreach (var p in Parameters.OrderBy(x => x.Ordinal))
             {
                 sb.AppendFormat("{0}{1}, ",
-                    p.Mode == StoredProcedureParameterMode.In ? string.Empty : "out ",
+                    p.Mode == StoredProcedureParameterMode.In ? string.Empty : p.Mode == StoredProcedureParameterMode.InOut ? "ref " : "out ",
                     p.NameHumanCase);
             }
 
@@ -353,8 +353,8 @@ namespace Efrpg
                     + string.Format(" {{ ParameterName = \"{0}\", ", p.Name)
                     + (isSpatialEf6 ? string.Format("UdtTypeName = \"{0}\"", spatialUdtName) : string.Format("SqlDbType = SqlDbType.{0}", p.SqlDbType))
                     + ", Direction = ParameterDirection."
-                    + (p.Mode == StoredProcedureParameterMode.In ? "Input" : "Output")
-                    + (p.Mode == StoredProcedureParameterMode.In
+                    + (p.Mode == StoredProcedureParameterMode.In ? "Input" : p.Mode == StoredProcedureParameterMode.InOut ? "InputOutput" : "Output")
+                    + (p.Mode != StoredProcedureParameterMode.Out
                         ? ", Value = " + (isSpatialEf6
                             ? string.Format("{0} == null ? (object)DBNull.Value : Microsoft.SqlServer.Types.{1}.Parse({0}.AsText())", p.NameHumanCase, spatialSqlType)
                             : p.NameHumanCase + getValueOrDefault)
@@ -364,7 +364,7 @@ namespace Efrpg
                     + (p.PropertyType.ToLower().Contains("datatable") ? ", TypeName = \"" + p.UserDefinedTypeName + "\"" : string.Empty)
                     + " };");
 
-                if (p.Mode == StoredProcedureParameterMode.In)
+                if (p.Mode != StoredProcedureParameterMode.Out)
                 {
                     sb.AppendFormat(
                         isNullable

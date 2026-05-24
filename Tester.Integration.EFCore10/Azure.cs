@@ -23,6 +23,7 @@ namespace Azure10
 {
     #region Database context interface
 
+    #nullable enable
     public interface IAzureContext : IDisposable
     {
         DbSet<BadEmail> BadEmails { get; set; } // BadEmail
@@ -90,6 +91,7 @@ namespace Azure10
 
         IQueryable<TResult> FromExpression<TResult> (Expression<Func<IQueryable<TResult>>> expression);
     }
+    #nullable restore
 
     #endregion
 

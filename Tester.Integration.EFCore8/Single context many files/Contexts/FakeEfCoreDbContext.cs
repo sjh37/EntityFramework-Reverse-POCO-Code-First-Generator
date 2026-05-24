@@ -470,7 +470,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files.Contexts
             return Task.FromResult(0);
         }
 
-        public int AddTwoValuesWithResult(int? a, int? b, out int? result, out int? result2)
+        public int AddTwoValuesWithResult(int? a, int? b, ref int? result, ref int? result2)
         {
             result = default(int);
             result2 = default(int);
@@ -489,7 +489,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files.Contexts
             return Task.FromResult(0);
         }
 
-        public int App_UspCmtUserFsrUpdate(int? userId, int? fsrId, out int? ufsrId)
+        public int App_UspCmtUserFsrUpdate(int? userId, int? fsrId, ref int? ufsrId)
         {
             ufsrId = default(int);
             return 0;
@@ -542,13 +542,13 @@ namespace Tester.Integration.EFCore8.Single_context_many_files.Contexts
         // C182Test2Async() cannot be created due to having out parameters, or is relying on the procedure result (C182Test2ReturnModel)
 
         public DbSet<CheckIfApplicationIsCompleteReturnModel> CheckIfApplicationIsCompleteReturnModel { get; set; } = null!;
-        public List<CheckIfApplicationIsCompleteReturnModel> CheckIfApplicationIsComplete(int? applicationId, out bool? isApplicationComplete)
+        public List<CheckIfApplicationIsCompleteReturnModel> CheckIfApplicationIsComplete(int? applicationId, ref bool? isApplicationComplete)
         {
             int procResult;
-            return CheckIfApplicationIsComplete(applicationId, out isApplicationComplete, out procResult);
+            return CheckIfApplicationIsComplete(applicationId, ref isApplicationComplete, out procResult);
         }
 
-        public List<CheckIfApplicationIsCompleteReturnModel> CheckIfApplicationIsComplete(int? applicationId, out bool? isApplicationComplete, out int procResult)
+        public List<CheckIfApplicationIsCompleteReturnModel> CheckIfApplicationIsComplete(int? applicationId, ref bool? isApplicationComplete, out int procResult)
         {
             isApplicationComplete = default(bool);
             procResult = 0;
@@ -595,7 +595,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files.Contexts
             return Task.FromResult(ColumnNameAndTypesProc(out procResult));
         }
 
-        public int ConvertToString(int? someValue, out string someString)
+        public int ConvertToString(int? someValue, ref string someString)
         {
             someString = default(string);
             return 0;
@@ -755,7 +755,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files.Contexts
             return Task.FromResult(GetSmallDecimalTest(maxId, out procResult));
         }
 
-        public int InsertRecord(string data, out int? insertedId)
+        public int InsertRecord(string data, ref int? insertedId)
         {
             insertedId = default(int);
             return 0;
@@ -763,7 +763,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files.Contexts
 
         // InsertRecordAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public int InsertRecordThree(string data, out int? insertedId, int? someId, out int? anotherInsertedId)
+        public int InsertRecordThree(string data, ref int? insertedId, int? someId, ref int? anotherInsertedId)
         {
             insertedId = default(int);
             anotherInsertedId = default(int);
@@ -772,7 +772,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files.Contexts
 
         // InsertRecordThreeAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public int InsertRecordTwo(string data, out int? insertedId, out int? anotherInsertedId)
+        public int InsertRecordTwo(string data, ref int? insertedId, ref int? anotherInsertedId)
         {
             insertedId = default(int);
             anotherInsertedId = default(int);
@@ -781,7 +781,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files.Contexts
 
         // InsertRecordTwoAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public int MinTripSequenceStart(out DateTime? minTripSequenceStartParam)
+        public int MinTripSequenceStart(ref DateTime? minTripSequenceStartParam)
         {
             minTripSequenceStartParam = default(DateTime);
             return 0;
@@ -789,7 +789,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files.Contexts
 
         // MinTripSequenceStartAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public int MinTripSequenceStartNull(out DateTime? minTripSequenceStartParam)
+        public int MinTripSequenceStartNull(ref DateTime? minTripSequenceStartParam)
         {
             minTripSequenceStartParam = default(DateTime);
             return 0;
@@ -827,7 +827,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files.Contexts
             return Task.FromResult(0);
         }
 
-        public int ProcTestDecimalOutput(out decimal? perfectNumber)
+        public int ProcTestDecimalOutput(ref decimal? perfectNumber)
         {
             perfectNumber = default(decimal);
             return 0;
@@ -835,7 +835,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files.Contexts
 
         // ProcTestDecimalOutputAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public int ProcTestDecimalOutputV2(out decimal? perfectNumber)
+        public int ProcTestDecimalOutputV2(ref decimal? perfectNumber)
         {
             perfectNumber = default(decimal);
             return 0;
@@ -843,7 +843,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files.Contexts
 
         // ProcTestDecimalOutputV2Async() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public int ProcTestDecimalOutputV3Default(out decimal? perfectNumber)
+        public int ProcTestDecimalOutputV3Default(ref decimal? perfectNumber)
         {
             perfectNumber = default(decimal);
             return 0;
@@ -1021,13 +1021,13 @@ namespace Tester.Integration.EFCore8.Single_context_many_files.Contexts
         }
 
         public DbSet<StpTestReturnModel> StpTestReturnModel { get; set; } = null!;
-        public List<StpTestReturnModel> StpTest(string strDateFrom, string strDateTo, out bool? retBool)
+        public List<StpTestReturnModel> StpTest(string strDateFrom, string strDateTo, ref bool? retBool)
         {
             int procResult;
-            return StpTest(strDateFrom, strDateTo, out retBool, out procResult);
+            return StpTest(strDateFrom, strDateTo, ref retBool, out procResult);
         }
 
-        public List<StpTestReturnModel> StpTest(string strDateFrom, string strDateTo, out bool? retBool, out int procResult)
+        public List<StpTestReturnModel> StpTest(string strDateFrom, string strDateTo, ref bool? retBool, out int procResult)
         {
             retBool = default(bool);
             procResult = 0;
@@ -1132,7 +1132,7 @@ namespace Tester.Integration.EFCore8.Single_context_many_files.Contexts
             return Task.FromResult(TestReturnString(out procResult));
         }
 
-        public int ThisHasMixedOutParameters(DateTime? foo, out int? firstOutParam, DateTime? bar, out int? secondOutParam, DateTime? baz = null)
+        public int ThisHasMixedOutParameters(DateTime? foo, ref int? firstOutParam, DateTime? bar, ref int? secondOutParam, DateTime? baz = null)
         {
             firstOutParam = default(int);
             secondOutParam = default(int);

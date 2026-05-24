@@ -83,14 +83,14 @@ namespace Generator.Tests.Unit
             Assert.AreEqual($"public string {expected} {{ get; set; }}", result);
         }
 
-        [TestCase(false, false, false, "DateTime? A, out DateTime? B, DateTime? C = null, DateTime? D = null")]
-        [TestCase(false, true,  false, "DateTime? A, out DateTime? B, DateTime? C, DateTime? D")]
-        [TestCase(true,  false, false, "DateTime? A, out DateTime? B, DateTime? C = null, DateTime? D = null")]
-        [TestCase(true,  true,  false, "DateTime? A, out DateTime? B, DateTime? C, DateTime? D")]
-        [TestCase(false, false, true, "DateTime? A, out DateTime? B, DateTime? C = null, DateTime? D = null")]
-        [TestCase(false, true,  true, "DateTime? A, out DateTime? B, DateTime? C, DateTime? D")]
-        [TestCase(true,  false, true, "DateTime? A, out DateTime? B, DateTime? C, DateTime? D, out int procResult")]
-        [TestCase(true,  true,  true, "DateTime? A, out DateTime? B, DateTime? C, DateTime? D, out int procResult")]
+        [TestCase(false, false, false, "DateTime? A, ref DateTime? B, DateTime? C = null, DateTime? D = null")]
+        [TestCase(false, true,  false, "DateTime? A, ref DateTime? B, DateTime? C, DateTime? D")]
+        [TestCase(true,  false, false, "DateTime? A, ref DateTime? B, DateTime? C = null, DateTime? D = null")]
+        [TestCase(true,  true,  false, "DateTime? A, ref DateTime? B, DateTime? C, DateTime? D")]
+        [TestCase(false, false, true, "DateTime? A, ref DateTime? B, DateTime? C = null, DateTime? D = null")]
+        [TestCase(false, true,  true, "DateTime? A, ref DateTime? B, DateTime? C, DateTime? D")]
+        [TestCase(true,  false, true, "DateTime? A, ref DateTime? B, DateTime? C, DateTime? D, out int procResult")]
+        [TestCase(true,  true,  true, "DateTime? A, ref DateTime? B, DateTime? C, DateTime? D, out int procResult")]
         public void WriteStoredProcFunctionParams_HasTailNullable(bool includeProcResult, bool forInterface, bool hasReturnModel, string expected)
         {
             // Arrange
@@ -105,14 +105,14 @@ namespace Generator.Tests.Unit
             Assert.AreEqual(expected, result);
         }
 
-        [TestCase(false, false, false, "DateTime? A, out DateTime? B, DateTime? C, out DateTime? D")]
-        [TestCase(false, true,  false, "DateTime? A, out DateTime? B, DateTime? C, out DateTime? D")]
-        [TestCase(true,  false, false, "DateTime? A, out DateTime? B, DateTime? C, out DateTime? D")]
-        [TestCase(true,  true,  false, "DateTime? A, out DateTime? B, DateTime? C, out DateTime? D")]
-        [TestCase(false, false, true, "DateTime? A, out DateTime? B, DateTime? C, out DateTime? D")]
-        [TestCase(false, true,  true, "DateTime? A, out DateTime? B, DateTime? C, out DateTime? D")]
-        [TestCase(true,  false, true, "DateTime? A, out DateTime? B, DateTime? C, out DateTime? D, out int procResult")]
-        [TestCase(true,  true,  true, "DateTime? A, out DateTime? B, DateTime? C, out DateTime? D, out int procResult")]
+        [TestCase(false, false, false, "DateTime? A, ref DateTime? B, DateTime? C, ref DateTime? D")]
+        [TestCase(false, true,  false, "DateTime? A, ref DateTime? B, DateTime? C, ref DateTime? D")]
+        [TestCase(true,  false, false, "DateTime? A, ref DateTime? B, DateTime? C, ref DateTime? D")]
+        [TestCase(true,  true,  false, "DateTime? A, ref DateTime? B, DateTime? C, ref DateTime? D")]
+        [TestCase(false, false, true, "DateTime? A, ref DateTime? B, DateTime? C, ref DateTime? D")]
+        [TestCase(false, true,  true, "DateTime? A, ref DateTime? B, DateTime? C, ref DateTime? D")]
+        [TestCase(true,  false, true, "DateTime? A, ref DateTime? B, DateTime? C, ref DateTime? D, out int procResult")]
+        [TestCase(true,  true,  true, "DateTime? A, ref DateTime? B, DateTime? C, ref DateTime? D, out int procResult")]
         public void WriteStoredProcFunctionParams_NoTailNullable(bool includeProcResult, bool forInterface, bool hasReturnModel, string expected)
         {
             // Arrange - Set last to be an 'out' parameter.
@@ -253,7 +253,7 @@ namespace Generator.Tests.Unit
             Assert.IsNotNull(resultStringFf);
             Assert.IsNotNull(resultStringTf);
             Assert.AreEqual(resultStringFf, resultStringTf);
-            Assert.AreEqual("DateTime? foo, out int? firstOutParam, DateTime? bar, out int? secondOutParam, DateTime? baz = null", resultStringTf);
+            Assert.AreEqual("DateTime? foo, ref int? firstOutParam, DateTime? bar, ref int? secondOutParam, DateTime? baz = null", resultStringTf);
         }
 
         [Test]
@@ -428,6 +428,121 @@ AS BEGIN SELECT 1 END";
             Assert.AreEqual("'FCV'",  Efrpg.Readers.DatabaseReader.NormaliseParamDefault("'FCV'"));
             Assert.AreEqual("12",     Efrpg.Readers.DatabaseReader.NormaliseParamDefault("12"));
             Assert.AreEqual("1.234",  Efrpg.Readers.DatabaseReader.NormaliseParamDefault("1.234"));
+        }
+
+        // -----------------------------------------------------------------------
+        // Issue #868 - InOut parameter support
+        // -----------------------------------------------------------------------
+
+        [Test]
+        [Description("Issue #868 - InOut parameter emits 'ref' in overload call, Out emits 'out'")]
+        public void WriteStoredProcFunctionOverloadCall_InOutUsesRef_OutUsesOut()
+        {
+            // Arrange
+            _sut.Parameters = new List<StoredProcedureParameter>
+            {
+                new StoredProcedureParameter { Mode = StoredProcedureParameterMode.In,    NameHumanCase = "clientId", Ordinal = 1 },
+                new StoredProcedureParameter { Mode = StoredProcedureParameterMode.InOut, NameHumanCase = "groupId",  Ordinal = 2 },
+                new StoredProcedureParameter { Mode = StoredProcedureParameterMode.Out,   NameHumanCase = "result",   Ordinal = 3 }
+            };
+
+            // Act
+            var result = _sut.WriteStoredProcFunctionOverloadCall();
+
+            // Assert
+            StringAssert.Contains("ref groupId",  result);
+            StringAssert.Contains("out result",   result);
+            StringAssert.DoesNotContain("out groupId",  result);
+            StringAssert.DoesNotContain("ref result",   result);
+        }
+
+        [Test]
+        [Description("Issue #868 - InOut param generates ParameterDirection.InputOutput and sets Value")]
+        public void WriteStoredProcFunctionDeclareSqlParameter_InOutParam_InputOutputDirectionAndValueSet()
+        {
+            // Arrange
+            _sut.Parameters = new List<StoredProcedureParameter>
+            {
+                new StoredProcedureParameter
+                {
+                    Ordinal       = 1,
+                    Name          = "@groupId",
+                    NameHumanCase = "groupId",
+                    Mode          = StoredProcedureParameterMode.InOut,
+                    SqlDbType     = "Int",
+                    PropertyType  = "int",
+                    Precision     = 10,
+                    Scale         = 0,
+                    MaxLength     = 0
+                }
+            };
+
+            // Act
+            var result = _sut.WriteStoredProcFunctionDeclareSqlParameter(false);
+
+            // Assert - direction must be InputOutput (not Output) and value must be passed in
+            StringAssert.Contains("Direction = ParameterDirection.InputOutput", result);
+            StringAssert.Contains("Value = groupId.GetValueOrDefault()",        result);
+            StringAssert.DoesNotContain("Direction = ParameterDirection.Output", result);
+        }
+
+        [Test]
+        [Description("Issue #868 - Out param generates ParameterDirection.Output and does NOT set Value")]
+        public void WriteStoredProcFunctionDeclareSqlParameter_OutParam_OutputDirectionNoValue()
+        {
+            // Arrange
+            _sut.Parameters = new List<StoredProcedureParameter>
+            {
+                new StoredProcedureParameter
+                {
+                    Ordinal       = 1,
+                    Name          = "@result",
+                    NameHumanCase = "result",
+                    Mode          = StoredProcedureParameterMode.Out,
+                    SqlDbType     = "Int",
+                    PropertyType  = "int",
+                    Precision     = 10,
+                    Scale         = 0,
+                    MaxLength     = 0
+                }
+            };
+
+            // Act
+            var result = _sut.WriteStoredProcFunctionDeclareSqlParameter(false);
+
+            // Assert - direction is Output, no Value assignment
+            StringAssert.Contains("Direction = ParameterDirection.Output", result);
+            StringAssert.DoesNotContain("Value = result",                   result);
+        }
+
+        [Test]
+        [Description("Issue #868 - Full scenario: groupId OUTPUT parameter uses ref, InputOutput, Value")]
+        public void Issue868_InOut_GroupIdOutputParam_GeneratesCorrectCode()
+        {
+            // SQL: @groupId INT OUTPUT  -- SQL Server always reports PARAMETER_MODE = INOUT
+            //      @clientId INT
+            //      @displayName VARCHAR(30)
+            _sut.Parameters = new List<StoredProcedureParameter>
+            {
+                new StoredProcedureParameter { Ordinal = 1, Name = "@groupId",     NameHumanCase = "groupId",     Mode = StoredProcedureParameterMode.InOut, SqlDbType = "Int",     PropertyType = "int",    Precision = 10 },
+                new StoredProcedureParameter { Ordinal = 2, Name = "@clientId",    NameHumanCase = "clientId",    Mode = StoredProcedureParameterMode.In,    SqlDbType = "Int",     PropertyType = "int",    Precision = 10 },
+                new StoredProcedureParameter { Ordinal = 3, Name = "@displayName", NameHumanCase = "displayName", Mode = StoredProcedureParameterMode.In,    SqlDbType = "VarChar", PropertyType = "string", MaxLength = 30 }
+            };
+
+            var funcParams  = _sut.WriteStoredProcFunctionParams(false, false);
+            var sqlParams   = _sut.WriteStoredProcFunctionDeclareSqlParameter(false);
+            var overload    = _sut.WriteStoredProcFunctionOverloadCall();
+
+            // Function signature: groupId should be ref (caller passes a value AND receives one back)
+            StringAssert.Contains("ref int? groupId",                    funcParams);
+            StringAssert.DoesNotContain("out int? groupId",              funcParams);
+
+            // SqlParameter: direction must be InputOutput and value must be pre-populated from the argument
+            StringAssert.Contains("Direction = ParameterDirection.InputOutput", sqlParams);
+            StringAssert.Contains("Value = groupId.GetValueOrDefault()",        sqlParams);
+
+            // Overload call: ref keyword
+            StringAssert.Contains("ref groupId",                         overload);
         }
 
         private List<StoredProcedureParameter> GetParams()

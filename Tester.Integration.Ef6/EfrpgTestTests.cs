@@ -43,7 +43,8 @@ namespace Tester.Integration.Ef6
         public void StoredProcedureOutParametersWithMultipleResultSets(int applicationId, bool expected, string expectedResult)
         {
             Assert.IsNotNull(_db);
-            var result = _db.CheckIfApplicationIsComplete(applicationId, out var isApplicationComplete);
+            bool? isApplicationComplete = expected;
+            var result = _db.CheckIfApplicationIsComplete(applicationId, ref isApplicationComplete);
 
             Assert.IsNotNull(result);
             Assert.AreEqual(expected, isApplicationComplete);

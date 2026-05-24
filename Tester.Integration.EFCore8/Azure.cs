@@ -22,6 +22,7 @@ namespace RP
 {
     #region Database context interface
 
+    #nullable enable
     public interface IAzureContext : IDisposable
     {
         DbSet<BadEmail> BadEmails { get; set; } // BadEmail
@@ -89,6 +90,7 @@ namespace RP
 
         IQueryable<TResult> FromExpression<TResult> (Expression<Func<IQueryable<TResult>>> expression);
     }
+    #nullable restore
 
     #endregion
 
