@@ -299,16 +299,18 @@ namespace Efrpg.Generators
             return !usings.Any() ? null : Template.Transform(_template.Usings(), usings).Trim();
         }
 
-        // The EF Core interface, fake context and fake DbSet templates contain hard-coded nullable
-        // reference type annotations (Find/FindAsync return types, ToString). The compiler ignores
-        // the project-wide nullable setting for auto-generated files, so without an explicit
-        // '#nullable' directive those annotations raise CS8669. Bracket the code with one when the
-        // file header doesn't already carry it (i.e. when NeedsNullForgiving() is false).
+        // Several EF Core templates carry hard-coded nullable reference annotations: the interface and
+        // fake context/DbSet (Find/FindAsync, ToString), the DbContext (IConfiguration?) and the
+        // DbContext factory (DbContextOptions<>?). The compiler ignores the project-wide nullable
+        // setting for auto-generated files, so without an explicit '#nullable' directive those
+        // annotations raise CS8669. Enable only the annotations context (not warnings) so the '?' is
+        // legal without forcing CS8618 on the DbContext's non-initialised DbSet<T> properties. Bracket
+        // only when the file header doesn't already carry '#nullable enable' (NeedsNullForgiving() == false).
         private static void AddCodeWithNullableContext(CodeOutput co, string template, object data)
         {
             var bracket = !Settings.NeedsNullForgiving() && Settings.IsEfCore8Plus();
             if (bracket)
-                co.AddCode("#nullable enable");
+                co.AddCode("#nullable enable annotations");
             co.AddCode(Template.Transform(template, data));
             if (bracket)
                 co.AddCode("#nullable restore");
@@ -435,7 +437,7 @@ namespace Efrpg.Generators
 
             var co = new CodeOutput(string.Empty, filename, "Database context", Settings.ContextFolder, _globalUsings);
             co.AddUsings(_template.DatabaseContextUsings(data));
-            co.AddCode(Template.Transform(_template.DatabaseContext(), data));
+            AddCodeWithNullableContext(co, _template.DatabaseContext(), data);
 
             return co;
         }
@@ -584,7 +586,7 @@ namespace Efrpg.Generators
 
             var co = new CodeOutput(string.Empty, filename, "Database context factory", Settings.ContextFolder, _globalUsings);
             co.AddUsings(_template.DatabaseContextFactoryUsings(data));
-            co.AddCode(Template.Transform(_template.DatabaseContextFactory(), data));
+            AddCodeWithNullableContext(co, _template.DatabaseContextFactory(), data);
             return co;
         }
 
