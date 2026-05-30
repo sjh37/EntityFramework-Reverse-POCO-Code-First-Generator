@@ -16,6 +16,7 @@ using System.Threading.Tasks;
 
 namespace Tester.Integration.EFCore8.ContextHasSameNameAsDb
 {
+    #nullable enable annotations
     public class EfrpgTest : DbContext, IEfrpgTest
     {
         public EfrpgTest()
@@ -61,5 +62,6 @@ namespace Tester.Integration.EFCore8.ContextHasSameNameAsDb
         }
 
     }
+    #nullable restore
 }
 // </auto-generated>

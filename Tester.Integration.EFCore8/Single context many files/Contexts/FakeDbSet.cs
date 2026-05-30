@@ -24,7 +24,7 @@ using Tester.Integration.EFCore8.Single_context_many_files.Interfaces;
 
 namespace Tester.Integration.EFCore8.Single_context_many_files.Contexts
 {
-    #nullable enable
+    #nullable enable annotations
     // ************************************************************************
     // Fake DbSet
     // Implementing Find:

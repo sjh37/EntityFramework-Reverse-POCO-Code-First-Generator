@@ -33,7 +33,7 @@ namespace V10EfrpgTestDataAnnotations
 {
     #region Database context interface
 
-    #nullable enable
+    #nullable enable annotations
     public interface IV10EfrpgTestDataAnnotationsDbContext : IDisposable
     {
         DbSet<A> A { get; set; } // A
@@ -393,6 +393,7 @@ namespace V10EfrpgTestDataAnnotations
 
     #region Database context
 
+    #nullable enable annotations
     public partial class V10EfrpgTestDataAnnotationsDbContext : DbContext, IV10EfrpgTestDataAnnotationsDbContext
     {
         public V10EfrpgTestDataAnnotationsDbContext()
@@ -2385,11 +2386,13 @@ namespace V10EfrpgTestDataAnnotations
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
     }
+    #nullable restore
 
     #endregion
 
     #region Database context factory
 
+    #nullable enable annotations
     public partial class V10EfrpgTestDataAnnotationsDbContextFactory : IDesignTimeDbContextFactory<V10EfrpgTestDataAnnotationsDbContext>
     {
         private readonly DbContextOptions<V10EfrpgTestDataAnnotationsDbContext>? Options;
@@ -2421,12 +2424,13 @@ namespace V10EfrpgTestDataAnnotations
                 : new V10EfrpgTestDataAnnotationsDbContext(options);
         }
     }
+    #nullable restore
 
     #endregion
 
     #region Fake Database context
 
-    #nullable enable
+    #nullable enable annotations
     public partial class FakeV10EfrpgTestDataAnnotationsDbContext : IV10EfrpgTestDataAnnotationsDbContext
     {
         public DbSet<A> A { get; set; } = null!; // A
@@ -3636,7 +3640,7 @@ namespace V10EfrpgTestDataAnnotations
 
     #region Fake DbSet
 
-    #nullable enable
+    #nullable enable annotations
     // ************************************************************************
     // Fake DbSet
     // Implementing Find:

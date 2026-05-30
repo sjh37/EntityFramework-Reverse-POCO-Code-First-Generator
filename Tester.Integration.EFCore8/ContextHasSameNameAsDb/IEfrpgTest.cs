@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace Tester.Integration.EFCore8.ContextHasSameNameAsDb
 {
-    #nullable enable
+    #nullable enable annotations
     public interface IEfrpgTest : IDisposable
     {
         DbSet<Car> Cars { get; set; } // Car

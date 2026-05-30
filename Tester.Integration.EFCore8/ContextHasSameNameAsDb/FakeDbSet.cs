@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace Tester.Integration.EFCore8.ContextHasSameNameAsDb
 {
-    #nullable enable
+    #nullable enable annotations
     // ************************************************************************
     // Fake DbSet
     // Implementing Find:

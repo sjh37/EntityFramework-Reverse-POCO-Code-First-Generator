@@ -21,7 +21,7 @@ namespace Tester.Integration.EFCore8.Multi_context_single_filesAppleDbContext
 {
     #region Database context interface
 
-    #nullable enable
+    #nullable enable annotations
     public interface IAppleDbContext : IDisposable
     {
         DbSet<Stafford_Boo> Stafford_Boos { get; set; } // Boo
@@ -77,6 +77,7 @@ namespace Tester.Integration.EFCore8.Multi_context_single_filesAppleDbContext
 
     #region Database context
 
+    #nullable enable annotations
     public class AppleDbContext : DbContext, IAppleDbContext
     {
         public AppleDbContext()
@@ -114,11 +115,13 @@ namespace Tester.Integration.EFCore8.Multi_context_single_filesAppleDbContext
         }
 
     }
+    #nullable restore
 
     #endregion
 
     #region Database context factory
 
+    #nullable enable annotations
     public class AppleDbContextFactory : IDesignTimeDbContextFactory<AppleDbContext>
     {
         private readonly DbContextOptions<AppleDbContext>? Options;
@@ -150,6 +153,7 @@ namespace Tester.Integration.EFCore8.Multi_context_single_filesAppleDbContext
                 : new AppleDbContext(options);
         }
     }
+    #nullable restore
 
     #endregion
 

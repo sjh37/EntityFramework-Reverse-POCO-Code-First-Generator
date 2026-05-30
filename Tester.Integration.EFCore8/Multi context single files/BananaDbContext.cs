@@ -21,7 +21,7 @@ namespace Tester.Integration.EFCore8.Multi_context_single_filesBananaDbContext
 {
     #region Database context interface
 
-    #nullable enable
+    #nullable enable annotations
     public interface IBananaDbContext : IDisposable
     {
         DbSet<Stafford_ComputedColumn> Stafford_ComputedColumns { get; set; } // ComputedColumns
@@ -76,6 +76,7 @@ namespace Tester.Integration.EFCore8.Multi_context_single_filesBananaDbContext
 
     #region Database context
 
+    #nullable enable annotations
     public class BananaDbContext : DbContext, IBananaDbContext
     {
         public BananaDbContext()
@@ -113,11 +114,13 @@ namespace Tester.Integration.EFCore8.Multi_context_single_filesBananaDbContext
         }
 
     }
+    #nullable restore
 
     #endregion
 
     #region Database context factory
 
+    #nullable enable annotations
     public class BananaDbContextFactory : IDesignTimeDbContextFactory<BananaDbContext>
     {
         private readonly DbContextOptions<BananaDbContext>? Options;
@@ -149,6 +152,7 @@ namespace Tester.Integration.EFCore8.Multi_context_single_filesBananaDbContext
                 : new BananaDbContext(options);
         }
     }
+    #nullable restore
 
     #endregion
 

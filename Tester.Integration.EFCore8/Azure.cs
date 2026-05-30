@@ -22,7 +22,7 @@ namespace RP
 {
     #region Database context interface
 
-    #nullable enable
+    #nullable enable annotations
     public interface IAzureContext : IDisposable
     {
         DbSet<BadEmail> BadEmails { get; set; } // BadEmail
@@ -96,6 +96,7 @@ namespace RP
 
     #region Database context
 
+    #nullable enable annotations
     public class AzureContext : DbContext, IAzureContext
     {
         public AzureContext()
@@ -177,11 +178,13 @@ namespace RP
         }
 
     }
+    #nullable restore
 
     #endregion
 
     #region Database context factory
 
+    #nullable enable annotations
     public class AzureContextFactory : IDesignTimeDbContextFactory<AzureContext>
     {
         private readonly DbContextOptions<AzureContext>? Options;
@@ -213,6 +216,7 @@ namespace RP
                 : new AzureContext(options);
         }
     }
+    #nullable restore
 
     #endregion
 

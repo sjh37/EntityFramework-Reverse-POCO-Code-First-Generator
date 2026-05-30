@@ -28,7 +28,7 @@ namespace TestDatabaseStandard
 {
     #region Database context interface
 
-    #nullable enable
+    #nullable enable annotations
     public interface ITestDbContext : IDisposable
     {
         DbSet<A> A { get; set; } // A
@@ -389,6 +389,7 @@ namespace TestDatabaseStandard
 
     #region Database context
 
+    #nullable enable annotations
     public class TestDbContext : DbContext, ITestDbContext
     {
         public TestDbContext()
@@ -2387,11 +2388,13 @@ namespace TestDatabaseStandard
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
     }
+    #nullable restore
 
     #endregion
 
     #region Database context factory
 
+    #nullable enable annotations
     public class TestDbContextFactory : IDesignTimeDbContextFactory<TestDbContext>
     {
         private readonly DbContextOptions<TestDbContext>? Options;
@@ -2423,12 +2426,13 @@ namespace TestDatabaseStandard
                 : new TestDbContext(options);
         }
     }
+    #nullable restore
 
     #endregion
 
     #region Fake Database context
 
-    #nullable enable
+    #nullable enable annotations
     public class FakeTestDbContext : ITestDbContext
     {
         public DbSet<A> A { get; set; } = null!; // A
@@ -3637,7 +3641,7 @@ namespace TestDatabaseStandard
 
     #region Fake DbSet
 
-    #nullable enable
+    #nullable enable annotations
     // ************************************************************************
     // Fake DbSet
     // Implementing Find:

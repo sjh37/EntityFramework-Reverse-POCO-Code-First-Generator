@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace Tester.Integration.EFCore8.Multi_context_many_filesAppleDbContext
 {
-    #nullable enable
+    #nullable enable annotations
     public interface IAppleDbContext : IDisposable
     {
         DbSet<Stafford_Boo> Stafford_Boos { get; set; } // Boo

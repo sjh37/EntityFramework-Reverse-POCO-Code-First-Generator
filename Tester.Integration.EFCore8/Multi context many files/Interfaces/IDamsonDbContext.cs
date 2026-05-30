@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace Tester.Integration.EFCore8.Multi_context_many_filesPlum
 {
-    #nullable enable
+    #nullable enable annotations
     public interface IDamsonDbContext : IDisposable
     {
         DbSet<NoPrimaryKey> NoPrimaryKeys { get; set; } // NoPrimaryKeys

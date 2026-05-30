@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace Tester.Integration.EFCore8.Multi_context_many_filesBananaDbContext
 {
-    #nullable enable
+    #nullable enable annotations
     public interface IBananaDbContext : IDisposable
     {
         DbSet<Stafford_ComputedColumn> Stafford_ComputedColumns { get; set; } // ComputedColumns

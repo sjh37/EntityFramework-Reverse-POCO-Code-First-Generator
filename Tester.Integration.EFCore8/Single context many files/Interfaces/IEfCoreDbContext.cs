@@ -17,7 +17,7 @@ using Tester.Integration.EFCore8.Single_context_many_files.Entities;
 
 namespace Tester.Integration.EFCore8.Single_context_many_files.Interfaces
 {
-    #nullable enable
+    #nullable enable annotations
     public interface IEfCoreDbContext : IDisposable
     {
         DbSet<A> A { get; set; } // A

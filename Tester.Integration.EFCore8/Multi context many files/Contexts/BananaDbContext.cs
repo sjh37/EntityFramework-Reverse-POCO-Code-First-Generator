@@ -16,6 +16,7 @@ using System.Threading.Tasks;
 
 namespace Tester.Integration.EFCore8.Multi_context_many_filesBananaDbContext
 {
+    #nullable enable annotations
     public class BananaDbContext : DbContext, IBananaDbContext
     {
         private readonly IConfiguration? _configuration;
@@ -69,5 +70,6 @@ namespace Tester.Integration.EFCore8.Multi_context_many_filesBananaDbContext
         }
 
     }
+    #nullable restore
 }
 // </auto-generated>

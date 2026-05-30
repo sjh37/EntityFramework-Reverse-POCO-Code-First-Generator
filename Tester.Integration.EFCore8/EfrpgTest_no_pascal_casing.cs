@@ -21,7 +21,7 @@ namespace V8_Efrpg_Test
 {
     #region Database context interface
 
-    #nullable enable
+    #nullable enable annotations
     public interface IV8_Efrpg_Test_Db_Context : IDisposable
     {
         DbSet<A> A { get; set; } // A
@@ -381,6 +381,7 @@ namespace V8_Efrpg_Test
 
     #region Database context
 
+    #nullable enable annotations
     public class V8_Efrpg_Test_Db_Context : DbContext, IV8_Efrpg_Test_Db_Context
     {
         public V8_Efrpg_Test_Db_Context()
@@ -2376,11 +2377,13 @@ namespace V8_Efrpg_Test
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
     }
+    #nullable restore
 
     #endregion
 
     #region Database context factory
 
+    #nullable enable annotations
     public class V8_Efrpg_Test_Db_ContextFactory : IDesignTimeDbContextFactory<V8_Efrpg_Test_Db_Context>
     {
         private readonly DbContextOptions<V8_Efrpg_Test_Db_Context>? Options;
@@ -2412,6 +2415,7 @@ namespace V8_Efrpg_Test
                 : new V8_Efrpg_Test_Db_Context(options);
         }
     }
+    #nullable restore
 
     #endregion
 

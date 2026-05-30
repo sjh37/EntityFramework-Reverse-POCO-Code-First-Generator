@@ -21,7 +21,7 @@ namespace Tester.Integration.EFCore8.Multi_context_single_filesPlum
 {
     #region Database context interface
 
-    #nullable enable
+    #nullable enable annotations
     public interface IDamsonDbContext : IDisposable
     {
         DbSet<NoPrimaryKey> NoPrimaryKeys { get; set; } // NoPrimaryKeys
@@ -77,6 +77,7 @@ namespace Tester.Integration.EFCore8.Multi_context_single_filesPlum
 
     #region Database context
 
+    #nullable enable annotations
     public class DamsonDbContext : DbContext, IDamsonDbContext
     {
         public DamsonDbContext()
@@ -114,11 +115,13 @@ namespace Tester.Integration.EFCore8.Multi_context_single_filesPlum
         }
 
     }
+    #nullable restore
 
     #endregion
 
     #region Database context factory
 
+    #nullable enable annotations
     public class DamsonDbContextFactory : IDesignTimeDbContextFactory<DamsonDbContext>
     {
         private readonly DbContextOptions<DamsonDbContext>? Options;
@@ -150,6 +153,7 @@ namespace Tester.Integration.EFCore8.Multi_context_single_filesPlum
                 : new DamsonDbContext(options);
         }
     }
+    #nullable restore
 
     #endregion
 

@@ -16,6 +16,7 @@ using System.Threading.Tasks;
 
 namespace Tester.Integration.EFCore8.Multi_context_many_filesCherry
 {
+    #nullable enable annotations
     public class CherryDbContext : DbContext, ICherryDbContext
     {
         private readonly IConfiguration? _configuration;
@@ -67,5 +68,6 @@ namespace Tester.Integration.EFCore8.Multi_context_many_filesCherry
         }
 
     }
+    #nullable restore
 }
 // </auto-generated>

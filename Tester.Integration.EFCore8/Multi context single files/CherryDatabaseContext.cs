@@ -21,7 +21,7 @@ namespace Tester.Integration.EFCore8.Multi_context_single_filesCherry
 {
     #region Database context interface
 
-    #nullable enable
+    #nullable enable annotations
     public interface ICherryDbContext : IDisposable
     {
         DbSet<ColumnNameAndType> ColumnNameAndTypes { get; set; } // ColumnNameAndTypes
@@ -76,6 +76,7 @@ namespace Tester.Integration.EFCore8.Multi_context_single_filesCherry
 
     #region Database context
 
+    #nullable enable annotations
     public class CherryDbContext : DbContext, ICherryDbContext
     {
         public CherryDbContext()
@@ -111,11 +112,13 @@ namespace Tester.Integration.EFCore8.Multi_context_single_filesCherry
         }
 
     }
+    #nullable restore
 
     #endregion
 
     #region Database context factory
 
+    #nullable enable annotations
     public class CherryDbContextFactory : IDesignTimeDbContextFactory<CherryDbContext>
     {
         private readonly DbContextOptions<CherryDbContext>? Options;
@@ -147,6 +150,7 @@ namespace Tester.Integration.EFCore8.Multi_context_single_filesCherry
                 : new CherryDbContext(options);
         }
     }
+    #nullable restore
 
     #endregion
 

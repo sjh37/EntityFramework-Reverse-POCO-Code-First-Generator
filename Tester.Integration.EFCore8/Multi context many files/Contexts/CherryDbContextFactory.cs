@@ -7,6 +7,7 @@ using System.Text.Json.Serialization;
 
 namespace Tester.Integration.EFCore8.Multi_context_many_filesCherry
 {
+    #nullable enable annotations
     public class CherryDbContextFactory : IDesignTimeDbContextFactory<CherryDbContext>
     {
         private readonly DbContextOptions<CherryDbContext>? Options;
@@ -38,5 +39,6 @@ namespace Tester.Integration.EFCore8.Multi_context_many_filesCherry
                 : new CherryDbContext(options);
         }
     }
+    #nullable restore
 }
 // </auto-generated>

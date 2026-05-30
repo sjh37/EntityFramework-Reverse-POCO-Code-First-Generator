@@ -27,7 +27,7 @@ namespace TestSynonymsDatabase9
 {
     #region Database context interface
 
-    #nullable enable
+    #nullable enable annotations
     public interface ITestDbContext : IDisposable
     {
         DbSet<CarWithDifferentSynonymName> CarWithDifferentSynonymNames { get; set; } // CarWithDifferentSynonymName
@@ -96,6 +96,7 @@ namespace TestSynonymsDatabase9
 
     #region Database context
 
+    #nullable enable annotations
     public class TestDbContext : DbContext, ITestDbContext
     {
         public TestDbContext()
@@ -213,11 +214,13 @@ namespace TestSynonymsDatabase9
                 .AsNoTracking();
         }
     }
+    #nullable restore
 
     #endregion
 
     #region Database context factory
 
+    #nullable enable annotations
     public class TestDbContextFactory : IDesignTimeDbContextFactory<TestDbContext>
     {
         private readonly DbContextOptions<TestDbContext>? Options;
@@ -249,12 +252,13 @@ namespace TestSynonymsDatabase9
                 : new TestDbContext(options);
         }
     }
+    #nullable restore
 
     #endregion
 
     #region Fake Database context
 
-    #nullable enable
+    #nullable enable annotations
     public class FakeTestDbContext : ITestDbContext
     {
         public DbSet<CarWithDifferentSynonymName> CarWithDifferentSynonymNames { get; set; } = null!; // CarWithDifferentSynonymName
@@ -510,7 +514,7 @@ namespace TestSynonymsDatabase9
 
     #region Fake DbSet
 
-    #nullable enable
+    #nullable enable annotations
     // ************************************************************************
     // Fake DbSet
     // Implementing Find:

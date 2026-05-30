@@ -9,6 +9,7 @@ using Tester.Integration.EFCore8.Single_context_many_files.Interfaces;
 
 namespace Tester.Integration.EFCore8.Single_context_many_files.Contexts
 {
+    #nullable enable annotations
     public class EfCoreDbContextFactory : IDesignTimeDbContextFactory<EfCoreDbContext>
     {
         private readonly DbContextOptions<EfCoreDbContext>? Options;
@@ -40,5 +41,6 @@ namespace Tester.Integration.EFCore8.Single_context_many_files.Contexts
                 : new EfCoreDbContext(options);
         }
     }
+    #nullable restore
 }
 // </auto-generated>

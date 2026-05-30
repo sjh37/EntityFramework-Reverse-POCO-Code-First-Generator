@@ -7,6 +7,7 @@ using System.Text.Json.Serialization;
 
 namespace Tester.Integration.EFCore8.Multi_context_many_filesAppleDbContext
 {
+    #nullable enable annotations
     public class AppleDbContextFactory : IDesignTimeDbContextFactory<AppleDbContext>
     {
         private readonly DbContextOptions<AppleDbContext>? Options;
@@ -38,5 +39,6 @@ namespace Tester.Integration.EFCore8.Multi_context_many_filesAppleDbContext
                 : new AppleDbContext(options);
         }
     }
+    #nullable restore
 }
 // </auto-generated>

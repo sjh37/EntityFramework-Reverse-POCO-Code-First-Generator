@@ -27,7 +27,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
 {
     #region Database context interface
 
-    #nullable enable
+    #nullable enable annotations
     public interface IMyDbContextSqlCE4 : IDisposable
     {
         DbSet<Category> Categories { get; set; } // Categories
@@ -89,6 +89,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
 
     #region Database context
 
+    #nullable enable annotations
     public class MyDbContextSqlCE4 : DbContext, IMyDbContextSqlCE4
     {
         public MyDbContextSqlCE4()
@@ -147,11 +148,13 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
         }
 
     }
+    #nullable restore
 
     #endregion
 
     #region Database context factory
 
+    #nullable enable annotations
     public class MyDbContextSqlCE4Factory : IDesignTimeDbContextFactory<MyDbContextSqlCE4>
     {
         private readonly DbContextOptions<MyDbContextSqlCE4>? Options;
@@ -183,12 +186,13 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
                 : new MyDbContextSqlCE4(options);
         }
     }
+    #nullable restore
 
     #endregion
 
     #region Fake Database context
 
-    #nullable enable
+    #nullable enable annotations
     public class FakeMyDbContextSqlCE4 : IMyDbContextSqlCE4
     {
         public DbSet<Category> Categories { get; set; } = null!; // Categories
@@ -415,7 +419,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
 
     #region Fake DbSet
 
-    #nullable enable
+    #nullable enable annotations
     // ************************************************************************
     // Fake DbSet
     // Implementing Find:

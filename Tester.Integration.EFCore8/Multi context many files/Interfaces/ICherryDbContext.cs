@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace Tester.Integration.EFCore8.Multi_context_many_filesCherry
 {
-    #nullable enable
+    #nullable enable annotations
     public interface ICherryDbContext : IDisposable
     {
         DbSet<ColumnNameAndType> ColumnNameAndTypes { get; set; } // ColumnNameAndTypes

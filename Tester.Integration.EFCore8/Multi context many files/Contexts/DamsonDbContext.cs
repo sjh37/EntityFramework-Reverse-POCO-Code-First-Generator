@@ -16,6 +16,7 @@ using System.Threading.Tasks;
 
 namespace Tester.Integration.EFCore8.Multi_context_many_filesPlum
 {
+    #nullable enable annotations
     public class DamsonDbContext : DbContext, IDamsonDbContext
     {
         private readonly IConfiguration? _configuration;
@@ -69,5 +70,6 @@ namespace Tester.Integration.EFCore8.Multi_context_many_filesPlum
         }
 
     }
+    #nullable restore
 }
 // </auto-generated>

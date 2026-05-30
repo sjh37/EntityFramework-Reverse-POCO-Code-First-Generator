@@ -28,7 +28,7 @@ using System.Threading.Tasks;
 namespace V10EfrpgTest;
 #region Database context interface
 
-#nullable enable
+#nullable enable annotations
 public interface IV10EfrpgTestDbContext : IDisposable
 {
     DbSet<A> A { get; set; } // A
@@ -388,6 +388,7 @@ public interface IV10EfrpgTestDbContext : IDisposable
 
 #region Database context
 
+#nullable enable annotations
 public partial class V10EfrpgTestDbContext : DbContext, IV10EfrpgTestDbContext
 {
     public V10EfrpgTestDbContext()
@@ -2393,11 +2394,13 @@ public partial class V10EfrpgTestDbContext : DbContext, IV10EfrpgTestDbContext
         throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
     }
 }
+#nullable restore
 
 #endregion
 
 #region Database context factory
 
+#nullable enable annotations
 public partial class V10EfrpgTestDbContextFactory : IDesignTimeDbContextFactory<V10EfrpgTestDbContext>
 {
     private readonly DbContextOptions<V10EfrpgTestDbContext>? Options;
@@ -2429,13 +2432,14 @@ public partial class V10EfrpgTestDbContextFactory : IDesignTimeDbContextFactory<
             : new V10EfrpgTestDbContext(options);
     }
 }
+#nullable restore
 
 #endregion
 
 #region Fake Database context
 
 #if DEBUG
-#nullable enable
+#nullable enable annotations
 public partial class FakeV10EfrpgTestDbContext : IV10EfrpgTestDbContext
 {
     public DbSet<A> A { get; set; } = null!; // A
@@ -3647,7 +3651,7 @@ public partial class FakeV10EfrpgTestDbContext : IV10EfrpgTestDbContext
 #region Fake DbSet
 
 #if DEBUG
-#nullable enable
+#nullable enable annotations
 // ************************************************************************
 // Fake DbSet
 // Implementing Find:

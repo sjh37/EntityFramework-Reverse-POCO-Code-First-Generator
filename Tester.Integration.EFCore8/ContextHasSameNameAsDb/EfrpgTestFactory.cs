@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore.Design;
 
 namespace Tester.Integration.EFCore8.ContextHasSameNameAsDb
 {
+    #nullable enable annotations
     public class EfrpgTestFactory : IDesignTimeDbContextFactory<EfrpgTest>
     {
         private readonly DbContextOptions<EfrpgTest>? Options;
@@ -37,5 +38,6 @@ namespace Tester.Integration.EFCore8.ContextHasSameNameAsDb
                 : new EfrpgTest(options);
         }
     }
+    #nullable restore
 }
 // </auto-generated>

@@ -16,6 +16,7 @@ using System.Threading.Tasks;
 
 namespace Tester.Integration.EFCore8.Multi_context_many_filesAppleDbContext
 {
+    #nullable enable annotations
     public class AppleDbContext : DbContext, IAppleDbContext
     {
         private readonly IConfiguration? _configuration;
@@ -69,5 +70,6 @@ namespace Tester.Integration.EFCore8.Multi_context_many_filesAppleDbContext
         }
 
     }
+    #nullable restore
 }
 // </auto-generated>

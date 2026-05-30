@@ -30,7 +30,7 @@ namespace Tester.Integration.EFCore9
 {
     #region Database context interface
 
-    #nullable enable
+    #nullable enable annotations
     public interface INorthwindDbContext : IDisposable
     {
         DbSet<AlphabeticalListOfProduct> AlphabeticalListOfProducts { get; set; } // Alphabetical list of products
@@ -141,6 +141,7 @@ namespace Tester.Integration.EFCore9
 
     #region Database context
 
+    #nullable enable annotations
     public class NorthwindDbContext : DbContext, INorthwindDbContext
     {
         public NorthwindDbContext()
@@ -520,11 +521,13 @@ namespace Tester.Integration.EFCore9
         }
 
     }
+    #nullable restore
 
     #endregion
 
     #region Database context factory
 
+    #nullable enable annotations
     public class NorthwindDbContextFactory : IDesignTimeDbContextFactory<NorthwindDbContext>
     {
         private readonly DbContextOptions<NorthwindDbContext>? Options;
@@ -556,12 +559,13 @@ namespace Tester.Integration.EFCore9
                 : new NorthwindDbContext(options);
         }
     }
+    #nullable restore
 
     #endregion
 
     #region Fake Database context
 
-    #nullable enable
+    #nullable enable annotations
     public class FakeNorthwindDbContext : INorthwindDbContext
     {
         public DbSet<AlphabeticalListOfProduct> AlphabeticalListOfProducts { get; set; } = null!; // Alphabetical list of products
@@ -961,7 +965,7 @@ namespace Tester.Integration.EFCore9
 
     #region Fake DbSet
 
-    #nullable enable
+    #nullable enable annotations
     // ************************************************************************
     // Fake DbSet
     // Implementing Find:

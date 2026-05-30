@@ -18,6 +18,7 @@ using Tester.Integration.EFCore8.Single_context_many_files.Interfaces;
 
 namespace Tester.Integration.EFCore8.Single_context_many_files.Contexts
 {
+    #nullable enable annotations
     public class EfCoreDbContext : DbContext, IEfCoreDbContext
     {
         private readonly IConfiguration? _configuration;
@@ -2023,5 +2024,6 @@ namespace Tester.Integration.EFCore8.Single_context_many_files.Contexts
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
     }
+    #nullable restore
 }
 // </auto-generated>

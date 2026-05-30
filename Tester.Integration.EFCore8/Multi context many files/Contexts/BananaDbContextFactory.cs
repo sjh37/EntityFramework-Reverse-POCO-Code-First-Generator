@@ -7,6 +7,7 @@ using System.Text.Json.Serialization;
 
 namespace Tester.Integration.EFCore8.Multi_context_many_filesBananaDbContext
 {
+    #nullable enable annotations
     public class BananaDbContextFactory : IDesignTimeDbContextFactory<BananaDbContext>
     {
         private readonly DbContextOptions<BananaDbContext>? Options;
@@ -38,5 +39,6 @@ namespace Tester.Integration.EFCore8.Multi_context_many_filesBananaDbContext
                 : new BananaDbContext(options);
         }
     }
+    #nullable restore
 }
 // </auto-generated>

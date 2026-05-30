@@ -115,7 +115,7 @@ namespace Generator.Tests.Unit
         [TestCase(true,  true,  true, "DateTime? A, ref DateTime? B, DateTime? C, ref DateTime? D, out int procResult")]
         public void WriteStoredProcFunctionParams_NoTailNullable(bool includeProcResult, bool forInterface, bool hasReturnModel, string expected)
         {
-            // Arrange - Set last to be an 'out' parameter.
+            // Arrange - Set last to be an InOut ('ref') parameter.
             _sut.Parameters.Single(x => x.NameHumanCase == "D").Mode = StoredProcedureParameterMode.InOut;
             
             if (hasReturnModel)
@@ -142,7 +142,7 @@ namespace Generator.Tests.Unit
         {
             if (noTailNullable)
             {
-                // Arrange - Set last to be an 'out' parameter.
+                // Arrange - Set last to be an InOut ('ref') parameter.
                 _sut.Parameters.Single(x => x.NameHumanCase == "D").Mode = StoredProcedureParameterMode.InOut;
             }
 

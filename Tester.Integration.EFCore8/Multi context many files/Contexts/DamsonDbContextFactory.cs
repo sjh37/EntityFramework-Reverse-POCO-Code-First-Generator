@@ -7,6 +7,7 @@ using System.Text.Json.Serialization;
 
 namespace Tester.Integration.EFCore8.Multi_context_many_filesPlum
 {
+    #nullable enable annotations
     public class DamsonDbContextFactory : IDesignTimeDbContextFactory<DamsonDbContext>
     {
         private readonly DbContextOptions<DamsonDbContext>? Options;
@@ -38,5 +39,6 @@ namespace Tester.Integration.EFCore8.Multi_context_many_filesPlum
                 : new DamsonDbContext(options);
         }
     }
+    #nullable restore
 }
 // </auto-generated>
