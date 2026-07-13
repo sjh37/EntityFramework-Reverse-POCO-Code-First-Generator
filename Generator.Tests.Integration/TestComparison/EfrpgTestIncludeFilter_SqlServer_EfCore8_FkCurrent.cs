@@ -153,6 +153,10 @@ namespace Efrpg.V8FilterTest
         int SpatialTypesWithParams(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography);
         Task<int> SpatialTypesWithParamsAsync(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography, CancellationToken cancellationToken = default(CancellationToken));
 
+        List<SpNullableStringReproReturnModel> SpNullableStringRepro();
+        List<SpNullableStringReproReturnModel> SpNullableStringRepro(out int procResult);
+        Task<List<SpNullableStringReproReturnModel>> SpNullableStringReproAsync(CancellationToken cancellationToken = default(CancellationToken));
+
         List<StoredProcWithDefaultsReturnModel> StoredProcWithDefaults(int? userId, int? userIdNull, string clientName, string clientNameNull, string clientNameMaxNull, string clientDesc, string clientDescNull, decimal? decimalValue, decimal? decimalValueNull, decimal? money, decimal? moneyNull, decimal? smallMoney, decimal? smallMoneyNull, float? realValue, float? realValueNull, double? floatValue, double? floatValueNull);
         List<StoredProcWithDefaultsReturnModel> StoredProcWithDefaults(int? userId, int? userIdNull, string clientName, string clientNameNull, string clientNameMaxNull, string clientDesc, string clientDescNull, decimal? decimalValue, decimal? decimalValueNull, decimal? money, decimal? moneyNull, decimal? smallMoney, decimal? smallMoneyNull, float? realValue, float? realValueNull, double? floatValue, double? floatValueNull, out int procResult);
         Task<List<StoredProcWithDefaultsReturnModel>> StoredProcWithDefaultsAsync(int? userId, int? userIdNull, string clientName, string clientNameNull, string clientNameMaxNull, string clientDesc, string clientDescNull, decimal? decimalValue, decimal? decimalValueNull, decimal? money, decimal? moneyNull, decimal? smallMoney, decimal? smallMoneyNull, float? realValue, float? realValueNull, double? floatValue, double? floatValueNull, CancellationToken cancellationToken = default(CancellationToken));
@@ -279,30 +283,46 @@ namespace Efrpg.V8FilterTest
             modelBuilder.Entity<Car>().ToTable(tb => tb.HasTrigger("HasComputedColumn"));
 
             modelBuilder.Entity<ASimpleExampleReturnModel>().HasNoKey();
+            modelBuilder.Entity<ASimpleExampleReturnModel>().Property(e => e.stuff).IsRequired(false);
             modelBuilder.Entity<CheckIfApplicationIsCompleteReturnModel>().HasNoKey();
+            modelBuilder.Entity<CheckIfApplicationIsCompleteReturnModel>().Property(e => e.Key).IsRequired(false);
+            modelBuilder.Entity<CheckIfApplicationIsCompleteReturnModel>().Property(e => e.Value).IsRequired(false);
             modelBuilder.Entity<ColourPivotReturnModel>().HasNoKey();
             modelBuilder.Entity<DboProcDataFromFfrsReturnModel>().HasNoKey();
+            modelBuilder.Entity<DboProcDataFromFfrsReturnModel>().Property(e => e.CVName).IsRequired(false);
             modelBuilder.Entity<DboProcDataFromFfrsAndDboReturnModel>().HasNoKey();
+            modelBuilder.Entity<DboProcDataFromFfrsAndDboReturnModel>().Property(e => e.CVName).IsRequired(false);
             modelBuilder.Entity<DsOpeProcReturnModel>().HasNoKey();
             modelBuilder.Entity<GetSmallDecimalTestReturnModel>().HasNoKey();
             modelBuilder.Entity<GetSmallDecimalTestReturnModel>().Property(e => e.KoeffVed).HasPrecision(4, 4);
+            modelBuilder.Entity<SpNullableStringReproReturnModel>().HasNoKey();
+            modelBuilder.Entity<SpNullableStringReproReturnModel>().Property(e => e.SomeText).IsRequired(false);
             modelBuilder.Entity<StoredProcWithDefaultsReturnModel>().HasNoKey();
             modelBuilder.Entity<StpMultipleIdenticalResultsReturnModel>().HasNoKey();
             modelBuilder.Entity<StpNoParamsTestReturnModel>().HasNoKey();
             modelBuilder.Entity<StpNullableParamsTestReturnModel>().HasNoKey();
             modelBuilder.Entity<StpTestReturnModel>().HasNoKey();
+            modelBuilder.Entity<StpTestReturnModel>().Property(e => e.aName).IsRequired(false);
+            modelBuilder.Entity<StpTestReturnModel>().Property(e => e.description).IsRequired(false);
+            modelBuilder.Entity<StpTestReturnModel>().Property(e => e.codeName).IsRequired(false);
+            modelBuilder.Entity<StpTestReturnModel>().Property(e => e.note).IsRequired(false);
+            modelBuilder.Entity<StpTestReturnModel>().Property(e => e.versionNumber).IsRequired(false);
             modelBuilder.Entity<StpTestSpaceTestReturnModel>().HasNoKey();
             modelBuilder.Entity<StpTestSpaceTestReturnModel>().Property(e => e.CodeObjectNo).HasColumnName("code object no");
             modelBuilder.Entity<StpTestSpaceTestReturnModel>().Property(e => e.ApplicationNo).HasColumnName("application no");
             modelBuilder.Entity<StpTestUnderscoreTestReturnModel>().HasNoKey();
             modelBuilder.Entity<TestReturnStringReturnModel>().HasNoKey();
+            modelBuilder.Entity<TestReturnStringReturnModel>().Property(e => e.error).IsRequired(false);
             modelBuilder.Entity<XmlDataV1ReturnModel>().HasNoKey();
+            modelBuilder.Entity<XmlDataV1ReturnModel>().Property(e => e.Column2).IsRequired(false);
 
             // Table Valued Functions
             modelBuilder.Entity<C182Test1ReturnModel>().HasNoKey();
+            modelBuilder.Entity<C182Test1ReturnModel>().Property(e => e.Description).IsRequired(false);
             modelBuilder.Entity<CsvToIntReturnModel>().HasNoKey();
             modelBuilder.Entity<SpacedColumnTvfReturnModel>().HasNoKey();
             modelBuilder.Entity<SpacedColumnTvfReturnModel>().Property(e => e.MyColumn).HasColumnName("My Column");
+            modelBuilder.Entity<SpacedColumnTvfReturnModel>().Property(e => e.MyColumn).IsRequired(false);
             modelBuilder.Entity<SpacedColumnTvfReturnModel>().Property(e => e.IsActive).HasColumnName("Is Active");
         }
 
@@ -964,6 +984,34 @@ namespace Efrpg.V8FilterTest
             await Database.ExecuteSqlRawAsync("EXEC @procResult = [dbo].[SpatialTypesWithParams] @geometry, @geography",  new[] {geometryParam, geographyParam, procResultParam}, cancellationToken);
 
             return (int)procResultParam.Value;
+        }
+
+        public List<SpNullableStringReproReturnModel> SpNullableStringRepro()
+        {
+            int procResult;
+            return SpNullableStringRepro(out procResult);
+        }
+
+        public List<SpNullableStringReproReturnModel> SpNullableStringRepro(out int procResult)
+        {
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+            const string sqlCommand = "EXEC @procResult = [dbo].[sp_NullableStringRepro]";
+            var procResultData = Set<SpNullableStringReproReturnModel>()
+                .FromSqlRaw(sqlCommand, procResultParam)
+                .ToList();
+
+            procResult = (int) procResultParam.Value;
+            return procResultData;
+        }
+
+        public async Task<List<SpNullableStringReproReturnModel>> SpNullableStringReproAsync(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            const string sqlCommand = "EXEC [dbo].[sp_NullableStringRepro]";
+            var procResultData = await Set<SpNullableStringReproReturnModel>()
+                .FromSqlRaw(sqlCommand)
+                .ToListAsync(cancellationToken);
+
+            return procResultData;
         }
 
         public List<StoredProcWithDefaultsReturnModel> StoredProcWithDefaults(int? userId = 12, int? userIdNull = null, string clientName = "Hello", string clientNameNull = null, string clientNameMaxNull = null, string clientDesc = "World", string clientDescNull = null, decimal? decimalValue = 1.234m, decimal? decimalValueNull = null, decimal? money = 4.56m, decimal? moneyNull = null, decimal? smallMoney = 7.89m, decimal? smallMoneyNull = null, float? realValue = 9.876f, float? realValueNull = null, double? floatValue = 6.54, double? floatValueNull = null)
@@ -1908,6 +1956,11 @@ namespace Efrpg.V8FilterTest
         public int? Id { get; set; }
         public string MyColumn { get; set; } = null!;
         public bool? IsActive { get; set; }
+    }
+
+    public class SpNullableStringReproReturnModel
+    {
+        public string SomeText { get; set; } = null!;
     }
 
     public class StoredProcWithDefaultsReturnModel

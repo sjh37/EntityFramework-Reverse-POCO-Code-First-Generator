@@ -71,7 +71,7 @@ namespace Tester.Integration.EFCore8.Multi_context_single_filesAppleDbContext
 
         IQueryable<TResult> FromExpression<TResult> (Expression<Func<IQueryable<TResult>>> expression);
     }
-    #nullable restore
+    #nullable disable
 
     #endregion
 
@@ -115,7 +115,7 @@ namespace Tester.Integration.EFCore8.Multi_context_single_filesAppleDbContext
         }
 
     }
-    #nullable restore
+    #nullable disable
 
     #endregion
 
@@ -153,7 +153,7 @@ namespace Tester.Integration.EFCore8.Multi_context_single_filesAppleDbContext
                 : new AppleDbContext(options);
         }
     }
-    #nullable restore
+    #nullable disable
 
     #endregion
 

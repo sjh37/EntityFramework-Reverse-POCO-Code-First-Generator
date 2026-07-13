@@ -221,6 +221,6 @@ namespace Tester.Integration.EFCore8.ContextHasSameNameAsDb
         }
 
     }
-    #nullable restore
+    #nullable disable
 }
 // </auto-generated>

@@ -2846,3 +2846,11 @@ CREATE FUNCTION [dbo].[SpacedColumnTvf]
         WHERE Id = @id
         )
 GO
+
+-- #885
+CREATE PROCEDURE dbo.sp_NullableStringRepro AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT CAST(NULL AS varchar(50)) AS SomeText;
+END
+GO

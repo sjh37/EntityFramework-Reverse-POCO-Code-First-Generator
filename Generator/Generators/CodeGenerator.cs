@@ -306,6 +306,13 @@ namespace Efrpg.Generators
         // annotations raise CS8669. Enable only the annotations context (not warnings) so the '?' is
         // legal without forcing CS8618 on the DbContext's non-initialised DbSet<T> properties. Bracket
         // only when the file header doesn't already carry '#nullable enable' (NeedsNullForgiving() == false).
+        //
+        // The block must close with '#nullable disable', not '#nullable restore': restore returns to the
+        // *project* nullable setting, so in a consumer project with <Nullable>enable</Nullable> everything
+        // after this block in the combined single-file output (POCOs, stored procedure return models)
+        // would silently become NRT-enabled. EF Core 8+ then infers 'string' result columns as required
+        // and throws SqlNullValueException when the database returns NULL (issue #885). '#nullable disable'
+        // returns to the auto-generated file's baseline (disabled), keeping the rest of the file oblivious.
         private static void AddCodeWithNullableContext(CodeOutput co, string template, object data)
         {
             var bracket = !Settings.NeedsNullForgiving() && Settings.IsEfCore8Plus();
@@ -313,7 +320,7 @@ namespace Efrpg.Generators
                 co.AddCode("#nullable enable annotations");
             co.AddCode(Template.Transform(template, data));
             if (bracket)
-                co.AddCode("#nullable restore");
+                co.AddCode("#nullable disable");
         }
 
         public CodeOutput GenerateInterface()

@@ -39,6 +39,6 @@ namespace Tester.Integration.EFCore8.Multi_context_many_filesBananaDbContext
                 : new BananaDbContext(options);
         }
     }
-    #nullable restore
+    #nullable disable
 }
 // </auto-generated>

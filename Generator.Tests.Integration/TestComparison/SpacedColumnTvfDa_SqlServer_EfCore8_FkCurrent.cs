@@ -174,7 +174,7 @@ namespace Efrpg.V9SpacedTvfDa
     {
         public int? Id { get; set; }
         [Column("My Column")]
-        public string MyColumn { get; set; } = null!;
+        public string? MyColumn { get; set; }
         [Column("Is Active")]
         public bool? IsActive { get; set; }
     }

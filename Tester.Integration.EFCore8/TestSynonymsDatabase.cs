@@ -90,7 +90,7 @@ namespace TestSynonymsDatabase
         IQueryable<CsvToIntReturnModel> CsvToInt(string array, string array2); // dbo.CsvToInt
         IQueryable<CsvToIntWithSchemaReturnModel> CsvToIntWithSchema(string array, string array2); // CustomSchema.CsvToIntWithSchema
     }
-    #nullable restore
+    #nullable disable
 
     #endregion
 
@@ -214,7 +214,7 @@ namespace TestSynonymsDatabase
                 .AsNoTracking();
         }
     }
-    #nullable restore
+    #nullable disable
 
     #endregion
 
@@ -252,7 +252,7 @@ namespace TestSynonymsDatabase
                 : new TestDbContext(options);
         }
     }
-    #nullable restore
+    #nullable disable
 
     #endregion
 
@@ -508,7 +508,7 @@ namespace TestSynonymsDatabase
             return new List<CsvToIntWithSchemaReturnModel>().AsQueryable();
         }
     }
-    #nullable restore
+    #nullable disable
 
     #endregion
 
@@ -991,7 +991,7 @@ namespace TestSynonymsDatabase
         public void Dispose() { }
         public ValueTask DisposeAsync() => default;
     }
-    #nullable restore
+    #nullable disable
 
     #endregion
 

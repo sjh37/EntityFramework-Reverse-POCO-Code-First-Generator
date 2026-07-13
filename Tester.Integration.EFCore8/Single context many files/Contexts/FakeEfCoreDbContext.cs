@@ -889,6 +889,25 @@ namespace Tester.Integration.EFCore8.Single_context_many_files.Contexts
             return Task.FromResult(SpatialTypesWithParams(geometry, geography, out procResult));
         }
 
+        public DbSet<SpNullableStringReproReturnModel> SpNullableStringReproReturnModel { get; set; } = null!;
+        public List<SpNullableStringReproReturnModel> SpNullableStringRepro()
+        {
+            int procResult;
+            return SpNullableStringRepro(out procResult);
+        }
+
+        public List<SpNullableStringReproReturnModel> SpNullableStringRepro(out int procResult)
+        {
+            procResult = 0;
+            return new List<SpNullableStringReproReturnModel>();
+        }
+
+        public Task<List<SpNullableStringReproReturnModel>> SpNullableStringReproAsync(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            int procResult;
+            return Task.FromResult(SpNullableStringRepro(out procResult));
+        }
+
         public DbSet<StoredProcWithDefaultsReturnModel> StoredProcWithDefaultsReturnModel { get; set; } = null!;
         public List<StoredProcWithDefaultsReturnModel> StoredProcWithDefaults(int? userId = 12, int? userIdNull = null, string clientName = "Hello", string clientNameNull = null, string clientNameMaxNull = null, string clientDesc = "World", string clientDescNull = null, decimal? decimalValue = 1.234m, decimal? decimalValueNull = null, decimal? money = 4.56m, decimal? moneyNull = null, decimal? smallMoney = 7.89m, decimal? smallMoneyNull = null, float? realValue = 9.876f, float? realValueNull = null, double? floatValue = 6.54, double? floatValueNull = null)
         {
@@ -1220,6 +1239,6 @@ namespace Tester.Integration.EFCore8.Single_context_many_files.Contexts
             return default(decimal);
         }
     }
-    #nullable restore
+    #nullable disable
 }
 // </auto-generated>

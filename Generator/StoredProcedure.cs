@@ -29,17 +29,34 @@ namespace Efrpg
 
         public static bool IsNullable(DataColumn col)
         {
-            return col.DataType.Namespace != null &&
-                   col.AllowDBNull &&
-                   !(
-                       Column.StoredProcedureNotNullable.Contains(col.DataType.Name.ToLower()) ||
-                       Column.StoredProcedureNotNullable.Contains(col.DataType.Namespace.ToLower() + "." + col.DataType.Name.ToLower())
+            if (col.DataType.Namespace == null || !col.AllowDBNull)
+                return false;
+
+            var typeName = col.DataType.Name.ToLower();
+
+            // Mirrors Column.NotNullable for table columns: when AllowNullStrings is enabled, DB-nullable string and
+            // byte[] return columns become string? / byte[]?. EF Core 8+ infers result-set column nullability from the
+            // C# annotation, so a plain 'string' under NRT is read without a NULL check and throws
+            // SqlNullValueException when the stored procedure returns NULL (issue #885).
+            if (Settings.AllowNullStrings && (typeName == "string" || typeName == "byte[]"))
+                return true;
+
+            return !(
+                       Column.StoredProcedureNotNullable.Contains(typeName) ||
+                       Column.StoredProcedureNotNullable.Contains(col.DataType.Namespace.ToLower() + "." + typeName)
                      );
         }
 
         public static string WrapTypeIfNullable(string propertyType, DataColumn col)
         {
-            return !IsNullable(col) ? propertyType : string.Format(Settings.NullableShortHand ? "{0}?" : "Nullable<{0}>", propertyType);
+            if (!IsNullable(col))
+                return propertyType;
+
+            // Reference types can only take the '?' annotation; Nullable<T> requires a value type.
+            if (IsReferenceType(propertyType))
+                return propertyType + "?";
+
+            return string.Format(Settings.NullableShortHand ? "{0}?" : "Nullable<{0}>", propertyType);
         }
 
         public void MergeModelsIfAllSame()
@@ -553,6 +570,17 @@ namespace Efrpg
                 var effectiveName = sanitized.TrimStart('@');
                 if (effectiveName != rawName)
                     mappings.Add(string.Format("modelBuilder.{0}<{1}>().Property(e => e.{2}).HasColumnName(\"{3}\");", builderCmd, returnModelName, sanitized, rawName));
+
+                // When the generated file is NRT-enabled but this DB-nullable reference-type property is still emitted
+                // without a '?' (AllowNullStrings=false with NullableReverseNavigationProperties=true, or a type such
+                // as object/spatial that never takes the annotation), EF Core 8+ would infer the column as required
+                // and throw SqlNullValueException on NULLs. Make the DB nullability explicit, exactly as table
+                // columns do via IsRequired(false). (issue #885)
+                if (!Settings.IsEf6() && Settings.NeedsNullForgiving() &&
+                    col.AllowDBNull && !IsNullable(col) && IsReferenceType(ConvertDataColumnType(col.DataType)))
+                {
+                    mappings.Add(string.Format("modelBuilder.{0}<{1}>().Property(e => e.{2}).IsRequired(false);", builderCmd, returnModelName, sanitized));
+                }
 
                 // HasPrecision for fluent API mode (EF Core only; [Precision] handles data annotations mode)
                 if (!Settings.IsEf6() && !Settings.UseDataAnnotations &&

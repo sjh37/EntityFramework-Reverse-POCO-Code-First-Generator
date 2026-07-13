@@ -173,7 +173,7 @@ namespace Efrpg.V9SpacedTvf
     public class SpacedColumnTvfReturnModel
     {
         public int? Id { get; set; }
-        public string MyColumn { get; set; } = null!;
+        public string? MyColumn { get; set; }
         public bool? IsActive { get; set; }
     }
 

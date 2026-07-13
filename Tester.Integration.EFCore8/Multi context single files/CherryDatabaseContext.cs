@@ -70,7 +70,7 @@ namespace Tester.Integration.EFCore8.Multi_context_single_filesCherry
 
         IQueryable<TResult> FromExpression<TResult> (Expression<Func<IQueryable<TResult>>> expression);
     }
-    #nullable restore
+    #nullable disable
 
     #endregion
 
@@ -112,7 +112,7 @@ namespace Tester.Integration.EFCore8.Multi_context_single_filesCherry
         }
 
     }
-    #nullable restore
+    #nullable disable
 
     #endregion
 
@@ -150,7 +150,7 @@ namespace Tester.Integration.EFCore8.Multi_context_single_filesCherry
                 : new CherryDbContext(options);
         }
     }
-    #nullable restore
+    #nullable disable
 
     #endregion
 

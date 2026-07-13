@@ -15,8 +15,14 @@ namespace Generator.Tests.Unit
     // compiler treats the nullable annotation context as disabled, so without an explicit directive
     // those '?' raise CS8669. When the file header doesn't already carry '#nullable enable'
     // (NeedsNullForgiving() == false) each block is bracketed with
-    // '#nullable enable annotations' ... '#nullable restore'. Annotation-only context is used so the
+    // '#nullable enable annotations' ... '#nullable disable'. Annotation-only context is used so the
     // '?' is legal without forcing CS8618 on the DbContext's uninitialised DbSet<T> properties.
+    //
+    // Issue #885 - the block must close with '#nullable disable' rather than '#nullable restore':
+    // restore returns to the *project* nullable setting, so in a consumer project with
+    // <Nullable>enable</Nullable> everything after the block in the combined single-file output
+    // (POCOs, stored procedure return models) would become NRT-enabled and EF Core 8+ would infer
+    // 'string' result columns as required, throwing SqlNullValueException on NULLs.
     [TestFixture, NonParallelizable]
     [Category(Constants.CI)]
     public class NullableContextTests
@@ -88,17 +94,20 @@ namespace Generator.Tests.Unit
             // Assert
             Assert.IsNotNull(output, "GenerateFactory returned null");
             CollectionAssert.Contains(output.Code, "#nullable enable annotations");
-            CollectionAssert.Contains(output.Code, "#nullable restore");
+            CollectionAssert.Contains(output.Code, "#nullable disable");
             // Annotation-only context, NOT a full '#nullable enable' (which would force CS8618 on DbSet<T>).
             CollectionAssert.DoesNotContain(output.Code, "#nullable enable");
+            // Issue #885 - '#nullable restore' would re-enable the project's NRT setting for the rest of the
+            // combined single-file output, making EF Core 8+ treat SP return model strings as required.
+            CollectionAssert.DoesNotContain(output.Code, "#nullable restore");
 
-            // The 'DbContextOptions<>? Options' annotation must sit between the enable and restore directives.
+            // The 'DbContextOptions<>? Options' annotation must sit between the enable and disable directives.
             var code            = string.Join(Environment.NewLine, output.Code);
             var enableIndex     = code.IndexOf("#nullable enable annotations", StringComparison.Ordinal);
             var annotationIndex = code.IndexOf("DbContextOptions",             StringComparison.Ordinal);
-            var restoreIndex    = code.IndexOf("#nullable restore",            StringComparison.Ordinal);
+            var disableIndex    = code.IndexOf("#nullable disable",            StringComparison.Ordinal);
             Assert.That(annotationIndex, Is.GreaterThan(enableIndex),     "DbContextOptions<>? must be inside the #nullable region");
-            Assert.That(restoreIndex,    Is.GreaterThan(annotationIndex), "'#nullable restore' must follow the annotation");
+            Assert.That(disableIndex,    Is.GreaterThan(annotationIndex), "'#nullable disable' must follow the annotation");
         }
 
         // The DbContext emits 'IConfiguration? _configuration' when OnConfiguration == Configuration.
@@ -116,15 +125,16 @@ namespace Generator.Tests.Unit
             // Assert
             Assert.IsNotNull(output, "GenerateContext returned null");
             CollectionAssert.Contains(output.Code, "#nullable enable annotations");
-            CollectionAssert.Contains(output.Code, "#nullable restore");
+            CollectionAssert.Contains(output.Code, "#nullable disable");
             CollectionAssert.DoesNotContain(output.Code, "#nullable enable");
+            CollectionAssert.DoesNotContain(output.Code, "#nullable restore");
 
             var code             = string.Join(Environment.NewLine, output.Code);
             var enableIndex      = code.IndexOf("#nullable enable annotations", StringComparison.Ordinal);
             var annotationIndex  = code.IndexOf("IConfiguration? _configuration", StringComparison.Ordinal);
-            var restoreIndex     = code.IndexOf("#nullable restore",            StringComparison.Ordinal);
+            var disableIndex     = code.IndexOf("#nullable disable",            StringComparison.Ordinal);
             Assert.That(annotationIndex, Is.GreaterThan(enableIndex),     "IConfiguration? must be inside the #nullable region");
-            Assert.That(restoreIndex,    Is.GreaterThan(annotationIndex), "'#nullable restore' must follow the annotation");
+            Assert.That(disableIndex,    Is.GreaterThan(annotationIndex), "'#nullable disable' must follow the annotation");
         }
 
         // When NeedsNullForgiving() is true the file header already carries a file-level '#nullable enable',

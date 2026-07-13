@@ -295,6 +295,10 @@ namespace Efrpg.V4TestE8
         int proc_TestDecimalOutputV3Default(ref decimal? perfectNumber);
         // proc_TestDecimalOutputV3DefaultAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
+        List<sp_NullableStringReproReturnModel> sp_NullableStringRepro();
+        List<sp_NullableStringReproReturnModel> sp_NullableStringRepro(out int procResult);
+        Task<List<sp_NullableStringReproReturnModel>> sp_NullableStringReproAsync(CancellationToken cancellationToken = default(CancellationToken));
+
         int SpatialTypesNoParams();
         Task<int> SpatialTypesNoParamsAsync(CancellationToken cancellationToken = default(CancellationToken));
 
@@ -673,37 +677,56 @@ namespace Efrpg.V4TestE8
             modelBuilder.Entity<Synonyms_Child>().ToTable(tb => tb.HasTrigger("ChildInsertTrigger"));
 
             modelBuilder.Entity<aSimpleExampleReturnModel>().HasNoKey();
+            modelBuilder.Entity<aSimpleExampleReturnModel>().Property(e => e.stuff).IsRequired(false);
             modelBuilder.Entity<CheckIfApplicationIsCompleteReturnModel>().HasNoKey();
+            modelBuilder.Entity<CheckIfApplicationIsCompleteReturnModel>().Property(e => e.Key).IsRequired(false);
+            modelBuilder.Entity<CheckIfApplicationIsCompleteReturnModel>().Property(e => e.Value).IsRequired(false);
             modelBuilder.Entity<ColourPivotReturnModel>().HasNoKey();
             modelBuilder.Entity<dbo_proc_data_from_ffrsReturnModel>().HasNoKey();
+            modelBuilder.Entity<dbo_proc_data_from_ffrsReturnModel>().Property(e => e.CVName).IsRequired(false);
             modelBuilder.Entity<dbo_proc_data_from_ffrs_and_dboReturnModel>().HasNoKey();
+            modelBuilder.Entity<dbo_proc_data_from_ffrs_and_dboReturnModel>().Property(e => e.CVName).IsRequired(false);
             modelBuilder.Entity<DSOpeProcReturnModel>().HasNoKey();
             modelBuilder.Entity<FFRS_cv_dataReturnModel>().HasNoKey();
+            modelBuilder.Entity<FFRS_cv_dataReturnModel>().Property(e => e.CVName).IsRequired(false);
             modelBuilder.Entity<FFRS_data_from_dboReturnModel>().HasNoKey();
             modelBuilder.Entity<FFRS_data_from_dbo_and_ffrsReturnModel>().HasNoKey();
+            modelBuilder.Entity<FFRS_data_from_dbo_and_ffrsReturnModel>().Property(e => e.CVName).IsRequired(false);
             modelBuilder.Entity<FkTest_HelloReturnModel>().HasNoKey();
             modelBuilder.Entity<GetSmallDecimalTestReturnModel>().HasNoKey();
             modelBuilder.Entity<GetSmallDecimalTestReturnModel>().Property(e => e.KoeffVed).HasPrecision(4, 4);
+            modelBuilder.Entity<sp_NullableStringReproReturnModel>().HasNoKey();
+            modelBuilder.Entity<sp_NullableStringReproReturnModel>().Property(e => e.SomeText).IsRequired(false);
             modelBuilder.Entity<StoredProcWithDefaultsReturnModel>().HasNoKey();
             modelBuilder.Entity<stp_multiple_identical_resultsReturnModel>().HasNoKey();
             modelBuilder.Entity<stp_no_params_testReturnModel>().HasNoKey();
             modelBuilder.Entity<stp_nullable_params_testReturnModel>().HasNoKey();
             modelBuilder.Entity<stp_testReturnModel>().HasNoKey();
+            modelBuilder.Entity<stp_testReturnModel>().Property(e => e.aName).IsRequired(false);
+            modelBuilder.Entity<stp_testReturnModel>().Property(e => e.description).IsRequired(false);
+            modelBuilder.Entity<stp_testReturnModel>().Property(e => e.codeName).IsRequired(false);
+            modelBuilder.Entity<stp_testReturnModel>().Property(e => e.note).IsRequired(false);
+            modelBuilder.Entity<stp_testReturnModel>().Property(e => e.versionNumber).IsRequired(false);
             modelBuilder.Entity<stp_test_underscore_testReturnModel>().HasNoKey();
             modelBuilder.Entity<stptestspacetestReturnModel>().HasNoKey();
             modelBuilder.Entity<stptestspacetestReturnModel>().Property(e => e.codeobjectno).HasColumnName("code object no");
             modelBuilder.Entity<stptestspacetestReturnModel>().Property(e => e.applicationno).HasColumnName("application no");
             modelBuilder.Entity<Synonyms_SimpleStoredProcReturnModel>().HasNoKey();
+            modelBuilder.Entity<Synonyms_SimpleStoredProcReturnModel>().Property(e => e.ReturnValue).IsRequired(false);
             modelBuilder.Entity<TestReturnStringReturnModel>().HasNoKey();
+            modelBuilder.Entity<TestReturnStringReturnModel>().Property(e => e.error).IsRequired(false);
             modelBuilder.Entity<XmlDataV1ReturnModel>().HasNoKey();
+            modelBuilder.Entity<XmlDataV1ReturnModel>().Property(e => e.Column2).IsRequired(false);
 
             // Table Valued Functions
             modelBuilder.Entity<C182_test1ReturnModel>().HasNoKey();
+            modelBuilder.Entity<C182_test1ReturnModel>().Property(e => e.Description).IsRequired(false);
             modelBuilder.Entity<CsvToIntReturnModel>().HasNoKey();
             modelBuilder.Entity<CustomSchema_CsvToIntWithSchemaReturnModel>().HasNoKey();
             modelBuilder.Entity<FFRS_CsvToInt2ReturnModel>().HasNoKey();
             modelBuilder.Entity<SpacedColumnTvfReturnModel>().HasNoKey();
             modelBuilder.Entity<SpacedColumnTvfReturnModel>().Property(e => e.MyColumn).HasColumnName("My Column");
+            modelBuilder.Entity<SpacedColumnTvfReturnModel>().Property(e => e.MyColumn).IsRequired(false);
             modelBuilder.Entity<SpacedColumnTvfReturnModel>().Property(e => e.IsActive).HasColumnName("Is Active");
         }
 
@@ -1514,6 +1537,34 @@ namespace Efrpg.V4TestE8
         }
 
         // proc_TestDecimalOutputV3DefaultAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
+        public List<sp_NullableStringReproReturnModel> sp_NullableStringRepro()
+        {
+            int procResult;
+            return sp_NullableStringRepro(out procResult);
+        }
+
+        public List<sp_NullableStringReproReturnModel> sp_NullableStringRepro(out int procResult)
+        {
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+            const string sqlCommand = "EXEC @procResult = [dbo].[sp_NullableStringRepro]";
+            var procResultData = Set<sp_NullableStringReproReturnModel>()
+                .FromSqlRaw(sqlCommand, procResultParam)
+                .ToList();
+
+            procResult = (int) procResultParam.Value;
+            return procResultData;
+        }
+
+        public async Task<List<sp_NullableStringReproReturnModel>> sp_NullableStringReproAsync(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            const string sqlCommand = "EXEC [dbo].[sp_NullableStringRepro]";
+            var procResultData = await Set<sp_NullableStringReproReturnModel>()
+                .FromSqlRaw(sqlCommand)
+                .ToListAsync(cancellationToken);
+
+            return procResultData;
+        }
 
         public int SpatialTypesNoParams()
         {
@@ -3200,6 +3251,25 @@ namespace Efrpg.V4TestE8
         }
 
         // proc_TestDecimalOutputV3DefaultAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
+        public DbSet<sp_NullableStringReproReturnModel> sp_NullableStringReproReturnModel { get; set; } = null!;
+        public List<sp_NullableStringReproReturnModel> sp_NullableStringRepro()
+        {
+            int procResult;
+            return sp_NullableStringRepro(out procResult);
+        }
+
+        public List<sp_NullableStringReproReturnModel> sp_NullableStringRepro(out int procResult)
+        {
+            procResult = 0;
+            return new List<sp_NullableStringReproReturnModel>();
+        }
+
+        public Task<List<sp_NullableStringReproReturnModel>> sp_NullableStringReproAsync(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            int procResult;
+            return Task.FromResult(sp_NullableStringRepro(out procResult));
+        }
 
         public int SpatialTypesNoParams()
         {
@@ -7874,6 +7944,11 @@ namespace Efrpg.V4TestE8
     {
         public int id { get; set; }
         public decimal? KoeffVed { get; set; }
+    }
+
+    public class sp_NullableStringReproReturnModel
+    {
+        public string SomeText { get; set; } = null!;
     }
 
     public class SpacedColumnTvfReturnModel

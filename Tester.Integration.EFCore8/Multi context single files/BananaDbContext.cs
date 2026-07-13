@@ -70,7 +70,7 @@ namespace Tester.Integration.EFCore8.Multi_context_single_filesBananaDbContext
 
         IQueryable<TResult> FromExpression<TResult> (Expression<Func<IQueryable<TResult>>> expression);
     }
-    #nullable restore
+    #nullable disable
 
     #endregion
 
@@ -114,7 +114,7 @@ namespace Tester.Integration.EFCore8.Multi_context_single_filesBananaDbContext
         }
 
     }
-    #nullable restore
+    #nullable disable
 
     #endregion
 
@@ -152,7 +152,7 @@ namespace Tester.Integration.EFCore8.Multi_context_single_filesBananaDbContext
                 : new BananaDbContext(options);
         }
     }
-    #nullable restore
+    #nullable disable
 
     #endregion
 

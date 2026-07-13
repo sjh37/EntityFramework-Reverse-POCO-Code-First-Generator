@@ -91,7 +91,7 @@ namespace Azure10
 
         IQueryable<TResult> FromExpression<TResult> (Expression<Func<IQueryable<TResult>>> expression);
     }
-    #nullable restore
+    #nullable disable
 
     #endregion
 
@@ -179,7 +179,7 @@ namespace Azure10
         }
 
     }
-    #nullable restore
+    #nullable disable
 
     #endregion
 
@@ -217,7 +217,7 @@ namespace Azure10
                 : new AzureContext(options);
         }
     }
-    #nullable restore
+    #nullable disable
 
     #endregion
 
@@ -504,6 +504,8 @@ namespace Azure10
         public string DisbursementId { get; set; } // DisbursementId (length: 40)
         public bool? DisbursementSuccess { get; set; } // DisbursementSuccess
         public string SettlementBatchId { get; set; } // SettlementBatchId (length: 64)
+        public Guid? PaymentToken { get; set; } // PaymentToken
+        public DateTime? PaymentTokenExpiresAt { get; set; } // PaymentTokenExpiresAt
 
         // Reverse navigation
 
@@ -1065,6 +1067,8 @@ namespace Azure10
             builder.Property(x => x.DisbursementId).HasColumnName(@"DisbursementId").HasColumnType("varchar(40)").IsRequired(false).IsUnicode(false).HasMaxLength(40);
             builder.Property(x => x.DisbursementSuccess).HasColumnName(@"DisbursementSuccess").HasColumnType("bit").IsRequired(false);
             builder.Property(x => x.SettlementBatchId).HasColumnName(@"SettlementBatchId").HasColumnType("varchar(64)").IsRequired(false).IsUnicode(false).HasMaxLength(64);
+            builder.Property(x => x.PaymentToken).HasColumnName(@"PaymentToken").HasColumnType("uniqueidentifier").IsRequired(false);
+            builder.Property(x => x.PaymentTokenExpiresAt).HasColumnName(@"PaymentTokenExpiresAt").HasColumnType("datetime2").IsRequired(false);
 
             // Foreign keys
             builder.HasOne(a => a.Country).WithMany(b => b.Orders).HasForeignKey(c => c.CountryId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Order_Country_CountryId");
@@ -1073,6 +1077,7 @@ namespace Azure10
             builder.HasIndex(x => x.CountryId).HasDatabaseName("IX_Order_CountryId");
             builder.HasIndex(x => x.DisbursementId).HasDatabaseName("IX_Order_DisbursementId");
             builder.HasIndex(x => x.DiscountId).HasDatabaseName("IX_Order_DiscountId");
+            builder.HasIndex(x => x.PaymentToken).HasDatabaseName("IX_Order_PaymentToken");
             builder.HasIndex(x => x.SettlementBatchId).HasDatabaseName("IX_Order_SettlementBatchId");
             builder.HasIndex(x => x.Status).HasDatabaseName("IX_Order_Status");
             builder.HasIndex(x => x.TransactionId).HasDatabaseName("IX_Order_TransactionId");

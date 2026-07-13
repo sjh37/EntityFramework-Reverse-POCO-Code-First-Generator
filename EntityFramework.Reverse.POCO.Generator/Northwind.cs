@@ -245,11 +245,13 @@ namespace EntityFramework_Reverse_POCO_Generator
             modelBuilder.Entity<CustOrdersDetailReturnModel>().Property(e => e.ExtendedPrice).HasPrecision(19, 4);
             modelBuilder.Entity<CustOrdersOrdersReturnModel>().HasNoKey();
             modelBuilder.Entity<EmployeeSalesByCountryReturnModel>().HasNoKey();
+            modelBuilder.Entity<EmployeeSalesByCountryReturnModel>().Property(e => e.Country).IsRequired(false);
             modelBuilder.Entity<EmployeeSalesByCountryReturnModel>().Property(e => e.SaleAmount).HasPrecision(19, 4);
             modelBuilder.Entity<SalesByCategoryReturnModel>().HasNoKey();
             modelBuilder.Entity<SalesByCategoryReturnModel>().Property(e => e.TotalPurchase).HasPrecision(38, 2);
             modelBuilder.Entity<SalesByYearReturnModel>().HasNoKey();
             modelBuilder.Entity<SalesByYearReturnModel>().Property(e => e.Subtotal).HasPrecision(19, 4);
+            modelBuilder.Entity<SalesByYearReturnModel>().Property(e => e.Year).IsRequired(false);
             modelBuilder.Entity<TenMostExpensiveProductsReturnModel>().HasNoKey();
             modelBuilder.Entity<TenMostExpensiveProductsReturnModel>().Property(e => e.UnitPrice).HasPrecision(19, 4);
         }

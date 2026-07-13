@@ -319,7 +319,7 @@ namespace Generator.Tests.Unit
             finally
             {
                 Settings.AllowNullStrings = false;
-                Settings.NullableReverseNavigationProperties = true;
+                Settings.NullableReverseNavigationProperties = false;
             }
         }
 
@@ -350,7 +350,7 @@ namespace Generator.Tests.Unit
             finally
             {
                 Settings.AllowNullStrings = false;
-                Settings.NullableReverseNavigationProperties = true;
+                Settings.NullableReverseNavigationProperties = false;
             }
         }
 
@@ -543,6 +543,152 @@ AS BEGIN SELECT 1 END";
 
             // Overload call: ref keyword
             StringAssert.Contains("ref groupId",                         overload);
+        }
+
+        // -----------------------------------------------------------------------
+        // Issue #885 - stored proc return model columns must respect DB nullability
+        // under nullable reference types, otherwise EF Core 8+ infers the column as
+        // required and throws SqlNullValueException when the database returns NULL.
+        // -----------------------------------------------------------------------
+
+        [TearDown]
+        public void TearDown()
+        {
+            // Settings is static; restore the values this fixture changes so other fixtures are unaffected.
+            Settings.AllowNullStrings                    = false;
+            Settings.NullableReverseNavigationProperties = false;
+            Settings.NullableShortHand                   = true;
+        }
+
+        [Description("Issue #885 - DB-nullable string return columns become string? under NRT; NOT NULL columns keep = null!")]
+        [TestCase(false, true,  "public string SomeText { get; set; }")]          // Oblivious: unchanged
+        [TestCase(false, false, "public string SomeText { get; set; }")]          // Oblivious: unchanged
+        [TestCase(true,  true,  "public string? SomeText { get; set; }")]         // NRT: DB-nullable => string?
+        [TestCase(true,  false, "public string SomeText { get; set; } = null!;")] // NRT: NOT NULL => null-forgiving
+        public void WriteStoredProcReturnColumn_String_RespectsDbNullability(bool allowNullStrings, bool allowDbNull, string expected)
+        {
+            // Arrange
+            Settings.AllowNullStrings = allowNullStrings;
+            var col = new DataColumn("SomeText", typeof(string)) { AllowDBNull = allowDbNull };
+
+            // Act
+            var result = _sut.WriteStoredProcReturnColumn(col);
+
+            // Assert
+            Assert.AreEqual(expected, result);
+        }
+
+        [Description("Issue #885 - byte[] return columns follow the same rules as string")]
+        [TestCase(false, true,  "public byte[] Blob { get; set; }")]
+        [TestCase(true,  true,  "public byte[]? Blob { get; set; }")]
+        [TestCase(true,  false, "public byte[] Blob { get; set; } = null!;")]
+        public void WriteStoredProcReturnColumn_ByteArray_RespectsDbNullability(bool allowNullStrings, bool allowDbNull, string expected)
+        {
+            // Arrange
+            Settings.AllowNullStrings = allowNullStrings;
+            var col = new DataColumn("Blob", typeof(byte[])) { AllowDBNull = allowDbNull };
+
+            // Act
+            var result = _sut.WriteStoredProcReturnColumn(col);
+
+            // Assert
+            Assert.AreEqual(expected, result);
+        }
+
+        [Description("Issue #885 - value type return columns are unaffected by AllowNullStrings")]
+        [TestCase(false, true,  "public int? Num { get; set; }")]
+        [TestCase(true,  true,  "public int? Num { get; set; }")]
+        [TestCase(true,  false, "public int Num { get; set; }")]
+        public void WriteStoredProcReturnColumn_ValueType_Unaffected(bool allowNullStrings, bool allowDbNull, string expected)
+        {
+            // Arrange
+            Settings.AllowNullStrings = allowNullStrings;
+            var col = new DataColumn("Num", typeof(int)) { AllowDBNull = allowDbNull };
+
+            // Act
+            var result = _sut.WriteStoredProcReturnColumn(col);
+
+            // Assert
+            Assert.AreEqual(expected, result);
+        }
+
+        [Test]
+        [Description("Issue #885 - reference types always use the ? annotation; Nullable<string> is not valid C#")]
+        public void WriteStoredProcReturnColumn_String_NullableShortHandOff_StillUsesQuestionMark()
+        {
+            // Arrange
+            Settings.AllowNullStrings  = true;
+            Settings.NullableShortHand = false; // value types render as Nullable<T>
+            var col = new DataColumn("SomeText", typeof(string)) { AllowDBNull = true };
+
+            // Act
+            var result = _sut.WriteStoredProcReturnColumn(col);
+
+            // Assert
+            Assert.AreEqual("public string? SomeText { get; set; }", result);
+        }
+
+        [Test]
+        [Description("Issue #885 - NRT via NullableReverseNavigationProperties only: string stays non-nullable, so the fluent config must carry IsRequired(false)")]
+        public void GetReturnColumnMappings_NrtWithoutAllowNullStrings_EmitsIsRequiredFalse()
+        {
+            // Arrange - NeedsNullForgiving() is true but AllowNullStrings is false, so the property is
+            // emitted as a plain 'string' inside a '#nullable enable' file. Without explicit configuration
+            // EF Core 8+ would infer the column as required.
+            Settings.AllowNullStrings                    = false;
+            Settings.NullableReverseNavigationProperties = true;
+            _sut.ReturnModels = new List<List<DataColumn>>
+            {
+                new List<DataColumn>
+                {
+                    new DataColumn("SomeText", typeof(string)) { AllowDBNull = true },
+                    new DataColumn("NotNullText", typeof(string)) { AllowDBNull = false },
+                    new DataColumn("Num", typeof(int)) { AllowDBNull = true }
+                }
+            };
+
+            // Act
+            var mappings = _sut.GetReturnColumnMappings("Entity", "MyReturnModel");
+
+            // Assert
+            CollectionAssert.Contains(mappings, "modelBuilder.Entity<MyReturnModel>().Property(e => e.SomeText).IsRequired(false);");
+            Assert.IsFalse(mappings.Any(x => x.Contains("NotNullText")), "NOT NULL columns must not be marked optional");
+            Assert.IsFalse(mappings.Any(x => x.Contains(".Num)")), "value types carry their nullability in the type; no mapping needed");
+        }
+
+        [Test]
+        [Description("Issue #885 - with AllowNullStrings the property is already string?, so no IsRequired(false) mapping is emitted")]
+        public void GetReturnColumnMappings_AllowNullStrings_NoIsRequiredMapping()
+        {
+            // Arrange
+            Settings.AllowNullStrings = true;
+            _sut.ReturnModels = new List<List<DataColumn>>
+            {
+                new List<DataColumn> { new DataColumn("SomeText", typeof(string)) { AllowDBNull = true } }
+            };
+
+            // Act
+            var mappings = _sut.GetReturnColumnMappings("Entity", "MyReturnModel");
+
+            // Assert
+            Assert.IsFalse(mappings.Any(x => x.Contains("IsRequired")), "string? already tells EF Core the column is nullable");
+        }
+
+        [Test]
+        [Description("Issue #885 - default (nullable-oblivious) settings produce no IsRequired(false) mappings; output is unchanged")]
+        public void GetReturnColumnMappings_Oblivious_NoIsRequiredMapping()
+        {
+            // Arrange - defaults: AllowNullStrings = false, NullableReverseNavigationProperties = false
+            _sut.ReturnModels = new List<List<DataColumn>>
+            {
+                new List<DataColumn> { new DataColumn("SomeText", typeof(string)) { AllowDBNull = true } }
+            };
+
+            // Act
+            var mappings = _sut.GetReturnColumnMappings("Entity", "MyReturnModel");
+
+            // Assert
+            Assert.IsFalse(mappings.Any(x => x.Contains("IsRequired")), "oblivious code needs no explicit nullability; EF Core already treats reference types as nullable");
         }
 
         private List<StoredProcedureParameter> GetParams()

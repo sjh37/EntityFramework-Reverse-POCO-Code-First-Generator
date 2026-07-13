@@ -135,7 +135,7 @@ namespace Tester.Integration.EFCore10.Northwind
         Task<List<TenMostExpensiveProductsReturnModel>> TenMostExpensiveProductsAsync(CancellationToken cancellationToken = default(CancellationToken));
 
     }
-    #nullable restore
+    #nullable disable
 
     #endregion
 
@@ -521,7 +521,7 @@ namespace Tester.Integration.EFCore10.Northwind
         }
 
     }
-    #nullable restore
+    #nullable disable
 
     #endregion
 
@@ -559,7 +559,7 @@ namespace Tester.Integration.EFCore10.Northwind
                 : new NorthwindDbContext(options);
         }
     }
-    #nullable restore
+    #nullable disable
 
     #endregion
 
@@ -959,7 +959,7 @@ namespace Tester.Integration.EFCore10.Northwind
             return Task.FromResult(TenMostExpensiveProducts(out procResult));
         }
     }
-    #nullable restore
+    #nullable disable
 
     #endregion
 
@@ -1442,7 +1442,7 @@ namespace Tester.Integration.EFCore10.Northwind
         public void Dispose() { }
         public ValueTask DisposeAsync() => default;
     }
-    #nullable restore
+    #nullable disable
 
     #endregion
 

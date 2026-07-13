@@ -269,6 +269,10 @@ namespace Efrpg.V3TestE1Da
         int SpatialTypesWithParams(DbGeometry geometry, DbGeography geography);
         Task<int> SpatialTypesWithParamsAsync(DbGeometry geometry, DbGeography geography, CancellationToken cancellationToken = default(CancellationToken));
 
+        List<SpNullableStringReproReturnModel> SpNullableStringRepro();
+        List<SpNullableStringReproReturnModel> SpNullableStringRepro(out int procResult);
+        Task<List<SpNullableStringReproReturnModel>> SpNullableStringReproAsync(CancellationToken cancellationToken = default(CancellationToken));
+
         List<StoredProcWithDefaultsReturnModel> StoredProcWithDefaults(int? userId, int? userIdNull, string clientName, string clientNameNull, string clientNameMaxNull, string clientDesc, string clientDescNull, decimal? decimalValue, decimal? decimalValueNull, decimal? money, decimal? moneyNull, decimal? smallMoney, decimal? smallMoneyNull, float? realValue, float? realValueNull, double? floatValue, double? floatValueNull);
         List<StoredProcWithDefaultsReturnModel> StoredProcWithDefaults(int? userId, int? userIdNull, string clientName, string clientNameNull, string clientNameMaxNull, string clientDesc, string clientDescNull, decimal? decimalValue, decimal? decimalValueNull, decimal? money, decimal? moneyNull, decimal? smallMoney, decimal? smallMoneyNull, float? realValue, float? realValueNull, double? floatValue, double? floatValueNull, out int procResult);
         Task<List<StoredProcWithDefaultsReturnModel>> StoredProcWithDefaultsAsync(int? userId, int? userIdNull, string clientName, string clientNameNull, string clientNameMaxNull, string clientDesc, string clientDescNull, decimal? decimalValue, decimal? decimalValueNull, decimal? money, decimal? moneyNull, decimal? smallMoney, decimal? smallMoneyNull, float? realValue, float? realValueNull, double? floatValue, double? floatValueNull, CancellationToken cancellationToken = default(CancellationToken));
@@ -1763,6 +1767,26 @@ namespace Efrpg.V3TestE1Da
             await Database.ExecuteSqlCommandAsync(TransactionalBehavior.DoNotEnsureTransaction, "EXEC @procResult = [dbo].[SpatialTypesWithParams] @geometry, @geography", cancellationToken, geometryParam, geographyParam, procResultParam);
 
             return (int)procResultParam.Value;
+        }
+
+        public List<SpNullableStringReproReturnModel> SpNullableStringRepro()
+        {
+            int procResult;
+            return SpNullableStringRepro(out procResult);
+        }
+
+        public List<SpNullableStringReproReturnModel> SpNullableStringRepro(out int procResult)
+        {
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+            var procResultData = Database.SqlQuery<SpNullableStringReproReturnModel>("EXEC @procResult = [dbo].[sp_NullableStringRepro]", procResultParam).ToList();
+            procResult = (int) procResultParam.Value;
+            return procResultData;
+        }
+
+        public async Task<List<SpNullableStringReproReturnModel>> SpNullableStringReproAsync(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var procResultData = await Database.SqlQuery<SpNullableStringReproReturnModel>("EXEC [dbo].[sp_NullableStringRepro]").ToListAsync(cancellationToken);
+            return procResultData;
         }
 
         public List<StoredProcWithDefaultsReturnModel> StoredProcWithDefaults(int? userId = 12, int? userIdNull = null, string clientName = "Hello", string clientNameNull = null, string clientNameMaxNull = null, string clientDesc = "World", string clientDescNull = null, decimal? decimalValue = 1.234m, decimal? decimalValueNull = null, decimal? money = 4.56m, decimal? moneyNull = null, decimal? smallMoney = 7.89m, decimal? smallMoneyNull = null, float? realValue = 9.876f, float? realValueNull = null, double? floatValue = 6.54, double? floatValueNull = null)
@@ -3300,6 +3324,24 @@ namespace Efrpg.V3TestE1Da
         public Task<int> SpatialTypesWithParamsAsync(DbGeometry geometry, DbGeography geography, CancellationToken cancellationToken = default(CancellationToken))
         {
             return Task.FromResult(0);
+        }
+
+        public List<SpNullableStringReproReturnModel> SpNullableStringRepro()
+        {
+            int procResult;
+            return SpNullableStringRepro(out procResult);
+        }
+
+        public List<SpNullableStringReproReturnModel> SpNullableStringRepro(out int procResult)
+        {
+            procResult = 0;
+            return new List<SpNullableStringReproReturnModel>();
+        }
+
+        public Task<List<SpNullableStringReproReturnModel>> SpNullableStringReproAsync(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            int procResult;
+            return Task.FromResult(SpNullableStringRepro(out procResult));
         }
 
         public List<StoredProcWithDefaultsReturnModel> StoredProcWithDefaults(int? userId = 12, int? userIdNull = null, string clientName = "Hello", string clientNameNull = null, string clientNameMaxNull = null, string clientDesc = "World", string clientDescNull = null, decimal? decimalValue = 1.234m, decimal? decimalValueNull = null, decimal? money = 4.56m, decimal? moneyNull = null, decimal? smallMoney = 7.89m, decimal? smallMoneyNull = null, float? realValue = 9.876f, float? realValueNull = null, double? floatValue = 6.54, double? floatValueNull = null)
@@ -9490,6 +9532,11 @@ namespace Efrpg.V3TestE1Da
         public string MyColumn { get; set; }
         [Column("Is Active")]
         public bool? IsActive { get; set; }
+    }
+
+    public class SpNullableStringReproReturnModel
+    {
+        public string SomeText { get; set; }
     }
 
     public class StoredProcWithDefaultsReturnModel

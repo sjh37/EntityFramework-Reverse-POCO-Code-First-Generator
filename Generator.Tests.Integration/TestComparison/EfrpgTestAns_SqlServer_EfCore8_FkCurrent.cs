@@ -301,6 +301,10 @@ namespace Efrpg.V3TestE8b
         int SpatialTypesWithParams(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography);
         Task<int> SpatialTypesWithParamsAsync(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography, CancellationToken cancellationToken = default(CancellationToken));
 
+        List<SpNullableStringReproReturnModel> SpNullableStringRepro();
+        List<SpNullableStringReproReturnModel> SpNullableStringRepro(out int procResult);
+        Task<List<SpNullableStringReproReturnModel>> SpNullableStringReproAsync(CancellationToken cancellationToken = default(CancellationToken));
+
         List<StoredProcWithDefaultsReturnModel> StoredProcWithDefaults(int? userId, int? userIdNull, string clientName, string clientNameNull, string clientNameMaxNull, string clientDesc, string clientDescNull, decimal? decimalValue, decimal? decimalValueNull, decimal? money, decimal? moneyNull, decimal? smallMoney, decimal? smallMoneyNull, float? realValue, float? realValueNull, double? floatValue, double? floatValueNull);
         List<StoredProcWithDefaultsReturnModel> StoredProcWithDefaults(int? userId, int? userIdNull, string clientName, string clientNameNull, string clientNameMaxNull, string clientDesc, string clientDescNull, decimal? decimalValue, decimal? decimalValueNull, decimal? money, decimal? moneyNull, decimal? smallMoney, decimal? smallMoneyNull, float? realValue, float? realValueNull, double? floatValue, double? floatValueNull, out int procResult);
         Task<List<StoredProcWithDefaultsReturnModel>> StoredProcWithDefaultsAsync(int? userId, int? userIdNull, string clientName, string clientNameNull, string clientNameMaxNull, string clientDesc, string clientDescNull, decimal? decimalValue, decimal? decimalValueNull, decimal? money, decimal? moneyNull, decimal? smallMoney, decimal? smallMoneyNull, float? realValue, float? realValueNull, double? floatValue, double? floatValueNull, CancellationToken cancellationToken = default(CancellationToken));
@@ -684,6 +688,7 @@ namespace Efrpg.V3TestE8b
             modelBuilder.Entity<FkTest_HelloReturnModel>().HasNoKey();
             modelBuilder.Entity<GetSmallDecimalTestReturnModel>().HasNoKey();
             modelBuilder.Entity<GetSmallDecimalTestReturnModel>().Property(e => e.KoeffVed).HasPrecision(4, 4);
+            modelBuilder.Entity<SpNullableStringReproReturnModel>().HasNoKey();
             modelBuilder.Entity<StoredProcWithDefaultsReturnModel>().HasNoKey();
             modelBuilder.Entity<StpMultipleIdenticalResultsReturnModel>().HasNoKey();
             modelBuilder.Entity<StpNoParamsTestReturnModel>().HasNoKey();
@@ -1565,6 +1570,34 @@ namespace Efrpg.V3TestE8b
             await Database.ExecuteSqlRawAsync("EXEC @procResult = [dbo].[SpatialTypesWithParams] @geometry, @geography",  new[] {(object?)geometryParam, (object?)geographyParam, procResultParam}, cancellationToken);
 
             return (int)procResultParam.Value;
+        }
+
+        public List<SpNullableStringReproReturnModel> SpNullableStringRepro()
+        {
+            int procResult;
+            return SpNullableStringRepro(out procResult);
+        }
+
+        public List<SpNullableStringReproReturnModel> SpNullableStringRepro(out int procResult)
+        {
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+            const string sqlCommand = "EXEC @procResult = [dbo].[sp_NullableStringRepro]";
+            var procResultData = Set<SpNullableStringReproReturnModel>()
+                .FromSqlRaw(sqlCommand, procResultParam)
+                .ToList();
+
+            procResult = (int) procResultParam.Value;
+            return procResultData;
+        }
+
+        public async Task<List<SpNullableStringReproReturnModel>> SpNullableStringReproAsync(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            const string sqlCommand = "EXEC [dbo].[sp_NullableStringRepro]";
+            var procResultData = await Set<SpNullableStringReproReturnModel>()
+                .FromSqlRaw(sqlCommand)
+                .ToListAsync(cancellationToken);
+
+            return procResultData;
         }
 
         public List<StoredProcWithDefaultsReturnModel> StoredProcWithDefaults(int? userId = 12, int? userIdNull = null, string clientName = "Hello", string? clientNameNull = null, string? clientNameMaxNull = null, string clientDesc = "World", string? clientDescNull = null, decimal? decimalValue = 1.234m, decimal? decimalValueNull = null, decimal? money = 4.56m, decimal? moneyNull = null, decimal? smallMoney = 7.89m, decimal? smallMoneyNull = null, float? realValue = 9.876f, float? realValueNull = null, double? floatValue = 6.54, double? floatValueNull = null)
@@ -3219,6 +3252,25 @@ namespace Efrpg.V3TestE8b
         public Task<int> SpatialTypesWithParamsAsync(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography, CancellationToken cancellationToken = default(CancellationToken))
         {
             return Task.FromResult(0);
+        }
+
+        public DbSet<SpNullableStringReproReturnModel> SpNullableStringReproReturnModel { get; set; } = null!;
+        public List<SpNullableStringReproReturnModel> SpNullableStringRepro()
+        {
+            int procResult;
+            return SpNullableStringRepro(out procResult);
+        }
+
+        public List<SpNullableStringReproReturnModel> SpNullableStringRepro(out int procResult)
+        {
+            procResult = 0;
+            return new List<SpNullableStringReproReturnModel>();
+        }
+
+        public Task<List<SpNullableStringReproReturnModel>> SpNullableStringReproAsync(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            int procResult;
+            return Task.FromResult(SpNullableStringRepro(out procResult));
         }
 
         public DbSet<StoredProcWithDefaultsReturnModel> StoredProcWithDefaultsReturnModel { get; set; } = null!;
@@ -7797,13 +7849,13 @@ namespace Efrpg.V3TestE8b
     public class ASimpleExampleReturnModel
     {
         public int? id { get; set; }
-        public string stuff { get; set; } = null!;
+        public string? stuff { get; set; }
     }
 
     public class C182Test1ReturnModel
     {
         public int? Id { get; set; }
-        public string Description { get; set; } = null!;
+        public string? Description { get; set; }
     }
 
     public class C182Test2ReturnModel
@@ -7811,27 +7863,27 @@ namespace Efrpg.V3TestE8b
         public class ResultSetModel1
         {
             public int? Id { get; set; }
-            public string DescriptionFlag1 { get; set; } = null!;
+            public string? DescriptionFlag1 { get; set; }
         }
         public List<ResultSetModel1> ResultSet1 = null!;
         public class ResultSetModel2
         {
             public int? Id { get; set; }
-            public string DescriptionNotNull { get; set; } = null!;
+            public string? DescriptionNotNull { get; set; }
         }
         public List<ResultSetModel2> ResultSet2 = null!;
         public class ResultSetModel3
         {
             public int? Id { get; set; }
-            public string Description { get; set; } = null!;
+            public string? Description { get; set; }
         }
         public List<ResultSetModel3> ResultSet3 = null!;
     }
 
     public class CheckIfApplicationIsCompleteReturnModel
     {
-        public string Key { get; set; } = null!;
-        public string Value { get; set; } = null!;
+        public string? Key { get; set; }
+        public string? Value { get; set; }
     }
 
     public class ColourPivotReturnModel
@@ -7856,14 +7908,14 @@ namespace Efrpg.V3TestE8b
         public int Id { get; set; }
         public int PrimaryColourId { get; set; }
         public string CarMake { get; set; } = null!;
-        public string CVName { get; set; } = null!;
+        public string? CVName { get; set; }
     }
 
     public class DboProcDataFromFfrsReturnModel
     {
         public Guid BatchUID { get; set; }
         public int CVID { get; set; }
-        public string CVName { get; set; } = null!;
+        public string? CVName { get; set; }
     }
 
     public class DsOpeProcReturnModel
@@ -7881,7 +7933,7 @@ namespace Efrpg.V3TestE8b
     {
         public Guid BatchUID { get; set; }
         public int CVID { get; set; }
-        public string CVName { get; set; } = null!;
+        public string? CVName { get; set; }
     }
 
     public class FFRS_DataFromDboAndFfrsReturnModel
@@ -7889,7 +7941,7 @@ namespace Efrpg.V3TestE8b
         public int Id { get; set; }
         public int PrimaryColourId { get; set; }
         public string CarMake { get; set; } = null!;
-        public string CVName { get; set; } = null!;
+        public string? CVName { get; set; }
     }
 
     public class FFRS_DataFromDboReturnModel
@@ -7914,8 +7966,13 @@ namespace Efrpg.V3TestE8b
     public class SpacedColumnTvfReturnModel
     {
         public int? Id { get; set; }
-        public string MyColumn { get; set; } = null!;
+        public string? MyColumn { get; set; }
         public bool? IsActive { get; set; }
+    }
+
+    public class SpNullableStringReproReturnModel
+    {
+        public string? SomeText { get; set; }
     }
 
     public class StoredProcWithDefaultsReturnModel
@@ -7968,7 +8025,7 @@ namespace Efrpg.V3TestE8b
         {
             public int ID { get; set; }
             public int OrderID { get; set; }
-            public string sku { get; set; } = null!;
+            public string? sku { get; set; }
         }
         public List<ResultSetModel6> ResultSet6 = null!;
     }
@@ -7981,12 +8038,12 @@ namespace Efrpg.V3TestE8b
             public int? applicationNo { get; set; }
             public int type { get; set; }
             public string eName { get; set; } = null!;
-            public string aName { get; set; } = null!;
-            public string description { get; set; } = null!;
-            public string codeName { get; set; } = null!;
-            public string note { get; set; } = null!;
+            public string? aName { get; set; }
+            public string? description { get; set; }
+            public string? codeName { get; set; }
+            public string? note { get; set; }
             public bool isObject { get; set; }
-            public byte[] versionNumber { get; set; } = null!;
+            public byte[]? versionNumber { get; set; }
         }
         public List<ResultSetModel1> ResultSet1 = null!;
         public class ResultSetModel2
@@ -8040,12 +8097,12 @@ namespace Efrpg.V3TestE8b
         public int? applicationNo { get; set; }
         public int type { get; set; }
         public string eName { get; set; } = null!;
-        public string aName { get; set; } = null!;
-        public string description { get; set; } = null!;
-        public string codeName { get; set; } = null!;
-        public string note { get; set; } = null!;
+        public string? aName { get; set; }
+        public string? description { get; set; }
+        public string? codeName { get; set; }
+        public string? note { get; set; }
         public bool isObject { get; set; }
-        public byte[] versionNumber { get; set; } = null!;
+        public byte[]? versionNumber { get; set; }
     }
 
     public class StpTestSpaceTestReturnModel
@@ -8062,18 +8119,18 @@ namespace Efrpg.V3TestE8b
 
     public class Synonyms_SimpleStoredProcReturnModel
     {
-        public string ReturnValue { get; set; } = null!;
+        public string? ReturnValue { get; set; }
     }
 
     public class TestReturnStringReturnModel
     {
-        public string error { get; set; } = null!;
+        public string? error { get; set; }
     }
 
     public class XmlDataV1ReturnModel
     {
         public DateTime? Column1 { get; set; }
-        public string Column2 { get; set; } = null!;
+        public string? Column2 { get; set; }
     }
 
 

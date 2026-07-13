@@ -65,6 +65,6 @@ namespace Tester.Integration.EFCore8.Multi_context_many_filesAppleDbContext
 
         IQueryable<TResult> FromExpression<TResult> (Expression<Func<IQueryable<TResult>>> expression);
     }
-    #nullable restore
+    #nullable disable
 }
 // </auto-generated>

@@ -498,6 +498,6 @@ namespace Tester.Integration.EFCore8.ContextHasSameNameAsDb
         public void Dispose() { }
         public ValueTask DisposeAsync() => default;
     }
-    #nullable restore
+    #nullable disable
 }
 // </auto-generated>

@@ -38,6 +38,6 @@ namespace Tester.Integration.EFCore8.ContextHasSameNameAsDb
                 : new EfrpgTest(options);
         }
     }
-    #nullable restore
+    #nullable disable
 }
 // </auto-generated>

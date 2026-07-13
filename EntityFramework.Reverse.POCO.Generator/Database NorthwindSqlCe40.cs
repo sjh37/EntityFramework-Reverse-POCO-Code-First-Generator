@@ -83,7 +83,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
 
         IQueryable<TResult> FromExpression<TResult> (Expression<Func<IQueryable<TResult>>> expression);
     }
-    #nullable restore
+    #nullable disable
 
     #endregion
 
@@ -148,7 +148,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
         }
 
     }
-    #nullable restore
+    #nullable disable
 
     #endregion
 
@@ -186,7 +186,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
                 : new MyDbContextSqlCE4(options);
         }
     }
-    #nullable restore
+    #nullable disable
 
     #endregion
 
@@ -413,7 +413,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
         }
 
     }
-    #nullable restore
+    #nullable disable
 
     #endregion
 
@@ -896,7 +896,7 @@ namespace EntityFramework_Reverse_POCO_Generator.SqlCe4
         public void Dispose() { }
         public ValueTask DisposeAsync() => default;
     }
-    #nullable restore
+    #nullable disable
 
     #endregion
 

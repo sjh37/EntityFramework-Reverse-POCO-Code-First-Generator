@@ -289,6 +289,10 @@ namespace V8_Efrpg_Test
         int proc_TestDecimalOutputV3Default(ref decimal? perfectNumber);
         // proc_TestDecimalOutputV3DefaultAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
+        List<sp_NullableStringReproReturnModel> sp_NullableStringRepro();
+        List<sp_NullableStringReproReturnModel> sp_NullableStringRepro(out int procResult);
+        Task<List<sp_NullableStringReproReturnModel>> sp_NullableStringReproAsync(CancellationToken cancellationToken = default(CancellationToken));
+
         List<SpatialTypesNoParamsReturnModel> SpatialTypesNoParams();
         List<SpatialTypesNoParamsReturnModel> SpatialTypesNoParams(out int procResult);
         Task<List<SpatialTypesNoParamsReturnModel>> SpatialTypesNoParamsAsync(CancellationToken cancellationToken = default(CancellationToken));
@@ -375,7 +379,7 @@ namespace V8_Efrpg_Test
         // Scalar Valued Functions
         decimal udfNetSale(int? quantity, decimal? list_price, decimal? discount); // dbo.udfNetSale
     }
-    #nullable restore
+    #nullable disable
 
     #endregion
 
@@ -691,6 +695,7 @@ namespace V8_Efrpg_Test
             modelBuilder.Entity<FkTest_HelloReturnModel>().HasNoKey();
             modelBuilder.Entity<GetSmallDecimalTestReturnModel>().HasNoKey();
             modelBuilder.Entity<GetSmallDecimalTestReturnModel>().Property(e => e.KoeffVed).HasPrecision(4, 4);
+            modelBuilder.Entity<sp_NullableStringReproReturnModel>().HasNoKey();
             modelBuilder.Entity<SpatialTypesNoParamsReturnModel>().HasNoKey();
             modelBuilder.Entity<SpatialTypesWithParamsReturnModel>().HasNoKey();
             modelBuilder.Entity<StoredProcWithDefaultsReturnModel>().HasNoKey();
@@ -1533,6 +1538,34 @@ namespace V8_Efrpg_Test
         }
 
         // proc_TestDecimalOutputV3DefaultAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
+
+        public List<sp_NullableStringReproReturnModel> sp_NullableStringRepro()
+        {
+            int procResult;
+            return sp_NullableStringRepro(out procResult);
+        }
+
+        public List<sp_NullableStringReproReturnModel> sp_NullableStringRepro(out int procResult)
+        {
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+            const string sqlCommand = "EXEC @procResult = [dbo].[sp_NullableStringRepro]";
+            var procResultData = Set<sp_NullableStringReproReturnModel>()
+                .FromSqlRaw(sqlCommand, procResultParam)
+                .ToList();
+
+            procResult = (int) procResultParam.Value;
+            return procResultData;
+        }
+
+        public async Task<List<sp_NullableStringReproReturnModel>> sp_NullableStringReproAsync(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            const string sqlCommand = "EXEC [dbo].[sp_NullableStringRepro]";
+            var procResultData = await Set<sp_NullableStringReproReturnModel>()
+                .FromSqlRaw(sqlCommand)
+                .ToListAsync(cancellationToken);
+
+            return procResultData;
+        }
 
         public List<SpatialTypesNoParamsReturnModel> SpatialTypesNoParams()
         {
@@ -2377,7 +2410,7 @@ namespace V8_Efrpg_Test
             throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
     }
-    #nullable restore
+    #nullable disable
 
     #endregion
 
@@ -2415,7 +2448,7 @@ namespace V8_Efrpg_Test
                 : new V8_Efrpg_Test_Db_Context(options);
         }
     }
-    #nullable restore
+    #nullable disable
 
     #endregion
 
@@ -6267,6 +6300,11 @@ namespace V8_Efrpg_Test
     {
         public int id { get; set; }
         public decimal? KoeffVed { get; set; }
+    }
+
+    public class sp_NullableStringReproReturnModel
+    {
+        public string SomeText { get; set; }
     }
 
     public class SpacedColumnTvfReturnModel

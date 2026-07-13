@@ -41,6 +41,6 @@ namespace Tester.Integration.EFCore8.Single_context_many_files.Contexts
                 : new EfCoreDbContext(options);
         }
     }
-    #nullable restore
+    #nullable disable
 }
 // </auto-generated>

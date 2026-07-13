@@ -1,6 +1,6 @@
 <#
 // Copyright (C) Simon Hughes 2012
-// v3.14.0
+// v3.14.1
 // If you want to submit a pull request, please modify the Generator C# project as this file
 // is automatically constructed from the C# Generator project during the build process.
 #>
@@ -1944,7 +1944,7 @@
     {
         public static string Version()
         {
-            return "v3.14.0";
+            return "v3.14.1";
         }
     }
 
@@ -3668,7 +3668,7 @@
         }
     }
 
-    // v0.0.0 <= v3.14.0
+    // v0.0.0 <= v3.14.1
     public class LegacyForeignKeyNamingStrategy : BaseForeignKeyNamingStrategy, IForeignKeyNamingStrategy
     {
         public List<string> ReverseNavigationUniquePropName;
@@ -4116,6 +4116,13 @@
         // annotations raise CS8669. Enable only the annotations context (not warnings) so the '?' is
         // legal without forcing CS8618 on the DbContext's non-initialised DbSet<T> properties. Bracket
         // only when the file header doesn't already carry '#nullable enable' (NeedsNullForgiving() == false).
+        //
+        // The block must close with '#nullable disable', not '#nullable restore': restore returns to the
+        // *project* nullable setting, so in a consumer project with <Nullable>enable</Nullable> everything
+        // after this block in the combined single-file output (POCOs, stored procedure return models)
+        // would silently become NRT-enabled. EF Core 8+ then infers 'string' result columns as required
+        // and throws SqlNullValueException when the database returns NULL (issue #885). '#nullable disable'
+        // returns to the auto-generated file's baseline (disabled), keeping the rest of the file oblivious.
         private static void AddCodeWithNullableContext(CodeOutput co, string template, object data)
         {
             var bracket = !Settings.NeedsNullForgiving() && Settings.IsEfCore8Plus();
@@ -4123,7 +4130,7 @@
                 co.AddCode("#nullable enable annotations");
             co.AddCode(Template.Transform(template, data));
             if (bracket)
-                co.AddCode("#nullable restore");
+                co.AddCode("#nullable disable");
         }
 
         public CodeOutput GenerateInterface()
@@ -18084,17 +18091,34 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
 
         public static bool IsNullable(DataColumn col)
         {
-            return col.DataType.Namespace != null &&
-                   col.AllowDBNull &&
-                   !(
-                       Column.StoredProcedureNotNullable.Contains(col.DataType.Name.ToLower()) ||
-                       Column.StoredProcedureNotNullable.Contains(col.DataType.Namespace.ToLower() + "." + col.DataType.Name.ToLower())
+            if (col.DataType.Namespace == null || !col.AllowDBNull)
+                return false;
+
+            var typeName = col.DataType.Name.ToLower();
+
+            // Mirrors Column.NotNullable for table columns: when AllowNullStrings is enabled, DB-nullable string and
+            // byte[] return columns become string? / byte[]?. EF Core 8+ infers result-set column nullability from the
+            // C# annotation, so a plain 'string' under NRT is read without a NULL check and throws
+            // SqlNullValueException when the stored procedure returns NULL (issue #885).
+            if (Settings.AllowNullStrings && (typeName == "string" || typeName == "byte[]"))
+                return true;
+
+            return !(
+                       Column.StoredProcedureNotNullable.Contains(typeName) ||
+                       Column.StoredProcedureNotNullable.Contains(col.DataType.Namespace.ToLower() + "." + typeName)
                      );
         }
 
         public static string WrapTypeIfNullable(string propertyType, DataColumn col)
         {
-            return !IsNullable(col) ? propertyType : string.Format(Settings.NullableShortHand ? "{0}?" : "Nullable<{0}>", propertyType);
+            if (!IsNullable(col))
+                return propertyType;
+
+            // Reference types can only take the '?' annotation; Nullable<T> requires a value type.
+            if (IsReferenceType(propertyType))
+                return propertyType + "?";
+
+            return string.Format(Settings.NullableShortHand ? "{0}?" : "Nullable<{0}>", propertyType);
         }
 
         public void MergeModelsIfAllSame()
@@ -18608,6 +18632,17 @@ SELECT  SERVERPROPERTY('Edition') AS Edition,
                 var effectiveName = sanitized.TrimStart('@');
                 if (effectiveName != rawName)
                     mappings.Add(string.Format("modelBuilder.{0}<{1}>().Property(e => e.{2}).HasColumnName(\"{3}\");", builderCmd, returnModelName, sanitized, rawName));
+
+                // When the generated file is NRT-enabled but this DB-nullable reference-type property is still emitted
+                // without a '?' (AllowNullStrings=false with NullableReverseNavigationProperties=true, or a type such
+                // as object/spatial that never takes the annotation), EF Core 8+ would infer the column as required
+                // and throw SqlNullValueException on NULLs. Make the DB nullability explicit, exactly as table
+                // columns do via IsRequired(false). (issue #885)
+                if (!Settings.IsEf6() && Settings.NeedsNullForgiving() &&
+                    col.AllowDBNull && !IsNullable(col) && IsReferenceType(ConvertDataColumnType(col.DataType)))
+                {
+                    mappings.Add(string.Format("modelBuilder.{0}<{1}>().Property(e => e.{2}).IsRequired(false);", builderCmd, returnModelName, sanitized));
+                }
 
                 // HasPrecision for fluent API mode (EF Core only; [Precision] handles data annotations mode)
                 if (!Settings.IsEf6() && !Settings.UseDataAnnotations &&
