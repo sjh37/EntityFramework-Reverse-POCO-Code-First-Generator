@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -41,13 +42,11 @@ namespace Tester.Integration.EFCore8.ContextHasSameNameAsDb
 
         public virtual Task<int> SaveChangesAsync(CancellationToken cancellationToken)
         {
-            ++SaveChangesCount;
-            return Task<int>.Factory.StartNew(() => 1, cancellationToken);
+            return Task.FromResult(SaveChanges());
         }
         public virtual Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken)
         {
-            ++SaveChangesCount;
-            return Task<int>.Factory.StartNew(x => 1, acceptAllChangesOnSuccess, cancellationToken);
+            return Task.FromResult(SaveChanges());
         }
 
         protected virtual void Dispose(bool disposing)
@@ -64,12 +63,19 @@ namespace Tester.Integration.EFCore8.ContextHasSameNameAsDb
 
         public DbSet<TEntity> Set<TEntity>() where TEntity : class
         {
-            throw new NotImplementedException();
+            var property = GetType()
+                .GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                .FirstOrDefault(x => x.PropertyType == typeof(DbSet<TEntity>));
+
+            if (property == null)
+                throw new InvalidOperationException("Cannot find a DbSet<" + typeof(TEntity).Name + "> on FakeEfrpgTest. The entity type is not part of this context.");
+
+            return (DbSet<TEntity>) property.GetValue(this)!;
         }
 
         public override string? ToString()
         {
-            throw new NotImplementedException();
+            return "FakeEfrpgTest";
         }
 
         public virtual EntityEntry Add(object entity)

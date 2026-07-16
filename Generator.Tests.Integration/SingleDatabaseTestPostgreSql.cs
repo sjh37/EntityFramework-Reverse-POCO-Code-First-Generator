@@ -66,7 +66,6 @@ namespace Generator.Tests.Integration
         [TestCase(ForeignKeyNamingStrategy.Current, "Northwind", "Northwind", true, false)]
         [TestCase(ForeignKeyNamingStrategy.Current, "Northwind", "Northwind", false, true)]
         [TestCase(ForeignKeyNamingStrategy.Current, "Northwind", "Northwind", true, true)]
-        //[TestCase(ForeignKeyNamingStrategy.LatestMyDbContext
         public void ReverseEngineerPostgreSQL_EfCore(ForeignKeyNamingStrategy foreignKeyNamingStrategy, string filenameBase, string database, bool allowNullStrings, bool nullableReverseNavigationProperties)
         {
             // Arrange

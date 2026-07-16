@@ -36,14 +36,12 @@
 
     public virtual Task<int> SaveChangesAsync(CancellationToken cancellationToken){{#newline}}
     {{{#newline}}
-        ++SaveChangesCount;{{#newline}}
-        return Task<int>.Factory.StartNew(() => 1, cancellationToken);{{#newline}}
+        return Task.FromResult(SaveChanges());{{#newline}}
     }{{#newline}}
 
     public virtual Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken){{#newline}}
     {{{#newline}}
-        ++SaveChangesCount;{{#newline}}
-        return Task<int>.Factory.StartNew(x => 1, acceptAllChangesOnSuccess, cancellationToken);{{#newline}}
+        return Task.FromResult(SaveChanges());{{#newline}}
     }{{#newline}}{{#newline}}
 
 
@@ -66,12 +64,19 @@
 
     public DbSet<TEntity> Set<TEntity>() where TEntity : class{{#newline}}
     {{{#newline}}
-        throw new NotImplementedException();{{#newline}}
+        var property = GetType(){{#newline}}
+            .GetProperties(BindingFlags.Public | BindingFlags.Instance){{#newline}}
+            .FirstOrDefault(x => x.PropertyType == typeof(DbSet<TEntity>));{{#newline}}
+{{#newline}}
+        if (property == null){{#newline}}
+            throw new InvalidOperationException("Cannot find a DbSet<" + typeof(TEntity).Name + "> on Fake{{DbContextName}}. The entity type is not part of this context.");{{#newline}}
+{{#newline}}
+        return (DbSet<TEntity>) property.GetValue(this)!;{{#newline}}
     }{{#newline}}{{#newline}}
 
     public override string? ToString(){{#newline}}
     {{{#newline}}
-        throw new NotImplementedException();{{#newline}}
+        return "Fake{{DbContextName}}";{{#newline}}
     }{{#newline}}{{#newline}}
 
     public virtual EntityEntry Add(object entity){{#newline}}

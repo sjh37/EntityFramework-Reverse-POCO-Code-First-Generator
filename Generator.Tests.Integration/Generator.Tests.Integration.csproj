@@ -222,9 +222,6 @@
     <None Include="TestComparison\Northwind_SqlCe_EfCore8_FkCurrent.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="TestComparison\PostgisTest_PostgreSQL_EfCore8_FkCurrent.cs">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Include="TestComparison\EfrpgTest_PostgreSQL_Ef6_FkCurrent.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -240,12 +237,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="TestComparison\Northwind_SqlServer_Ef6_NorthwindTest1.cs">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="TestComparison\Northwind_SqlCe_Ef6_FkLatest.cs">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="TestComparison\Northwind_PostgreSQL_EfCore8_FkLatest.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="TestComparison\EfrpgTest_SqlServer_Ef6_EnumerationDbContext.cs">

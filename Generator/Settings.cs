@@ -1082,6 +1082,31 @@ namespace Efrpg
             }
         }
 
+        /// <summary>
+        ///     Assembly name of the EF Core provider for the current <see cref="DatabaseType" />. This is the value EF Core
+        ///     reports through DatabaseFacade.ProviderName, and is what IsSqlServer()/IsNpgsql()/IsSqlite() compare against.
+        /// </summary>
+        public static string DatabaseProviderAssemblyName()
+        {
+            switch (DatabaseType)
+            {
+                case DatabaseType.PostgreSQL:
+                    return "Npgsql.EntityFrameworkCore.PostgreSQL";
+
+                case DatabaseType.MySql:
+                    return "Pomelo.EntityFrameworkCore.MySql";
+
+                case DatabaseType.Oracle:
+                    return "Oracle.EntityFrameworkCore";
+
+                case DatabaseType.SQLite:
+                    return "Microsoft.EntityFrameworkCore.Sqlite";
+
+                default:
+                    return "Microsoft.EntityFrameworkCore.SqlServer";
+            }
+        }
+
         public static string SqlParameter()
         {
             switch (DatabaseType)

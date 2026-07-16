@@ -26,7 +26,6 @@ namespace Generator.Tests.Integration
         [Test]
         [NonParallelizable]
         [TestCase(ForeignKeyNamingStrategy.Current)]
-        //[TestCase(ForeignKeyNamingStrategy.Latest)]
         public void ReverseEngineerSqlCe(ForeignKeyNamingStrategy foreignKeyNamingStrategy)
         {
             // Arrange

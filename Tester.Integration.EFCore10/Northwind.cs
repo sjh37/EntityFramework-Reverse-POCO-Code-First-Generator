@@ -644,13 +644,11 @@ namespace Tester.Integration.EFCore10.Northwind
 
         public virtual Task<int> SaveChangesAsync(CancellationToken cancellationToken)
         {
-            ++SaveChangesCount;
-            return Task<int>.Factory.StartNew(() => 1, cancellationToken);
+            return Task.FromResult(SaveChanges());
         }
         public virtual Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken)
         {
-            ++SaveChangesCount;
-            return Task<int>.Factory.StartNew(x => 1, acceptAllChangesOnSuccess, cancellationToken);
+            return Task.FromResult(SaveChanges());
         }
 
         protected virtual void Dispose(bool disposing)
@@ -667,12 +665,19 @@ namespace Tester.Integration.EFCore10.Northwind
 
         public DbSet<TEntity> Set<TEntity>() where TEntity : class
         {
-            throw new NotImplementedException();
+            var property = GetType()
+                .GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                .FirstOrDefault(x => x.PropertyType == typeof(DbSet<TEntity>));
+
+            if (property == null)
+                throw new InvalidOperationException("Cannot find a DbSet<" + typeof(TEntity).Name + "> on FakeNorthwindDbContext. The entity type is not part of this context.");
+
+            return (DbSet<TEntity>) property.GetValue(this)!;
         }
 
         public override string? ToString()
         {
-            throw new NotImplementedException();
+            return "FakeNorthwindDbContext";
         }
 
         public virtual EntityEntry Add(object entity)
@@ -1357,10 +1362,63 @@ namespace Tester.Integration.EFCore10.Northwind
     {
     }
 
-    public class FakeDatabaseFacade : DatabaseFacade
+    // Note on what this fake can and cannot intercept:
+    //      EF Core exposes ExecuteSqlRaw(), ExecuteSqlInterpolated(), SqlQueryRaw(), GetDbConnection(),
+    //      OpenConnection(), Migrate(), UseTransaction() and friends as extension methods on DatabaseFacade
+    //      (RelationalDatabaseFacadeExtensions). Extension methods are static, so they are not virtual and this
+    //      fake cannot override them. They reach the database by one of two routes:
+    //          1. IDatabaseFacadeDependenciesAccessor.Dependencies - ExecuteSqlRaw, SqlQueryRaw, GetDbConnection,
+    //             OpenConnection, UseTransaction, Get/SetCommandTimeout, IsRelational, ...
+    //          2. IInfrastructure<IServiceProvider>.Instance - Migrate, GetPendingMigrations, GetAppliedMigrations,
+    //             GenerateCreateScript, HasPendingModelChanges, ...
+    //      Both routes are blocked below. Without them, those calls fall through to the real DbContext this fake
+    //      wraps and execute against the real database your connection string points at.
+    //      If your code calls them, put the raw SQL behind your own interface and fake that interface instead, or
+    //      write an integration test against a real (or in-memory provider) database.
+    public class FakeDatabaseFacade : DatabaseFacade, IDatabaseFacadeDependenciesAccessor, IInfrastructure<IServiceProvider>
     {
+        private readonly DbContext _context;
+        private IDbContextTransaction? _currentTransaction;
+
         public FakeDatabaseFacade(DbContext context) : base(context)
         {
+            _context = context;
+        }
+
+        private static NotSupportedException NotSupported()
+        {
+            return new NotSupportedException(
+                "This is a Fake DbContext, so Database operations such as ExecuteSqlRaw(), SqlQueryRaw(), " +
+                "GetDbConnection(), OpenConnection() and Migrate() are not supported. They are extension methods " +
+                "on DatabaseFacade rather than virtual members, so the fake cannot intercept them and would " +
+                "otherwise run against your real database. Put the raw SQL behind your own interface and fake that " +
+                "instead, or use an integration test.");
+        }
+
+        IDatabaseFacadeDependencies IDatabaseFacadeDependenciesAccessor.Dependencies
+        {
+            get { throw NotSupported(); }
+        }
+
+        IServiceProvider IInfrastructure<IServiceProvider>.Instance
+        {
+            get { throw NotSupported(); }
+        }
+
+        DbContext IDatabaseFacadeDependenciesAccessor.Context
+        {
+            get { return _context; }
+        }
+
+        // Reported so that IsSqlServer()/IsNpgsql()/IsSqlite() and similar provider checks still branch correctly.
+        public override string? ProviderName
+        {
+            get { return "Microsoft.EntityFrameworkCore.SqlServer"; }
+        }
+
+        public override IDbContextTransaction? CurrentTransaction
+        {
+            get { return _currentTransaction; }
         }
 
         public override bool EnsureCreated()
@@ -1395,7 +1453,8 @@ namespace Tester.Integration.EFCore10.Northwind
 
         public override IDbContextTransaction BeginTransaction()
         {
-            return new FakeDbContextTransaction();
+            _currentTransaction = new FakeDbContextTransaction(() => _currentTransaction = null);
+            return _currentTransaction;
         }
 
         public override Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken cancellationToken = new CancellationToken())
@@ -1405,25 +1464,29 @@ namespace Tester.Integration.EFCore10.Northwind
 
         public override void CommitTransaction()
         {
+            _currentTransaction = null;
         }
 
         public override Task CommitTransactionAsync(CancellationToken cancellationToken = new CancellationToken())
         {
+            CommitTransaction();
             return Task.CompletedTask;
         }
 
         public override void RollbackTransaction()
         {
+            _currentTransaction = null;
         }
 
         public override Task RollbackTransactionAsync(CancellationToken cancellationToken = new CancellationToken())
         {
+            RollbackTransaction();
             return Task.CompletedTask;
         }
 
         public override IExecutionStrategy CreateExecutionStrategy()
         {
-            return null!;
+            return new FakeExecutionStrategy();
         }
 
         public override string ToString()
@@ -1432,15 +1495,61 @@ namespace Tester.Integration.EFCore10.Northwind
         }
     }
 
+    // Runs the operation once, without retrying. This lets code written around
+    // Database.CreateExecutionStrategy().Execute(...) run under the fake.
+    // Note: the DbContext passed to the operation is null, as the fake is not a real DbContext. Overloads that
+    // ignore it (the common strategy.Execute(() => ...) form) work; overloads that use it will not.
+    public class FakeExecutionStrategy : IExecutionStrategy
+    {
+        public bool RetriesOnFailure { get { return false; } }
+
+        public TResult Execute<TState, TResult>(
+            TState state,
+            Func<DbContext, TState, TResult> operation,
+            Func<DbContext, TState, ExecutionResult<TResult>>? verifySucceeded)
+        {
+            return operation(null!, state);
+        }
+
+        public Task<TResult> ExecuteAsync<TState, TResult>(
+            TState state,
+            Func<DbContext, TState, CancellationToken, Task<TResult>> operation,
+            Func<DbContext, TState, CancellationToken, Task<ExecutionResult<TResult>>>? verifySucceeded,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            return operation(null!, state, cancellationToken);
+        }
+    }
+
     public class FakeDbContextTransaction : IDbContextTransaction
     {
-        public Guid TransactionId => Guid.NewGuid();
+        private readonly Action? _onDispose;
+
+        public FakeDbContextTransaction()
+        {
+        }
+
+        public FakeDbContextTransaction(Action onDispose)
+        {
+            _onDispose = onDispose;
+        }
+
+        public Guid TransactionId { get; } = Guid.NewGuid();
         public void Commit() { }
         public void Rollback() { }
         public Task CommitAsync(CancellationToken cancellationToken = new CancellationToken()) => Task.CompletedTask;
         public Task RollbackAsync(CancellationToken cancellationToken = new CancellationToken()) => Task.CompletedTask;
-        public void Dispose() { }
-        public ValueTask DisposeAsync() => default;
+        public void Dispose()
+        {
+            if (_onDispose != null)
+                _onDispose();
+        }
+
+        public ValueTask DisposeAsync()
+        {
+            Dispose();
+            return default;
+        }
     }
     #nullable disable
 

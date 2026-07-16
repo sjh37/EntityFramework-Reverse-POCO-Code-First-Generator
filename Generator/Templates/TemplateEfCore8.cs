@@ -561,19 +561,16 @@ using {{this}};{{#newline}}
             {
                 "System",
                 "System.Data",
+                "System.Linq",             // Set<TEntity>() uses FirstOrDefault()
+                "System.Reflection",       // Set<TEntity>() reflects over this class' DbSet properties
                 "System.Threading.Tasks",
                 "System.Threading",
+                "Microsoft.EntityFrameworkCore",
                 "Microsoft.EntityFrameworkCore.Infrastructure"
             };
 
             if (Settings.IncludeCodeGeneratedAttribute)
                 usings.Add("System.CodeDom.Compiler");
-
-            if (data.tables.Any() || data.hasStoredProcs)
-            {
-                usings.Add("System.Linq");
-                usings.Add("Microsoft.EntityFrameworkCore");
-            }
 
             if (data.hasStoredProcs)
                 usings.Add("System.Collections.Generic");
@@ -643,14 +640,12 @@ using {{this}};{{#newline}}
 
     public virtual Task<int> SaveChangesAsync(CancellationToken cancellationToken){{#newline}}
     {{{#newline}}
-        ++SaveChangesCount;{{#newline}}
-        return Task<int>.Factory.StartNew(() => 1, cancellationToken);{{#newline}}
+        return Task.FromResult(SaveChanges());{{#newline}}
     }{{#newline}}
 
     public virtual Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken){{#newline}}
     {{{#newline}}
-        ++SaveChangesCount;{{#newline}}
-        return Task<int>.Factory.StartNew(x => 1, acceptAllChangesOnSuccess, cancellationToken);{{#newline}}
+        return Task.FromResult(SaveChanges());{{#newline}}
     }{{#newline}}{{#newline}}
 
 
@@ -673,12 +668,19 @@ using {{this}};{{#newline}}
 
     public DbSet<TEntity> Set<TEntity>() where TEntity : class{{#newline}}
     {{{#newline}}
-        throw new NotImplementedException();{{#newline}}
+        var property = GetType(){{#newline}}
+            .GetProperties(BindingFlags.Public | BindingFlags.Instance){{#newline}}
+            .FirstOrDefault(x => x.PropertyType == typeof(DbSet<TEntity>));{{#newline}}
+{{#newline}}
+        if (property == null){{#newline}}
+            throw new InvalidOperationException(""Cannot find a DbSet<"" + typeof(TEntity).Name + ""> on Fake{{DbContextName}}. The entity type is not part of this context."");{{#newline}}
+{{#newline}}
+        return (DbSet<TEntity>) property.GetValue(this)!;{{#newline}}
     }{{#newline}}{{#newline}}
 
     public override string? ToString(){{#newline}}
     {{{#newline}}
-        throw new NotImplementedException();{{#newline}}
+        return ""Fake{{DbContextName}}"";{{#newline}}
     }{{#newline}}{{#newline}}
 
     public virtual EntityEntry Add(object entity){{#newline}}
@@ -1358,10 +1360,63 @@ public abstract class FakeQueryProvider<T> : IOrderedQueryable<T>, IQueryProvide
 {{{#newline}}
 }{{#newline}}{{#newline}}
 
-public class FakeDatabaseFacade : DatabaseFacade{{#newline}}
+// Note on what this fake can and cannot intercept:{{#newline}}
+//      EF Core exposes ExecuteSqlRaw(), ExecuteSqlInterpolated(), SqlQueryRaw(), GetDbConnection(),{{#newline}}
+//      OpenConnection(), Migrate(), UseTransaction() and friends as extension methods on DatabaseFacade{{#newline}}
+//      (RelationalDatabaseFacadeExtensions). Extension methods are static, so they are not virtual and this{{#newline}}
+//      fake cannot override them. They reach the database by one of two routes:{{#newline}}
+//          1. IDatabaseFacadeDependenciesAccessor.Dependencies - ExecuteSqlRaw, SqlQueryRaw, GetDbConnection,{{#newline}}
+//             OpenConnection, UseTransaction, Get/SetCommandTimeout, IsRelational, ...{{#newline}}
+//          2. IInfrastructure<IServiceProvider>.Instance - Migrate, GetPendingMigrations, GetAppliedMigrations,{{#newline}}
+//             GenerateCreateScript, HasPendingModelChanges, ...{{#newline}}
+//      Both routes are blocked below. Without them, those calls fall through to the real DbContext this fake{{#newline}}
+//      wraps and execute against the real database your connection string points at.{{#newline}}
+//      If your code calls them, put the raw SQL behind your own interface and fake that interface instead, or{{#newline}}
+//      write an integration test against a real (or in-memory provider) database.{{#newline}}
+public class FakeDatabaseFacade : DatabaseFacade, IDatabaseFacadeDependenciesAccessor, IInfrastructure<IServiceProvider>{{#newline}}
 {{{#newline}}
+    private readonly DbContext _context;{{#newline}}
+    private IDbContextTransaction? _currentTransaction;{{#newline}}{{#newline}}
+
     public FakeDatabaseFacade(DbContext context) : base(context){{#newline}}
     {{{#newline}}
+        _context = context;{{#newline}}
+    }{{#newline}}{{#newline}}
+
+    private static NotSupportedException NotSupported(){{#newline}}
+    {{{#newline}}
+        return new NotSupportedException({{#newline}}
+            ""This is a Fake DbContext, so Database operations such as ExecuteSqlRaw(), SqlQueryRaw(), "" +{{#newline}}
+            ""GetDbConnection(), OpenConnection() and Migrate() are not supported. They are extension methods "" +{{#newline}}
+            ""on DatabaseFacade rather than virtual members, so the fake cannot intercept them and would "" +{{#newline}}
+            ""otherwise run against your real database. Put the raw SQL behind your own interface and fake that "" +{{#newline}}
+            ""instead, or use an integration test."");{{#newline}}
+    }{{#newline}}{{#newline}}
+
+    IDatabaseFacadeDependencies IDatabaseFacadeDependenciesAccessor.Dependencies{{#newline}}
+    {{{#newline}}
+        get { throw NotSupported(); }{{#newline}}
+    }{{#newline}}{{#newline}}
+
+    IServiceProvider IInfrastructure<IServiceProvider>.Instance{{#newline}}
+    {{{#newline}}
+        get { throw NotSupported(); }{{#newline}}
+    }{{#newline}}{{#newline}}
+
+    DbContext IDatabaseFacadeDependenciesAccessor.Context{{#newline}}
+    {{{#newline}}
+        get { return _context; }{{#newline}}
+    }{{#newline}}{{#newline}}
+
+    // Reported so that IsSqlServer()/IsNpgsql()/IsSqlite() and similar provider checks still branch correctly.{{#newline}}
+    public override string? ProviderName{{#newline}}
+    {{{#newline}}
+        get { return ""{{DatabaseProviderName}}""; }{{#newline}}
+    }{{#newline}}{{#newline}}
+
+    public override IDbContextTransaction? CurrentTransaction{{#newline}}
+    {{{#newline}}
+        get { return _currentTransaction; }{{#newline}}
     }{{#newline}}{{#newline}}
 
     public override bool EnsureCreated(){{#newline}}
@@ -1396,7 +1451,8 @@ public class FakeDatabaseFacade : DatabaseFacade{{#newline}}
 
     public override IDbContextTransaction BeginTransaction(){{#newline}}
     {{{#newline}}
-        return new FakeDbContextTransaction();{{#newline}}
+        _currentTransaction = new FakeDbContextTransaction(() => _currentTransaction = null);{{#newline}}
+        return _currentTransaction;{{#newline}}
     }{{#newline}}{{#newline}}
 
     public override Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken cancellationToken = new CancellationToken()){{#newline}}
@@ -1406,25 +1462,29 @@ public class FakeDatabaseFacade : DatabaseFacade{{#newline}}
 
     public override void CommitTransaction(){{#newline}}
     {{{#newline}}
+        _currentTransaction = null;{{#newline}}
     }{{#newline}}{{#newline}}
 
     public override Task CommitTransactionAsync(CancellationToken cancellationToken = new CancellationToken()){{#newline}}
     {{{#newline}}
+        CommitTransaction();{{#newline}}
         return Task.CompletedTask;{{#newline}}
     }{{#newline}}{{#newline}}
 
     public override void RollbackTransaction(){{#newline}}
     {{{#newline}}
+        _currentTransaction = null;{{#newline}}
     }{{#newline}}{{#newline}}
 
     public override Task RollbackTransactionAsync(CancellationToken cancellationToken = new CancellationToken()){{#newline}}
     {{{#newline}}
+        RollbackTransaction();{{#newline}}
         return Task.CompletedTask;{{#newline}}
     }{{#newline}}{{#newline}}
 
     public override IExecutionStrategy CreateExecutionStrategy(){{#newline}}
     {{{#newline}}
-        return null!;{{#newline}}
+        return new FakeExecutionStrategy();{{#newline}}
     }{{#newline}}{{#newline}}
 
     public override string ToString(){{#newline}}
@@ -1433,15 +1493,61 @@ public class FakeDatabaseFacade : DatabaseFacade{{#newline}}
     }{{#newline}}
 }{{#newline}}{{#newline}}
 
+// Runs the operation once, without retrying. This lets code written around{{#newline}}
+// Database.CreateExecutionStrategy().Execute(...) run under the fake.{{#newline}}
+// Note: the DbContext passed to the operation is null, as the fake is not a real DbContext. Overloads that{{#newline}}
+// ignore it (the common strategy.Execute(() => ...) form) work; overloads that use it will not.{{#newline}}
+public class FakeExecutionStrategy : IExecutionStrategy{{#newline}}
+{{{#newline}}
+    public bool RetriesOnFailure { get { return false; } }{{#newline}}{{#newline}}
+
+    public TResult Execute<TState, TResult>({{#newline}}
+        TState state,{{#newline}}
+        Func<DbContext, TState, TResult> operation,{{#newline}}
+        Func<DbContext, TState, ExecutionResult<TResult>>? verifySucceeded){{#newline}}
+    {{{#newline}}
+        return operation(null!, state);{{#newline}}
+    }{{#newline}}{{#newline}}
+
+    public Task<TResult> ExecuteAsync<TState, TResult>({{#newline}}
+        TState state,{{#newline}}
+        Func<DbContext, TState, CancellationToken, Task<TResult>> operation,{{#newline}}
+        Func<DbContext, TState, CancellationToken, Task<ExecutionResult<TResult>>>? verifySucceeded,{{#newline}}
+        CancellationToken cancellationToken = new CancellationToken()){{#newline}}
+    {{{#newline}}
+        return operation(null!, state, cancellationToken);{{#newline}}
+    }{{#newline}}
+}{{#newline}}{{#newline}}
+
 public class FakeDbContextTransaction : IDbContextTransaction{{#newline}}
 {{{#newline}}
-    public Guid TransactionId => Guid.NewGuid();{{#newline}}
+    private readonly Action? _onDispose;{{#newline}}{{#newline}}
+
+    public FakeDbContextTransaction(){{#newline}}
+    {{{#newline}}
+    }{{#newline}}{{#newline}}
+
+    public FakeDbContextTransaction(Action onDispose){{#newline}}
+    {{{#newline}}
+        _onDispose = onDispose;{{#newline}}
+    }{{#newline}}{{#newline}}
+
+    public Guid TransactionId { get; } = Guid.NewGuid();{{#newline}}
     public void Commit() { }{{#newline}}
     public void Rollback() { }{{#newline}}
     public Task CommitAsync(CancellationToken cancellationToken = new CancellationToken()) => Task.CompletedTask;{{#newline}}
     public Task RollbackAsync(CancellationToken cancellationToken = new CancellationToken()) => Task.CompletedTask;{{#newline}}
-    public void Dispose() { }{{#newline}}
-    public ValueTask DisposeAsync() => default;{{#newline}}
+    public void Dispose(){{#newline}}
+    {{{#newline}}
+        if (_onDispose != null){{#newline}}
+            _onDispose();{{#newline}}
+    }{{#newline}}{{#newline}}
+
+    public ValueTask DisposeAsync(){{#newline}}
+    {{{#newline}}
+        Dispose();{{#newline}}
+        return default;{{#newline}}
+    }{{#newline}}
 }";
         }
 

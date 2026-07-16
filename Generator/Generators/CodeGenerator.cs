@@ -563,6 +563,7 @@ namespace Efrpg.Generators
             {
                 DbContextClassModifiers = Settings.DbContextClassModifiers,
                 DbContextClassIsPartial = Settings.DbContextClassIsPartial(),
+                DatabaseProviderName = Settings.DatabaseProviderAssemblyName(),
             };
 
             var co = new CodeOutput(string.Empty, filename, "Fake DbSet", Settings.ContextFolder, _globalUsings);
