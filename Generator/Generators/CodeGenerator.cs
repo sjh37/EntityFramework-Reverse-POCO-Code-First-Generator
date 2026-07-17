@@ -559,11 +559,15 @@ namespace Efrpg.Generators
                 return null;
             }
 
+            var providerAssemblyName = Settings.DatabaseProviderAssemblyName();
+
             var data = new FakeDbSetModel
             {
-                DbContextClassModifiers = Settings.DbContextClassModifiers,
-                DbContextClassIsPartial = Settings.DbContextClassIsPartial(),
-                DatabaseProviderName = Settings.DatabaseProviderAssemblyName(),
+                DbContextClassModifiers    = Settings.DbContextClassModifiers,
+                DbContextClassIsPartial    = Settings.DbContextClassIsPartial(),
+                DatabaseProviderNameLiteral = providerAssemblyName == null
+                    ? "null"
+                    : "\"" + providerAssemblyName + "\"",
             };
 
             var co = new CodeOutput(string.Empty, filename, "Fake DbSet", Settings.ContextFolder, _globalUsings);

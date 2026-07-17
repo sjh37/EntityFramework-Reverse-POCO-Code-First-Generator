@@ -3,6 +3,7 @@ Microsoft.EntityFrameworkCore.ChangeTracking
 Microsoft.EntityFrameworkCore.Infrastructure
 System
 System.CodeDom.Compiler
+System.Collections.Concurrent
 System.Collections.Generic
 System.Data
 System.Linq

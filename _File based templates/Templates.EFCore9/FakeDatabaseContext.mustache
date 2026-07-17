@@ -8,7 +8,8 @@
 
     public Fake{{DbContextName}}(){{#newline}}
     {{{#newline}}
-        _database = new FakeDatabaseFacade(new {{DbContextName}}());{{#newline}}
+        _shim     = new FakeDbContextShim();{{#newline}}
+        _database = new FakeDatabaseFacade(_shim);{{#newline}}
 {{#newline}}
 
 {{#each tables}}
@@ -36,12 +37,18 @@
 
     public virtual Task<int> SaveChangesAsync(CancellationToken cancellationToken){{#newline}}
     {{{#newline}}
+        if (cancellationToken.IsCancellationRequested){{#newline}}
+            return Task.FromCanceled<int>(cancellationToken);{{#newline}}
+{{#newline}}
         return Task.FromResult(SaveChanges());{{#newline}}
-    }{{#newline}}
+    }{{#newline}}{{#newline}}
 
     public virtual Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken){{#newline}}
     {{{#newline}}
-        return Task.FromResult(SaveChanges());{{#newline}}
+        if (cancellationToken.IsCancellationRequested){{#newline}}
+            return Task.FromCanceled<int>(cancellationToken);{{#newline}}
+{{#newline}}
+        return Task.FromResult(SaveChanges(acceptAllChangesOnSuccess));{{#newline}}
     }{{#newline}}{{#newline}}
 
 
@@ -52,31 +59,42 @@
 
     protected virtual void Dispose(bool disposing){{#newline}}
     {{{#newline}}
+        if (disposing){{#newline}}
+            _shim.Dispose();{{#newline}}
     }{{#newline}}{{#newline}}
 
     public void Dispose(){{#newline}}
     {{{#newline}}
         Dispose(true);{{#newline}}
+        GC.SuppressFinalize(this);{{#newline}}
     }{{#newline}}{{#newline}}
 
+    private readonly FakeDbContextShim _shim;{{#newline}}
     private DatabaseFacade _database;{{#newline}}
     public DatabaseFacade Database { get { return _database; } }{{#newline}}{{#newline}}
 
+    // Keyed on the runtime type as well as the entity type, because this cache is static and is therefore shared{{#newline}}
+    // with any class deriving from this one, which may declare DbSet properties this class does not.{{#newline}}
+    private static readonly ConcurrentDictionary<(Type ContextType, Type EntityType), PropertyInfo?> _dbSetProperties ={{#newline}}
+        new ConcurrentDictionary<(Type, Type), PropertyInfo?>();{{#newline}}{{#newline}}
+
     public DbSet<TEntity> Set<TEntity>() where TEntity : class{{#newline}}
     {{{#newline}}
-        var property = GetType(){{#newline}}
-            .GetProperties(BindingFlags.Public | BindingFlags.Instance){{#newline}}
-            .FirstOrDefault(x => x.PropertyType == typeof(DbSet<TEntity>));{{#newline}}
+        var property = _dbSetProperties.GetOrAdd({{#newline}}
+            (GetType(), typeof(TEntity)),{{#newline}}
+            key => key.ContextType{{#newline}}
+                .GetProperties(BindingFlags.Public | BindingFlags.Instance){{#newline}}
+                .FirstOrDefault(x => x.PropertyType == typeof(DbSet<>).MakeGenericType(key.EntityType)));{{#newline}}
 {{#newline}}
         if (property == null){{#newline}}
-            throw new InvalidOperationException("Cannot find a DbSet<" + typeof(TEntity).Name + "> on Fake{{DbContextName}}. The entity type is not part of this context.");{{#newline}}
+            throw new InvalidOperationException("Cannot find a DbSet<" + typeof(TEntity).Name + "> on " + GetType().Name + ". The entity type is not part of this context.");{{#newline}}
 {{#newline}}
         return (DbSet<TEntity>) property.GetValue(this)!;{{#newline}}
     }{{#newline}}{{#newline}}
 
     public override string? ToString(){{#newline}}
     {{{#newline}}
-        return "Fake{{DbContextName}}";{{#newline}}
+        return GetType().Name;{{#newline}}
     }{{#newline}}{{#newline}}
 
     public virtual EntityEntry Add(object entity){{#newline}}

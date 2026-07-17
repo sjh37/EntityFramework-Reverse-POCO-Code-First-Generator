@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -142,7 +143,8 @@ namespace Tester.Integration.EFCore8.Single_context_many_files.Contexts
 
         public FakeEfCoreDbContext()
         {
-            _database = new FakeDatabaseFacade(new EfCoreDbContext());
+            _shim     = new FakeDbContextShim();
+            _database = new FakeDatabaseFacade(_shim);
 
             A = new FakeDbSet<A>("AId");
             Aarefs = new FakeDbSet<Aaref>("C1", "C2");
@@ -279,40 +281,58 @@ namespace Tester.Integration.EFCore8.Single_context_many_files.Contexts
 
         public virtual Task<int> SaveChangesAsync(CancellationToken cancellationToken)
         {
+            if (cancellationToken.IsCancellationRequested)
+                return Task.FromCanceled<int>(cancellationToken);
+
             return Task.FromResult(SaveChanges());
         }
+
         public virtual Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken)
         {
-            return Task.FromResult(SaveChanges());
+            if (cancellationToken.IsCancellationRequested)
+                return Task.FromCanceled<int>(cancellationToken);
+
+            return Task.FromResult(SaveChanges(acceptAllChangesOnSuccess));
         }
 
         protected virtual void Dispose(bool disposing)
         {
+            if (disposing)
+                _shim.Dispose();
         }
 
         public void Dispose()
         {
             Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
+        private readonly FakeDbContextShim _shim;
         private DatabaseFacade _database;
         public DatabaseFacade Database { get { return _database; } }
 
+        // Keyed on the runtime type as well as the entity type, because this cache is static and is therefore shared
+        // with any class deriving from this one, which may declare DbSet properties this class does not.
+        private static readonly ConcurrentDictionary<(Type ContextType, Type EntityType), PropertyInfo?> _dbSetProperties =
+            new ConcurrentDictionary<(Type, Type), PropertyInfo?>();
+
         public DbSet<TEntity> Set<TEntity>() where TEntity : class
         {
-            var property = GetType()
-                .GetProperties(BindingFlags.Public | BindingFlags.Instance)
-                .FirstOrDefault(x => x.PropertyType == typeof(DbSet<TEntity>));
+            var property = _dbSetProperties.GetOrAdd(
+                (GetType(), typeof(TEntity)),
+                key => key.ContextType
+                    .GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                    .FirstOrDefault(x => x.PropertyType == typeof(DbSet<>).MakeGenericType(key.EntityType)));
 
             if (property == null)
-                throw new InvalidOperationException("Cannot find a DbSet<" + typeof(TEntity).Name + "> on FakeEfCoreDbContext. The entity type is not part of this context.");
+                throw new InvalidOperationException("Cannot find a DbSet<" + typeof(TEntity).Name + "> on " + GetType().Name + ". The entity type is not part of this context.");
 
             return (DbSet<TEntity>) property.GetValue(this)!;
         }
 
         public override string? ToString()
         {
-            return "FakeEfCoreDbContext";
+            return GetType().Name;
         }
 
         public virtual EntityEntry Add(object entity)
