@@ -86,7 +86,7 @@ namespace Generator.Tests.Unit
         {
             // Arrange
             var fileManagement = new FileManagementService(new GeneratedTextTransformation());
-            var sut = new GeneratorEf6(fileManagement, typeof(NullFileManager));
+            var sut = new GeneratorEf6(fileManagement);
 
             // Act
             var list = new List<string>();
@@ -130,7 +130,7 @@ namespace Generator.Tests.Unit
         {
             // Arrange
             var fileManagement = new FileManagementService(new GeneratedTextTransformation());
-            var sut = new GeneratorEfCore(fileManagement, typeof(NullFileManager));
+            var sut = new GeneratorEfCore(fileManagement);
             Settings.TemplateType = templateType;
 
             // Act
@@ -154,7 +154,7 @@ namespace Generator.Tests.Unit
         {
             // Arrange
             var fileManagement = new FileManagementService(new GeneratedTextTransformation());
-            var sut = new GeneratorEfCore(fileManagement, typeof(NullFileManager));
+            var sut = new GeneratorEfCore(fileManagement);
             Settings.TemplateType = templateType;
 
             var table = new Table(null, new Schema("dbo"), "orders", false)
@@ -210,7 +210,7 @@ namespace Generator.Tests.Unit
         {
             // Arrange
             var fileManagement = new FileManagementService(new GeneratedTextTransformation());
-            var sut = new GeneratorEfCore(fileManagement, typeof(NullFileManager));
+            var sut = new GeneratorEfCore(fileManagement);
             Settings.TemplateType = templateType;
 
             var table = new Table(null, new Schema("dbo"), "orders", false)

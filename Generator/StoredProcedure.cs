@@ -1,5 +1,4 @@
 ﻿using Efrpg.Filtering;
-using Efrpg.Readers;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -539,20 +538,20 @@ namespace Efrpg
             // If it is already a valid C# identifier, only handle reserved keywords
             if (IsValidCSharpIdentifier(columnName))
             {
-                if (DatabaseReader.ReservedKeywords.Contains(columnName))
+                if (NamingHelper.ReservedKeywords.Contains(columnName))
                     columnName = "@" + columnName;
                 return columnName;
             }
 
             // Column name is not a valid C# identifier (e.g. contains spaces or special chars).
             // Apply the same sanitization pipeline used for table/view columns.
-            var cleaned = DatabaseReader.CleanUp(columnName);
+            var cleaned = NamingHelper.CleanUp(columnName);
             if (string.IsNullOrWhiteSpace(cleaned))
                 cleaned = "Unknown";
             columnName = (Settings.UsePascalCase ? Inflector.ToTitleCase(cleaned) : cleaned).Replace(" ", string.Empty);
             if (string.IsNullOrWhiteSpace(columnName))
                 columnName = "Unknown";
-            if (DatabaseReader.ReservedKeywords.Contains(columnName))
+            if (NamingHelper.ReservedKeywords.Contains(columnName))
                 columnName = "@" + columnName;
             return columnName;
         }
@@ -577,7 +576,7 @@ namespace Efrpg
                 // and throw SqlNullValueException on NULLs. Make the DB nullability explicit, exactly as table
                 // columns do via IsRequired(false). (issue #885)
                 if (!Settings.IsEf6() && Settings.NeedsNullForgiving() &&
-                    col.AllowDBNull && !IsNullable(col) && IsReferenceType(ConvertDataColumnType(col.DataType)))
+                    col.AllowDBNull && !IsNullable(col) && IsReferenceType(ConvertDataColumnType(col)))
                 {
                     mappings.Add(string.Format("modelBuilder.{0}<{1}>().Property(e => e.{2}).IsRequired(false);", builderCmd, returnModelName, sanitized));
                 }
@@ -601,13 +600,13 @@ namespace Efrpg
             var rawColumnName = col.ColumnName;
             var columnName = SanitizeReturnColumnName(rawColumnName);
 
-            var propertyType = WrapTypeIfNullable(ConvertDataColumnType(col.DataType), col);
+            var propertyType = WrapTypeIfNullable(ConvertDataColumnType(col), col);
 
             // Add null-forgiving operator for non-nullable reference types when NRT is enabled
             var nullForgivingOperator = string.Empty;
             if (Settings.NeedsNullForgiving() && !IsNullable(col))
             {
-                var baseType = ConvertDataColumnType(col.DataType);
+                var baseType = ConvertDataColumnType(col);
                 if (IsReferenceType(baseType))
                     nullForgivingOperator = " = null!;";
             }
@@ -663,6 +662,47 @@ namespace Efrpg
                    lowerType == "hierarchyid?" ||
                    lowerType == "nettopologysuite.geometries.point" ||
                    lowerType == "nettopologysuite.geometries.geometry";
+        }
+
+        private string ConvertDataColumnType(DataColumn col)
+        {
+            if (col.DataType == typeof(object) && col.ExtendedProperties.Contains("DataTypeFullName"))
+            {
+                var fullName = col.ExtendedProperties["DataTypeFullName"] as string;
+                var typeName = col.ExtendedProperties["DataTypeName"] as string;
+                var typeNamespace = col.ExtendedProperties["DataTypeNamespace"] as string;
+                var providerType = ConvertProviderDataColumnType(fullName, typeName, typeNamespace);
+                if (!string.IsNullOrEmpty(providerType))
+                    return providerType;
+            }
+
+            return ConvertDataColumnType(col.DataType);
+        }
+
+        private string ConvertProviderDataColumnType(string fullName, string typeName, string typeNamespace)
+        {
+            var isEfCore8Plus = Settings.IsEfCore8Plus();
+            var lowerFullName = (fullName ?? string.Empty).ToLower();
+            var lowerTypeName = (typeName ?? string.Empty).ToLower();
+
+            if (lowerTypeName == "sqlhierarchyid" || lowerFullName.EndsWith(".sqlhierarchyid"))
+                return isEfCore8Plus ? "HierarchyId" : "Microsoft.SqlServer.Types.SqlHierarchyId";
+
+            if (isEfCore8Plus)
+            {
+                if (lowerTypeName == "sqlgeography" || lowerFullName.EndsWith(".sqlgeography"))
+                    return "NetTopologySuite.Geometries.Point";
+                if (lowerTypeName == "sqlgeometry" || lowerFullName.EndsWith(".sqlgeometry"))
+                    return "NetTopologySuite.Geometries.Geometry";
+            }
+
+            if (!string.IsNullOrEmpty(fullName))
+                return fullName;
+
+            if (!string.IsNullOrEmpty(typeNamespace) && !string.IsNullOrEmpty(typeName))
+                return typeNamespace + "." + typeName;
+
+            return typeName;
         }
 
         private string ConvertDataColumnType(Type type)

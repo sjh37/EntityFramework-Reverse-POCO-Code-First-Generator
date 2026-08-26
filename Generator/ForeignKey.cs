@@ -76,7 +76,7 @@ namespace Efrpg
 
         public string PkTableHumanCase(string suffix)
         {
-            var singular = Inflector.MakeSingular(DatabaseReader.CleanUp(PkTableNameFiltered));
+            var singular = Inflector.MakeSingular(NamingHelper.CleanUp(PkTableNameFiltered));
 
             var pkTableHumanCase = (Settings.UsePascalCase ? Inflector.ToTitleCase(singular) : singular)
                 .Replace(" ", string.Empty)

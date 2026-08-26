@@ -5,15 +5,10 @@
     <Platforms>AnyCPU;ARM64</Platforms>
   </PropertyGroup>
   <ItemGroup>
-    <None Remove="Database NorthwindSqlCe40.tt" />
     <None Remove="Database.tt" />
     <None Remove="Northwind.tt" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Database NorthwindSqlCe40.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>Database NorthwindSqlCe40.cs</LastGenOutput>
-    </Content>
     <Content Include="Database.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Database.cs</LastGenOutput>
@@ -31,11 +26,6 @@
     <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="Database NorthwindSqlCe40.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Database NorthwindSqlCe40.tt</DependentUpon>
-    </Compile>
     <Compile Update="Database.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -48,6 +38,5 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="App_Data\" />
   </ItemGroup>
 </Project>

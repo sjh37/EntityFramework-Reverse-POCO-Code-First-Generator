@@ -173,13 +173,6 @@ using {{this}};{{#newline}}
                 usings.Add("System.Data.Entity.Validation");
             }
 
-            if (Settings.DatabaseType == DatabaseType.SqlCe)
-            {
-                usings.Add("System.Data.SqlClient");
-                //usings.Add("System.DBNull");
-                usings.Add("System.Data.SqlTypes");
-            }
-
             if (Settings.DatabaseType == DatabaseType.PostgreSQL)
             {
                 usings.Add("Npgsql");
@@ -561,13 +554,6 @@ using {{this}};{{#newline}}
                 usings.Add("System.Data.Entity.Infrastructure");
                 usings.Add("System.Collections.Generic");
                 usings.Add("System.Data.Entity.Validation");
-            }
-
-            if (Settings.DatabaseType == DatabaseType.SqlCe)
-            {
-                usings.Add("System.Data.SqlClient");
-                //usings.Add("System.DBNull");
-                usings.Add("System.Data.SqlTypes");
             }
 
             if (Settings.DatabaseType == DatabaseType.PostgreSQL)

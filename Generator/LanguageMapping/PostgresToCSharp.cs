@@ -72,12 +72,45 @@ namespace Efrpg.LanguageMapping
                 { "uuid",                        "Guid" },
                 { "varbit",                      "BitArray" },
                 { "xid",                         "uint" },
-                { "xml",                         "string" }
+                { "xml",                         "string" },
 
-                //{ "composite types",      "T" },
-                //{ "range subtypes",     "NpgsqlRange<TElement>" },
-                //{ "enum types", "TEnum" },
-                //{ "array types",        "Array (of element type)" },
+                // Arrays. The reader reports the element type with [] appended, using PostgreSQL's own internal
+                // spelling (int4, bpchar, timestamptz), because information_schema collapses every array to the
+                // single type name ARRAY, which nothing can key on. array[] is the fallback when even the element
+                // type could not be resolved.
+                { "array[]",                     "string[]" },
+                { "bool[]",                      "bool[]" },
+                { "bpchar[]",                    "string[]" },
+                { "bytea[]",                     "byte[][]" },
+                { "date[]",                      "DateTime[]" },
+                { "float4[]",                    "float[]" },
+                { "float8[]",                    "double[]" },
+                { "int2[]",                      "short[]" },
+                { "int4[]",                      "int[]" },
+                { "int8[]",                      "long[]" },
+                { "numeric[]",                   "decimal[]" },
+                { "oid[]",                       "uint[]" },
+                { "text[]",                      "string[]" },
+                { "timestamp[]",                 "DateTime[]" },
+                { "timestamptz[]",               "DateTime[]" },
+                { "uuid[]",                      "Guid[]" },
+                { "varchar[]",                   "string[]" },
+
+                // Range types. Npgsql models these as NpgsqlRange<T>, and the PostgreSQL templates already add the
+                // NpgsqlTypes using.
+                { "daterange",                   "NpgsqlRange<DateTime>" },
+                { "int4range",                   "NpgsqlRange<int>" },
+                { "int8range",                   "NpgsqlRange<long>" },
+                { "numrange",                    "NpgsqlRange<decimal>" },
+                { "tsrange",                     "NpgsqlRange<DateTime>" },
+                { "tstzrange",                   "NpgsqlRange<DateTime>" },
+
+                { "macaddr8",                    "PhysicalAddress" },
+
+                // Enum types and composite types both arrive as USER-DEFINED and there is nothing better to do with
+                // them: Npgsql reads an unmapped enum as its label. Listed so the mapping states it rather than
+                // arriving here through the empty-string default.
+                { "user-defined",                "string" }
             };
         }
 

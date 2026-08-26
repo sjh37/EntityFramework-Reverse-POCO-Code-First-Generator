@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using Efrpg;
 using Efrpg.FileManagement;
 using Efrpg.Filtering;
 using Efrpg.Generators;
 using Efrpg.Pluralization;
+using Efrpg.Readers;
 using Efrpg.Templates;
 using NUnit.Framework;
 
@@ -37,6 +39,15 @@ namespace Generator.Tests.Integration
             Settings.UseMappingTables = false;
             Settings.AdditionalNamespaces.Clear();
             Settings.NullableReverseNavigationProperties = true;
+
+            // Settings is static and shared across the whole test run, so every setting a test can change must be
+            // reset here or its value leaks into whichever test happens to run next. AllowNullStrings leaking true
+            // turns every DB-nullable string into string? in unrelated fixtures (and suppresses the IsRequired(false)
+            // mappings), making the comparison tests order-dependent.
+            Settings.AllowNullStrings = false;
+            Settings.UseDataAnnotations = false;
+            Settings.TrimCharFields = false;
+            Settings.GenerateSeparateFiles = false;
 
             Settings.AddOwnedEntityMappings = delegate (List<OwnedEntityMapping> mappings)
             {
@@ -73,7 +84,7 @@ namespace Generator.Tests.Integration
             ResetFilters();
         }
 
-        protected static void Run(string filename, string singleDbContextSubNamespace, Type fileManagerType, string subFolder,
+        protected static void Run(string filename, string singleDbContextSubNamespace, string subFolder,
             List<EnumDefinition> enumDefinitions = null)
         {
             Inflector.IgnoreWordsThatEndWith = new List<string> { "Status", "To", "Data" };
@@ -96,7 +107,8 @@ namespace Generator.Tests.Integration
 
             var outer = new GeneratedTextTransformation();
             var fileManagement = new FileManagementService(outer);
-            var generator = GeneratorFactory.Create(fileManagement, fileManagerType, singleDbContextSubNamespace);
+            var toolResult = GetEfrpgResult();
+            var generator = GeneratorFactory.Create(toolResult, fileManagement, singleDbContextSubNamespace);
 
             // Turn on everything for testing
             Assert.IsNotNull(generator);
@@ -139,6 +151,13 @@ namespace Generator.Tests.Integration
                 }
 
             fileManagement.Process(true);
+        }
+
+        private static EfrpgResult GetEfrpgResult(bool includeStoredProcedures = true)
+        {
+            // includeSynonyms is always true: the tests enable IncludeSynonyms on every filter after the tool has
+            // already run, so the synonym rows must be in the result up front.
+            return EfrpgToolRunner.ReadDatabase(includeStoredProcedures, includeSynonyms: true, multiContext: false);
         }
 
         protected static void CompareAgainstFolderTestComparison(string subFolder)

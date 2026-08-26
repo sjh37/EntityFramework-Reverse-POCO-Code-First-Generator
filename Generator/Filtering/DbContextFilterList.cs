@@ -11,7 +11,7 @@ namespace Efrpg.Filtering
         private List<MultiContextSettings> _multiContextSettings;
         private Dictionary<string, IDbContextFilter> _filters;  // Key = database context name, which also becomes the sub-namespace used to encapsulate the many db contexts
 
-        public bool ReadDbContextSettings(DatabaseReader reader, string singleDbContextSubNamespace = "")
+        public bool ReadDbContextSettings(EfrpgResult result, string singleDbContextSubNamespace = "")
         {
             _filters = new Dictionary<string, IDbContextFilter>();
 
@@ -47,11 +47,11 @@ namespace Efrpg.Filtering
             }
             else
             {
-                if (reader == null)
+                if (result == null)
                     return false;
 
-                // Read from database
-                _multiContextSettings = reader.ReadMultiContextSettings();
+                // Use multi-context settings provided by the dotnet tool via EfrpgResult
+                _multiContextSettings = result.MultiContextSettings ?? new List<MultiContextSettings>();
             }
 
             if (_multiContextSettings == null || _multiContextSettings.Count == 0)

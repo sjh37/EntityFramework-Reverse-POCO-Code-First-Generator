@@ -1,6 +1,15 @@
+-- SQL*Plus settings, so this script runs unattended as well as pasted into a tool:
+-- DEFINE OFF because company names contain & ('Split Rail Beer & Ale'), which is otherwise read as a
+-- substitution variable, and SQLBLANKLINES ON because some address literals span a blank line.
+SET DEFINE OFF
+SET SQLBLANKLINES ON
+
 ALTER SESSION SET CONTAINER=pdb1;
 CREATE USER efrpg IDENTIFIED BY abc123;
 GRANT CONNECT, RESOURCE, DBA, SYSDBA TO efrpg;
+-- Everything below is a mixture of efrpg-qualified and unqualified object names, so the session has to be
+-- pointed at the efrpg schema or the unqualified indexes, sequences and trigger land in the caller's own.
+ALTER SESSION SET CURRENT_SCHEMA = efrpg;
 
 /*
 -- Drop all tables and their indexes, constraints, and triggers.
@@ -616,6 +625,7 @@ BEGIN
         RAISE_APPLICATION_ERROR(num => -20000, msg => 'Birthdate cannot be in the future');
     END IF;
 END;
+/
 
 CREATE SEQUENCE SEQ_NW_EMPLOYEES
     MINVALUE 1

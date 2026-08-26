@@ -9,8 +9,8 @@ namespace Efrpg.Generators
 {
     public class GeneratorEf6 : Generator
     {
-        public GeneratorEf6(FileManagementService fileManagementService, Type fileManagerType)
-            : base(fileManagementService, fileManagerType)
+        public GeneratorEf6(FileManagementService fileManagementService)
+            : base(fileManagementService)
         {
         }
 
@@ -112,7 +112,7 @@ namespace Efrpg.Generators
 
             if (!c.IsMaxLength && c.MaxLength > 0)
             {
-                var doNotSpecifySize = (DatabaseReader.DoNotSpecifySizeForMaxLength && c.MaxLength > 4000); // Issue #179
+                var doNotSpecifySize = (_result != null && _result.DoNotSpecifySizeForMaxLength && c.MaxLength > 4000); // Issue #179
 
                 if (doNotSpecifySize)
                     sb.Append(".HasMaxLength(null)");
@@ -123,9 +123,9 @@ namespace Efrpg.Generators
             if (c.IsMaxLength)
                 sb.Append(".IsMaxLength()");
 
-            if ((c.Precision > 0 || c.Scale > 0) && DatabaseReader.IsPrecisionAndScaleType(c.SqlPropertyType))
+            if ((c.Precision > 0 || c.Scale > 0) && IsPrecisionAndScaleType(c.SqlPropertyType))
                 sb.AppendFormat(".HasPrecision({0},{1})", c.Precision, c.Scale);
-            else if (c.Precision > 0 && DatabaseReader.IsPrecisionType(c.SqlPropertyType) && c.SqlPropertyType != "float")
+            else if (c.Precision > 0 && IsPrecisionType(c.SqlPropertyType) && c.SqlPropertyType != "float")
                 sb.AppendFormat(".HasPrecision({0})", c.Precision);
 
             if (c.IsRowVersion)

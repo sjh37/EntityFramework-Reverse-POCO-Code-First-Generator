@@ -1,6 +1,7 @@
+using System;
 using System.Collections.Generic;
 
-<#@ include file ="..\EntityFramework.Reverse.POCO.Generator\EF.Reverse.POCO.v3.ttinclude" #>
+<#@ include file ="..\EntityFramework.Reverse.POCO.Generator\EF.Reverse.POCO.v4.ttinclude" #>
 <#
     Settings.TemplateType         = TemplateType.EfCore8;
     Settings.ConnectionString     = "Data Source=(local);Initial Catalog=EfrpgTest;Integrated Security=True;Encrypt=false;TrustServerCertificate=true;Application Name=EntityFramework Reverse POCO Generator";
@@ -128,13 +129,39 @@ using System.Collections.Generic;
     Inflector.PluralisationService = new EnglishPluralizationService();
     var outer = (GeneratedTextTransformation) this;
     var fileManagement = new FileManagementService(outer);
-    var generator = GeneratorFactory.Create(fileManagement, FileManagerFactory.GetFileManagerType());
-    if (generator != null && generator.InitialisationOk)
-    {
-        // Show where the machine.config file is
-        // fileManagement.WriteLine("// " + System.Runtime.InteropServices.RuntimeEnvironment.SystemConfigurationFile);
 
-        generator.ReadDatabase();
-        generator.GenerateCode();
+    EfrpgResult toolResult = null;
+    var efrpgToolOk = true;
+    try
+    {
+        // Connection strings are passed to the tool over stdin, never on the command line, so they stay out of
+        // process listings and command-line audit logs. See SecretsXml and EfrpgToolRunner.
+        var efrpgMultiContext = !Settings.GenerateSingleDbContext && string.IsNullOrWhiteSpace(Settings.MultiContextSettingsPlugin);
+        toolResult = EfrpgToolRunner.ReadDatabase(
+            FilterSettings.IncludeStoredProcedures || FilterSettings.IncludeTableValuedFunctions || FilterSettings.IncludeScalarValuedFunctions,
+            FilterSettings.IncludeSynonyms,
+            efrpgMultiContext);
     }
-    fileManagement.Process(true);#>
+    catch (Exception efrpgEx)
+    {
+        fileManagement.Error("// -----------------------------------------------------------------------------------------");
+        if (efrpgEx is System.ComponentModel.Win32Exception)
+            fileManagement.Error("// efrpg tool not found. Install it with: dotnet tool install -g Efrpg");
+        else
+            fileManagement.Error("// efrpg tool reported an error:");
+        fileManagement.Error("// " + efrpgEx.Message.Replace("\r\n", " ").Replace("\n", " "));
+        fileManagement.Error("// -----------------------------------------------------------------------------------------");
+        efrpgToolOk = false;
+    }
+
+    if (efrpgToolOk)
+    {
+        var generator = GeneratorFactory.Create(toolResult, fileManagement);
+        if (generator != null && generator.InitialisationOk)
+        {
+            generator.ReadDatabase();
+            generator.GenerateCode();
+        }
+        fileManagement.Process(true);
+    }
+    #>

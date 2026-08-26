@@ -187,8 +187,6 @@ using {{this}};{{#newline}}
             switch (Settings.DatabaseType)
             {
                 case DatabaseType.SqlServer:
-                case DatabaseType.SqlCe:
-                case DatabaseType.Plugin:
                     usings.Add("Microsoft.Data.SqlClient");
                     break;
                 case DatabaseType.SQLite:
@@ -582,13 +580,6 @@ using {{this}};{{#newline}}
                 usings.Add("Microsoft.EntityFrameworkCore.ChangeTracking");
                 usings.Add("System.Linq");
                 usings.Add("System.Linq.Expressions");
-            }
-
-            if (Settings.DatabaseType == DatabaseType.SqlCe)
-            {
-                usings.Add("Microsoft.Data.SqlClient");
-                //usings.Add("System.DBNull");
-                usings.Add("System.Data.SqlTypes");
             }
 
             if (Settings.DatabaseType == DatabaseType.PostgreSQL)

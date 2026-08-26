@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using Efrpg.FileManagement;
 using Efrpg.Filtering;
+using Efrpg.LanguageMapping;
 using Efrpg.Licensing;
 using Efrpg.Readers;
 using Efrpg.Templates;
@@ -18,8 +20,55 @@ namespace Efrpg.Generators
     {
         public bool InitialisationOk { get; private set; }
 
-        protected DatabaseReader DatabaseReader;
+        protected EfrpgResult _result;
         public readonly IDbContextFilterList FilterList;
+
+        private Dictionary<string, string> _dbTypeToPropertyType;
+        private List<string> _spatialTypes;
+        private List<string> _precisionTypes;
+        private List<string> _precisionAndScaleTypes;
+
+        private static readonly Regex ReservedColumnNames = new Regex("^(event|Equals|GetHashCode|GetType|ToString)$", RegexOptions.Compiled);
+        private static readonly Dictionary<string, string> SqlServerStoredProcedureParameterDbType = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        {
+            { string.Empty, "VarChar" },
+            { "hierarchyid", "VarChar" },
+            { "bigint", "BigInt" },
+            { "binary", "Binary" },
+            { "bit", "Bit" },
+            { "char", "Char" },
+            { "datetime", "DateTime" },
+            { "decimal", "Decimal" },
+            { "numeric", "Decimal" },
+            { "float", "Float" },
+            { "image", "Image" },
+            { "int", "Int" },
+            { "money", "Money" },
+            { "nchar", "NChar" },
+            { "ntext", "NText" },
+            { "nvarchar", "NVarChar" },
+            { "real", "Real" },
+            { "uniqueidentifier", "UniqueIdentifier" },
+            { "smalldatetime", "SmallDateTime" },
+            { "smallint", "SmallInt" },
+            { "smallmoney", "SmallMoney" },
+            { "text", "Text" },
+            { "timestamp", "Timestamp" },
+            { "tinyint", "TinyInt" },
+            { "varbinary", "VarBinary" },
+            { "varchar", "VarChar" },
+            { "variant", "Variant" },
+            { "xml", "Xml" },
+            { "udt", "Udt" },
+            { "table type", "Structured" },
+            { "structured", "Structured" },
+            { "date", "Date" },
+            { "time", "Time" },
+            { "datetime2", "DateTime2" },
+            { "datetimeoffset", "DateTimeOffset" },
+            { "json", "NVarChar" },
+            { "vector", "VarBinary" }
+        };
 
         protected abstract bool AllowFkToNonPrimaryKey();
         protected abstract bool FkMustHaveSameNumberOfColumnsAsPrimaryKey();
@@ -40,22 +89,20 @@ namespace Efrpg.Generators
         private readonly StringBuilder _preHeaderInfo;
         private readonly string _codeGeneratedAttribute;
         private readonly FileManagementService _fileManagementService;
-        private readonly Type _fileManagerType;
         private const int Indent = 4;
 
-        protected Generator(FileManagementService fileManagementService, Type fileManagerType)
+        protected Generator(FileManagementService fileManagementService)
         {
             _fileManagementService = fileManagementService;
-            _fileManagerType = fileManagerType;
             InitialisationOk = false;
-            DatabaseReader = null;
+            _result = null;
             _fileHeaderFooter = null;
             _preHeaderInfo = new StringBuilder(1024);
             _codeGeneratedAttribute = string.Format("[GeneratedCode(\"EF.Reverse.POCO.Generator\", \"{0}\")]", EfrpgVersion.Version());
             FilterList = new DbContextFilterList();
         }
 
-        public void Init(DatabaseReader databaseReader, string singleDbContextSubNamespace)
+        public void Init(EfrpgResult result, string singleDbContextSubNamespace)
         {
             if (Settings.ConnectionString.Contains("**TODO**"))
             {
@@ -69,14 +116,21 @@ namespace Efrpg.Generators
 
             BuildPreHeaderInfo(licence);
 
-            DatabaseReader = databaseReader;
-            if (DatabaseReader == null)
+            _result = result;
+            if (_result == null)
             {
                 _fileManagementService.Error("// Cannot create a database reader due to unknown database type.");
                 return;
             }
 
-            DatabaseReader.Init();
+            var typeMapper = DatabaseToPropertyTypeFactory.Create();
+            _dbTypeToPropertyType = typeMapper.GetMapping();
+            _spatialTypes = typeMapper.SpatialTypes();
+            _precisionTypes = typeMapper.PrecisionTypes();
+            _precisionAndScaleTypes = typeMapper.PrecisionAndScaleTypes();
+
+            if (!string.IsNullOrEmpty(_result.DefaultSchema))
+                Settings.DefaultSchema = _result.DefaultSchema;
 
             if (Settings.IncludeConnectionSettingComments)
                 _preHeaderInfo.Append(DatabaseDetails());
@@ -89,8 +143,8 @@ namespace Efrpg.Generators
 
             _hasAcademicLicence = licence.LicenceType == LicenceType.Academic;
             _hasTrialLicence = licence.LicenceType == LicenceType.Trial;
-            InitialisationOk = FilterList.ReadDbContextSettings(DatabaseReader, singleDbContextSubNamespace);
-            _fileManagementService.Init(FilterList.GetFilters(), _fileManagerType);
+            InitialisationOk = FilterList.ReadDbContextSettings(_result, singleDbContextSubNamespace);
+            _fileManagementService.Init(FilterList.GetFilters());
         }
 
         public string GetPreHeaderInfo()
@@ -133,12 +187,123 @@ namespace Efrpg.Generators
 
         public string DatabaseDetails()
         {
-            return DatabaseReader.GetDatabaseDetails();
+            return _result?.DatabaseDetails ?? string.Empty;
+        }
+
+        public string GetPropertyType(string dbType)
+        {
+            if (_dbTypeToPropertyType != null && _dbTypeToPropertyType.TryGetValue(dbType, out var propertyType))
+                return propertyType;
+            return _dbTypeToPropertyType != null && _dbTypeToPropertyType.ContainsKey(string.Empty)
+                ? _dbTypeToPropertyType[string.Empty]
+                : string.Empty;
+        }
+
+        public bool IsSpatialType(string type) => type != null && _spatialTypes != null && _spatialTypes.Contains(type);
+        public bool IsPrecisionType(string type) => type != null && _precisionTypes != null && _precisionTypes.Contains(type);
+        public bool IsPrecisionAndScaleType(string type) => type != null && _precisionAndScaleTypes != null && _precisionAndScaleTypes.Contains(type);
+
+        public Column CreateColumn(RawTable rt, Table table, IDbContextFilter filter)
+        {
+            if (!string.IsNullOrEmpty(rt.SynonymTriggerName) && string.IsNullOrEmpty(table.TriggerName))
+                table.TriggerName = rt.SynonymTriggerName;
+
+            var col = new Column
+            {
+                Scale = rt.Scale,
+                PropertyType = GetPropertyType(rt.TypeName),
+                SqlPropertyType = rt.TypeName,
+                IsNullable = rt.IsNullable,
+                MaxLength = rt.MaxLength,
+                DateTimePrecision = rt.DateTimePrecision,
+                Precision = rt.Precision,
+                IsIdentity = rt.IsIdentity,
+                IsComputed = rt.IsComputed,
+                IsRowGuid = rt.IsRowGuid,
+                GeneratedAlwaysType = (ColumnGeneratedAlwaysType) rt.GeneratedAlwaysType,
+                IsStoreGenerated = rt.IsStoreGenerated,
+                PrimaryKeyOrdinal = rt.PrimaryKeyOrdinal,
+                IsPrimaryKey = rt.PrimaryKey,
+                IsForeignKey = rt.IsForeignKey,
+                IsSpatial = rt.TypeName == "geography" || rt.TypeName == "geometry",
+                Ordinal = rt.Ordinal,
+                DbName = rt.ColumnName,
+                Default = rt.Default,
+                ParentTable = table,
+                ExistsInBaseClass = false
+            };
+
+            if (col.IsPrimaryKey)
+                col.IsNullable = false;
+
+            if (col.MaxLength == -1 && (col.SqlPropertyType.EndsWith("varchar", StringComparison.InvariantCultureIgnoreCase) ||
+                                        col.SqlPropertyType.EndsWith("varbinary", StringComparison.InvariantCultureIgnoreCase)))
+            {
+                col.SqlPropertyType += "(max)";
+            }
+
+            // SQL Server 2025 vector type - dimension is stored as (byte_size - 8) / 4
+            if (col.SqlPropertyType.Equals("vector", StringComparison.InvariantCultureIgnoreCase) && col.MaxLength > 0)
+            {
+                var vectorDimension = (col.MaxLength - 8) / 4;
+                col.SqlPropertyType = string.Format("vector({0})", vectorDimension);
+            }
+
+            if (col.IsPrimaryKey && !col.IsIdentity && col.IsStoreGenerated && rt.TypeName == "uniqueidentifier")
+            {
+                col.IsStoreGenerated = false;
+                col.IsIdentity = true;
+            }
+
+            if (!col.IsPrimaryKey && filter.IsExcluded(col))
+                col.Hidden = true;
+
+            col.IsFixedLength = (rt.TypeName == "char" || rt.TypeName == "nchar");
+            col.IsUnicode = !(rt.TypeName == "char" || rt.TypeName == "varchar" || rt.TypeName == "text");
+            col.IsMaxLength = (rt.TypeName == "ntext");
+
+            col.IsRowVersion = col.IsStoreGenerated && rt.TypeName == "timestamp";
+            if (col.IsRowVersion)
+                col.MaxLength = 8;
+
+            if (rt.TypeName == "hierarchyid")
+                col.MaxLength = 0;
+
+            col.CleanUpDefault();
+            col.NameHumanCase = NamingHelper.CleanUp(col.DbName);
+            if (string.IsNullOrWhiteSpace(col.NameHumanCase))
+            {
+                col.NameHumanCase = "Unknown";
+                col.Hidden = true;
+            }
+            col.NameHumanCase = ReservedColumnNames.Replace(col.NameHumanCase, "_$1");
+
+            if (NamingHelper.ReservedKeywords.Contains(col.NameHumanCase))
+                col.NameHumanCase = "@" + col.NameHumanCase;
+
+            col.DisplayName = Column.ToDisplayName(col.DbName);
+
+            var titleCase = (Settings.UsePascalCase ? Inflector.ToTitleCase(col.NameHumanCase) : col.NameHumanCase).Replace(" ", string.Empty);
+            if (titleCase != string.Empty)
+                col.NameHumanCase = titleCase;
+
+            if (col.NameHumanCase == table.NameHumanCase)
+                col.NameHumanCase += "_";
+
+            if (char.IsDigit(col.NameHumanCase[0]))
+                col.NameHumanCase = "_" + col.NameHumanCase;
+
+            table.HasNullableColumns = col.IsColumnNullable();
+
+            if (string.IsNullOrEmpty(col.PropertyType))
+                return null;
+
+            return col;
         }
 
         public void LoadEnums()
         {
-            if (DatabaseReader == null || !Settings.ElementsToGenerate.HasFlag(Elements.Enum))
+            if (_result == null || !Settings.ElementsToGenerate.HasFlag(Elements.Enum))
                 return;
 
             try
@@ -152,31 +317,30 @@ namespace Efrpg.Generators
                     }
                 }
 
+                // Read enumeration values from the database. The AddEnum callbacks above may have
+                // added entries to the enumeration lists, so this must happen after them. The efrpg
+                // tool is re-invoked here with the now-resolved enumeration specs (see ReadEnumsViaTool).
                 if (Settings.GenerateSingleDbContext)
                 {
-                    // Single-context
-                    if (Settings.Enumerations == null)
-                        return; // No enums required
-
-                    var enumerations = DatabaseReader.ReadEnums(Settings.Enumerations);
-                    if (enumerations.Count <= 0)
-                        return; // No enums in database
-
-                    foreach (var filterKeyValuePair in FilterList.GetFilters())
+                    if (Settings.Enumerations != null && Settings.Enumerations.Count > 0)
                     {
-                        filterKeyValuePair.Value.Enums.AddRange(enumerations);
+                        var enumerations = ReadEnumsViaTool(Settings.Enumerations);
+                        if (enumerations.Count > 0)
+                        {
+                            foreach (var filterKeyValuePair in FilterList.GetFilters())
+                                filterKeyValuePair.Value.Enums.AddRange(enumerations);
+                        }
                     }
                 }
                 else
                 {
-                    // Multi-context
                     foreach (var filterKeyValuePair in FilterList.GetFilters())
                     {
                         var multiContextSetting = ((MultiContextFilter) filterKeyValuePair.Value).GetSettings();
                         if (multiContextSetting?.Enumerations == null || multiContextSetting.Enumerations.Count == 0)
                             continue;
 
-                        var enumerations = DatabaseReader.ReadEnums(multiContextSetting.Enumerations);
+                        var enumerations = ReadEnumsViaTool(multiContextSetting.Enumerations);
                         if (enumerations.Count > 0)
                             filterKeyValuePair.Value.Enums.AddRange(enumerations);
                     }
@@ -214,15 +378,28 @@ namespace Efrpg.Generators
             }
         }
 
+        // Re-invokes the efrpg tool to read the actual enum values for the resolved enumeration specs.
+        private List<Enumeration> ReadEnumsViaTool(List<EnumerationSettings> specs)
+        {
+            if (specs == null || specs.Count == 0)
+                return new List<Enumeration>();
+
+            var specsXml    = EnumXml.WriteSpecs(specs);
+            var specsBase64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(specsXml));
+            var xml         = EfrpgToolRunner.Run("--enums-base64 " + specsBase64);
+            var rawEnums    = EnumXml.ReadData(xml);
+            return EnumBuilder.Build(specs, rawEnums);
+        }
+
         public void LoadSequences()
         {
-            if (DatabaseReader == null || !Settings.ElementsToGenerate.HasFlag(Elements.Context))
+            if (_result == null || !Settings.ElementsToGenerate.HasFlag(Elements.Context))
                 return;
 
             try
             {
-                var sequences = DatabaseReader.ReadSequences();
-                if (sequences.Count <= 0)
+                var sequences = _result.Sequences;
+                if (sequences == null || sequences.Count <= 0)
                     return; // No sequences in database
 
                 foreach (var filterKeyValuePair in FilterList.GetFilters())
@@ -262,7 +439,7 @@ namespace Efrpg.Generators
 
         public void LoadTables()
         {
-            if (DatabaseReader == null ||
+            if (_result == null ||
                 !(Settings.ElementsToGenerate.HasFlag(Elements.Poco) ||
                   Settings.ElementsToGenerate.HasFlag(Elements.Context) ||
                   Settings.ElementsToGenerate.HasFlag(Elements.Interface) ||
@@ -271,22 +448,16 @@ namespace Efrpg.Generators
 
             try
             {
-                var includeSynonyms = FilterList.IncludeSynonyms();
-
-                var rawTables = DatabaseReader.ReadTables(includeSynonyms);
-                var rawIndexes = DatabaseReader.ReadIndexes();
-                var rawForeignKeys = DatabaseReader.ReadForeignKeys(includeSynonyms);
-
-                // For unit testing
-                //foreach (var ri in rawIndexes.OrderBy(x => x.TableName).ThenBy(x => x.IndexName)) Console.WriteLine(ri.Dump());
-                //foreach (var rfk in rawForeignKeys) Console.WriteLine(rfk.Dump());
+                var rawTables = _result.Tables;
+                var rawIndexes = _result.Indexes;
+                var rawForeignKeys = _result.ForeignKeys;
 
                 AddTablesToFilters(rawTables);
 
                 // Always read extended properties so they are available in the UpdateColumn delegate
                 // (e.g. "if (column.ExtendedProperty == \"HIDE\") column.Hidden = true;") and for
                 // ApplyJsonPropertyNameAttribute, regardless of whether comments are being generated.
-                AddExtendedPropertiesToFilters(DatabaseReader.ReadExtendedProperties());
+                AddExtendedPropertiesToFilters(_result.ExtendedProperties);
 
                 RunUpdateDelegates();
 
@@ -297,11 +468,8 @@ namespace Efrpg.Generators
 
                 if (Settings.IsEfCore8Plus())
                 {
-                    var rawMemoryOptimisedTables = DatabaseReader.ReadMemoryOptimisedTables();
-                    AddMemoryOptimisedTablesToFilters(rawMemoryOptimisedTables);
-
-                    var rawTriggers = DatabaseReader.ReadTriggers();
-                    AddTriggersToFilters(rawTriggers);
+                    AddMemoryOptimisedTablesToFilters(_result.MemoryOptimisedTables);
+                    AddTriggersToFilters(_result.Triggers);
                 }
 
                 SetupEntityAndConfig(); // Must be done last
@@ -346,9 +514,7 @@ namespace Efrpg.Generators
                 .ThenBy(x => x.TableName)
                 .ToList();
 
-#pragma warning disable CS0618 // Type or member is obsolete
-            var deleteFilteredOutFiles = (Settings.FileManagerType == FileManagerType.Custom || Settings.FileManagerType == FileManagerType.EfCore) && Settings.GenerateSeparateFiles;
-#pragma warning restore CS0618 // Type or member is obsolete
+            var deleteFilteredOutFiles = Settings.GenerateSeparateFiles;
 
             foreach (var filterKeyValuePair in FilterList.GetFilters())
             {
@@ -357,7 +523,7 @@ namespace Efrpg.Generators
                 foreach (var tn in tablesNames)
                 {
                     var exclude = tn.IsView && !filter.IncludeViews;
-                    if (exclude && !deleteFilteredOutFiles)
+                    if (exclude && !Settings.GenerateSeparateFiles)
                         continue;
 
                     // Check if schema is excluded
@@ -379,7 +545,7 @@ namespace Efrpg.Generators
                     }
 
                     // Handle table names with underscores - singularise just the last word
-                    var tableName = DatabaseReader.CleanUp(filter.TableRename(tn.TableName, tn.SchemaName, tn.IsView));
+                    var tableName = NamingHelper.CleanUp(filter.TableRename(tn.TableName, tn.SchemaName, tn.IsView));
                     var singularCleanTableName = Inflector.MakeSingular(tableName);
                     table.NameHumanCase = (Settings.UsePascalCase ? Inflector.ToTitleCase(singularCleanTableName) : singularCleanTableName).Replace(" ", "").Replace("$", "").Replace(".", "");
 
@@ -402,7 +568,7 @@ namespace Efrpg.Generators
 
                     // Check for table or C# name clashes
                     var originalTable = filter.Tables.Find(x => x.NameHumanCase == table.NameHumanCase);
-                    if (DatabaseReader.ReservedKeywords.Contains(table.NameHumanCase) ||
+                    if (NamingHelper.ReservedKeywords.Contains(table.NameHumanCase) ||
                         originalTable != null)
                     {
                         if (originalTable == null)
@@ -414,7 +580,7 @@ namespace Efrpg.Generators
                             originalTable.PluralNameOverride = originalTable.NameHumanCase;
 
                             var newTableName = (Settings.UsePascalCase ? Inflector.ToTitleCase(tableName) : tableName).Replace(" ", "").Replace("$", "").Replace(".", "");
-                            if (DatabaseReader.ReservedKeywords.Contains(newTableName) ||
+                            if (NamingHelper.ReservedKeywords.Contains(newTableName) ||
                                 filter.Tables.Find(x => x.NameHumanCase == newTableName) != null)
                             {
                                 table.NameHumanCase += "1";
@@ -433,7 +599,7 @@ namespace Efrpg.Generators
                         .OrderBy(x => x.Ordinal))
                     {
                         table.IsSynonym = table.IsSynonym || rawTable.IsSynonym;
-                        var column = DatabaseReader.CreateColumn(rawTable, table, filter);
+                        var column = CreateColumn(rawTable, table, filter);
                         if (column != null)
                             table.Columns.Add(column);
                     }
@@ -616,7 +782,7 @@ namespace Efrpg.Generators
                     Settings.UseMappingTables = false;
 
                 if (Settings.UseMappingTables)
-                    filter.Tables.IdentifyMappingTables(foreignKeys, true, DatabaseReader.IncludeSchema);
+                    filter.Tables.IdentifyMappingTables(foreignKeys, true, _result?.IncludeSchema ?? true);
 
                 // Now we know our foreign key relationships and have worked out if there are any name clashes,
                 // re-map again with intelligently named relationships.
@@ -624,7 +790,7 @@ namespace Efrpg.Generators
 
                 ProcessForeignKeys(foreignKeys, false, filter);
                 if (Settings.UseMappingTables)
-                    filter.Tables.IdentifyMappingTables(foreignKeys, false, DatabaseReader.IncludeSchema);
+                    filter.Tables.IdentifyMappingTables(foreignKeys, false, _result?.IncludeSchema ?? true);
             }
         }
 
@@ -795,14 +961,12 @@ namespace Efrpg.Generators
 
         public void LoadStoredProcs()
         {
-            if (DatabaseReader == null || !DatabaseReader.CanReadStoredProcedures())
+            if (_result == null || !_result.CanReadStoredProcedures)
                 return;
 
             try
             {
-#pragma warning disable CS0618 // Type or member is obsolete
-                var deleteFilteredOutFiles = (Settings.FileManagerType == FileManagerType.Custom || Settings.FileManagerType == FileManagerType.EfCore) && Settings.GenerateSeparateFiles;
-#pragma warning restore CS0618 // Type or member is obsolete
+                var deleteFilteredOutFiles = Settings.GenerateSeparateFiles;
 
                 var spFilters = FilterList
                     .GetFilters()
@@ -812,8 +976,7 @@ namespace Efrpg.Generators
                 if (!spFilters.Any())
                     return;
 
-                var includeSynonyms = FilterList.IncludeSynonyms();
-                var rawStoredProcs = DatabaseReader.ReadStoredProcs(includeSynonyms);
+                var rawStoredProcs = _result.StoredProcedures;
 
                 // Only call stored procedures to obtain the return models that are not filtered out
                 // We don't want to do this for every db context we are generating as that is inefficient
@@ -835,7 +998,7 @@ namespace Efrpg.Generators
                         IsScalarValuedFunction = proc.IsScalarValuedFunction,
                         IsStoredProcedure = proc.IsStoredProcedure
                     };
-                    sp.NameHumanCase = DatabaseReader.CleanUp(sp.NameHumanCase);
+                    sp.NameHumanCase = NamingHelper.CleanUp(sp.NameHumanCase);
                     if (Settings.PrependSchemaName && (string.Compare(proc.Schema, Settings.DefaultSchema, StringComparison.OrdinalIgnoreCase) != 0) && Settings.PrependSchemaNameForStoredProcedure(sp))
                         sp.NameHumanCase = proc.Schema + "_" + sp.NameHumanCase;
 
@@ -844,6 +1007,13 @@ namespace Efrpg.Generators
                                     x.Schema == proc.Schema &&
                                     x.Name == proc.Name)
                         .Select(x => x.Parameter));
+
+                    NormaliseStoredProcedureParameters(sp);
+                    ApplyStoredProcedureReturnModels(sp, rawStoredProcs
+                        .FirstOrDefault(x =>
+                            x.Schema == proc.Schema &&
+                            x.Name == proc.Name &&
+                            (x.ReturnModelsRead || !string.IsNullOrEmpty(x.ReturnModelError) || x.ReturnModels.Any())));
 
                     sp.HasSpatialParameter = sp.Parameters.Any(x => x.IsSpatial);
 
@@ -859,14 +1029,22 @@ namespace Efrpg.Generators
                         continue; // All Db Context exclude this stored proc, ignore it as nobody wants it
                     }
 
+                    // Two routines can clean up to the same C# name - resolve_to_same_name and Resolve_ToSameName
+                    // both become ResolveToSameName - which generates two methods with identical signatures. Tables
+                    // and columns already disambiguate with a numeric suffix; routines now do the same. procs is
+                    // ordered by schema then name, so which one keeps the plain name does not depend on the order
+                    // the catalogue happened to return.
+                    sp.NameHumanCase = NamingHelper.MakeUnique(sp.NameHumanCase,
+                                                               storedProcs.Select(x => x.NameHumanCase).ToList());
+
                     storedProcs.Add(sp);
                 }
 
                 if (!storedProcs.Any())
                     return; // No stored procs to read the return model for, so exit
 
-                // Read in the return objects for the wanted stored proc
-                DatabaseReader.ReadStoredProcReturnObjects(storedProcs);
+                // Stored proc return models were populated by the dotnet tool (efrpg) via EfrpgResult.
+                // No additional DB call is needed from the T4 host.
 
                 // Check if any of the stored proc return models have spatial types
                 /*foreach (var sp in storedProcs)
@@ -936,6 +1114,169 @@ namespace Efrpg.Generators
                 _fileManagementService.Error("// -----------------------------------------------------------------------------------------");
                 _fileManagementService.Error(string.Empty);
             }
+        }
+
+        private void NormaliseStoredProcedureParameters(StoredProcedure sp)
+        {
+            if (sp == null || sp.Parameters == null)
+                return;
+
+            foreach (var parameter in sp.Parameters)
+            {
+                NormaliseStoredProcedureParameterName(parameter);
+                NormaliseStoredProcedureParameterTypes(parameter);
+
+                // The legacy readers stripped remaining special characters (underscores included) from the parameter
+                // names of everything they read return objects for - stored procedures and TVFs, but never scalar
+                // functions (see legacy SqlServerDatabaseReader.ReadStoredProcReturnObjects: procs.Where(x =>
+                // !x.IsScalarValuedFunction), "Tidy up parameters"). Scalar function parameters therefore keep their
+                // underscores (udf_net_sale(list_price)) while stored procedure parameters lose them (firstval).
+                if (!sp.IsScalarValuedFunction)
+                    parameter.NameHumanCase = Regex.Replace(parameter.NameHumanCase, @"[^A-Za-z0-9@\s]*", string.Empty);
+            }
+        }
+
+        // Mirrors the legacy DatabaseReader parameter naming exactly: CleanUp, then title-case only when UsePascalCase,
+        // then the reserved-keyword escape. No further character stripping - that would eat underscores (list_price ->
+        // listprice) and non-Latin letters, changing generated signatures. CleanUp already handles illegal characters.
+        private static void NormaliseStoredProcedureParameterName(StoredProcedureParameter parameter)
+        {
+            var clean = NamingHelper.CleanUp((parameter.Name ?? string.Empty).Replace("@", string.Empty));
+            if (string.IsNullOrWhiteSpace(clean))
+                clean = "p" + parameter.Ordinal;
+
+            parameter.NameHumanCase = Inflector.MakeInitialLower((Settings.UsePascalCase ? Inflector.ToTitleCase(clean) : clean).Replace(" ", string.Empty));
+
+            if (NamingHelper.ReservedKeywords.Contains(parameter.NameHumanCase))
+                parameter.NameHumanCase = "@" + parameter.NameHumanCase;
+        }
+
+        private void NormaliseStoredProcedureParameterTypes(StoredProcedureParameter parameter)
+        {
+            var dataType = NormaliseDbType(parameter.DataType);
+            if (!string.IsNullOrEmpty(dataType))
+            {
+                parameter.SqlDbType = GetStoredProcedureParameterDbType(dataType);
+                parameter.PropertyType = GetPropertyType(dataType);
+                parameter.IsSpatial = IsSpatialType(dataType);
+            }
+
+            var returnDataType = NormaliseDbType(parameter.ReturnDataType);
+            if (!string.IsNullOrEmpty(returnDataType))
+            {
+                parameter.ReturnSqlDbType = GetStoredProcedureParameterDbType(returnDataType);
+                parameter.ReturnPropertyType = GetPropertyType(returnDataType);
+            }
+        }
+
+        private static string NormaliseDbType(string dbType)
+        {
+            return (dbType ?? string.Empty).Trim().ToLowerInvariant();
+        }
+
+        private string GetStoredProcedureParameterDbType(string sqlType)
+        {
+            var normalised = NormaliseDbType(sqlType);
+            switch (Settings.DatabaseType)
+            {
+                case DatabaseType.SqlServer:
+                    string parameterDbType;
+                    if (SqlServerStoredProcedureParameterDbType.TryGetValue(normalised, out parameterDbType))
+                        return parameterDbType;
+                    return SqlServerStoredProcedureParameterDbType[string.Empty];
+
+                default:
+                    return normalised;
+            }
+        }
+
+        private static void ApplyStoredProcedureReturnModels(StoredProcedure sp, RawStoredProcedure rawStoredProcedure)
+        {
+            if (sp == null || rawStoredProcedure == null)
+                return;
+
+            sp.ReturnModels.Clear();
+            foreach (var returnModel in rawStoredProcedure.ReturnModels)
+                sp.ReturnModels.Add(returnModel.Select(CreateDataColumn).ToList());
+
+            if (!string.IsNullOrEmpty(rawStoredProcedure.ReturnModelError))
+            {
+                Settings.ReadStoredProcReturnObjectException(new Exception(rawStoredProcedure.ReturnModelError), sp);
+                return;
+            }
+
+            if (rawStoredProcedure.ReturnModelsRead)
+            {
+                sp.MergeModelsIfAllSame();
+                Settings.ReadStoredProcReturnObjectCompleted(sp);
+            }
+        }
+
+        private static DataColumn CreateDataColumn(RawStoredProcedureReturnColumn rawColumn)
+        {
+            var column = new DataColumn(rawColumn.ColumnName, ResolveDataColumnType(rawColumn))
+            {
+                AllowDBNull = rawColumn.AllowDBNull
+            };
+
+            try
+            {
+                column.Unique = rawColumn.Unique;
+            }
+            catch
+            {
+                // Some provider schemas report uniqueness in combinations DataColumn cannot represent standalone.
+            }
+
+            if (rawColumn.Precision > 0 || rawColumn.Scale > 0)
+            {
+                column.ExtendedProperties["Precision"] = rawColumn.Precision;
+                column.ExtendedProperties["Scale"] = rawColumn.Scale;
+            }
+
+            if (!string.IsNullOrEmpty(rawColumn.DataTypeFullName))
+                column.ExtendedProperties["DataTypeFullName"] = rawColumn.DataTypeFullName;
+            if (!string.IsNullOrEmpty(rawColumn.DataTypeName))
+                column.ExtendedProperties["DataTypeName"] = rawColumn.DataTypeName;
+            if (!string.IsNullOrEmpty(rawColumn.DataTypeNamespace))
+                column.ExtendedProperties["DataTypeNamespace"] = rawColumn.DataTypeNamespace;
+
+            return column;
+        }
+
+        private static Type ResolveDataColumnType(RawStoredProcedureReturnColumn rawColumn)
+        {
+            switch (rawColumn.DataTypeFullName)
+            {
+                case "System.Boolean": return typeof(bool);
+                case "System.Byte": return typeof(byte);
+                case "System.SByte": return typeof(sbyte);
+                case "System.Int16": return typeof(short);
+                case "System.UInt16": return typeof(ushort);
+                case "System.Int32": return typeof(int);
+                case "System.UInt32": return typeof(uint);
+                case "System.Int64": return typeof(long);
+                case "System.UInt64": return typeof(ulong);
+                case "System.Single": return typeof(float);
+                case "System.Double": return typeof(double);
+                case "System.Decimal": return typeof(decimal);
+                case "System.String": return typeof(string);
+                case "System.DateTime": return typeof(DateTime);
+                case "System.DateTimeOffset": return typeof(DateTimeOffset);
+                case "System.TimeSpan": return typeof(TimeSpan);
+                case "System.Guid": return typeof(Guid);
+                case "System.Byte[]": return typeof(byte[]);
+                case "System.Object": return typeof(object);
+            }
+
+            var type = !string.IsNullOrEmpty(rawColumn.DataTypeFullName)
+                ? Type.GetType(rawColumn.DataTypeFullName, false)
+                : null;
+
+            if (type == null && !string.IsNullOrEmpty(rawColumn.DataTypeAssemblyQualifiedName))
+                type = Type.GetType(rawColumn.DataTypeAssemblyQualifiedName, false);
+
+            return type ?? typeof(object);
         }
 
         /// <summary>AddRelationship overload for single-column foreign-keys.</summary>
@@ -1325,7 +1666,7 @@ namespace Efrpg.Generators
 
         private void CreateOutputFolders()
         {
-            if (Settings.FileManagerType != FileManagerType.EfCore || Settings.GenerateSeparateFiles != true)
+            if (!Settings.GenerateSeparateFiles)
                 return;
 
             CreateOutputFolder(Settings.ContextFolder);

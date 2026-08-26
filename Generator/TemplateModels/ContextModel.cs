@@ -16,7 +16,6 @@ namespace Efrpg.TemplateModels
         public string contextInterface { get; set; }
         public string setInitializer { get; set; }
         public bool DbContextClassIsPartial { get; set; }
-        public bool SqlCe { get; set; }
         public List<TableTemplateData> tables { get; set; }
         public bool hasTables { get; set; }
         public List<string> indexes { get; set; }

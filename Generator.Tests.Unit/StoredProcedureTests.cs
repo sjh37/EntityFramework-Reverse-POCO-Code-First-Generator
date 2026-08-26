@@ -409,25 +409,25 @@ CREATE OR ALTER PROCEDURE dbo.TestProc
     @FloatVal FLOAT = 6.54
 AS BEGIN SELECT 1 END";
 
-            Assert.AreEqual("12",      Efrpg.Readers.DatabaseReader.ExtractSqlServerParamDefault(definition, "@UserId"));
-            Assert.IsNull(             Efrpg.Readers.DatabaseReader.ExtractSqlServerParamDefault(definition, "@ClientId"));
-            Assert.AreEqual("'FCV'",   Efrpg.Readers.DatabaseReader.ExtractSqlServerParamDefault(definition, "@TokenProvider"));
-            Assert.AreEqual("NULL",    Efrpg.Readers.DatabaseReader.ExtractSqlServerParamDefault(definition, "@NullableStr"));
-            Assert.AreEqual("1.234",   Efrpg.Readers.DatabaseReader.ExtractSqlServerParamDefault(definition, "@DecimalVal"));
-            Assert.AreEqual("6.54",    Efrpg.Readers.DatabaseReader.ExtractSqlServerParamDefault(definition, "@FloatVal"));
+            Assert.AreEqual("12",      NamingHelper.ExtractSqlServerParamDefault(definition, "@UserId"));
+            Assert.IsNull(             NamingHelper.ExtractSqlServerParamDefault(definition, "@ClientId"));
+            Assert.AreEqual("'FCV'",   NamingHelper.ExtractSqlServerParamDefault(definition, "@TokenProvider"));
+            Assert.AreEqual("NULL",    NamingHelper.ExtractSqlServerParamDefault(definition, "@NullableStr"));
+            Assert.AreEqual("1.234",   NamingHelper.ExtractSqlServerParamDefault(definition, "@DecimalVal"));
+            Assert.AreEqual("6.54",    NamingHelper.ExtractSqlServerParamDefault(definition, "@FloatVal"));
         }
 
         [Test]
         [Description("Issue #859 - NormaliseParamDefault strips type casts and outer parens")]
         public void NormaliseParamDefault_StripsTypeCastsAndParens()
         {
-            Assert.IsNull(  Efrpg.Readers.DatabaseReader.NormaliseParamDefault("NULL"));
-            Assert.IsNull(  Efrpg.Readers.DatabaseReader.NormaliseParamDefault("NULL::integer"));
-            Assert.IsNull(  Efrpg.Readers.DatabaseReader.NormaliseParamDefault("(NULL)"));
-            Assert.AreEqual("'FCV'",  Efrpg.Readers.DatabaseReader.NormaliseParamDefault("'FCV'::character varying"));
-            Assert.AreEqual("'FCV'",  Efrpg.Readers.DatabaseReader.NormaliseParamDefault("'FCV'"));
-            Assert.AreEqual("12",     Efrpg.Readers.DatabaseReader.NormaliseParamDefault("12"));
-            Assert.AreEqual("1.234",  Efrpg.Readers.DatabaseReader.NormaliseParamDefault("1.234"));
+            Assert.IsNull(  NamingHelper.NormaliseParamDefault("NULL"));
+            Assert.IsNull(  NamingHelper.NormaliseParamDefault("NULL::integer"));
+            Assert.IsNull(  NamingHelper.NormaliseParamDefault("(NULL)"));
+            Assert.AreEqual("'FCV'",  NamingHelper.NormaliseParamDefault("'FCV'::character varying"));
+            Assert.AreEqual("'FCV'",  NamingHelper.NormaliseParamDefault("'FCV'"));
+            Assert.AreEqual("12",     NamingHelper.NormaliseParamDefault("12"));
+            Assert.AreEqual("1.234",  NamingHelper.NormaliseParamDefault("1.234"));
         }
 
         // -----------------------------------------------------------------------

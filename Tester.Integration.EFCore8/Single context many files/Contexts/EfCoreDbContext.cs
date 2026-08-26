@@ -320,15 +320,6 @@ namespace Tester.Integration.EFCore8.Single_context_many_files.Contexts
             modelBuilder.Entity<ASimpleExampleReturnModel>().HasNoKey();
             modelBuilder.Entity<CheckIfApplicationIsCompleteReturnModel>().HasNoKey();
             modelBuilder.Entity<ColourPivotReturnModel>().HasNoKey();
-            modelBuilder.Entity<ColumnNameAndTypesProcReturnModel>().HasNoKey();
-            modelBuilder.Entity<ColumnNameAndTypesProcReturnModel>().Property(e => e.adecimal).HasPrecision(18, 0);
-            modelBuilder.Entity<ColumnNameAndTypesProcReturnModel>().Property(e => e.adecimal_19_4).HasPrecision(19, 4);
-            modelBuilder.Entity<ColumnNameAndTypesProcReturnModel>().Property(e => e.adecimal_10_3).HasPrecision(10, 3);
-            modelBuilder.Entity<ColumnNameAndTypesProcReturnModel>().Property(e => e.anumeric).HasPrecision(18, 0);
-            modelBuilder.Entity<ColumnNameAndTypesProcReturnModel>().Property(e => e.anumeric_5_2).HasPrecision(5, 2);
-            modelBuilder.Entity<ColumnNameAndTypesProcReturnModel>().Property(e => e.anumeric_11_3).HasPrecision(11, 3);
-            modelBuilder.Entity<ColumnNameAndTypesProcReturnModel>().Property(e => e.amoney).HasPrecision(19, 4);
-            modelBuilder.Entity<ColumnNameAndTypesProcReturnModel>().Property(e => e.asmallmoney).HasPrecision(10, 4);
             modelBuilder.Entity<DboProcDataFromFfrsReturnModel>().HasNoKey();
             modelBuilder.Entity<DboProcDataFromFfrsAndDboReturnModel>().HasNoKey();
             modelBuilder.Entity<DsOpeProcReturnModel>().HasNoKey();
@@ -338,8 +329,6 @@ namespace Tester.Integration.EFCore8.Single_context_many_files.Contexts
             modelBuilder.Entity<FkTest_HelloReturnModel>().HasNoKey();
             modelBuilder.Entity<GetSmallDecimalTestReturnModel>().HasNoKey();
             modelBuilder.Entity<GetSmallDecimalTestReturnModel>().Property(e => e.KoeffVed).HasPrecision(4, 4);
-            modelBuilder.Entity<SpatialTypesNoParamsReturnModel>().HasNoKey();
-            modelBuilder.Entity<SpatialTypesWithParamsReturnModel>().HasNoKey();
             modelBuilder.Entity<SpNullableStringReproReturnModel>().HasNoKey();
             modelBuilder.Entity<StoredProcWithDefaultsReturnModel>().HasNoKey();
             modelBuilder.Entity<StpMultipleIdenticalResultsReturnModel>().HasNoKey();
@@ -610,32 +599,22 @@ namespace Tester.Integration.EFCore8.Single_context_many_files.Contexts
             return procResultData;
         }
 
-        public List<ColumnNameAndTypesProcReturnModel> ColumnNameAndTypesProc()
-        {
-            int procResult;
-            return ColumnNameAndTypesProc(out procResult);
-        }
-
-        public List<ColumnNameAndTypesProcReturnModel> ColumnNameAndTypesProc(out int procResult)
+        public int ColumnNameAndTypesProc()
         {
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
-            const string sqlCommand = "EXEC @procResult = [dbo].[ColumnNameAndTypesProc]";
-            var procResultData = Set<ColumnNameAndTypesProcReturnModel>()
-                .FromSqlRaw(sqlCommand, procResultParam)
-                .ToList();
 
-            procResult = (int) procResultParam.Value;
-            return procResultData;
+            Database.ExecuteSqlRaw("EXEC @procResult = [dbo].[ColumnNameAndTypesProc] ", procResultParam);
+
+            return (int)procResultParam.Value;
         }
 
-        public async Task<List<ColumnNameAndTypesProcReturnModel>> ColumnNameAndTypesProcAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<int> ColumnNameAndTypesProcAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            const string sqlCommand = "EXEC [dbo].[ColumnNameAndTypesProc]";
-            var procResultData = await Set<ColumnNameAndTypesProcReturnModel>()
-                .FromSqlRaw(sqlCommand)
-                .ToListAsync(cancellationToken);
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
 
-            return procResultData;
+            await Database.ExecuteSqlRawAsync("EXEC @procResult = [dbo].[ColumnNameAndTypesProc]",  new[] {procResultParam}, cancellationToken);
+
+            return (int)procResultParam.Value;
         }
 
         public int ConvertToString(int? someValue, ref string someString)
@@ -1182,41 +1161,25 @@ namespace Tester.Integration.EFCore8.Single_context_many_files.Contexts
 
         // ProcTestDecimalOutputV3DefaultAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public List<SpatialTypesNoParamsReturnModel> SpatialTypesNoParams()
-        {
-            int procResult;
-            return SpatialTypesNoParams(out procResult);
-        }
-
-        public List<SpatialTypesNoParamsReturnModel> SpatialTypesNoParams(out int procResult)
+        public int SpatialTypesNoParams()
         {
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
-            const string sqlCommand = "EXEC @procResult = [dbo].[SpatialTypesNoParams]";
-            var procResultData = Set<SpatialTypesNoParamsReturnModel>()
-                .FromSqlRaw(sqlCommand, procResultParam)
-                .ToList();
 
-            procResult = (int) procResultParam.Value;
-            return procResultData;
+            Database.ExecuteSqlRaw("EXEC @procResult = [dbo].[SpatialTypesNoParams] ", procResultParam);
+
+            return (int)procResultParam.Value;
         }
 
-        public async Task<List<SpatialTypesNoParamsReturnModel>> SpatialTypesNoParamsAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<int> SpatialTypesNoParamsAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            const string sqlCommand = "EXEC [dbo].[SpatialTypesNoParams]";
-            var procResultData = await Set<SpatialTypesNoParamsReturnModel>()
-                .FromSqlRaw(sqlCommand)
-                .ToListAsync(cancellationToken);
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
 
-            return procResultData;
+            await Database.ExecuteSqlRawAsync("EXEC @procResult = [dbo].[SpatialTypesNoParams]",  new[] {procResultParam}, cancellationToken);
+
+            return (int)procResultParam.Value;
         }
 
-        public List<SpatialTypesWithParamsReturnModel> SpatialTypesWithParams(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography)
-        {
-            int procResult;
-            return SpatialTypesWithParams(geometry, geography, out procResult);
-        }
-
-        public List<SpatialTypesWithParamsReturnModel> SpatialTypesWithParams(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography, out int procResult)
+        public int SpatialTypesWithParams(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography)
         {
             var geometryParam = new SqlParameter { ParameterName = "@geometry", SqlDbType = SqlDbType.VarChar, Direction = ParameterDirection.Input, Value = geometry, Size = -1 };
             if (geometryParam.Value == null)
@@ -1227,16 +1190,13 @@ namespace Tester.Integration.EFCore8.Single_context_many_files.Contexts
                 geographyParam.Value = DBNull.Value;
 
             var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
-            const string sqlCommand = "EXEC @procResult = [dbo].[SpatialTypesWithParams] @geometry, @geography";
-            var procResultData = Set<SpatialTypesWithParamsReturnModel>()
-                .FromSqlRaw(sqlCommand, geometryParam, geographyParam, procResultParam)
-                .ToList();
 
-            procResult = (int) procResultParam.Value;
-            return procResultData;
+            Database.ExecuteSqlRaw("EXEC @procResult = [dbo].[SpatialTypesWithParams] @geometry, @geography", geometryParam, geographyParam, procResultParam);
+
+            return (int)procResultParam.Value;
         }
 
-        public async Task<List<SpatialTypesWithParamsReturnModel>> SpatialTypesWithParamsAsync(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<int> SpatialTypesWithParamsAsync(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography, CancellationToken cancellationToken = default(CancellationToken))
         {
             var geometryParam = new SqlParameter { ParameterName = "@geometry", SqlDbType = SqlDbType.VarChar, Direction = ParameterDirection.Input, Value = geometry, Size = -1 };
             if (geometryParam.Value == null)
@@ -1246,12 +1206,11 @@ namespace Tester.Integration.EFCore8.Single_context_many_files.Contexts
             if (geographyParam.Value == null)
                 geographyParam.Value = DBNull.Value;
 
-            const string sqlCommand = "EXEC [dbo].[SpatialTypesWithParams] @geometry, @geography";
-            var procResultData = await Set<SpatialTypesWithParamsReturnModel>()
-                .FromSqlRaw(sqlCommand, geometryParam, geographyParam)
-                .ToListAsync(cancellationToken);
+            var procResultParam = new SqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
 
-            return procResultData;
+            await Database.ExecuteSqlRawAsync("EXEC @procResult = [dbo].[SpatialTypesWithParams] @geometry, @geography",  new[] {geometryParam, geographyParam, procResultParam}, cancellationToken);
+
+            return (int)procResultParam.Value;
         }
 
         public List<SpNullableStringReproReturnModel> SpNullableStringRepro()

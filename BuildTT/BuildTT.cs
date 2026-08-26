@@ -23,14 +23,13 @@ namespace BuildTT
         {
             const string footer = @"    // Settings ***************************************************************************************************************************
     // Only the most popular settings are listed below.
-    // Either override Settings.* here, or edit the Settings, FilterSettings and SingleContextFilter classes located at the top of EF.Reverse.POCO.v3.ttinclude
+    // Either override Settings.* here, or edit the Settings, FilterSettings and SingleContextFilter classes located at the top of EF.Reverse.POCO.v4.ttinclude
     
     // For help on the various Types below, please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Common-Settings.*Types-explained
     // The following entries are the only required settings.
-    Settings.DatabaseType                 = DatabaseType.SqlServer; // SqlServer, SqlCe, SQLite, PostgreSQL. Coming next: MySql, Oracle
+    Settings.DatabaseType                 = DatabaseType.SqlServer; // SqlServer, SQLite, PostgreSQL, MySql, Oracle
     Settings.TemplateType                 = TemplateType.EfCore10; // EfCore8-10, Ef6, FileBasedCore8-10. FileBased specify folder using Settings.TemplateFolder
     Settings.GeneratorType                = GeneratorType.EfCore; // EfCore, Ef6, Custom. Custom edit GeneratorCustom class to provide your own implementation
-    Settings.FileManagerType              = FileManagerType.EfCore; // .NET Core project = EfCore; .NET 4.x project = VisualStudio; No output (testing only) = Null
     Settings.ConnectionString             = ""Data Source=(local);Initial Catalog=**TODO**;Integrated Security=True;MultipleActiveResultSets=True;Encrypt=false;TrustServerCertificate=true""; // This is used by the generator to reverse engineer your database
     Settings.ConnectionStringActions      = """"; // EFCore only. Additional method chain to append to the database provider setup in OnConfiguring. e.g. "".EnableRetryOnFailure(maxRetryCount: 10, maxRetryDelay: TimeSpan.FromSeconds(30), errorNumbersToAdd: null)""
     Settings.ConnectionStringName         = ""MyDbContext""; // ConnectionString key as specified in your app.config/web.config/appsettings.json. Not used by the generator, but is placed into the generated DbContext constructor.
@@ -52,7 +51,7 @@ namespace BuildTT
     // For further information please visit https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Filtering
     // For multi-context filtering (Settings.GenerateSingleDbContext = false), please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Generating-multiple-database-contexts-in-a-single-go
     // Single-context filtering is done via FilterSettings and SingleContextFilter classes.
-    // Override the filters here, or edit directly the FilterSettings and SingleContextFilter classes located at the top of EF.Reverse.POCO.v3.ttinclude
+    // Override the filters here, or edit directly the FilterSettings and SingleContextFilter classes located at the top of EF.Reverse.POCO.v4.ttinclude
     FilterSettings.Reset();
     FilterSettings.AddDefaults();
 
@@ -83,7 +82,7 @@ namespace BuildTT
 
 
     // Generate files in sub-folders ******************************************************************************************************
-    if (Settings.GenerateSeparateFiles && Settings.FileManagerType == FileManagerType.EfCore)
+    if (Settings.GenerateSeparateFiles)
     {
         Settings.ContextFolder              = @"""";              // Sub-folder you would like your DbContext to be added to.              e.g. @""Data""
         Settings.InterfaceFolder            = @""Interface"";     // Sub-folder you would like your Interface to be added to.              e.g. @""Data\Interface""
@@ -99,7 +98,6 @@ namespace BuildTT
     Settings.OnConfiguration                        = OnConfiguration.ConnectionString; // EFCore only. Determines the code generated within DbContext.OnConfiguration(). Please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Settings.OnConfiguration
     Settings.AddParameterlessConstructorToDbContext = true; // EF6 only. If true, then DbContext will have a default (parameter-less) constructor which automatically passes in the connection string name, if false then no parameter-less constructor will be created.
     Settings.ConfigurationClassName                 = ""Configuration""; // Configuration, Mapping, Map, etc. This is appended to the Poco class name to configure the mappings.
-    Settings.DatabaseReaderPlugin                   = """"; // Eg, ""c:\\Path\\YourDatabaseReader.dll,Full.Name.Of.Class.Including.Namespace"". See #501. This will allow you to specify a pluggable provider for reading your database.
     Settings.UseMappingTables                       = false; // Must be false for TemplateType.EfCore2-4. If true, mapping will be used, and no mapping tables will be generated. If false, all tables will be generated.
 
     Settings.EntityClassesModifiers        = ""public""; // ""public partial"";
@@ -669,7 +667,7 @@ namespace BuildTT
         }
 
         if (!Settings.UsePascalCase)
-            fkName = DatabaseReader.CleanUp(fkName);
+            fkName = NamingHelper.CleanUp(fkName);
 
         // Apply custom foreign key renaming rules. Can be useful in applying pluralization.
         // For example:
@@ -825,24 +823,49 @@ namespace BuildTT
     Inflector.PluralisationService = new EnglishPluralizationService(); // To disable pluralisation, set this to null
 
     var outer = (GeneratedTextTransformation) this;
-
-    // Show where the machine.config file is
-    // outer.WriteLine(""// "" + System.Runtime.InteropServices.RuntimeEnvironment.SystemConfigurationFile);
-
     var fileManagement = new FileManagementService(outer);
-    var generator = GeneratorFactory.Create(fileManagement, FileManagerFactory.GetFileManagerType());
-    if (generator != null && generator.InitialisationOk)
+
+    EfrpgResult toolResult = null;
+    var efrpgToolOk = true;
+    try
     {
-        generator.ReadDatabase();
-        generator.GenerateCode();
+        // Connection strings are passed to the tool over stdin, never on the command line, so they stay out of
+        // process listings and command-line audit logs. See SecretsXml and EfrpgToolRunner.
+        var efrpgMultiContext = !Settings.GenerateSingleDbContext && string.IsNullOrWhiteSpace(Settings.MultiContextSettingsPlugin);
+        toolResult = EfrpgToolRunner.ReadDatabase(
+            FilterSettings.IncludeStoredProcedures || FilterSettings.IncludeTableValuedFunctions || FilterSettings.IncludeScalarValuedFunctions,
+            FilterSettings.IncludeSynonyms,
+            efrpgMultiContext);
     }
-    fileManagement.Process(true);#>";
+    catch (Exception efrpgEx)
+    {
+        fileManagement.Error(""// -----------------------------------------------------------------------------------------"");
+        if (efrpgEx is System.ComponentModel.Win32Exception)
+            fileManagement.Error(""// efrpg tool not found. Install it with: dotnet tool install -g Efrpg"");
+        else
+            fileManagement.Error(""// efrpg tool reported an error:"");
+        fileManagement.Error(""// "" + efrpgEx.Message.Replace(""\r\n"", "" "").Replace(""\n"", "" ""));
+        fileManagement.Error(""// -----------------------------------------------------------------------------------------"");
+        efrpgToolOk = false;
+    }
+
+    if (efrpgToolOk)
+    {
+        var generator = GeneratorFactory.Create(toolResult, fileManagement);
+        if (generator != null && generator.InitialisationOk)
+        {
+            generator.ReadDatabase();
+            generator.GenerateCode();
+        }
+        fileManagement.Process(true);
+    }
+#>";
 
             using (var tt = File.CreateText(Path.Combine(ttRoot, "Database.tt")))
             {
                 var settings = File.ReadAllText(Path.Combine(generatorRoot, "Settings.cs")).Trim();
 
-                tt.WriteLine("<#@ include file=\"EF.Reverse.POCO.v3.ttinclude\" #>");
+                tt.WriteLine("<#@ include file=\"EF.Reverse.POCO.v4.ttinclude\" #>");
                 tt.WriteLine("<#");
                 tt.WriteLine("    // v" + _version);
                 tt.WriteLine("    // Please make changes to the settings below.");
@@ -883,18 +906,21 @@ namespace BuildTT
 // is automatically constructed from the C# Generator project during the build process.
 #>
 <#@ template debug=""true"" hostspecific=""true"" language=""C#"" #>
-<#@ include file=""EF6.Utility.CS.ttinclude""#><#@ assembly name=""System.Configuration"" #>
+<#@ assembly name=""System"" #>
+<#@ assembly name=""System.Core"" #>
+<#@ assembly name=""System.Data"" #>
+<#@ assembly name=""System.Configuration"" #>
 <#@ assembly name=""System.Windows.Forms"" #>
-<#@ import namespace=""System.Data.Entity.Infrastructure.Pluralization"" #>";
+<#@ assembly name=""System.Xml"" #>
+<#@ assembly name=""System.Xml.Linq"" #>";
 
-            const string header2 = @"<#@ import namespace=""EnvDTE"" #>
-<#@ import namespace=""Microsoft.VisualStudio.TextTemplating"" #>
-<#@ output extension="".cs"" encoding=""utf-8"" #>
+            const string header2 = @"<#@ output extension="".cs"" encoding=""utf-8"" #>
 <#
         // WriteLine(""// T4 framework version = "" + AppDomain.CurrentDomain.SetupInformation.TargetFrameworkName);
-        var DefaultNamespace = new CodeGenerationTools(this).VsNamespaceSuggestion() ?? ""DebugMode"";
+        var namespaceHint = this.Host.ResolveParameterValue(""directiveId"", ""namespaceDirectiveProcessor"", ""namespaceHint"");
+        Settings.TemplateFile = System.IO.Path.GetFileNameWithoutExtension(this.Host.TemplateFile);
+        var DefaultNamespace = !string.IsNullOrEmpty(namespaceHint) ? namespaceHint : Settings.TemplateFile;
         Settings.Root = Host.ResolvePath(string.Empty);
-        Settings.TemplateFile = Path.GetFileNameWithoutExtension(DynamicTextTransformation.Create(this).Host.TemplateFile);
         // System.Diagnostics.Debugger.Launch();
 #><#+";
 
@@ -912,9 +938,7 @@ namespace BuildTT
             string[] ignoreFiles =
             {
                 "AssemblyInfo.cs",
-                "EntityFrameworkTemplateFileManager.cs",
                 "GeneratedTextTransformation.cs",
-
                 "GlobalSuppressions.cs", // Resharper
             };
             var filesToListFirst = new List<KeyValuePair<int, string>>
@@ -978,7 +1002,7 @@ namespace BuildTT
             fileReaders.AddRange(filesToListFirstReaders.OrderBy(x => x.Key).Select(x => x.Value));
             fileReaders.AddRange(remainingFileReaders);
 
-            using (var tt = File.CreateText(Path.Combine(ttRoot, "EF.Reverse.POCO.v3.ttinclude")))
+            using (var tt = File.CreateText(Path.Combine(ttRoot, "EF.Reverse.POCO.v4.ttinclude")))
             {
                 var writerStrategy = new TTWriterStrategy();
                 var writer = new FileWriter(tt, writerStrategy, fileReaders);

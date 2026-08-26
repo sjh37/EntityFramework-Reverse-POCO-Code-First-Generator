@@ -56,8 +56,8 @@ namespace Generator.Tests.Unit
             Settings.UseDataAnnotations = false;
 
             var fileManagement = new FileManagementService(new GeneratedTextTransformation());
-            var generator      = new GeneratorEfCore(fileManagement, typeof(NullFileManager));
-            generator.Init(new FakeDatabaseReader(), string.Empty);
+            var generator      = new GeneratorEfCore(fileManagement);
+            generator.Init(FakeDatabaseReader.CreateResult(), string.Empty);
 
             var column = CreateDecimalColumn("decimal", precision, scale, isNullable: false);
 
@@ -81,8 +81,8 @@ namespace Generator.Tests.Unit
             Settings.UseDataAnnotations = true;
 
             var fileManagement = new FileManagementService(new GeneratedTextTransformation());
-            var generator      = new GeneratorEfCore(fileManagement, typeof(NullFileManager));
-            generator.Init(new FakeDatabaseReader(), string.Empty);
+            var generator      = new GeneratorEfCore(fileManagement);
+            generator.Init(FakeDatabaseReader.CreateResult(), string.Empty);
 
             var column = CreateDecimalColumn("decimal", precision, scale, isNullable: false);
 
@@ -106,8 +106,8 @@ namespace Generator.Tests.Unit
             Settings.UseDataAnnotations = false;
 
             var fileManagement = new FileManagementService(new GeneratedTextTransformation());
-            var generator      = new GeneratorEf6(fileManagement, typeof(NullFileManager));
-            generator.Init(new FakeDatabaseReader(), string.Empty);
+            var generator      = new GeneratorEf6(fileManagement);
+            generator.Init(FakeDatabaseReader.CreateResult(), string.Empty);
 
             var column = CreateDecimalColumn("decimal", precision, scale, isNullable: false);
 
@@ -132,8 +132,8 @@ namespace Generator.Tests.Unit
             Settings.UseDataAnnotations = false;
 
             var fileManagement = new FileManagementService(new GeneratedTextTransformation());
-            var generator      = new GeneratorEfCore(fileManagement, typeof(NullFileManager));
-            generator.Init(new FakeDatabaseReader(), string.Empty);
+            var generator      = new GeneratorEfCore(fileManagement);
+            generator.Init(FakeDatabaseReader.CreateResult(), string.Empty);
 
             var column = CreateDecimalColumn(sqlType, precision, scale, isNullable: true);
 
@@ -155,8 +155,8 @@ namespace Generator.Tests.Unit
             Settings.UseDataAnnotations = false;
 
             var fileManagement = new FileManagementService(new GeneratedTextTransformation());
-            var generator      = new GeneratorEfCore(fileManagement, typeof(NullFileManager));
-            generator.Init(new FakeDatabaseReader(), string.Empty);
+            var generator      = new GeneratorEfCore(fileManagement);
+            generator.Init(FakeDatabaseReader.CreateResult(), string.Empty);
 
             var column = CreateDecimalColumn("decimal", 0, 0, isNullable: true);
 

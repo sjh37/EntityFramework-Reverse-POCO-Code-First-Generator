@@ -1,5 +1,4 @@
 ﻿using Efrpg;
-using Efrpg.Readers;
 using Generator.Tests.Common;
 using NUnit.Framework;
 
@@ -44,7 +43,7 @@ namespace Generator.Tests.Unit
         public void Test(string test, string expected, bool useCamelCase)
         {
             // Act
-            var clean = DatabaseReader.CleanUp(test);
+            var clean = NamingHelper.CleanUp(test);
             var singular = clean;
             var nameHumanCase = (useCamelCase ? Inflector.ToTitleCase(singular) : singular).Replace(" ", "").Replace("$", "").Replace(".", "");
 

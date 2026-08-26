@@ -404,7 +404,6 @@ namespace Efrpg.Generators
                 contextInterface = string.IsNullOrWhiteSpace(Settings.DbContextInterfaceName) ? "" : ", " + Settings.DbContextInterfaceName,
                 setInitializer = string.Format("<{0}>(null);", Settings.DbContextName),
                 DbContextClassIsPartial = Settings.DbContextClassIsPartial(),
-                SqlCe = Settings.DatabaseType == DatabaseType.SqlCe,
                 tables = _tables,
                 hasTables = _hasTables,
                 indexes = indexes,

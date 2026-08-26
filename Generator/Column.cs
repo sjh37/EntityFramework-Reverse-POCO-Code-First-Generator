@@ -160,13 +160,24 @@ namespace Efrpg
                 return;
             }
 
+            // PostgreSQL reports a column default with its type cast attached: 'Hello world'::character varying,
+            // NULL::character varying, '{}'::text[]. The cast has to come off before the value becomes C#, or it
+            // ends up inside the generated string literal - and before the unicode prefix strip below, which would
+            // otherwise read NULL::character varying as an N-prefixed literal and eat the leading N. Only
+            // PostgreSQL: in T-SQL :: is a static method call, as in hierarchyid::GetRoot().
+            var isPostgres = Settings.DatabaseType == DatabaseType.PostgreSQL;
+            var rawDefault = Default;
+            if (isPostgres)
+                Default = StripPostgresCast(Default);
+
             // Remove unicode prefix
             if (IsUnicode && Default.StartsWith("N") &&
                 !Default.Equals("NULL", StringComparison.InvariantCultureIgnoreCase))
                 Default = Default.Substring(1, Default.Length - 1);
 
-            // Save raw SQL default (brackets and unicode prefix removed) before C# conversion
-            DefaultSql = Default.Trim();
+            // Save raw SQL default (brackets and unicode prefix removed) before C# conversion. PostgreSQL keeps
+            // its cast here: it is valid SQL, and HasDefaultValueSql emits this verbatim.
+            DefaultSql = isPostgres ? rawDefault.Trim() : Default.Trim();
 
             if (Default.First() == '\'' && Default.Last() == '\'' && Default.Length >= 2)
                 Default = string.Format("\"{0}\"", Default.Substring(1, Default.Length - 2));
@@ -342,13 +353,36 @@ namespace Efrpg
 
                 case "guid":
                 case "system.guid":
-                    if (lower.Contains("newid()") || lower.Contains("newsequentialid()"))
+                    // gen_random_uuid() is PostgreSQL's newid(); uuid_generate_v4() is the uuid-ossp spelling.
+                    if (lower.Contains("newid()") || lower.Contains("newsequentialid()") ||
+                        lower.Contains("gen_random_uuid()") || lower.Contains("uuid_generate_v4()"))
                         Default = "Guid.NewGuid()";
                     else if (lower.Contains("null"))
                         Default = "null";
                     else
                         Default = string.Format("Guid.Parse(\"{0}\")", Default);
                     break;
+            }
+        }
+
+        // A trailing ::type, allowing for a schema qualifier, a quoted type name and any number of array markers.
+        // Anchored at the end so a :: inside the value itself - 'a::b'::text - is left alone.
+        private static readonly Regex PostgresCastSuffix =
+            new Regex(@"::\s*(""[^""]*""|[A-Za-z_][A-Za-z0-9_ ]*)(\.(""[^""]*""|[A-Za-z_][A-Za-z0-9_ ]*))*(\s*\[\s*\])*\s*$");
+
+        /// <summary>
+        ///     Removes PostgreSQL's trailing type cast from a default value. Casts can be chained
+        ///     (<c>'x'::text::varchar</c>), so this strips until there is nothing left to strip.
+        /// </summary>
+        private static string StripPostgresCast(string value)
+        {
+            while (true)
+            {
+                var stripped = PostgresCastSuffix.Replace(value, string.Empty).TrimEnd();
+                if (stripped.Length == 0 || stripped == value)
+                    return value.Trim();
+
+                value = stripped;
             }
         }
 

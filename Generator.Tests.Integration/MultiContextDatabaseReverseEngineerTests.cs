@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using Efrpg;
 using Efrpg.FileManagement;
 using Efrpg.Filtering;
@@ -42,6 +43,11 @@ namespace Generator.Tests.Integration
                 SetupPlugin(plugin);
         }
 
+        private static EfrpgResult GetEfrpgResult(bool includeStoredProcedures = true)
+        {
+            return EfrpgToolRunner.ReadDatabase(includeStoredProcedures, includeSynonyms: false, multiContext: false);
+        }
+
         public void SetupPlugin(string plugin)
         {
             if (string.IsNullOrEmpty(plugin))
@@ -58,7 +64,7 @@ namespace Generator.Tests.Integration
             Settings.MultiContextSettingsPlugin = fullPath + ",Generator.Tests.Unit." + plugin;
         }
 
-        public void Run(string filename, Type fileManagerType, string subFolder)
+        public void Run(string filename, string subFolder)
         {
             Inflector.IgnoreWordsThatEndWith = new List<string> { "Status", "To", "Data" };
             Inflector.PluralisationService = new EnglishPluralizationService();
@@ -70,19 +76,11 @@ namespace Generator.Tests.Integration
 
             var outer          = new GeneratedTextTransformation();
             var fileManagement = new FileManagementService(outer);
-            var generator      = GeneratorFactory.Create(fileManagement, fileManagerType);
+            var toolResult     = GetEfrpgResult();
+            var generator      = GeneratorFactory.Create(toolResult, fileManagement);
             Assert.IsNotNull(generator);
 
-            List<MultiContextSettings> multiDbSettings;
-            if (string.IsNullOrWhiteSpace(Settings.MultiContextSettingsPlugin))
-            {
-                multiDbSettings = generator.FilterList.GetMultiContextSettings();
-            }
-            else
-            {
-                var plugin = (IMultiContextSettingsPlugin) AssemblyHelper.LoadPlugin(Settings.MultiContextSettingsPlugin);
-                multiDbSettings = plugin.ReadSettings();
-            }
+            var multiDbSettings = generator.FilterList.GetMultiContextSettings();
             Assert.IsNotNull(multiDbSettings);
 
             var filters = generator.FilterList.GetFilters();
@@ -160,7 +158,7 @@ namespace Generator.Tests.Integration
             SetupSqlServer(database, connectionStringName, dbContextName, plugin, generateSeparateFiles, templateType);
 
             // Act
-            Run(database, typeof(EfCoreFileManager), null);
+            Run(database, null);
 
             // Assert
             CompareAgainstTestComparison(publicTestComparison);
@@ -175,7 +173,7 @@ namespace Generator.Tests.Integration
             Settings.MultiContextSettingsConnectionString = string.IsNullOrWhiteSpace(multiContextDatabase) ? null : $"Data Source=(local);Initial Catalog={multiContextDatabase};Integrated Security=True;Encrypt=false;TrustServerCertificate=true;Application Name=Generator";
 
             // Act
-            Run(database, typeof(EfCoreFileManager), null);
+            Run(database, null);
 
             // Assert
             CompareAgainstTestComparison(publicTestComparison);

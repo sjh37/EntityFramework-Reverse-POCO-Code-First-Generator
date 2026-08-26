@@ -10,8 +10,8 @@ namespace Efrpg.LanguageMapping
             return new Dictionary<string, string>
             {
                 { string.Empty,                     "string" }, // default
-                { "binary_double",                  "decimal" },
-                { "binary_float",                   "double" },
+                { "binary_double",                  "double" },
+                { "binary_float",                   "float" },
                 { "binary_integer",                 "long" },
                 { "blob",                           "byte[]" },
                 { "char",                           "string" },
@@ -21,9 +21,14 @@ namespace Efrpg.LanguageMapping
                 { "interval day to second",         "decimal" },
                 { "interval year to month",         "decimal" },
                 { "long raw",                       "byte[]" },
-                { "long",                           "long" },
+                { "long",                           "string" },
                 { "nchar",                          "string" },
                 { "nclob",                          "string" },
+                { "number(1)",                      "bool" },
+                { "number(3)",                      "byte" },
+                { "number(5)",                      "short" },
+                { "number(10)",                     "int" },
+                { "number(19)",                     "long" },
                 { "number",                         "decimal" },
                 { "nvarchar2",                      "string" },
                 { "pls_integer",                    "long" },

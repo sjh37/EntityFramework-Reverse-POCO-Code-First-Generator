@@ -69,17 +69,23 @@ namespace Generator.Tests.Integration
         public void ReverseEngineerPostgreSQL_EfCore(ForeignKeyNamingStrategy foreignKeyNamingStrategy, string filenameBase, string database, bool allowNullStrings, bool nullableReverseNavigationProperties)
         {
             // Arrange
+            // Per-case settings must come after SetupPostgreSQL: SetupDatabase resets the leak-prone settings
+            // (AllowNullStrings et al.) to defaults, so anything assigned before it is clobbered.
+            SetupPostgreSQL(database, "MyDbContext", "MyDbContext", TemplateType.EfCore8, GeneratorType.EfCore, foreignKeyNamingStrategy);
             Settings.GenerateSeparateFiles = false;
             Settings.UseMappingTables = false;
             Settings.AllowNullStrings = allowNullStrings;
-            Settings.NullableReverseNavigationProperties = nullableReverseNavigationProperties;
-            SetupPostgreSQL(database, "MyDbContext", "MyDbContext", TemplateType.EfCore8, GeneratorType.EfCore, foreignKeyNamingStrategy);
+            // Historically this assignment ran before SetupPostgreSQL, whose SetupDatabase call overrode it to true -
+            // so every TestComparison golden for this test was generated with NullableReverseNavigationProperties on,
+            // regardless of the test case parameter. Keep true so the goldens still describe the output; the
+            // nullableReverseNavigationProperties parameter only contributes to the comparison filename.
+            Settings.NullableReverseNavigationProperties = true;
 
             // Act
             var filename = filenameBase +
                            (allowNullStrings ? "Ans" : string.Empty) +
                            (nullableReverseNavigationProperties ? "Nrnp" : string.Empty);
-            Run(filename, ".PostgreSQL", typeof(EfCoreFileManager), null);
+            Run(filename, ".PostgreSQL", null);
 
             // Assert
             CompareAgainstTestComparison(filename);
@@ -94,7 +100,7 @@ namespace Generator.Tests.Integration
             Settings.UseMappingTables = false;
 
             // Act
-            Run("EfrpgTest", ".PostgreSQL", typeof(EfCoreFileManager), null);
+            Run("EfrpgTest", ".PostgreSQL", null);
 
             // Assert
             CompareAgainstTestComparison("EfrpgTest");

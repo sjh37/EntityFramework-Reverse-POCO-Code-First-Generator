@@ -1,1 +1,4 @@
-﻿// Please update your .tt file's `Settings.ConnectionString` string to the database you want to reverse engineer and save your .tt file.
+﻿// -----------------------------------------------------------------------------------------
+// efrpg tool reported an error:
+// Error connecting to database: Cannot open database "**TODO**" requested by the login. The login failed. Login failed for user 'Simon\simon'. 
+// -----------------------------------------------------------------------------------------

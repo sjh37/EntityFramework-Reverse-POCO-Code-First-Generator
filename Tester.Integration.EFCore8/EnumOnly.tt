@@ -1,9 +1,9 @@
-<#@ include file ="..\EntityFramework.Reverse.POCO.Generator\EF.Reverse.POCO.v3.ttinclude" #>
+using System;
+
+<#@ include file ="..\EntityFramework.Reverse.POCO.Generator\EF.Reverse.POCO.v4.ttinclude" #>
 <#
     Settings.TemplateType            = TemplateType.EfCore8;
     Settings.GeneratorType           = GeneratorType.EfCore; // EfCore, Ef6, Custom. Custom edit GeneratorCustom class to provide your own implementation
-
-    Settings.FileManagerType         = FileManagerType.EfCore; // .NET Core project = EfCore; .NET project = VisualStudio; No output (testing only) = Null
     Settings.ConnectionString        = "Data Source=(local);Initial Catalog=EfrpgTest;Integrated Security=True;MultipleActiveResultSets=True;Encrypt=false;TrustServerCertificate=true"; // This is used by the generator to reverse engineer your database
     Settings.ConnectionStringName    = "MyDbContext"; // ConnectionString key as specified in your app.config/web.config/appsettings.json. Not used by the generator, but is placed into the generated DbContext constructor.
     Settings.DbContextName           = "MyDbContext"; // Class name for the DbContext to be generated.
@@ -23,7 +23,7 @@
     // For further information please visit https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Filtering
     // For multi-context filtering (Settings.GenerateSingleDbContext = false), please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Generating-multiple-database-contexts-in-a-single-go
     // Single-context filtering is done via FilterSettings and SingleContextFilter classes.
-    // Override the filters here, or edit directly the FilterSettings and SingleContextFilter classes located at the top of EF.Reverse.POCO.v3.ttinclude
+    // Override the filters here, or edit directly the FilterSettings and SingleContextFilter classes located at the top of EF.Reverse.POCO.v4.ttinclude
     FilterSettings.Reset();
     FilterSettings.AddDefaults();
 
@@ -89,13 +89,39 @@
 
     var outer = (GeneratedTextTransformation) this;
     var fileManagement = new FileManagementService(outer);
-    var generator = GeneratorFactory.Create(fileManagement, FileManagerFactory.GetFileManagerType());
-    if (generator != null && generator.InitialisationOk)
-    {
-        // Show where the machine.config file is
-        // fileManagement.WriteLine("// " + System.Runtime.InteropServices.RuntimeEnvironment.SystemConfigurationFile);
 
-        generator.ReadDatabase();
-        generator.GenerateCode();
+    EfrpgResult toolResult = null;
+    var efrpgToolOk = true;
+    try
+    {
+        // Connection strings are passed to the tool over stdin, never on the command line, so they stay out of
+        // process listings and command-line audit logs. See SecretsXml and EfrpgToolRunner.
+        var efrpgMultiContext = !Settings.GenerateSingleDbContext && string.IsNullOrWhiteSpace(Settings.MultiContextSettingsPlugin);
+        toolResult = EfrpgToolRunner.ReadDatabase(
+            FilterSettings.IncludeStoredProcedures || FilterSettings.IncludeTableValuedFunctions || FilterSettings.IncludeScalarValuedFunctions,
+            FilterSettings.IncludeSynonyms,
+            efrpgMultiContext);
     }
-    fileManagement.Process(true);#>
+    catch (Exception efrpgEx)
+    {
+        fileManagement.Error("// -----------------------------------------------------------------------------------------");
+        if (efrpgEx is System.ComponentModel.Win32Exception)
+            fileManagement.Error("// efrpg tool not found. Install it with: dotnet tool install -g Efrpg");
+        else
+            fileManagement.Error("// efrpg tool reported an error:");
+        fileManagement.Error("// " + efrpgEx.Message.Replace("\r\n", " ").Replace("\n", " "));
+        fileManagement.Error("// -----------------------------------------------------------------------------------------");
+        efrpgToolOk = false;
+    }
+
+    if (efrpgToolOk)
+    {
+        var generator = GeneratorFactory.Create(toolResult, fileManagement);
+        if (generator != null && generator.InitialisationOk)
+        {
+            generator.ReadDatabase();
+            generator.GenerateCode();
+        }
+        fileManagement.Process(true);
+    }
+    #>

@@ -31,10 +31,46 @@ namespace Efrpg.PostgreSQL
 
     public interface IMyEf6DbContext : IDisposable
     {
+        DbSet<Airport> Airports { get; set; } // airport
         DbSet<Allcolumntype> Allcolumntypes { get; set; } // allcolumntypes
         DbSet<another_CategoryDescription> another_CategoryDescriptions { get; set; } // category_description
+        DbSet<another_DuplicatedName> another_DuplicatedNames { get; set; } // duplicated_name
+        DbSet<another_HarishChild> another_HarishChilds { get; set; } // harish_child
+        DbSet<another_HarishParent> another_HarishParents { get; set; } // harish_parent
         DbSet<another_Status> another_Status { get; set; } // status
+        DbSet<CaseOnlyDifference> CaseOnlyDifferences { get; set; } // case_only_difference
         DbSet<Category> Categories { get; set; } // categories
+        DbSet<CategoRy> CategoRies { get; set; } // CATEGORIES
+        DbSet<ChildComposite> ChildComposites { get; set; } // child_composite
+        DbSet<Course> Courses { get; set; } // course
+        DbSet<CurrenCy> CurrenCies { get; set; } // CURRENCIES
+        DbSet<DefaultsAndGenerated> DefaultsAndGenerateds { get; set; } // defaults_and_generated
+        DbSet<DuplicatedName> DuplicatedNames { get; set; } // duplicated_name
+        DbSet<Employee> Employees { get; set; } // employee
+        DbSet<Flight> Flights { get; set; } // flight
+        DbSet<HarishChild> HarishChilds { get; set; } // harish_child
+        DbSet<HarishParent> HarishParents { get; set; } // harish_parent
+        DbSet<IdentityAlway> IdentityAlways { get; set; } // identity_always
+        DbSet<IdentityByDefault> IdentityByDefaults { get; set; } // identity_by_default
+        DbSet<IndexTest> IndexTests { get; set; } // index_test
+        DbSet<Measurement> Measurements { get; set; } // measurement
+        DbSet<Measurement2025> Measurement2025 { get; set; } // measurement_2025
+        DbSet<Mixed Case Schema_SpacedTableName> Mixed Case Schema_SpacedTableNames { get; set; } // Spaced Table Name
+        DbSet<NoPrimaryKey> NoPrimaryKeys { get; set; } // no_primary_key
+        DbSet<OrderStatus> OrderStatus { get; set; } // order_status
+        DbSet<ParentComposite> ParentComposites { get; set; } // parent_composite
+        DbSet<Person> People { get; set; } // person
+        DbSet<PersonPhoto> PersonPhotoes { get; set; } // person_photo
+        DbSet<PkOrdinalTest> PkOrdinalTests { get; set; } // pk_ordinal_test
+        DbSet<PrincipalKeyChild> PrincipalKeyChilds { get; set; } // principal_key_child
+        DbSet<SequenceTest> SequenceTests { get; set; } // sequence_test
+        DbSet<SerialTest> SerialTests { get; set; } // serial_test
+        DbSet<Student> Students { get; set; } // student
+        DbSet<StudentCourse> StudentCourses { get; set; } // student_course
+        DbSet<Truck> Trucks { get; set; } // truck
+        DbSet<UnenforcedChild> UnenforcedChilds { get; set; } // unenforced_child
+        DbSet<UnenforcedParent> UnenforcedParents { get; set; } // unenforced_parent
+        DbSet<Vehicle> Vehicles { get; set; } // vehicle
 
         int SaveChanges();
         Task<int> SaveChangesAsync();
@@ -48,6 +84,37 @@ namespace Efrpg.PostgreSQL
         DbSet Set(Type entityType);
         DbSet<TEntity> Set<TEntity>() where TEntity : class;
         string ToString();
+
+        // Stored Procedures
+        int TouchParent(int? keyOne, int? keyTwo);
+        Task<int> TouchParentAsync(int? keyOne, int? keyTwo, CancellationToken cancellationToken = default(CancellationToken));
+
+
+        // Table Valued Functions
+
+        [DbFunction("MyEf6DbContext", "all_parents")]
+        [CodeFirstStoreFunctions.DbFunctionDetails(DatabaseSchema = "public")]
+        IQueryable<AllParentsReturnModel> AllParents();
+
+        [DbFunction("MyEf6DbContext", "children_of")]
+        [CodeFirstStoreFunctions.DbFunctionDetails(DatabaseSchema = "public")]
+        IQueryable<ChildrenOfReturnModel> ChildrenOf(int? parentKeyOne, int? parentKeyTwo);
+
+        [DbFunction("MyEf6DbContext", "count_children")]
+        [CodeFirstStoreFunctions.DbFunctionDetails(DatabaseSchema = "public")]
+        IQueryable<CountChildrenReturnModel> CountChildren(int? parentKeyOne, ref int? runningTotal);
+
+        [DbFunction("MyEf6DbContext", "parent_names")]
+        [CodeFirstStoreFunctions.DbFunctionDetails(DatabaseSchema = "public", ResultColumnName = "parent_names")]
+        IQueryable<ParentNamesReturnModel> ParentNames();
+
+        // Scalar Valued Functions
+        int another_SchemaScoped(int? n); // another.schema_scoped
+        string ChildCompositeStamp(); // public.child_composite_stamp
+        bool IsHighValue(decimal? value, decimal? threshold); // public.is_high_value
+        decimal LineTotal(int? quantity, decimal? unitPrice); // public.line_total
+        int NoParameters(); // public.no_parameters
+        string SplitName(string wholeName); // public.split_name
     }
 
     #endregion
@@ -56,10 +123,46 @@ namespace Efrpg.PostgreSQL
 
     public class MyEf6DbContext : DbContext, IMyEf6DbContext
     {
+        public DbSet<Airport> Airports { get; set; } // airport
         public DbSet<Allcolumntype> Allcolumntypes { get; set; } // allcolumntypes
         public DbSet<another_CategoryDescription> another_CategoryDescriptions { get; set; } // category_description
+        public DbSet<another_DuplicatedName> another_DuplicatedNames { get; set; } // duplicated_name
+        public DbSet<another_HarishChild> another_HarishChilds { get; set; } // harish_child
+        public DbSet<another_HarishParent> another_HarishParents { get; set; } // harish_parent
         public DbSet<another_Status> another_Status { get; set; } // status
+        public DbSet<CaseOnlyDifference> CaseOnlyDifferences { get; set; } // case_only_difference
         public DbSet<Category> Categories { get; set; } // categories
+        public DbSet<CategoRy> CategoRies { get; set; } // CATEGORIES
+        public DbSet<ChildComposite> ChildComposites { get; set; } // child_composite
+        public DbSet<Course> Courses { get; set; } // course
+        public DbSet<CurrenCy> CurrenCies { get; set; } // CURRENCIES
+        public DbSet<DefaultsAndGenerated> DefaultsAndGenerateds { get; set; } // defaults_and_generated
+        public DbSet<DuplicatedName> DuplicatedNames { get; set; } // duplicated_name
+        public DbSet<Employee> Employees { get; set; } // employee
+        public DbSet<Flight> Flights { get; set; } // flight
+        public DbSet<HarishChild> HarishChilds { get; set; } // harish_child
+        public DbSet<HarishParent> HarishParents { get; set; } // harish_parent
+        public DbSet<IdentityAlway> IdentityAlways { get; set; } // identity_always
+        public DbSet<IdentityByDefault> IdentityByDefaults { get; set; } // identity_by_default
+        public DbSet<IndexTest> IndexTests { get; set; } // index_test
+        public DbSet<Measurement> Measurements { get; set; } // measurement
+        public DbSet<Measurement2025> Measurement2025 { get; set; } // measurement_2025
+        public DbSet<Mixed Case Schema_SpacedTableName> Mixed Case Schema_SpacedTableNames { get; set; } // Spaced Table Name
+        public DbSet<NoPrimaryKey> NoPrimaryKeys { get; set; } // no_primary_key
+        public DbSet<OrderStatus> OrderStatus { get; set; } // order_status
+        public DbSet<ParentComposite> ParentComposites { get; set; } // parent_composite
+        public DbSet<Person> People { get; set; } // person
+        public DbSet<PersonPhoto> PersonPhotoes { get; set; } // person_photo
+        public DbSet<PkOrdinalTest> PkOrdinalTests { get; set; } // pk_ordinal_test
+        public DbSet<PrincipalKeyChild> PrincipalKeyChilds { get; set; } // principal_key_child
+        public DbSet<SequenceTest> SequenceTests { get; set; } // sequence_test
+        public DbSet<SerialTest> SerialTests { get; set; } // serial_test
+        public DbSet<Student> Students { get; set; } // student
+        public DbSet<StudentCourse> StudentCourses { get; set; } // student_course
+        public DbSet<Truck> Trucks { get; set; } // truck
+        public DbSet<UnenforcedChild> UnenforcedChilds { get; set; } // unenforced_child
+        public DbSet<UnenforcedParent> UnenforcedParents { get; set; } // unenforced_parent
+        public DbSet<Vehicle> Vehicles { get; set; } // vehicle
 
         static MyEf6DbContext()
         {
@@ -120,20 +223,259 @@ namespace Efrpg.PostgreSQL
         {
             base.OnModelCreating(modelBuilder);
 
+            modelBuilder.Conventions.Add(new CodeFirstStoreFunctions.FunctionsConvention<MyEf6DbContext>("public"));
+
+            modelBuilder.ComplexType<AllParentsReturnModel>();
+            modelBuilder.ComplexType<ChildrenOfReturnModel>();
+            modelBuilder.ComplexType<CountChildrenReturnModel>();
+            modelBuilder.ComplexType<ParentNamesReturnModel>();
+
+            modelBuilder.Configurations.Add(new AirportConfiguration());
             modelBuilder.Configurations.Add(new AllcolumntypeConfiguration());
             modelBuilder.Configurations.Add(new another_CategoryDescriptionConfiguration());
+            modelBuilder.Configurations.Add(new another_DuplicatedNameConfiguration());
+            modelBuilder.Configurations.Add(new another_HarishChildConfiguration());
+            modelBuilder.Configurations.Add(new another_HarishParentConfiguration());
             modelBuilder.Configurations.Add(new another_StatusConfiguration());
+            modelBuilder.Configurations.Add(new CaseOnlyDifferenceConfiguration());
             modelBuilder.Configurations.Add(new CategoryConfiguration());
+            modelBuilder.Configurations.Add(new CategoRyConfiguration());
+            modelBuilder.Configurations.Add(new ChildCompositeConfiguration());
+            modelBuilder.Configurations.Add(new CourseConfiguration());
+            modelBuilder.Configurations.Add(new CurrenCyConfiguration());
+            modelBuilder.Configurations.Add(new DefaultsAndGeneratedConfiguration());
+            modelBuilder.Configurations.Add(new DuplicatedNameConfiguration());
+            modelBuilder.Configurations.Add(new EmployeeConfiguration());
+            modelBuilder.Configurations.Add(new FlightConfiguration());
+            modelBuilder.Configurations.Add(new HarishChildConfiguration());
+            modelBuilder.Configurations.Add(new HarishParentConfiguration());
+            modelBuilder.Configurations.Add(new IdentityAlwayConfiguration());
+            modelBuilder.Configurations.Add(new IdentityByDefaultConfiguration());
+            modelBuilder.Configurations.Add(new IndexTestConfiguration());
+            modelBuilder.Configurations.Add(new MeasurementConfiguration());
+            modelBuilder.Configurations.Add(new Measurement2025Configuration());
+            modelBuilder.Configurations.Add(new Mixed Case Schema_SpacedTableNameConfiguration());
+            modelBuilder.Configurations.Add(new NoPrimaryKeyConfiguration());
+            modelBuilder.Configurations.Add(new OrderStatusConfiguration());
+            modelBuilder.Configurations.Add(new ParentCompositeConfiguration());
+            modelBuilder.Configurations.Add(new PersonConfiguration());
+            modelBuilder.Configurations.Add(new PersonPhotoConfiguration());
+            modelBuilder.Configurations.Add(new PkOrdinalTestConfiguration());
+            modelBuilder.Configurations.Add(new PrincipalKeyChildConfiguration());
+            modelBuilder.Configurations.Add(new SequenceTestConfiguration());
+            modelBuilder.Configurations.Add(new SerialTestConfiguration());
+            modelBuilder.Configurations.Add(new StudentConfiguration());
+            modelBuilder.Configurations.Add(new StudentCourseConfiguration());
+            modelBuilder.Configurations.Add(new TruckConfiguration());
+            modelBuilder.Configurations.Add(new UnenforcedChildConfiguration());
+            modelBuilder.Configurations.Add(new UnenforcedParentConfiguration());
+            modelBuilder.Configurations.Add(new VehicleConfiguration());
+
+            // Indexes
+            modelBuilder.Entity<ChildComposite>()
+                .Property(e => e.ParentKeyOne)
+                .HasColumnAnnotation(
+                    IndexAnnotation.AnnotationName,
+                    new IndexAnnotation(new IndexAttribute("ix_child_composite_parent", 1))
+                );
+
+            modelBuilder.Entity<ChildComposite>()
+                .Property(e => e.ParentKeyTwo)
+                .HasColumnAnnotation(
+                    IndexAnnotation.AnnotationName,
+                    new IndexAnnotation(new IndexAttribute("ix_child_composite_parent", 2))
+                );
+
+            modelBuilder.Entity<IndexTest>()
+                .Property(e => e.UniqueCol)
+                .HasColumnAnnotation(
+                    IndexAnnotation.AnnotationName,
+                    new IndexAnnotation(new IndexAttribute("uq_index_test_unique_col", 1) { IsUnique = true })
+                );
+
+            modelBuilder.Entity<IndexTest>()
+                .Property(e => e.A)
+                .HasColumnAnnotation(
+                    IndexAnnotation.AnnotationName,
+                    new IndexAnnotation(new[]
+                    {
+                        new IndexAttribute("ix_index_test_live", 1),
+                        new IndexAttribute("ux_index_test_a_b", 1) { IsUnique = true }
+                    }));
+
+            modelBuilder.Entity<IndexTest>()
+                .Property(e => e.B)
+                .HasColumnAnnotation(
+                    IndexAnnotation.AnnotationName,
+                    new IndexAnnotation(new IndexAttribute("ux_index_test_a_b", 2) { IsUnique = true })
+                );
+
+            modelBuilder.Entity<ParentComposite>()
+                .Property(e => e.AltKey)
+                .HasColumnAnnotation(
+                    IndexAnnotation.AnnotationName,
+                    new IndexAnnotation(new IndexAttribute("uq_parent_composite_alt_key", 1) { IsUnique = true })
+                );
+
         }
 
         public static DbModelBuilder CreateModel(DbModelBuilder modelBuilder, string schema)
         {
+            modelBuilder.Configurations.Add(new AirportConfiguration(schema));
             modelBuilder.Configurations.Add(new AllcolumntypeConfiguration(schema));
             modelBuilder.Configurations.Add(new another_CategoryDescriptionConfiguration(schema));
+            modelBuilder.Configurations.Add(new another_DuplicatedNameConfiguration(schema));
+            modelBuilder.Configurations.Add(new another_HarishChildConfiguration(schema));
+            modelBuilder.Configurations.Add(new another_HarishParentConfiguration(schema));
             modelBuilder.Configurations.Add(new another_StatusConfiguration(schema));
+            modelBuilder.Configurations.Add(new CaseOnlyDifferenceConfiguration(schema));
             modelBuilder.Configurations.Add(new CategoryConfiguration(schema));
+            modelBuilder.Configurations.Add(new CategoRyConfiguration(schema));
+            modelBuilder.Configurations.Add(new ChildCompositeConfiguration(schema));
+            modelBuilder.Configurations.Add(new CourseConfiguration(schema));
+            modelBuilder.Configurations.Add(new CurrenCyConfiguration(schema));
+            modelBuilder.Configurations.Add(new DefaultsAndGeneratedConfiguration(schema));
+            modelBuilder.Configurations.Add(new DuplicatedNameConfiguration(schema));
+            modelBuilder.Configurations.Add(new EmployeeConfiguration(schema));
+            modelBuilder.Configurations.Add(new FlightConfiguration(schema));
+            modelBuilder.Configurations.Add(new HarishChildConfiguration(schema));
+            modelBuilder.Configurations.Add(new HarishParentConfiguration(schema));
+            modelBuilder.Configurations.Add(new IdentityAlwayConfiguration(schema));
+            modelBuilder.Configurations.Add(new IdentityByDefaultConfiguration(schema));
+            modelBuilder.Configurations.Add(new IndexTestConfiguration(schema));
+            modelBuilder.Configurations.Add(new MeasurementConfiguration(schema));
+            modelBuilder.Configurations.Add(new Measurement2025Configuration(schema));
+            modelBuilder.Configurations.Add(new Mixed Case Schema_SpacedTableNameConfiguration(schema));
+            modelBuilder.Configurations.Add(new NoPrimaryKeyConfiguration(schema));
+            modelBuilder.Configurations.Add(new OrderStatusConfiguration(schema));
+            modelBuilder.Configurations.Add(new ParentCompositeConfiguration(schema));
+            modelBuilder.Configurations.Add(new PersonConfiguration(schema));
+            modelBuilder.Configurations.Add(new PersonPhotoConfiguration(schema));
+            modelBuilder.Configurations.Add(new PkOrdinalTestConfiguration(schema));
+            modelBuilder.Configurations.Add(new PrincipalKeyChildConfiguration(schema));
+            modelBuilder.Configurations.Add(new SequenceTestConfiguration(schema));
+            modelBuilder.Configurations.Add(new SerialTestConfiguration(schema));
+            modelBuilder.Configurations.Add(new StudentConfiguration(schema));
+            modelBuilder.Configurations.Add(new StudentCourseConfiguration(schema));
+            modelBuilder.Configurations.Add(new TruckConfiguration(schema));
+            modelBuilder.Configurations.Add(new UnenforcedChildConfiguration(schema));
+            modelBuilder.Configurations.Add(new UnenforcedParentConfiguration(schema));
+            modelBuilder.Configurations.Add(new VehicleConfiguration(schema));
 
             return modelBuilder;
+        }
+
+        // Stored Procedures
+        public int TouchParent(int? keyOne = null, int? keyTwo = null)
+        {
+            var keyOneParam = new NpgsqlParameter { ParameterName = "key_one", SqlDbType = SqlDbType.integer, Direction = ParameterDirection.Input, Value = keyOne.GetValueOrDefault() };
+            if (!keyOne.HasValue)
+                keyOneParam.Value = DBNull.Value;
+
+            var keyTwoParam = new NpgsqlParameter { ParameterName = "key_two", SqlDbType = SqlDbType.integer, Direction = ParameterDirection.Input, Value = keyTwo.GetValueOrDefault() };
+            if (!keyTwo.HasValue)
+                keyTwoParam.Value = DBNull.Value;
+
+            var procResultParam = new NpgsqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+
+            Database.ExecuteSqlCommand(TransactionalBehavior.DoNotEnsureTransaction, "EXEC @procResult = [public].[touch_parent] key_one, key_two", keyOneParam, keyTwoParam, procResultParam);
+
+            return (int)procResultParam.Value;
+        }
+
+        public async Task<int> TouchParentAsync(int? keyOne = null, int? keyTwo = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var keyOneParam = new NpgsqlParameter { ParameterName = "key_one", SqlDbType = SqlDbType.integer, Direction = ParameterDirection.Input, Value = keyOne.GetValueOrDefault() };
+            if (!keyOne.HasValue)
+                keyOneParam.Value = DBNull.Value;
+
+            var keyTwoParam = new NpgsqlParameter { ParameterName = "key_two", SqlDbType = SqlDbType.integer, Direction = ParameterDirection.Input, Value = keyTwo.GetValueOrDefault() };
+            if (!keyTwo.HasValue)
+                keyTwoParam.Value = DBNull.Value;
+
+            var procResultParam = new NpgsqlParameter { ParameterName = "@procResult", SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output };
+
+            await Database.ExecuteSqlCommandAsync(TransactionalBehavior.DoNotEnsureTransaction, "EXEC @procResult = [public].[touch_parent] key_one, key_two", cancellationToken, keyOneParam, keyTwoParam, procResultParam);
+
+            return (int)procResultParam.Value;
+        }
+
+
+        // Table Valued Functions
+
+        [DbFunction("MyEf6DbContext", "all_parents")]
+        [CodeFirstStoreFunctions.DbFunctionDetails(DatabaseSchema = "public")]
+        public IQueryable<AllParentsReturnModel> AllParents()
+        {
+
+            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<AllParentsReturnModel>("[MyEf6DbContext].[all_parents]()", new ObjectParameter[] { });
+        }
+
+        [DbFunction("MyEf6DbContext", "children_of")]
+        [CodeFirstStoreFunctions.DbFunctionDetails(DatabaseSchema = "public")]
+        public IQueryable<ChildrenOfReturnModel> ChildrenOf(int? parentKeyOne = null, int? parentKeyTwo = null)
+        {
+            var parentKeyOneParam = new ObjectParameter("arent_key_one", typeof(int)) { Value = (object)parentKeyOne ?? DBNull.Value };
+            var parentKeyTwoParam = new ObjectParameter("arent_key_two", typeof(int)) { Value = (object)parentKeyTwo ?? DBNull.Value };
+
+            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<ChildrenOfReturnModel>("[MyEf6DbContext].[children_of](parent_key_one, parent_key_two)", parentKeyOneParam, parentKeyTwoParam);
+        }
+
+        [DbFunction("MyEf6DbContext", "count_children")]
+        [CodeFirstStoreFunctions.DbFunctionDetails(DatabaseSchema = "public")]
+        public IQueryable<CountChildrenReturnModel> CountChildren(int? parentKeyOne, ref int? runningTotal)
+        {
+            var parentKeyOneParam = new ObjectParameter("arent_key_one", typeof(int)) { Value = (object)parentKeyOne ?? DBNull.Value };
+            var childCountParam = new ObjectParameter("hild_count", typeof(int)) { Value = (object)childCount ?? DBNull.Value };
+            var runningTotalParam = new ObjectParameter("unning_total", typeof(int)) { Value = (object)runningTotal ?? DBNull.Value };
+
+            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<CountChildrenReturnModel>("[MyEf6DbContext].[count_children](parent_key_one, child_count OUTPUT, running_total OUTPUT)", parentKeyOneParam, childCountParam, runningTotalParam);
+        }
+
+        [DbFunction("MyEf6DbContext", "parent_names")]
+        [CodeFirstStoreFunctions.DbFunctionDetails(DatabaseSchema = "public", ResultColumnName = "parent_names")]
+        public IQueryable<ParentNamesReturnModel> ParentNames()
+        {
+
+            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<ParentNamesReturnModel>("[MyEf6DbContext].[parent_names]()", new ObjectParameter[] { });
+        }
+
+        // Scalar Valued Functions
+
+        [DbFunction("CodeFirstDatabaseSchema", "schema_scoped")]
+        public int another_SchemaScoped(int? n = null)
+        {
+            throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
+        }
+
+        [DbFunction("CodeFirstDatabaseSchema", "child_composite_stamp")]
+        public string ChildCompositeStamp()
+        {
+            throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
+        }
+
+        [DbFunction("CodeFirstDatabaseSchema", "is_high_value")]
+        public bool IsHighValue(decimal? value, decimal? threshold = 1000m)
+        {
+            throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
+        }
+
+        [DbFunction("CodeFirstDatabaseSchema", "line_total")]
+        public decimal LineTotal(int? quantity = null, decimal? unitPrice = null)
+        {
+            throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
+        }
+
+        [DbFunction("CodeFirstDatabaseSchema", "no_parameters")]
+        public int NoParameters()
+        {
+            throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
+        }
+
+        [DbFunction("CodeFirstDatabaseSchema", "split_name")]
+        public string SplitName(string wholeName)
+        {
+            throw new Exception("Don't call this directly. Use LINQ to call the scalar valued function as part of your query");
         }
     }
 
@@ -155,10 +497,46 @@ namespace Efrpg.PostgreSQL
 
     public class FakeMyEf6DbContext : IMyEf6DbContext
     {
+        public DbSet<Airport> Airports { get; set; } // airport
         public DbSet<Allcolumntype> Allcolumntypes { get; set; } // allcolumntypes
         public DbSet<another_CategoryDescription> another_CategoryDescriptions { get; set; } // category_description
+        public DbSet<another_DuplicatedName> another_DuplicatedNames { get; set; } // duplicated_name
+        public DbSet<another_HarishChild> another_HarishChilds { get; set; } // harish_child
+        public DbSet<another_HarishParent> another_HarishParents { get; set; } // harish_parent
         public DbSet<another_Status> another_Status { get; set; } // status
+        public DbSet<CaseOnlyDifference> CaseOnlyDifferences { get; set; } // case_only_difference
         public DbSet<Category> Categories { get; set; } // categories
+        public DbSet<CategoRy> CategoRies { get; set; } // CATEGORIES
+        public DbSet<ChildComposite> ChildComposites { get; set; } // child_composite
+        public DbSet<Course> Courses { get; set; } // course
+        public DbSet<CurrenCy> CurrenCies { get; set; } // CURRENCIES
+        public DbSet<DefaultsAndGenerated> DefaultsAndGenerateds { get; set; } // defaults_and_generated
+        public DbSet<DuplicatedName> DuplicatedNames { get; set; } // duplicated_name
+        public DbSet<Employee> Employees { get; set; } // employee
+        public DbSet<Flight> Flights { get; set; } // flight
+        public DbSet<HarishChild> HarishChilds { get; set; } // harish_child
+        public DbSet<HarishParent> HarishParents { get; set; } // harish_parent
+        public DbSet<IdentityAlway> IdentityAlways { get; set; } // identity_always
+        public DbSet<IdentityByDefault> IdentityByDefaults { get; set; } // identity_by_default
+        public DbSet<IndexTest> IndexTests { get; set; } // index_test
+        public DbSet<Measurement> Measurements { get; set; } // measurement
+        public DbSet<Measurement2025> Measurement2025 { get; set; } // measurement_2025
+        public DbSet<Mixed Case Schema_SpacedTableName> Mixed Case Schema_SpacedTableNames { get; set; } // Spaced Table Name
+        public DbSet<NoPrimaryKey> NoPrimaryKeys { get; set; } // no_primary_key
+        public DbSet<OrderStatus> OrderStatus { get; set; } // order_status
+        public DbSet<ParentComposite> ParentComposites { get; set; } // parent_composite
+        public DbSet<Person> People { get; set; } // person
+        public DbSet<PersonPhoto> PersonPhotoes { get; set; } // person_photo
+        public DbSet<PkOrdinalTest> PkOrdinalTests { get; set; } // pk_ordinal_test
+        public DbSet<PrincipalKeyChild> PrincipalKeyChilds { get; set; } // principal_key_child
+        public DbSet<SequenceTest> SequenceTests { get; set; } // sequence_test
+        public DbSet<SerialTest> SerialTests { get; set; } // serial_test
+        public DbSet<Student> Students { get; set; } // student
+        public DbSet<StudentCourse> StudentCourses { get; set; } // student_course
+        public DbSet<Truck> Trucks { get; set; } // truck
+        public DbSet<UnenforcedChild> UnenforcedChilds { get; set; } // unenforced_child
+        public DbSet<UnenforcedParent> UnenforcedParents { get; set; } // unenforced_parent
+        public DbSet<Vehicle> Vehicles { get; set; } // vehicle
 
         public FakeMyEf6DbContext()
         {
@@ -166,10 +544,46 @@ namespace Efrpg.PostgreSQL
             _configuration = null;
             _database = null;
 
+            Airports = new FakeDbSet<Airport>("AirportId");
             Allcolumntypes = new FakeDbSet<Allcolumntype>("Bigint");
             another_CategoryDescriptions = new FakeDbSet<another_CategoryDescription>("CategoryId");
+            another_DuplicatedNames = new FakeDbSet<another_DuplicatedName>("Id");
+            another_HarishChilds = new FakeDbSet<another_HarishChild>("Id");
+            another_HarishParents = new FakeDbSet<another_HarishParent>("Id");
             another_Status = new FakeDbSet<another_Status>("Id");
+            CaseOnlyDifferences = new FakeDbSet<CaseOnlyDifference>("Id");
             Categories = new FakeDbSet<Category>("CategoryId");
+            CategoRies = new FakeDbSet<CategoRy>("Id");
+            ChildComposites = new FakeDbSet<ChildComposite>("ChildId");
+            Courses = new FakeDbSet<Course>("CourseId");
+            CurrenCies = new FakeDbSet<CurrenCy>("Id");
+            DefaultsAndGenerateds = new FakeDbSet<DefaultsAndGenerated>("Id");
+            DuplicatedNames = new FakeDbSet<DuplicatedName>("Id");
+            Employees = new FakeDbSet<Employee>("EmployeeId");
+            Flights = new FakeDbSet<Flight>("FlightId");
+            HarishChilds = new FakeDbSet<HarishChild>("Id");
+            HarishParents = new FakeDbSet<HarishParent>("Id");
+            IdentityAlways = new FakeDbSet<IdentityAlway>("Id");
+            IdentityByDefaults = new FakeDbSet<IdentityByDefault>("Id");
+            IndexTests = new FakeDbSet<IndexTest>("Id");
+            Measurements = new FakeDbSet<Measurement>("CityId", "Logdate");
+            Measurement2025 = new FakeDbSet<Measurement2025>("CityId", "Logdate");
+            Mixed Case Schema_SpacedTableNames = new FakeDbSet<Mixed Case Schema_SpacedTableName>("SpacedTableName");
+            NoPrimaryKeys = new FakeDbSet<NoPrimaryKey>("A", "B");
+            OrderStatus = new FakeDbSet<OrderStatus>("OrderStatusId");
+            ParentComposites = new FakeDbSet<ParentComposite>("KeyOne", "KeyTwo");
+            People = new FakeDbSet<Person>("PersonId");
+            PersonPhotoes = new FakeDbSet<PersonPhoto>("PersonId");
+            PkOrdinalTests = new FakeDbSet<PkOrdinalTest>("FirstKey", "SecondKey");
+            PrincipalKeyChilds = new FakeDbSet<PrincipalKeyChild>("Id");
+            SequenceTests = new FakeDbSet<SequenceTest>("Id");
+            SerialTests = new FakeDbSet<SerialTest>("Id");
+            Students = new FakeDbSet<Student>("StudentId");
+            StudentCourses = new FakeDbSet<StudentCourse>("StudentId", "CourseId");
+            Trucks = new FakeDbSet<Truck>("VehicleId", "Registration", "PayloadKg");
+            UnenforcedChilds = new FakeDbSet<UnenforcedChild>("Id");
+            UnenforcedParents = new FakeDbSet<UnenforcedParent>("Id");
+            Vehicles = new FakeDbSet<Vehicle>("VehicleId");
 
         }
 
@@ -241,6 +655,82 @@ namespace Efrpg.PostgreSQL
         public override string ToString()
         {
             throw new NotImplementedException();
+        }
+
+        // Stored Procedures
+
+        public int TouchParent(int? keyOne = null, int? keyTwo = null)
+        {
+            return 0;
+        }
+
+        public Task<int> TouchParentAsync(int? keyOne = null, int? keyTwo = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return Task.FromResult(0);
+        }
+
+        // Table Valued Functions
+
+        [DbFunction("MyEf6DbContext", "all_parents")]
+        public IQueryable<AllParentsReturnModel> AllParents()
+        {
+            return new List<AllParentsReturnModel>().AsQueryable();
+        }
+
+        [DbFunction("MyEf6DbContext", "children_of")]
+        public IQueryable<ChildrenOfReturnModel> ChildrenOf(int? parentKeyOne = null, int? parentKeyTwo = null)
+        {
+            return new List<ChildrenOfReturnModel>().AsQueryable();
+        }
+
+        [DbFunction("MyEf6DbContext", "count_children")]
+        public IQueryable<CountChildrenReturnModel> CountChildren(int? parentKeyOne, ref int? runningTotal)
+        {
+            return new List<CountChildrenReturnModel>().AsQueryable();
+        }
+
+        [DbFunction("MyEf6DbContext", "parent_names")]
+        public IQueryable<ParentNamesReturnModel> ParentNames()
+        {
+            return new List<ParentNamesReturnModel>().AsQueryable();
+        }
+
+        // Scalar Valued Functions
+
+        // another.schema_scoped
+        public int another_SchemaScoped(int? n = null)
+        {
+            return default(int);
+        }
+
+        // public.child_composite_stamp
+        public string ChildCompositeStamp()
+        {
+            return default(string);
+        }
+
+        // public.is_high_value
+        public bool IsHighValue(decimal? value, decimal? threshold = 1000m)
+        {
+            return default(bool);
+        }
+
+        // public.line_total
+        public decimal LineTotal(int? quantity = null, decimal? unitPrice = null)
+        {
+            return default(decimal);
+        }
+
+        // public.no_parameters
+        public int NoParameters()
+        {
+            return default(int);
+        }
+
+        // public.split_name
+        public string SplitName(string wholeName)
+        {
+            return default(string);
         }
     }
 
@@ -511,18 +1001,78 @@ namespace Efrpg.PostgreSQL
 
     #region POCO classes
 
+    // The table 'active_children' is not usable by entity framework because it
+    // does not have a primary key. It is listed here for completeness.
+    // active_children
+    public class ActiveChild
+    {
+        public int? ChildId { get; set; } // child_id
+        public string Description { get; set; } // description (length: 50)
+        public string ParentName { get; set; } // parent_name (length: 50)
+    }
+
+    // airport
+    public class Airport
+    {
+        public int AirportId { get; set; } // airport_id (Primary key)
+        public string Name { get; set; } // name (length: 50)
+
+        // Reverse navigation
+
+        /// <summary>
+        /// Child Flights where [flight].[arrival_airport_id] point to this entity (fk_flight_arrival)
+        /// </summary>
+        public virtual ICollection<Flight> Flights_ArrivalAirportId { get; set; } // flight.fk_flight_arrival
+
+        /// <summary>
+        /// Child Flights where [flight].[departure_airport_id] point to this entity (fk_flight_departure)
+        /// </summary>
+        public virtual ICollection<Flight> Flights_DepartureAirportId { get; set; } // flight.fk_flight_departure
+
+        public Airport()
+        {
+            Flights_ArrivalAirportId = new List<Flight>();
+            Flights_DepartureAirportId = new List<Flight>();
+        }
+    }
+
+    // The table 'all_columns_null' is not usable by entity framework because it
+    // does not have a primary key. It is listed here for completeness.
+    // all_columns_null
+    public class AllColumnsNull
+    {
+        public int? A { get; set; } // a
+        public string B { get; set; } // b
+        public DateTime? C { get; set; } // c
+    }
+
+    // The table 'all_columns_null_view' is not usable by entity framework because it
+    // does not have a primary key. It is listed here for completeness.
+    // all_columns_null_view
+    public class AllColumnsNullView
+    {
+        public int? A { get; set; } // a
+        public string B { get; set; } // b
+        public DateTime? C { get; set; } // c
+    }
+
     // allcolumntypes
+    /// <summary>
+    /// One column per PostgreSQL type, to exercise the language mapping
+    /// </summary>
     public class Allcolumntype
     {
         public long Bigint { get; set; } // bigint (Primary key)
         public BitArray? Bit1 { get; set; } // bit_1 (length: 1)
         public BitArray? Bit8 { get; set; } // bit_8 (length: 8)
+        public BitArray? BitVarying { get; set; } // bit_varying (length: 16)
         public bool? Boolean { get; set; } // boolean
         public NpgsqlBox? Box { get; set; } // box
         public byte[] Bytea { get; set; } // bytea
         public string @Char { get; set; } // char (length: 1)
         public string Character { get; set; } // character (length: 1)
         public string CharacterVarying { get; set; } // character_varying
+        public string CharacterVarying50 { get; set; } // character_varying_50 (length: 50)
         public uint? Cid { get; set; } // cid
         public NpgsqlInet? Cidr { get; set; } // cidr
         public NpgsqlCircle? Circle { get; set; } // circle
@@ -532,14 +1082,21 @@ namespace Efrpg.PostgreSQL
         public int? Integer { get; set; } // integer
         public TimeSpan? Interval { get; set; } // interval
         public string Json { get; set; } // json
+
+        /// <summary>
+        /// A column comment, read through pg_description with objsubid &gt; 0
+        /// </summary>
         public string Jsonb { get; set; } // jsonb
         public NpgsqlLine? Line { get; set; } // line
         public NpgsqlLSeg? Lseg { get; set; } // lseg
+        public PhysicalAddress? Macaddr { get; set; } // macaddr
+        public PhysicalAddress? Macaddr8 { get; set; } // macaddr8
         public decimal? Money { get; set; } // money
         public string Name { get; set; } // name
         public decimal? Numeric { get; set; } // numeric
+        public decimal? Numeric184 { get; set; } // numeric_18_4
         public uint? Oid { get; set; } // oid
-        public string Oidvector { get; set; } // oidvector
+        public uint[]? Oidvector { get; set; } // oidvector
         public NpgsqlPath? Path { get; set; } // path
         public NpgsqlPoint? Point { get; set; } // point
         public NpgsqlPolygon? Polygon { get; set; } // polygon
@@ -550,9 +1107,23 @@ namespace Efrpg.PostgreSQL
         public TimeSpan? TimeWithoutTimeZone { get; set; } // time_without_time_zone
         public DateTime? TimestampWithTimeZone { get; set; } // timestamp_with_time_zone
         public DateTime? TimestampWithoutTimeZone { get; set; } // timestamp_without_time_zone
+        public NpgsqlTsQuery? Tsquery { get; set; } // tsquery
+        public NpgsqlTsVector? Tsvector { get; set; } // tsvector
         public Guid? Uuid { get; set; } // uuid
         public uint? Xid { get; set; } // xid
         public string Xml { get; set; } // xml
+        public string Mood { get; set; } // mood
+        public int? PositiveInt { get; set; } // positive_int
+        public string FullName { get; set; } // full_name
+
+        /// <summary>
+        /// Arrays have no SQL Server equivalent
+        /// </summary>
+        public int[]? IntArray { get; set; } // int_array
+        public string[]? TextArray { get; set; } // text_array
+        public int[]? IntMatrix { get; set; } // int_matrix
+        public NpgsqlRange<int>? Int4Range { get; set; } // int4range
+        public NpgsqlRange<DateTime>? Tstzrange { get; set; } // tstzrange
     }
 
     // category_description
@@ -569,11 +1140,63 @@ namespace Efrpg.PostgreSQL
         public virtual Category Category { get; set; } // fk_category_description
     }
 
+    // duplicated_name
+    public class another_DuplicatedName
+    {
+        public int Id { get; set; } // id (Primary key)
+        public string Marker { get; set; } // marker (length: 10)
+
+        public another_DuplicatedName()
+        {
+            Marker = "another";
+        }
+    }
+
+    // harish_child
+    public class another_HarishChild
+    {
+        public int Id { get; set; } // id (Primary key)
+        public int ParentId { get; set; } // parent_id
+
+        // Foreign keys
+
+        /// <summary>
+        /// Parent another_HarishParent pointed by [harish_child].([ParentId]) (fk_harish)
+        /// </summary>
+        public virtual another_HarishParent another_HarishParent { get; set; } // fk_harish
+    }
+
+    // harish_parent
+    public class another_HarishParent
+    {
+        public int Id { get; set; } // id (Primary key)
+
+        // Reverse navigation
+
+        /// <summary>
+        /// Child another_HarishChilds where [harish_child].[parent_id] point to this entity (fk_harish)
+        /// </summary>
+        public virtual ICollection<another_HarishChild> another_HarishChilds { get; set; } // harish_child.fk_harish
+
+        public another_HarishParent()
+        {
+            another_HarishChilds = new List<another_HarishChild>();
+        }
+    }
+
     // status
     public class another_Status
     {
         public int Id { get; set; } // id (Primary key)
         public string Name { get; set; } // name (length: 10)
+    }
+
+    // case_only_difference
+    public class CaseOnlyDifference
+    {
+        public int Id { get; set; } // id (Primary key)
+        public string Value1 { get; set; } // Value (length: 10)
+        public string Value { get; set; } // value (length: 10)
     }
 
     // categories
@@ -590,10 +1213,442 @@ namespace Efrpg.PostgreSQL
         public virtual another_CategoryDescription another_CategoryDescription { get; set; } // category_description.fk_category_description
     }
 
+    // CATEGORIES
+    public class CategoRy
+    {
+        public int Id { get; set; } // id (Primary key)
+        public string Name { get; set; } // name (length: 50)
+    }
+
+    // child_composite
+    public class ChildComposite
+    {
+        public int ChildId { get; set; } // child_id (Primary key)
+        public int ParentKeyOne { get; set; } // parent_key_one
+        public int ParentKeyTwo { get; set; } // parent_key_two
+        public string Description { get; set; } // description (length: 50)
+
+        // Foreign keys
+
+        /// <summary>
+        /// Parent ParentComposite pointed by [child_composite].([ParentKeyOne], [ParentKeyTwo]) (fk_child_composite_parent)
+        /// </summary>
+        public virtual ParentComposite ParentComposite { get; set; } // fk_child_composite_parent
+    }
+
+    // course
+    public class Course
+    {
+        public int CourseId { get; set; } // course_id (Primary key)
+        public string Title { get; set; } // title (length: 100)
+
+        // Reverse navigation
+
+        /// <summary>
+        /// Child StudentCourses where [student_course].[course_id] point to this entity (fk_student_course_course)
+        /// </summary>
+        public virtual ICollection<StudentCourse> StudentCourses { get; set; } // student_course.fk_student_course_course
+
+        public Course()
+        {
+            StudentCourses = new List<StudentCourse>();
+        }
+    }
+
+    // CURRENCIES
+    public class CurrenCy
+    {
+        public int Id { get; set; } // id (Primary key)
+        public string Code { get; set; } // code (length: 3)
+    }
+
+    // defaults_and_generated
+    /// <summary>
+    /// Column defaults and a stored generated column
+    /// </summary>
+    public class DefaultsAndGenerated
+    {
+        public int Id { get; set; } // id (Primary key)
+        public int Quantity { get; set; } // quantity
+        public decimal UnitPrice { get; set; } // unit_price
+        public string Description { get; set; } // description (length: 50)
+        public bool IsActive { get; set; } // is_active
+        public Guid ExternalRef { get; set; } // external_ref
+        public DateTime CreatedAt { get; set; } // created_at
+        public DateTime CreatedDate { get; set; } // created_date
+        public string TheWordNull { get; set; } // the_word_null (length: 20)
+        public string ReallyNull { get; set; } // really_null (length: 20)
+        public string[] Tags { get; set; } // tags
+        public decimal? LineTotal { get; private set; } // line_total
+
+        public DefaultsAndGenerated()
+        {
+            Quantity = 1;
+            UnitPrice = 9.99m;
+            Description = "Hello world";
+            IsActive = true;
+            ExternalRef = Guid.NewGuid();
+            TheWordNull = "NULL";
+            Tags = "{}";
+        }
+    }
+
+    // duplicated_name
+    public class DuplicatedName
+    {
+        public int Id { get; set; } // id (Primary key)
+        public string Marker { get; set; } // marker (length: 10)
+
+        public DuplicatedName()
+        {
+            Marker = "public";
+        }
+    }
+
+    // employee
+    public class Employee
+    {
+        public int EmployeeId { get; set; } // employee_id (Primary key)
+        public int? ManagerId { get; set; } // manager_id
+        public string FullName { get; set; } // full_name (length: 100)
+
+        // Reverse navigation
+
+        /// <summary>
+        /// Child Employees where [employee].[manager_id] point to this entity (fk_employee_manager)
+        /// </summary>
+        public virtual ICollection<Employee> Employees { get; set; } // employee.fk_employee_manager
+
+        // Foreign keys
+
+        /// <summary>
+        /// Parent Employee pointed by [employee].([ManagerId]) (fk_employee_manager)
+        /// </summary>
+        public virtual Employee Manager { get; set; } // fk_employee_manager
+
+        public Employee()
+        {
+            Employees = new List<Employee>();
+        }
+    }
+
+    // flight
+    public class Flight
+    {
+        public int FlightId { get; set; } // flight_id (Primary key)
+        public int DepartureAirportId { get; set; } // departure_airport_id
+        public int ArrivalAirportId { get; set; } // arrival_airport_id
+
+        // Foreign keys
+
+        /// <summary>
+        /// Parent Airport pointed by [flight].([ArrivalAirportId]) (fk_flight_arrival)
+        /// </summary>
+        public virtual Airport ArrivalAirport { get; set; } // fk_flight_arrival
+
+        /// <summary>
+        /// Parent Airport pointed by [flight].([DepartureAirportId]) (fk_flight_departure)
+        /// </summary>
+        public virtual Airport DepartureAirport { get; set; } // fk_flight_departure
+    }
+
+    // harish_child
+    public class HarishChild
+    {
+        public int Id { get; set; } // id (Primary key)
+        public int ParentId { get; set; } // parent_id
+
+        // Foreign keys
+
+        /// <summary>
+        /// Parent HarishParent pointed by [harish_child].([ParentId]) (fk_harish)
+        /// </summary>
+        public virtual HarishParent HarishParent { get; set; } // fk_harish
+    }
+
+    // harish_parent
+    public class HarishParent
+    {
+        public int Id { get; set; } // id (Primary key)
+
+        // Reverse navigation
+
+        /// <summary>
+        /// Child HarishChilds where [harish_child].[parent_id] point to this entity (fk_harish)
+        /// </summary>
+        public virtual ICollection<HarishChild> HarishChilds { get; set; } // harish_child.fk_harish
+
+        public HarishParent()
+        {
+            HarishChilds = new List<HarishChild>();
+        }
+    }
+
+    // identity_always
+    public class IdentityAlway
+    {
+        public int Id { get; set; } // id (Primary key)
+        public string Description { get; set; } // description
+    }
+
+    // identity_by_default
+    public class IdentityByDefault
+    {
+        public long Id { get; set; } // id (Primary key)
+        public string Description { get; set; } // description
+    }
+
+    // index_test
+    public class IndexTest
+    {
+        public int Id { get; set; } // id (Primary key)
+        public int UniqueCol { get; set; } // unique_col
+        public string LowerMe { get; set; } // lower_me (length: 50)
+        public bool IsDeleted { get; set; } // is_deleted
+        public int A { get; set; } // a
+        public int B { get; set; } // b
+
+        public IndexTest()
+        {
+            IsDeleted = false;
+        }
+    }
+
+    // measurement
+    public class Measurement
+    {
+        public int CityId { get; set; } // city_id (Primary key)
+        public DateTime Logdate { get; set; } // logdate (Primary key)
+        public int? Peaktemp { get; set; } // peaktemp
+    }
+
+    // measurement_2025
+    public class Measurement2025
+    {
+        public int CityId { get; set; } // city_id (Primary key)
+        public DateTime Logdate { get; set; } // logdate (Primary key)
+        public int? Peaktemp { get; set; } // peaktemp
+    }
+
+    // Spaced Table Name
+    /// <summary>
+    /// Every identifier here needs quoting
+    /// </summary>
+    public class Mixed Case Schema_SpacedTableName
+    {
+        public int SpacedTableName { get; set; } // Spaced Table Name (Primary key)
+        public string ColumnWithSpaces { get; set; } // Column With Spaces (length: 50)
+        public string ColumnWithHyphens { get; set; } // Column-With-Hyphens (length: 50)
+        public int? C1LeadingDigit { get; set; } // 1_leading_digit
+        public string Select { get; set; } // select (length: 50)
+        public string @Class { get; set; } // class (length: 50)
+        public string Event { get; set; } // event (length: 50)
+        public string @Namespace { get; set; } // namespace (length: 50)
+        public string @String { get; set; } // string (length: 50)
+        public string TableWithPeriods { get; set; } // table.with.periods (length: 50)
+        public string Бренды { get; set; } // Бренды (length: 50)
+        public string Œufs { get; set; } // œufs (length: 50)
+    }
+
+    // no_primary_key
+    public class NoPrimaryKey
+    {
+        public int A { get; set; } // a (Primary key)
+        public string B { get; set; } // b (Primary key) (length: 50)
+    }
+
+    // order_status
+    public class OrderStatus
+    {
+        public int OrderStatusId { get; set; } // order_status_id (Primary key)
+        public string Name { get; set; } // name (length: 30)
+        public string StatusGroup { get; set; } // status_group (length: 20)
+        public string Description { get; set; } // description (length: 100)
+    }
+
+    // parent_composite
+    public class ParentComposite
+    {
+        public int KeyOne { get; set; } // key_one (Primary key)
+        public int KeyTwo { get; set; } // key_two (Primary key)
+        public int AltKey { get; set; } // alt_key
+        public string Name { get; set; } // name (length: 50)
+
+        // Reverse navigation
+
+        /// <summary>
+        /// Parent (One-to-One) ParentComposite pointed by [child_composite].([parent_key_one], [parent_key_two]) (fk_child_composite_parent)
+        /// </summary>
+        public virtual ChildComposite ChildComposite { get; set; } // child_composite.fk_child_composite_parent
+    }
+
+    // person
+    public class Person
+    {
+        public int PersonId { get; set; } // person_id (Primary key)
+        public string FullName { get; set; } // full_name (length: 100)
+
+        // Reverse navigation
+
+        /// <summary>
+        /// Parent (One-to-One) Person pointed by [person_photo].[person_id] (fk_person_photo)
+        /// </summary>
+        public virtual PersonPhoto PersonPhoto { get; set; } // person_photo.fk_person_photo
+    }
+
+    // person_photo
+    public class PersonPhoto
+    {
+        public int PersonId { get; set; } // person_id (Primary key)
+        public byte[] Photo { get; set; } // photo
+
+        // Foreign keys
+
+        /// <summary>
+        /// Parent Person pointed by [person_photo].([PersonId]) (fk_person_photo)
+        /// </summary>
+        public virtual Person Person { get; set; } // fk_person_photo
+    }
+
+    // pk_ordinal_test
+    public class PkOrdinalTest
+    {
+        public string Filler { get; set; } // filler (length: 10)
+        public int SecondKey { get; set; } // second_key (Primary key)
+        public int FirstKey { get; set; } // first_key (Primary key)
+    }
+
+    // principal_key_child
+    public class PrincipalKeyChild
+    {
+        public int Id { get; set; } // id (Primary key)
+        public int ParentAltKey { get; set; } // parent_alt_key
+
+    }
+
+    // sequence_test
+    public class SequenceTest
+    {
+        public int Id { get; set; } // id (Primary key)
+        public string Description { get; set; } // description
+    }
+
+    // serial_test
+    public class SerialTest
+    {
+        public int Id { get; set; } // id (Primary key)
+        public long BigId { get; set; } // big_id
+        public short SmallId { get; set; } // small_id
+        public string Description { get; set; } // description
+    }
+
+    // student
+    public class Student
+    {
+        public int StudentId { get; set; } // student_id (Primary key)
+        public string FullName { get; set; } // full_name (length: 100)
+
+        // Reverse navigation
+
+        /// <summary>
+        /// Child StudentCourses where [student_course].[student_id] point to this entity (fk_student_course_student)
+        /// </summary>
+        public virtual ICollection<StudentCourse> StudentCourses { get; set; } // student_course.fk_student_course_student
+
+        public Student()
+        {
+            StudentCourses = new List<StudentCourse>();
+        }
+    }
+
+    // student_course
+    public class StudentCourse
+    {
+        public int StudentId { get; set; } // student_id (Primary key)
+        public int CourseId { get; set; } // course_id (Primary key)
+
+        // Foreign keys
+
+        /// <summary>
+        /// Parent Course pointed by [student_course].([CourseId]) (fk_student_course_course)
+        /// </summary>
+        public virtual Course Course { get; set; } // fk_student_course_course
+
+        /// <summary>
+        /// Parent Student pointed by [student_course].([StudentId]) (fk_student_course_student)
+        /// </summary>
+        public virtual Student Student { get; set; } // fk_student_course_student
+    }
+
+    // truck
+    public class Truck
+    {
+        public int VehicleId { get; set; } // vehicle_id (Primary key)
+        public string Registration { get; set; } // registration (Primary key) (length: 20)
+        public int PayloadKg { get; set; } // payload_kg (Primary key)
+    }
+
+    // unenforced_child
+    public class UnenforcedChild
+    {
+        public int Id { get; set; } // id (Primary key)
+        public int? ParentId { get; set; } // parent_id
+
+        // Foreign keys
+
+        /// <summary>
+        /// Parent UnenforcedParent pointed by [unenforced_child].([ParentId]) (fk_unenforced_child)
+        /// </summary>
+        public virtual UnenforcedParent UnenforcedParent { get; set; } // fk_unenforced_child
+    }
+
+    // unenforced_parent
+    public class UnenforcedParent
+    {
+        public int Id { get; set; } // id (Primary key)
+
+        // Reverse navigation
+
+        /// <summary>
+        /// Child UnenforcedChilds where [unenforced_child].[parent_id] point to this entity (fk_unenforced_child)
+        /// </summary>
+        public virtual ICollection<UnenforcedChild> UnenforcedChilds { get; set; } // unenforced_child.fk_unenforced_child
+
+        public UnenforcedParent()
+        {
+            UnenforcedChilds = new List<UnenforcedChild>();
+        }
+    }
+
+    // vehicle
+    public class Vehicle
+    {
+        public int VehicleId { get; set; } // vehicle_id (Primary key)
+        public string Registration { get; set; } // registration (length: 20)
+    }
+
 
     #endregion
 
     #region POCO Configuration
+
+    // airport
+    public class AirportConfiguration : EntityTypeConfiguration<Airport>
+    {
+        public AirportConfiguration()
+            : this("public")
+        {
+        }
+
+        public AirportConfiguration(string schema)
+        {
+            ToTable("airport", schema);
+            HasKey(x => x.AirportId);
+
+            Property(x => x.AirportId).HasColumnName(@"airport_id").HasColumnType("integer").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
+            Property(x => x.Name).HasColumnName(@"name").HasColumnType("character varying").IsRequired().HasMaxLength(50);
+        }
+    }
 
     // allcolumntypes
     public class AllcolumntypeConfiguration : EntityTypeConfiguration<Allcolumntype>
@@ -611,12 +1666,14 @@ namespace Efrpg.PostgreSQL
             Property(x => x.Bigint).HasColumnName(@"bigint").HasColumnType("bigint").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
             Property(x => x.Bit1).HasColumnName(@"bit_1").HasColumnType("bit").IsOptional().HasMaxLength(1);
             Property(x => x.Bit8).HasColumnName(@"bit_8").HasColumnType("bit").IsOptional().HasMaxLength(8);
+            Property(x => x.BitVarying).HasColumnName(@"bit_varying").HasColumnType("bit varying").IsOptional().HasMaxLength(16);
             Property(x => x.Boolean).HasColumnName(@"boolean").HasColumnType("boolean").IsOptional();
             Property(x => x.Box).HasColumnName(@"box").HasColumnType("box").IsOptional();
             Property(x => x.Bytea).HasColumnName(@"bytea").HasColumnType("bytea").IsOptional();
             Property(x => x.@Char).HasColumnName(@"char").HasColumnType("character").IsOptional().HasMaxLength(1);
             Property(x => x.Character).HasColumnName(@"character").HasColumnType("character").IsOptional().HasMaxLength(1);
             Property(x => x.CharacterVarying).HasColumnName(@"character_varying").HasColumnType("character varying").IsOptional();
+            Property(x => x.CharacterVarying50).HasColumnName(@"character_varying_50").HasColumnType("character varying").IsOptional().HasMaxLength(50);
             Property(x => x.Cid).HasColumnName(@"cid").HasColumnType("cid").IsOptional();
             Property(x => x.Cidr).HasColumnName(@"cidr").HasColumnType("cidr").IsOptional();
             Property(x => x.Circle).HasColumnName(@"circle").HasColumnType("circle").IsOptional();
@@ -629,11 +1686,14 @@ namespace Efrpg.PostgreSQL
             Property(x => x.Jsonb).HasColumnName(@"jsonb").HasColumnType("jsonb").IsOptional();
             Property(x => x.Line).HasColumnName(@"line").HasColumnType("line").IsOptional();
             Property(x => x.Lseg).HasColumnName(@"lseg").HasColumnType("lseg").IsOptional();
+            Property(x => x.Macaddr).HasColumnName(@"macaddr").HasColumnType("macaddr").IsOptional();
+            Property(x => x.Macaddr8).HasColumnName(@"macaddr8").HasColumnType("macaddr8").IsOptional();
             Property(x => x.Money).HasColumnName(@"money").HasColumnType("money").IsOptional();
             Property(x => x.Name).HasColumnName(@"name").HasColumnType("name").IsOptional();
             Property(x => x.Numeric).HasColumnName(@"numeric").HasColumnType("numeric").IsOptional();
+            Property(x => x.Numeric184).HasColumnName(@"numeric_18_4").HasColumnType("numeric").IsOptional().HasPrecision(18,4);
             Property(x => x.Oid).HasColumnName(@"oid").HasColumnType("oid").IsOptional();
-            Property(x => x.Oidvector).HasColumnName(@"oidvector").HasColumnType("array").IsOptional();
+            Property(x => x.Oidvector).HasColumnName(@"oidvector").HasColumnType("oid[]").IsOptional();
             Property(x => x.Path).HasColumnName(@"path").HasColumnType("path").IsOptional();
             Property(x => x.Point).HasColumnName(@"point").HasColumnType("point").IsOptional();
             Property(x => x.Polygon).HasColumnName(@"polygon").HasColumnType("polygon").IsOptional();
@@ -644,9 +1704,19 @@ namespace Efrpg.PostgreSQL
             Property(x => x.TimeWithoutTimeZone).HasColumnName(@"time_without_time_zone").HasColumnType("time without time zone").IsOptional();
             Property(x => x.TimestampWithTimeZone).HasColumnName(@"timestamp_with_time_zone").HasColumnType("timestamp with time zone").IsOptional();
             Property(x => x.TimestampWithoutTimeZone).HasColumnName(@"timestamp_without_time_zone").HasColumnType("timestamp without time zone").IsOptional();
+            Property(x => x.Tsquery).HasColumnName(@"tsquery").HasColumnType("tsquery").IsOptional();
+            Property(x => x.Tsvector).HasColumnName(@"tsvector").HasColumnType("tsvector").IsOptional();
             Property(x => x.Uuid).HasColumnName(@"uuid").HasColumnType("uuid").IsOptional();
             Property(x => x.Xid).HasColumnName(@"xid").HasColumnType("xid").IsOptional();
             Property(x => x.Xml).HasColumnName(@"xml").HasColumnType("xml").IsOptional();
+            Property(x => x.Mood).HasColumnName(@"mood").IsOptional(); // .HasColumnType("user-defined") was excluded
+            Property(x => x.PositiveInt).HasColumnName(@"positive_int").HasColumnType("integer").IsOptional();
+            Property(x => x.FullName).HasColumnName(@"full_name").IsOptional(); // .HasColumnType("user-defined") was excluded
+            Property(x => x.IntArray).HasColumnName(@"int_array").HasColumnType("int4[]").IsOptional();
+            Property(x => x.TextArray).HasColumnName(@"text_array").HasColumnType("text[]").IsOptional();
+            Property(x => x.IntMatrix).HasColumnName(@"int_matrix").HasColumnType("int4[]").IsOptional();
+            Property(x => x.Int4Range).HasColumnName(@"int4range").HasColumnType("int4range").IsOptional();
+            Property(x => x.Tstzrange).HasColumnName(@"tstzrange").HasColumnType("tstzrange").IsOptional();
         }
     }
 
@@ -671,6 +1741,62 @@ namespace Efrpg.PostgreSQL
         }
     }
 
+    // duplicated_name
+    public class another_DuplicatedNameConfiguration : EntityTypeConfiguration<another_DuplicatedName>
+    {
+        public another_DuplicatedNameConfiguration()
+            : this("another")
+        {
+        }
+
+        public another_DuplicatedNameConfiguration(string schema)
+        {
+            ToTable("duplicated_name", schema);
+            HasKey(x => x.Id);
+
+            Property(x => x.Id).HasColumnName(@"id").HasColumnType("integer").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
+            Property(x => x.Marker).HasColumnName(@"marker").HasColumnType("character varying").IsRequired().HasMaxLength(10);
+        }
+    }
+
+    // harish_child
+    public class another_HarishChildConfiguration : EntityTypeConfiguration<another_HarishChild>
+    {
+        public another_HarishChildConfiguration()
+            : this("another")
+        {
+        }
+
+        public another_HarishChildConfiguration(string schema)
+        {
+            ToTable("harish_child", schema);
+            HasKey(x => x.Id);
+
+            Property(x => x.Id).HasColumnName(@"id").HasColumnType("integer").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
+            Property(x => x.ParentId).HasColumnName(@"parent_id").HasColumnType("integer").IsRequired();
+
+            // Foreign keys
+            HasRequired(a => a.another_HarishParent).WithMany(b => b.another_HarishChilds).HasForeignKey(c => c.ParentId).WillCascadeOnDelete(false); // fk_harish
+        }
+    }
+
+    // harish_parent
+    public class another_HarishParentConfiguration : EntityTypeConfiguration<another_HarishParent>
+    {
+        public another_HarishParentConfiguration()
+            : this("another")
+        {
+        }
+
+        public another_HarishParentConfiguration(string schema)
+        {
+            ToTable("harish_parent", schema);
+            HasKey(x => x.Id);
+
+            Property(x => x.Id).HasColumnName(@"id").HasColumnType("integer").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
+        }
+    }
+
     // status
     public class another_StatusConfiguration : EntityTypeConfiguration<another_Status>
     {
@@ -685,7 +1811,26 @@ namespace Efrpg.PostgreSQL
             HasKey(x => x.Id);
 
             Property(x => x.Id).HasColumnName(@"id").HasColumnType("integer").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
-            Property(x => x.Name).HasColumnName(@"name").HasColumnType("character varying").IsOptional().HasMaxLength(10);
+            Property(x => x.Name).HasColumnName(@"name").HasColumnType("character varying").IsRequired().HasMaxLength(10);
+        }
+    }
+
+    // case_only_difference
+    public class CaseOnlyDifferenceConfiguration : EntityTypeConfiguration<CaseOnlyDifference>
+    {
+        public CaseOnlyDifferenceConfiguration()
+            : this("public")
+        {
+        }
+
+        public CaseOnlyDifferenceConfiguration(string schema)
+        {
+            ToTable("case_only_difference", schema);
+            HasKey(x => x.Id);
+
+            Property(x => x.Id).HasColumnName(@"id").HasColumnType("integer").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
+            Property(x => x.Value1).HasColumnName(@"Value").HasColumnType("character varying").IsOptional().HasMaxLength(10);
+            Property(x => x.Value).HasColumnName(@"value").HasColumnType("character varying").IsOptional().HasMaxLength(10);
         }
     }
 
@@ -707,6 +1852,623 @@ namespace Efrpg.PostgreSQL
         }
     }
 
+    // CATEGORIES
+    public class CategoRyConfiguration : EntityTypeConfiguration<CategoRy>
+    {
+        public CategoRyConfiguration()
+            : this("public")
+        {
+        }
+
+        public CategoRyConfiguration(string schema)
+        {
+            ToTable("CATEGORIES", schema);
+            HasKey(x => x.Id);
+
+            Property(x => x.Id).HasColumnName(@"id").HasColumnType("integer").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
+            Property(x => x.Name).HasColumnName(@"name").HasColumnType("character varying").IsRequired().HasMaxLength(50);
+        }
+    }
+
+    // child_composite
+    public class ChildCompositeConfiguration : EntityTypeConfiguration<ChildComposite>
+    {
+        public ChildCompositeConfiguration()
+            : this("public")
+        {
+        }
+
+        public ChildCompositeConfiguration(string schema)
+        {
+            ToTable("child_composite", schema);
+            HasKey(x => x.ChildId);
+
+            Property(x => x.ChildId).HasColumnName(@"child_id").HasColumnType("integer").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
+            Property(x => x.ParentKeyOne).HasColumnName(@"parent_key_one").HasColumnType("integer").IsRequired();
+            Property(x => x.ParentKeyTwo).HasColumnName(@"parent_key_two").HasColumnType("integer").IsRequired();
+            Property(x => x.Description).HasColumnName(@"description").HasColumnType("character varying").IsOptional().HasMaxLength(50);
+
+            // Foreign keys
+            HasRequired(a => a.ParentComposite).WithOptional(b => b.ChildComposite).WillCascadeOnDelete(false); // fk_child_composite_parent
+        }
+    }
+
+    // course
+    public class CourseConfiguration : EntityTypeConfiguration<Course>
+    {
+        public CourseConfiguration()
+            : this("public")
+        {
+        }
+
+        public CourseConfiguration(string schema)
+        {
+            ToTable("course", schema);
+            HasKey(x => x.CourseId);
+
+            Property(x => x.CourseId).HasColumnName(@"course_id").HasColumnType("integer").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
+            Property(x => x.Title).HasColumnName(@"title").HasColumnType("character varying").IsRequired().HasMaxLength(100);
+        }
+    }
+
+    // CURRENCIES
+    public class CurrenCyConfiguration : EntityTypeConfiguration<CurrenCy>
+    {
+        public CurrenCyConfiguration()
+            : this("public")
+        {
+        }
+
+        public CurrenCyConfiguration(string schema)
+        {
+            ToTable("CURRENCIES", schema);
+            HasKey(x => x.Id);
+
+            Property(x => x.Id).HasColumnName(@"id").HasColumnType("integer").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
+            Property(x => x.Code).HasColumnName(@"code").HasColumnType("character").IsRequired().HasMaxLength(3);
+        }
+    }
+
+    // defaults_and_generated
+    public class DefaultsAndGeneratedConfiguration : EntityTypeConfiguration<DefaultsAndGenerated>
+    {
+        public DefaultsAndGeneratedConfiguration()
+            : this("public")
+        {
+        }
+
+        public DefaultsAndGeneratedConfiguration(string schema)
+        {
+            ToTable("defaults_and_generated", schema);
+            HasKey(x => x.Id);
+
+            Property(x => x.Id).HasColumnName(@"id").HasColumnType("integer").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
+            Property(x => x.Quantity).HasColumnName(@"quantity").HasColumnType("integer").IsRequired();
+            Property(x => x.UnitPrice).HasColumnName(@"unit_price").HasColumnType("numeric").IsRequired().HasPrecision(18,4);
+            Property(x => x.Description).HasColumnName(@"description").HasColumnType("character varying").IsRequired().HasMaxLength(50);
+            Property(x => x.IsActive).HasColumnName(@"is_active").HasColumnType("boolean").IsRequired();
+            Property(x => x.ExternalRef).HasColumnName(@"external_ref").HasColumnType("uuid").IsRequired();
+            Property(x => x.CreatedAt).HasColumnName(@"created_at").HasColumnType("timestamp with time zone").IsRequired();
+            Property(x => x.CreatedDate).HasColumnName(@"created_date").HasColumnType("date").IsRequired();
+            Property(x => x.TheWordNull).HasColumnName(@"the_word_null").HasColumnType("character varying").IsOptional().HasMaxLength(20);
+            Property(x => x.ReallyNull).HasColumnName(@"really_null").HasColumnType("character varying").IsOptional().HasMaxLength(20);
+            Property(x => x.Tags).HasColumnName(@"tags").HasColumnType("text[]").IsRequired();
+            Property(x => x.LineTotal).HasColumnName(@"line_total").HasColumnType("numeric").IsOptional().HasPrecision(20,4).HasDatabaseGeneratedOption(DatabaseGeneratedOption.Computed);
+        }
+    }
+
+    // duplicated_name
+    public class DuplicatedNameConfiguration : EntityTypeConfiguration<DuplicatedName>
+    {
+        public DuplicatedNameConfiguration()
+            : this("public")
+        {
+        }
+
+        public DuplicatedNameConfiguration(string schema)
+        {
+            ToTable("duplicated_name", schema);
+            HasKey(x => x.Id);
+
+            Property(x => x.Id).HasColumnName(@"id").HasColumnType("integer").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
+            Property(x => x.Marker).HasColumnName(@"marker").HasColumnType("character varying").IsRequired().HasMaxLength(10);
+        }
+    }
+
+    // employee
+    public class EmployeeConfiguration : EntityTypeConfiguration<Employee>
+    {
+        public EmployeeConfiguration()
+            : this("public")
+        {
+        }
+
+        public EmployeeConfiguration(string schema)
+        {
+            ToTable("employee", schema);
+            HasKey(x => x.EmployeeId);
+
+            Property(x => x.EmployeeId).HasColumnName(@"employee_id").HasColumnType("integer").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
+            Property(x => x.ManagerId).HasColumnName(@"manager_id").HasColumnType("integer").IsOptional();
+            Property(x => x.FullName).HasColumnName(@"full_name").HasColumnType("character varying").IsRequired().HasMaxLength(100);
+
+            // Foreign keys
+            HasOptional(a => a.Manager).WithMany(b => b.Employees).HasForeignKey(c => c.ManagerId).WillCascadeOnDelete(false); // fk_employee_manager
+        }
+    }
+
+    // flight
+    public class FlightConfiguration : EntityTypeConfiguration<Flight>
+    {
+        public FlightConfiguration()
+            : this("public")
+        {
+        }
+
+        public FlightConfiguration(string schema)
+        {
+            ToTable("flight", schema);
+            HasKey(x => x.FlightId);
+
+            Property(x => x.FlightId).HasColumnName(@"flight_id").HasColumnType("integer").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
+            Property(x => x.DepartureAirportId).HasColumnName(@"departure_airport_id").HasColumnType("integer").IsRequired();
+            Property(x => x.ArrivalAirportId).HasColumnName(@"arrival_airport_id").HasColumnType("integer").IsRequired();
+
+            // Foreign keys
+            HasRequired(a => a.ArrivalAirport).WithMany(b => b.Flights_ArrivalAirportId).HasForeignKey(c => c.ArrivalAirportId).WillCascadeOnDelete(false); // fk_flight_arrival
+            HasRequired(a => a.DepartureAirport).WithMany(b => b.Flights_DepartureAirportId).HasForeignKey(c => c.DepartureAirportId).WillCascadeOnDelete(false); // fk_flight_departure
+        }
+    }
+
+    // harish_child
+    public class HarishChildConfiguration : EntityTypeConfiguration<HarishChild>
+    {
+        public HarishChildConfiguration()
+            : this("public")
+        {
+        }
+
+        public HarishChildConfiguration(string schema)
+        {
+            ToTable("harish_child", schema);
+            HasKey(x => x.Id);
+
+            Property(x => x.Id).HasColumnName(@"id").HasColumnType("integer").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
+            Property(x => x.ParentId).HasColumnName(@"parent_id").HasColumnType("integer").IsRequired();
+
+            // Foreign keys
+            HasRequired(a => a.HarishParent).WithMany(b => b.HarishChilds).HasForeignKey(c => c.ParentId).WillCascadeOnDelete(false); // fk_harish
+        }
+    }
+
+    // harish_parent
+    public class HarishParentConfiguration : EntityTypeConfiguration<HarishParent>
+    {
+        public HarishParentConfiguration()
+            : this("public")
+        {
+        }
+
+        public HarishParentConfiguration(string schema)
+        {
+            ToTable("harish_parent", schema);
+            HasKey(x => x.Id);
+
+            Property(x => x.Id).HasColumnName(@"id").HasColumnType("integer").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
+        }
+    }
+
+    // identity_always
+    public class IdentityAlwayConfiguration : EntityTypeConfiguration<IdentityAlway>
+    {
+        public IdentityAlwayConfiguration()
+            : this("public")
+        {
+        }
+
+        public IdentityAlwayConfiguration(string schema)
+        {
+            ToTable("identity_always", schema);
+            HasKey(x => x.Id);
+
+            Property(x => x.Id).HasColumnName(@"id").HasColumnType("integer").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
+            Property(x => x.Description).HasColumnName(@"description").HasColumnType("text").IsOptional().IsUnicode(false);
+        }
+    }
+
+    // identity_by_default
+    public class IdentityByDefaultConfiguration : EntityTypeConfiguration<IdentityByDefault>
+    {
+        public IdentityByDefaultConfiguration()
+            : this("public")
+        {
+        }
+
+        public IdentityByDefaultConfiguration(string schema)
+        {
+            ToTable("identity_by_default", schema);
+            HasKey(x => x.Id);
+
+            Property(x => x.Id).HasColumnName(@"id").HasColumnType("bigint").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
+            Property(x => x.Description).HasColumnName(@"description").HasColumnType("text").IsOptional().IsUnicode(false);
+        }
+    }
+
+    // index_test
+    public class IndexTestConfiguration : EntityTypeConfiguration<IndexTest>
+    {
+        public IndexTestConfiguration()
+            : this("public")
+        {
+        }
+
+        public IndexTestConfiguration(string schema)
+        {
+            ToTable("index_test", schema);
+            HasKey(x => x.Id);
+
+            Property(x => x.Id).HasColumnName(@"id").HasColumnType("integer").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
+            Property(x => x.UniqueCol).HasColumnName(@"unique_col").HasColumnType("integer").IsRequired();
+            Property(x => x.LowerMe).HasColumnName(@"lower_me").HasColumnType("character varying").IsRequired().HasMaxLength(50);
+            Property(x => x.IsDeleted).HasColumnName(@"is_deleted").HasColumnType("boolean").IsRequired();
+            Property(x => x.A).HasColumnName(@"a").HasColumnType("integer").IsRequired();
+            Property(x => x.B).HasColumnName(@"b").HasColumnType("integer").IsRequired();
+        }
+    }
+
+    // measurement
+    public class MeasurementConfiguration : EntityTypeConfiguration<Measurement>
+    {
+        public MeasurementConfiguration()
+            : this("public")
+        {
+        }
+
+        public MeasurementConfiguration(string schema)
+        {
+            ToTable("measurement", schema);
+            HasKey(x => new { x.CityId, x.Logdate });
+
+            Property(x => x.CityId).HasColumnName(@"city_id").HasColumnType("integer").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
+            Property(x => x.Logdate).HasColumnName(@"logdate").HasColumnType("date").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
+            Property(x => x.Peaktemp).HasColumnName(@"peaktemp").HasColumnType("integer").IsOptional();
+        }
+    }
+
+    // measurement_2025
+    public class Measurement2025Configuration : EntityTypeConfiguration<Measurement2025>
+    {
+        public Measurement2025Configuration()
+            : this("public")
+        {
+        }
+
+        public Measurement2025Configuration(string schema)
+        {
+            ToTable("measurement_2025", schema);
+            HasKey(x => new { x.CityId, x.Logdate });
+
+            Property(x => x.CityId).HasColumnName(@"city_id").HasColumnType("integer").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
+            Property(x => x.Logdate).HasColumnName(@"logdate").HasColumnType("date").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
+            Property(x => x.Peaktemp).HasColumnName(@"peaktemp").HasColumnType("integer").IsOptional();
+        }
+    }
+
+    // Spaced Table Name
+    public class Mixed Case Schema_SpacedTableNameConfiguration : EntityTypeConfiguration<Mixed Case Schema_SpacedTableName>
+    {
+        public Mixed Case Schema_SpacedTableNameConfiguration()
+            : this("Mixed Case Schema")
+        {
+        }
+
+        public Mixed Case Schema_SpacedTableNameConfiguration(string schema)
+        {
+            ToTable("Spaced Table Name", schema);
+            HasKey(x => x.SpacedTableName);
+
+            Property(x => x.SpacedTableName).HasColumnName(@"Spaced Table Name").HasColumnType("integer").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
+            Property(x => x.ColumnWithSpaces).HasColumnName(@"Column With Spaces").HasColumnType("character varying").IsOptional().HasMaxLength(50);
+            Property(x => x.ColumnWithHyphens).HasColumnName(@"Column-With-Hyphens").HasColumnType("character varying").IsOptional().HasMaxLength(50);
+            Property(x => x.C1LeadingDigit).HasColumnName(@"1_leading_digit").HasColumnType("integer").IsOptional();
+            Property(x => x.Select).HasColumnName(@"select").HasColumnType("character varying").IsOptional().HasMaxLength(50);
+            Property(x => x.@Class).HasColumnName(@"class").HasColumnType("character varying").IsOptional().HasMaxLength(50);
+            Property(x => x.Event).HasColumnName(@"event").HasColumnType("character varying").IsOptional().HasMaxLength(50);
+            Property(x => x.@Namespace).HasColumnName(@"namespace").HasColumnType("character varying").IsOptional().HasMaxLength(50);
+            Property(x => x.@String).HasColumnName(@"string").HasColumnType("character varying").IsOptional().HasMaxLength(50);
+            Property(x => x.TableWithPeriods).HasColumnName(@"table.with.periods").HasColumnType("character varying").IsOptional().HasMaxLength(50);
+            Property(x => x.Бренды).HasColumnName(@"Бренды").HasColumnType("character varying").IsOptional().HasMaxLength(50);
+            Property(x => x.Œufs).HasColumnName(@"œufs").HasColumnType("character varying").IsOptional().HasMaxLength(50);
+        }
+    }
+
+    // no_primary_key
+    public class NoPrimaryKeyConfiguration : EntityTypeConfiguration<NoPrimaryKey>
+    {
+        public NoPrimaryKeyConfiguration()
+            : this("public")
+        {
+        }
+
+        public NoPrimaryKeyConfiguration(string schema)
+        {
+            ToTable("no_primary_key", schema);
+            HasKey(x => new { x.A, x.B });
+
+            Property(x => x.A).HasColumnName(@"a").HasColumnType("integer").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
+            Property(x => x.B).HasColumnName(@"b").HasColumnType("character varying").IsRequired().HasMaxLength(50).HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
+        }
+    }
+
+    // order_status
+    public class OrderStatusConfiguration : EntityTypeConfiguration<OrderStatus>
+    {
+        public OrderStatusConfiguration()
+            : this("public")
+        {
+        }
+
+        public OrderStatusConfiguration(string schema)
+        {
+            ToTable("order_status", schema);
+            HasKey(x => x.OrderStatusId);
+
+            Property(x => x.OrderStatusId).HasColumnName(@"order_status_id").HasColumnType("integer").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
+            Property(x => x.Name).HasColumnName(@"name").HasColumnType("character varying").IsRequired().HasMaxLength(30);
+            Property(x => x.StatusGroup).HasColumnName(@"status_group").HasColumnType("character varying").IsRequired().HasMaxLength(20);
+            Property(x => x.Description).HasColumnName(@"description").HasColumnType("character varying").IsOptional().HasMaxLength(100);
+        }
+    }
+
+    // parent_composite
+    public class ParentCompositeConfiguration : EntityTypeConfiguration<ParentComposite>
+    {
+        public ParentCompositeConfiguration()
+            : this("public")
+        {
+        }
+
+        public ParentCompositeConfiguration(string schema)
+        {
+            ToTable("parent_composite", schema);
+            HasKey(x => new { x.KeyOne, x.KeyTwo });
+
+            Property(x => x.KeyOne).HasColumnName(@"key_one").HasColumnType("integer").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
+            Property(x => x.KeyTwo).HasColumnName(@"key_two").HasColumnType("integer").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
+            Property(x => x.AltKey).HasColumnName(@"alt_key").HasColumnType("integer").IsRequired();
+            Property(x => x.Name).HasColumnName(@"name").HasColumnType("character varying").IsRequired().HasMaxLength(50);
+        }
+    }
+
+    // person
+    public class PersonConfiguration : EntityTypeConfiguration<Person>
+    {
+        public PersonConfiguration()
+            : this("public")
+        {
+        }
+
+        public PersonConfiguration(string schema)
+        {
+            ToTable("person", schema);
+            HasKey(x => x.PersonId);
+
+            Property(x => x.PersonId).HasColumnName(@"person_id").HasColumnType("integer").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
+            Property(x => x.FullName).HasColumnName(@"full_name").HasColumnType("character varying").IsRequired().HasMaxLength(100);
+        }
+    }
+
+    // person_photo
+    public class PersonPhotoConfiguration : EntityTypeConfiguration<PersonPhoto>
+    {
+        public PersonPhotoConfiguration()
+            : this("public")
+        {
+        }
+
+        public PersonPhotoConfiguration(string schema)
+        {
+            ToTable("person_photo", schema);
+            HasKey(x => x.PersonId);
+
+            Property(x => x.PersonId).HasColumnName(@"person_id").HasColumnType("integer").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
+            Property(x => x.Photo).HasColumnName(@"photo").HasColumnType("bytea").IsRequired();
+
+            // Foreign keys
+            HasRequired(a => a.Person).WithOptional(b => b.PersonPhoto).WillCascadeOnDelete(false); // fk_person_photo
+        }
+    }
+
+    // pk_ordinal_test
+    public class PkOrdinalTestConfiguration : EntityTypeConfiguration<PkOrdinalTest>
+    {
+        public PkOrdinalTestConfiguration()
+            : this("public")
+        {
+        }
+
+        public PkOrdinalTestConfiguration(string schema)
+        {
+            ToTable("pk_ordinal_test", schema);
+            HasKey(x => new { x.FirstKey, x.SecondKey });
+
+            Property(x => x.Filler).HasColumnName(@"filler").HasColumnType("character varying").IsOptional().HasMaxLength(10);
+            Property(x => x.SecondKey).HasColumnName(@"second_key").HasColumnType("integer").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
+            Property(x => x.FirstKey).HasColumnName(@"first_key").HasColumnType("integer").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
+        }
+    }
+
+    // principal_key_child
+    public class PrincipalKeyChildConfiguration : EntityTypeConfiguration<PrincipalKeyChild>
+    {
+        public PrincipalKeyChildConfiguration()
+            : this("public")
+        {
+        }
+
+        public PrincipalKeyChildConfiguration(string schema)
+        {
+            ToTable("principal_key_child", schema);
+            HasKey(x => x.Id);
+
+            Property(x => x.Id).HasColumnName(@"id").HasColumnType("integer").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
+            Property(x => x.ParentAltKey).HasColumnName(@"parent_alt_key").HasColumnType("integer").IsRequired();
+        }
+    }
+
+    // sequence_test
+    public class SequenceTestConfiguration : EntityTypeConfiguration<SequenceTest>
+    {
+        public SequenceTestConfiguration()
+            : this("public")
+        {
+        }
+
+        public SequenceTestConfiguration(string schema)
+        {
+            ToTable("sequence_test", schema);
+            HasKey(x => x.Id);
+
+            Property(x => x.Id).HasColumnName(@"id").HasColumnType("integer").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
+            Property(x => x.Description).HasColumnName(@"description").HasColumnType("text").IsOptional().IsUnicode(false);
+        }
+    }
+
+    // serial_test
+    public class SerialTestConfiguration : EntityTypeConfiguration<SerialTest>
+    {
+        public SerialTestConfiguration()
+            : this("public")
+        {
+        }
+
+        public SerialTestConfiguration(string schema)
+        {
+            ToTable("serial_test", schema);
+            HasKey(x => x.Id);
+
+            Property(x => x.Id).HasColumnName(@"id").HasColumnType("integer").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
+            Property(x => x.BigId).HasColumnName(@"big_id").HasColumnType("bigint").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
+            Property(x => x.SmallId).HasColumnName(@"small_id").HasColumnType("smallint").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
+            Property(x => x.Description).HasColumnName(@"description").HasColumnType("text").IsOptional().IsUnicode(false);
+        }
+    }
+
+    // student
+    public class StudentConfiguration : EntityTypeConfiguration<Student>
+    {
+        public StudentConfiguration()
+            : this("public")
+        {
+        }
+
+        public StudentConfiguration(string schema)
+        {
+            ToTable("student", schema);
+            HasKey(x => x.StudentId);
+
+            Property(x => x.StudentId).HasColumnName(@"student_id").HasColumnType("integer").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
+            Property(x => x.FullName).HasColumnName(@"full_name").HasColumnType("character varying").IsRequired().HasMaxLength(100);
+        }
+    }
+
+    // student_course
+    public class StudentCourseConfiguration : EntityTypeConfiguration<StudentCourse>
+    {
+        public StudentCourseConfiguration()
+            : this("public")
+        {
+        }
+
+        public StudentCourseConfiguration(string schema)
+        {
+            ToTable("student_course", schema);
+            HasKey(x => new { x.StudentId, x.CourseId });
+
+            Property(x => x.StudentId).HasColumnName(@"student_id").HasColumnType("integer").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
+            Property(x => x.CourseId).HasColumnName(@"course_id").HasColumnType("integer").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
+
+            // Foreign keys
+            HasRequired(a => a.Course).WithMany(b => b.StudentCourses).HasForeignKey(c => c.CourseId).WillCascadeOnDelete(false); // fk_student_course_course
+            HasRequired(a => a.Student).WithMany(b => b.StudentCourses).HasForeignKey(c => c.StudentId).WillCascadeOnDelete(false); // fk_student_course_student
+        }
+    }
+
+    // truck
+    public class TruckConfiguration : EntityTypeConfiguration<Truck>
+    {
+        public TruckConfiguration()
+            : this("public")
+        {
+        }
+
+        public TruckConfiguration(string schema)
+        {
+            ToTable("truck", schema);
+            HasKey(x => new { x.VehicleId, x.Registration, x.PayloadKg });
+
+            Property(x => x.VehicleId).HasColumnName(@"vehicle_id").HasColumnType("integer").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
+            Property(x => x.Registration).HasColumnName(@"registration").HasColumnType("character varying").IsRequired().HasMaxLength(20).HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
+            Property(x => x.PayloadKg).HasColumnName(@"payload_kg").HasColumnType("integer").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
+        }
+    }
+
+    // unenforced_child
+    public class UnenforcedChildConfiguration : EntityTypeConfiguration<UnenforcedChild>
+    {
+        public UnenforcedChildConfiguration()
+            : this("public")
+        {
+        }
+
+        public UnenforcedChildConfiguration(string schema)
+        {
+            ToTable("unenforced_child", schema);
+            HasKey(x => x.Id);
+
+            Property(x => x.Id).HasColumnName(@"id").HasColumnType("integer").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
+            Property(x => x.ParentId).HasColumnName(@"parent_id").HasColumnType("integer").IsOptional();
+
+            // Foreign keys
+            HasOptional(a => a.UnenforcedParent).WithMany(b => b.UnenforcedChilds).HasForeignKey(c => c.ParentId).WillCascadeOnDelete(false); // fk_unenforced_child
+        }
+    }
+
+    // unenforced_parent
+    public class UnenforcedParentConfiguration : EntityTypeConfiguration<UnenforcedParent>
+    {
+        public UnenforcedParentConfiguration()
+            : this("public")
+        {
+        }
+
+        public UnenforcedParentConfiguration(string schema)
+        {
+            ToTable("unenforced_parent", schema);
+            HasKey(x => x.Id);
+
+            Property(x => x.Id).HasColumnName(@"id").HasColumnType("integer").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
+        }
+    }
+
+    // vehicle
+    public class VehicleConfiguration : EntityTypeConfiguration<Vehicle>
+    {
+        public VehicleConfiguration()
+            : this("public")
+        {
+        }
+
+        public VehicleConfiguration(string schema)
+        {
+            ToTable("vehicle", schema);
+            HasKey(x => x.VehicleId);
+
+            Property(x => x.VehicleId).HasColumnName(@"vehicle_id").HasColumnType("integer").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
+            Property(x => x.Registration).HasColumnName(@"registration").HasColumnType("character varying").IsRequired().HasMaxLength(20);
+        }
+    }
+
 
     #endregion
 
@@ -717,6 +2479,30 @@ namespace Efrpg.PostgreSQL
         Todo = 1,
         InProgress = 2,
         Done = 3,
+    }
+
+
+    #endregion
+
+    #region Stored procedure return models
+
+    public class AllParentsReturnModel
+    {
+        public int? key_one { get; set; }
+        public int? key_two { get; set; }
+        public int? alt_key { get; set; }
+        public string name { get; set; }
+    }
+
+    public class ChildrenOfReturnModel
+    {
+        public int? child_id { get; set; }
+        public string description { get; set; }
+    }
+
+    public class ParentNamesReturnModel
+    {
+        public string parent_names { get; set; }
     }
 
 

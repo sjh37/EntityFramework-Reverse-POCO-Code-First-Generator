@@ -1,0 +1,40 @@
+# MySQL test database for the EFRPG integration tests.
+#
+#   cd TestDatabases/MySQL
+#   docker compose up -d          # first start creates the database and loads EfrpgTest.sql
+#   docker compose logs -f        # watch it come up
+#   docker compose down           # stop, keeping the data volume
+#   docker compose down -v        # stop and throw the database away, so the next up re-seeds from EfrpgTest.sql
+#
+# EfrpgTest.sql in this folder is loaded automatically on the very first start only, into the EfrpgTest
+# database. Like its SQL Server namesake it is deliberately horrible: it exists to exercise every MySQL
+# construct the generator has to survive, not to look like a real application.
+#
+# Connection string for Settings.ConnectionString and for `efrpg --database MySql`:
+#   Server=localhost;Port=3306;Database=EfrpgTest;User Id=root;Password=efrpgTest123;
+#
+# Set EFRPG_MYSQL_PORT if 3306 is already taken on your machine - and note that another container
+# holding the port at start up leaves this one running with no network attached rather than failing.
+
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: efrpg-mysql
+    ports:
+      - "${EFRPG_MYSQL_PORT:-3306}:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: efrpgTest123
+      MYSQL_DATABASE: EfrpgTest
+    volumes:
+      - efrpg-mysql-data:/var/lib/mysql
+      # Read only: the seed script belongs to the repo and nothing in the container should rewrite it.
+      - ./EfrpgTest.sql:/docker-entrypoint-initdb.d/01-EfrpgTest.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-pefrpgTest123"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 20s
+
+volumes:
+  efrpg-mysql-data:

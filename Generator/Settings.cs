@@ -15,12 +15,11 @@ namespace Efrpg
     {
         // Main settings **********************************************************************************************************************
         // The following entries are the only required settings.
-        public static DatabaseType DatabaseType = DatabaseType.SqlServer; // SqlServer, SqlCe, SQLite, PostgreSQL. Coming next: MySql, Oracle
+        public static DatabaseType DatabaseType = DatabaseType.SqlServer; // SqlServer, SQLite, PostgreSQL, MySql, Oracle
         public static TemplateType TemplateType = TemplateType.EfCore10; // EfCore8-10, Ef6, FileBasedCore8-10. FileBased specify folder using Settings.TemplateFolder
         public static GeneratorType GeneratorType = GeneratorType.EfCore; // EfCore, Ef6, Custom. Custom edit GeneratorCustom class to provide your own implementation
         public static ForeignKeyNamingStrategy ForeignKeyNamingStrategy = ForeignKeyNamingStrategy.Current; // Please use Legacy for now, Latest (not yet ready)
         public static bool UseMappingTables = false; // Can only be set to true for EF6. If true, mapping will be used and no mapping tables will be generated. If false, all tables will be generated.
-        public static FileManagerType FileManagerType = FileManagerType.EfCore; // .NET Core project = EfCore; .NET 4.x project = VisualStudio; No output (testing only) = Null
         public static string ConnectionString = ""; // This is used by the generator to reverse engineer your database
         public static string ConnectionStringActions = ""; // EFCore only. Additional method chain to append to the database provider setup in OnConfiguring. e.g. ".EnableRetryOnFailure(maxRetryCount: 10, maxRetryDelay: TimeSpan.FromSeconds(30), errorNumbersToAdd: null)"
         public static string ConnectionStringName = "MyDbContext"; // ConnectionString key as specified in your app.config/web.config/appsettings.json
@@ -37,7 +36,7 @@ namespace Efrpg
         public static Elements ElementsToGenerate = Elements.Poco | Elements.Context | Elements.Interface | Elements.PocoConfiguration | Elements.Enum;
 
         // Generate files in sub-folders ******************************************************************************************************
-        // Only activated if Settings.FileManagerType = FileManagerType.EfCore && Settings.GenerateSeparateFiles = true
+        // Only activated if Settings.GenerateSeparateFiles = true
         public static string ContextFolder = ""; // Sub-folder you would like your DbContext to be added to.              e.g. @"Data"
         public static string InterfaceFolder = ""; // Sub-folder you would like your Interface to be added to.              e.g. @"Data\Interface"
         public static string PocoFolder = ""; // Sub-folder you would like your Poco's to be added to.                 e.g. @"Data\Entities"
@@ -52,8 +51,6 @@ namespace Efrpg
         public static OnConfiguration OnConfiguration = OnConfiguration.ConnectionString; // EFCore only. Determines the code generated within DbContext.OnConfiguration(). Please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Settings.OnConfiguration
         public static bool AddParameterlessConstructorToDbContext = true; // If true, then DbContext will have a default (parameter-less) constructor which automatically passes in the connection string name, if false then no parameter-less constructor will be created.
         public static string ConfigurationClassName = "Configuration"; // Configuration, Mapping, Map, etc. This is appended to the Poco class name to configure the mappings.
-        public static string DatabaseReaderPlugin = ""; // Eg, "c:\\Path\\YourDatabaseReader.dll,Full.Name.Of.Class.Including.Namespace". See #501. This will allow you to specify a pluggable provider for reading your database.
-
         public static string EntityClassesModifiers = "public"; // "public partial";
         public static string ConfigurationClassesModifiers = "public"; // "public partial";
         public static string DbContextClassModifiers = "public"; // "public partial";
@@ -417,8 +414,7 @@ namespace Efrpg
                 }
                 else if (!column.IsMaxLength && column.MaxLength > 0)
                 {
-                    var doNotSpecifySize = (DatabaseType == DatabaseType.SqlCe && column.MaxLength > 4000);
-                    column.Attributes.Add(doNotSpecifySize ? "[MaxLength]" : string.Format("[MaxLength({0})]", column.MaxLength));
+                    column.Attributes.Add(string.Format("[MaxLength({0})]", column.MaxLength));
                     if (column.PropertyType.Equals("string", StringComparison.InvariantCultureIgnoreCase))
                         column.Attributes.Add(string.Format("[StringLength({0})]", column.MaxLength));
                 }
@@ -583,6 +579,14 @@ namespace Efrpg
 
             if (hiLoSequence != null)
                 return string.Format(".UseHiLo(\"{0}\", \"{1}\")", hiLoSequence.SequenceName, hiLoSequence.SequenceSchema);
+
+            // UseIdentityColumn is a provider extension method, not part of EF Core itself, so it only exists where
+            // the provider ships it. SqlServer, Npgsql and Oracle.EntityFrameworkCore all define it; Pomelo spells
+            // its equivalent UseMySqlIdentityColumn, so emitting UseIdentityColumn for MySQL produces code that does
+            // not compile. ValueGeneratedOnAdd() has already been emitted by this point and is all Pomelo needs to
+            // pick up AUTO_INCREMENT, so nothing further is required.
+            if (DatabaseType == DatabaseType.MySql)
+                return string.Empty;
 
             return ".UseIdentityColumn()";
         };
@@ -1085,8 +1089,8 @@ namespace Efrpg
         /// <summary>
         ///     Assembly name of the EF Core provider for the current <see cref="DatabaseType" />. This is the value EF Core
         ///     reports through DatabaseFacade.ProviderName, and is what IsSqlServer()/IsNpgsql()/IsSqlite() compare against.
-        ///     Returns null for database types that have no EF Core provider (SqlCe) or whose provider is unknowable at
-        ///     generation time (Plugin), so that every IsXxx() check answers false rather than confidently wrong.
+        ///     Returns null for any database type with no EF Core provider, so that every IsXxx() check answers
+        ///     false rather than confidently wrong.
         /// </summary>
         public static string DatabaseProviderAssemblyName()
         {
@@ -1109,8 +1113,6 @@ namespace Efrpg
                 case DatabaseType.SQLite:
                     return "Microsoft.EntityFrameworkCore.Sqlite";
 
-                case DatabaseType.SqlCe:
-                case DatabaseType.Plugin:
                 default:
                     return null;
             }

@@ -8,8 +8,8 @@ namespace Efrpg.Generators
     // Take a look at GeneratorEf6 and GeneratorEfCore to see what's been done for those.
     public class GeneratorCustom : Generator
     {
-        public GeneratorCustom(FileManagementService fileManagementService, Type fileManagerType)
-            : base(fileManagementService, fileManagerType)
+        public GeneratorCustom(FileManagementService fileManagementService)
+            : base(fileManagementService)
         {
         }
 

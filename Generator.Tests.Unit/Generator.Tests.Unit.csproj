@@ -98,7 +98,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ConfigurationExtensions.cs" />
+    <Compile Include="ColumnDefaultTests.cs" />
+    <Compile Include="MakeUniqueTests.cs" />
+    <Compile Include="TablesGetTableTests.cs" />
+    <Compile Include="WireContractTests.cs" />
     <Compile Include="FakeDatabaseReader.cs" />
     <Compile Include="FakeDbCommand.cs">
       <SubType>Component</SubType>
@@ -127,7 +130,6 @@
     <None Include="packages.config" />
     <Compile Include="MustacheUtfTest.cs" />
     <Compile Include="StoredProcedureTests.cs" />
-    <Compile Include="StringExtensionTests.cs" />
     <Compile Include="ViewTests.cs" />
     <Compile Include="WriteToOuterTests.cs" />
     <Compile Include="TestDbContextFilter.cs" />
@@ -169,4 +171,12 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <ItemGroup>
+    <Content Include="WireContract\EfrpgResult.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="WireContract\EnumData.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
 </Project>

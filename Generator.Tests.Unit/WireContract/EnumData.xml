@@ -1,0 +1,13 @@
+<!--
+    A captured EnumData payload. WireContractTests asserts every member of RawEnum and RawEnumRow is
+    named in it.
+
+    The enum exchange is a second invocation of the same binary within one run, so it carries no
+    schemaVersion of its own: the EfrpgResult call has already passed the floor check. It still needs
+    a fixture of its own because RawEnum never travels inside EfrpgResult.
+
+    Real efrpg output, produced against the SQL Server EfrpgTest database with the enums-base64 flag,
+    reduced to two rows per enum. The group attribute on the first row was set by hand: no lookup
+    table in EfrpgTest populates a group column, so RawEnumRow.Group would otherwise never appear.
+-->
+<EnumData><Enum index="0"><Row name="Sun" value="0" group="Weekend"><Field name="GroupField" value="" /><Field name="TypeName" value="Sun" /><Field name="TypeId" value="0" /><Field name="Description" value="Sunday" /></Row><Row name="Mon" value="1" group=""><Field name="GroupField" value="" /><Field name="TypeName" value="Mon" /><Field name="TypeId" value="1" /><Field name="Description" value="Money" /></Row></Enum><Enum index="1"><Row name="SunRoof" value="0x01" group=""><Field name="GroupField" value="" /><Field name="enum_name" value="SunRoof" /><Field name="value" value="0x01" /><Field name="description" value="" /></Row><Row name="Spoiler" value="0x02" group=""><Field name="GroupField" value="" /><Field name="enum_name" value="Spoiler" /><Field name="value" value="0x02" /><Field name="description" value="Spoiler to add downforce" /></Row></Enum></EnumData>

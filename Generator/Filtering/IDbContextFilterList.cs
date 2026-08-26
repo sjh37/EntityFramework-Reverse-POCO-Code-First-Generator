@@ -5,7 +5,7 @@ namespace Efrpg.Filtering
 {
     public interface IDbContextFilterList
     {
-        bool ReadDbContextSettings(DatabaseReader reader, string singleDbContextSubNamespace = null);
+        bool ReadDbContextSettings(EfrpgResult result, string singleDbContextSubNamespace = null);
         Dictionary<string, IDbContextFilter> GetFilters();
         List<MultiContextSettings> GetMultiContextSettings();
         bool IncludeViews();

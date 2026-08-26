@@ -1206,8 +1206,8 @@ namespace Efrpg.PostgreSQL
 
         public Customer()
         {
-            Orders = new List<Order>();
             CustomerCustomerDemoes = new List<CustomerCustomerDemo>();
+            Orders = new List<Order>();
         }
     }
 
@@ -1297,9 +1297,9 @@ namespace Efrpg.PostgreSQL
 
         public Employee()
         {
-            Orders = new List<Order>();
             EmployeeTerritories = new List<EmployeeTerritory>();
             Employees = new List<Employee>();
+            Orders = new List<Order>();
         }
     }
 

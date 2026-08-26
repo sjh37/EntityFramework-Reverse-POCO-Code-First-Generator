@@ -16,14 +16,10 @@ namespace Efrpg.LanguageMapping
             switch (Settings.DatabaseType)
             {
                 case DatabaseType.SqlServer:
-                case DatabaseType.SqlCe:
                     return new SqlServerLanguageFactory();
 
                 case DatabaseType.SQLite:
                     return new SQLiteLanguageFactory();
-
-                case DatabaseType.Plugin:
-                    return new PluginLanguageFactory();
 
                 case DatabaseType.MySql:
                     return new MySqlLanguageFactory();

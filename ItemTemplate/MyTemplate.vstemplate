@@ -8,10 +8,10 @@
         <Icon>TemplateIcon.ico</Icon>
         <PreviewImage>PreviewImage.png</PreviewImage>
         <NumberOfParentCategoriesToRollUp>1</NumberOfParentCategoriesToRollUp>
-        <Version>3.14.1</Version>
+        <Version>4.0.0</Version>
     </TemplateData>
     <TemplateContent>
         <ProjectItem SubType="" TargetFileName="$fileinputname$.tt" ReplaceParameters="false">Database.tt</ProjectItem>
-        <ProjectItem SubType="" TargetFileName="EF.Reverse.POCO.v3.ttinclude" ReplaceParameters="false">EF.Reverse.POCO.v3.ttinclude</ProjectItem>
+        <ProjectItem SubType="" TargetFileName="EF.Reverse.POCO.v4.ttinclude" ReplaceParameters="false">EF.Reverse.POCO.v4.ttinclude</ProjectItem>
     </TemplateContent>
 </VSTemplate>

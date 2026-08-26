@@ -22,11 +22,10 @@
         public void OneTimeSetUp()
         {
             var fileManagement = new FileManagementService(new GeneratedTextTransformation());
-            var databaseReader = new FakeDatabaseReader();
 
             _rawTables = new List<RawTable>();
-            _sut = new GeneratorCustom(fileManagement, typeof(NullFileManager));
-            _sut.Init(databaseReader, string.Empty);
+            _sut = new GeneratorCustom(fileManagement);
+            _sut.Init(FakeDatabaseReader.CreateResult(), string.Empty);
         }
 
         [Test]
@@ -69,8 +68,8 @@
 
             var fileManagement = new FileManagementService(new GeneratedTextTransformation());
             var generator = templateType == TemplateType.Ef6
-                ? (Generator) new GeneratorEf6(fileManagement, typeof(NullFileManager))
-                : (Generator) new GeneratorEfCore(fileManagement, typeof(NullFileManager));
+                ? (Generator) new GeneratorEf6(fileManagement)
+                : (Generator) new GeneratorEfCore(fileManagement);
 
             // Create a view with original DB name "vwSiteNotification", renamed to "SiteNotificationView"
             var schema = new Schema("dbo");

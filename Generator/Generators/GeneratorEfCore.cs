@@ -8,8 +8,8 @@ namespace Efrpg.Generators
 {
     public class GeneratorEfCore : Generator
     {
-        public GeneratorEfCore(FileManagementService fileManagementService, Type fileManagerType)
-            : base(fileManagementService, fileManagerType)
+        public GeneratorEfCore(FileManagementService fileManagementService)
+            : base(fileManagementService)
         {
         }
 
@@ -90,7 +90,7 @@ namespace Efrpg.Generators
                 {
                     databaseGeneratedOption = ".ValueGeneratedOnAdd()";
 
-                    if (c.IsIdentity && DatabaseReader.HasIdentityColumnSupport() && Column.CanUseSqlServerIdentityColumn.Contains(c.PropertyType))
+                    if (c.IsIdentity && _result != null && _result.HasIdentityColumnSupport && Column.CanUseSqlServerIdentityColumn.Contains(c.PropertyType))
                         databaseGeneratedOption += Settings.ColumnIdentity(c);
                 }
                 else if (c.IsComputed)
@@ -114,7 +114,7 @@ namespace Efrpg.Generators
 
             var doNotSpecifySize = false;
             if (!c.IsMaxLength && c.MaxLength > 0)
-                doNotSpecifySize = (DatabaseReader.DoNotSpecifySizeForMaxLength && c.MaxLength > 4000); // Issue #179
+                doNotSpecifySize = (_result != null && _result.DoNotSpecifySizeForMaxLength && c.MaxLength > 4000); // Issue #179
 
             var excludedHasColumnType = string.Empty;
             var isVectorType = c.SqlPropertyType != null && c.SqlPropertyType.StartsWith("vector", StringComparison.InvariantCultureIgnoreCase);
@@ -134,14 +134,14 @@ namespace Efrpg.Generators
 
                 if (Settings.IsEfCore8Plus())
                 {
-                    if ((c.Precision > 0 || c.Scale > 0) && DatabaseReader.IsPrecisionAndScaleType(c.SqlPropertyType))
+                    if ((c.Precision > 0 || c.Scale > 0) && IsPrecisionAndScaleType(c.SqlPropertyType))
                     {
                         if (Settings.UseDataAnnotations)
                             c.Attributes.Add($"[Precision({c.Precision}, {c.Scale})]");
                         else
                             sb.AppendFormat(".HasPrecision({0},{1})", c.Precision, c.Scale);
                     }
-                    else if (c.Precision > 0 && DatabaseReader.IsPrecisionType(c.SqlPropertyType))
+                    else if (c.Precision > 0 && IsPrecisionType(c.SqlPropertyType))
                     {
                         if (Settings.UseDataAnnotations)
                             c.Attributes.Add($"[Precision({c.Precision})]");

@@ -6,6 +6,8 @@
         public StoredProcedureParameterMode Mode;
         public string Name;
         public string NameHumanCase;
+        public string DataType;
+        public string ReturnDataType;
         public string SqlDbType;
         public string ReturnSqlDbType;
         public string PropertyType;

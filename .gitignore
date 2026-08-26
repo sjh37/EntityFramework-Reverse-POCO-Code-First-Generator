@@ -5,6 +5,9 @@
 .claude/settings.local.json
 .claude/todos/
 
+# NuGet package
+nupkg/
+
 # User-specific files
 *.suo
 *.user

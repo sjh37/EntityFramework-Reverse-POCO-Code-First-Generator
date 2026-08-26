@@ -1,0 +1,53 @@
+# Oracle test database for the EFRPG integration tests.
+#
+#   cd TestDatabases/Oracle
+#   docker compose up -d          # first start takes a few minutes: it creates the database, then loads northwind.sql
+#   docker compose logs -f        # watch for "DATABASE IS READY TO USE!"
+#   docker compose down           # stop, keeping the data volume
+#   docker compose down -v        # stop and throw the database away, so the next up re-seeds from northwind.sql
+#
+# northwind.sql in this folder is loaded automatically on the very first start only. It does the
+# ALTER SESSION SET CONTAINER=pdb1 itself and creates its own schema owner, which is why this file asks
+# for a pluggable database named pdb1 and why the scripts run as SYSDBA.
+#
+# EfrpgTest.sql is NOT seeded by this file. It is written to run as its own schema owner, which has to exist
+# first, so create the user once and then load it by hand:
+#
+#   docker exec -i efrpg-oracle sqlplus sys/efrpgTest123@localhost:1521/pdb1 as sysdba <<< "
+#     CREATE USER efrpgtest IDENTIFIED BY abc123 QUOTA UNLIMITED ON USERS;
+#     GRANT CONNECT, RESOURCE, CREATE VIEW, CREATE MATERIALIZED VIEW, CREATE SYNONYM TO efrpgtest;"
+#   docker exec -i efrpg-oracle sqlplus efrpgtest/abc123@localhost:1521/pdb1 < EfrpgTest.sql
+#
+# SingleDatabaseTestOracle in Generator.Tests.Integration reverse engineers that schema, so its goldens will
+# not match until it is loaded.
+#
+# Connection strings for Settings.ConnectionString and for `efrpg --database Oracle`:
+#   User Id=efrpg;Password=abc123;Data Source=localhost:1521/pdb1;        # northwind
+#   User Id=efrpgtest;Password=abc123;Data Source=localhost:1521/pdb1;    # EfrpgTest
+#
+# Set EFRPG_ORACLE_PORT if 1521 is already taken on your machine.
+
+services:
+  oracle:
+    image: gvenzl/oracle-free:23-slim
+    container_name: efrpg-oracle
+    ports:
+      - "${EFRPG_ORACLE_PORT:-1521}:1521"
+    environment:
+      # SYS and SYSTEM password. The generator never uses it - northwind.sql creates the efrpg schema owner.
+      ORACLE_PASSWORD: efrpgTest123
+      # Creates a pluggable database of this name, which is the container northwind.sql switches into.
+      ORACLE_DATABASE: pdb1
+    volumes:
+      - efrpg-oracle-data:/opt/oracle/oradata
+      # Read only: the seed script belongs to the repo and nothing in the container should rewrite it.
+      - ./northwind.sql:/container-entrypoint-initdb.d/01-northwind.sql:ro
+    healthcheck:
+      test: ["CMD", "/opt/oracle/healthcheck.sh"]
+      interval: 10s
+      timeout: 10s
+      retries: 60
+      start_period: 60s
+
+volumes:
+  efrpg-oracle-data:

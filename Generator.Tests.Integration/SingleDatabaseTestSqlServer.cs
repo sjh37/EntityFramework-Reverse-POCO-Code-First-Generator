@@ -93,7 +93,7 @@ namespace Generator.Tests.Integration
                            (useDataAnnotations ? "Da" : string.Empty) +
                            (allowNullStrings ? "Ans" : string.Empty) + 
                            (nullableReverseNavigationProperties ? "Nrnp" : string.Empty);
-            Run(filename, singleDbContextSubNamespace, typeof(NullFileManager), null, enumDefinitions);
+            Run(filename, singleDbContextSubNamespace, null, enumDefinitions);
 
             // Assert
             CompareAgainstTestComparison(filename);
@@ -112,7 +112,7 @@ namespace Generator.Tests.Integration
 
             // Act
             const string filename = "NonPascalCased";
-            Run(filename, singleDbContextSubNamespace, typeof(NullFileManager), null);
+            Run(filename, singleDbContextSubNamespace, null);
 
             // Assert
             CompareAgainstTestComparison(filename);
@@ -138,7 +138,7 @@ namespace Generator.Tests.Integration
 
             // Act
             var filename = "SpacedColumnSp" + (useDataAnnotations ? "Da" : string.Empty);
-            Run(filename, singleDbContextSubNamespace, typeof(NullFileManager), null);
+            Run(filename, singleDbContextSubNamespace, null);
 
             // Assert
             CompareAgainstTestComparison(filename);
@@ -157,6 +157,10 @@ namespace Generator.Tests.Integration
             Settings.UseMappingTables = false;
             Settings.AddUnitTestingDbContext = false;
             Settings.UseDataAnnotations = useDataAnnotations;
+            // The TestComparison golden for this test was generated when AllowNullStrings leaked in as true from the
+            // preceding ReverseEngineerSqlServer case. Now that SetupDatabase resets it, state the value explicitly
+            // so the golden still describes this test's output.
+            Settings.AllowNullStrings = true;
 
             FilterSettings.SchemaFilters.Add(new RegexIncludeFilter("dbo.*"));
             FilterSettings.TableFilters.Add(new RegexIncludeFilter("^$")); // exclude all tables and views
@@ -164,7 +168,7 @@ namespace Generator.Tests.Integration
 
             // Act
             var filename = "SpacedColumnTvf" + (useDataAnnotations ? "Da" : string.Empty);
-            Run(filename, singleDbContextSubNamespace, typeof(NullFileManager), null);
+            Run(filename, singleDbContextSubNamespace, null);
 
             // Assert
             CompareAgainstTestComparison(filename);
@@ -191,7 +195,7 @@ namespace Generator.Tests.Integration
 
             // Act
             var filename = database + "IncludeFilter";
-            Run(filename, singleDbContextSubNamespace, typeof(NullFileManager), null);
+            Run(filename, singleDbContextSubNamespace, null);
 
             // Assert
             CompareAgainstTestComparison(filename);

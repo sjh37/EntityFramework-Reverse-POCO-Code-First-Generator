@@ -57,7 +57,7 @@ namespace Generator.Tests.Unit
             FilterSettings.CheckSettings();
 
             var fileManagement = new FileManagementService(new GeneratedTextTransformation());
-            var generator      = new GeneratorEfCore(fileManagement, typeof(NullFileManager));
+            var generator      = new GeneratorEfCore(fileManagement);
 
             var table = new Table(null, new Schema("dbo"), "Customer", false) { NameHumanCase = "Customer" };
             table.Columns.Add(new Column

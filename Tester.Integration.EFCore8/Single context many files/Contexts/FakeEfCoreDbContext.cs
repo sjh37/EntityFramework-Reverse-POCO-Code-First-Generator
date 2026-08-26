@@ -602,23 +602,14 @@ namespace Tester.Integration.EFCore8.Single_context_many_files.Contexts
             return Task.FromResult(ColourPivot(out procResult));
         }
 
-        public DbSet<ColumnNameAndTypesProcReturnModel> ColumnNameAndTypesProcReturnModel { get; set; } = null!;
-        public List<ColumnNameAndTypesProcReturnModel> ColumnNameAndTypesProc()
+        public int ColumnNameAndTypesProc()
         {
-            int procResult;
-            return ColumnNameAndTypesProc(out procResult);
+            return 0;
         }
 
-        public List<ColumnNameAndTypesProcReturnModel> ColumnNameAndTypesProc(out int procResult)
+        public Task<int> ColumnNameAndTypesProcAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            procResult = 0;
-            return new List<ColumnNameAndTypesProcReturnModel>();
-        }
-
-        public Task<List<ColumnNameAndTypesProcReturnModel>> ColumnNameAndTypesProcAsync(CancellationToken cancellationToken = default(CancellationToken))
-        {
-            int procResult;
-            return Task.FromResult(ColumnNameAndTypesProc(out procResult));
+            return Task.FromResult(0);
         }
 
         public int ConvertToString(int? someValue, ref string someString)
@@ -877,42 +868,24 @@ namespace Tester.Integration.EFCore8.Single_context_many_files.Contexts
 
         // ProcTestDecimalOutputV3DefaultAsync() cannot be created due to having out parameters, or is relying on the procedure result (int)
 
-        public DbSet<SpatialTypesNoParamsReturnModel> SpatialTypesNoParamsReturnModel { get; set; } = null!;
-        public List<SpatialTypesNoParamsReturnModel> SpatialTypesNoParams()
+        public int SpatialTypesNoParams()
         {
-            int procResult;
-            return SpatialTypesNoParams(out procResult);
+            return 0;
         }
 
-        public List<SpatialTypesNoParamsReturnModel> SpatialTypesNoParams(out int procResult)
+        public Task<int> SpatialTypesNoParamsAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            procResult = 0;
-            return new List<SpatialTypesNoParamsReturnModel>();
+            return Task.FromResult(0);
         }
 
-        public Task<List<SpatialTypesNoParamsReturnModel>> SpatialTypesNoParamsAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public int SpatialTypesWithParams(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography)
         {
-            int procResult;
-            return Task.FromResult(SpatialTypesNoParams(out procResult));
+            return 0;
         }
 
-        public DbSet<SpatialTypesWithParamsReturnModel> SpatialTypesWithParamsReturnModel { get; set; } = null!;
-        public List<SpatialTypesWithParamsReturnModel> SpatialTypesWithParams(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography)
+        public Task<int> SpatialTypesWithParamsAsync(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography, CancellationToken cancellationToken = default(CancellationToken))
         {
-            int procResult;
-            return SpatialTypesWithParams(geometry, geography, out procResult);
-        }
-
-        public List<SpatialTypesWithParamsReturnModel> SpatialTypesWithParams(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography, out int procResult)
-        {
-            procResult = 0;
-            return new List<SpatialTypesWithParamsReturnModel>();
-        }
-
-        public Task<List<SpatialTypesWithParamsReturnModel>> SpatialTypesWithParamsAsync(NetTopologySuite.Geometries.Geometry geometry, NetTopologySuite.Geometries.Point geography, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            int procResult;
-            return Task.FromResult(SpatialTypesWithParams(geometry, geography, out procResult));
+            return Task.FromResult(0);
         }
 
         public DbSet<SpNullableStringReproReturnModel> SpNullableStringReproReturnModel { get; set; } = null!;

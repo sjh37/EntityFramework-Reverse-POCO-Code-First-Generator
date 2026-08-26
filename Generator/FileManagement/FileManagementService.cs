@@ -10,7 +10,6 @@ namespace Efrpg.FileManagement
         private readonly GeneratedTextTransformation _outer;
         private readonly Dictionary<string, IFileManager> _fileManagers;
         private IFileManager _fileManager;
-        private VisualStudioFileManager _visualStudioFileManager;
         private readonly FileAuditService _auditService;
         private bool _writeToOuter;
         public bool ForceWriteToOuter;
@@ -22,7 +21,6 @@ namespace Efrpg.FileManagement
             _outer = outer;
             _fileManagers = new Dictionary<string, IFileManager>();
             _fileManager = null;
-            _visualStudioFileManager = null;
             _auditService = new FileAuditService();
         }
 
@@ -39,7 +37,7 @@ namespace Efrpg.FileManagement
             }
         }
 
-        public void Init(Dictionary<string, IDbContextFilter> filters, Type fileManagerType)
+        public void Init(Dictionary<string, IDbContextFilter> filters)
         {
             Settings.FilterCount = filters.Count;
 
@@ -53,18 +51,9 @@ namespace Efrpg.FileManagement
             var e = Settings.GenerateSingleDbContext;
             var f = filters.First().Key;*/
 
-            if (fileManagerType == typeof(VisualStudioFileManager))
-            {
-                _visualStudioFileManager = (VisualStudioFileManager) Activator.CreateInstance(fileManagerType);
-                _visualStudioFileManager.Init(_outer);
-
-                // Switch to the EfCoreFileManager for the rest
-                fileManagerType = typeof(EfCoreFileManager);
-            }
-
             foreach (var filter in filters)
             {
-                var fileManager = (IFileManager) Activator.CreateInstance(fileManagerType);
+                var fileManager = new EfCoreFileManager();
                 fileManager.Init(_outer);
                 if (!string.IsNullOrWhiteSpace(filter.Key))
                     fileManager.StartNewFile(filter.Key + Settings.FileExtension);
@@ -116,20 +105,7 @@ namespace Efrpg.FileManagement
             _auditService.WriteAuditFile();
 
             foreach (var fileManager in _fileManagers)
-            {
-                if (_visualStudioFileManager == null)
-                {
-                    fileManager.Value.Process(split);
-                    continue;
-                }
-
-                if (fileManager.Value.GetType() == typeof(EfCoreFileManager))
-                    ((EfCoreFileManager) fileManager.Value).ProcessToAnotherFileManager(_visualStudioFileManager, _outer);
-                else
-                    fileManager.Value.Process(split);
-            }
-
-            _visualStudioFileManager?.Process(split);
+                fileManager.Value.Process(split);
         }
 
         public void StartNewFile(string name)

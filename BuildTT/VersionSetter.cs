@@ -16,9 +16,13 @@ namespace BuildTT
         }
 
         public void SetVersions()
-        { 
+        {
             UpdateVstemplate();
             UpdateVsixmanifest();
+
+            // Deliberately does NOT stamp the efrpg dotnet tool, which lives in its own repository and versions
+            // independently of
+            // version.txt - see the "Wire format contract" section of AGENTS.md.
 
             DeleteFiles(Path.Combine(_root, "ItemTemplate\\ItemTemplates"), "*");
             var zipFile = Path.Combine(_root, "ItemTemplate\\ItemTemplates\\efrpoco.zip");
@@ -49,7 +53,7 @@ namespace BuildTT
                 tt.WriteLine("    </TemplateData>");
                 tt.WriteLine("    <TemplateContent>");
                 tt.WriteLine("        <ProjectItem SubType=\"\" TargetFileName=\"$fileinputname$.tt\" ReplaceParameters=\"false\">Database.tt</ProjectItem>");
-                tt.WriteLine("        <ProjectItem SubType=\"\" TargetFileName=\"EF.Reverse.POCO.v3.ttinclude\" ReplaceParameters=\"false\">EF.Reverse.POCO.v3.ttinclude</ProjectItem>");
+                tt.WriteLine("        <ProjectItem SubType=\"\" TargetFileName=\"EF.Reverse.POCO.v4.ttinclude\" ReplaceParameters=\"false\">EF.Reverse.POCO.v4.ttinclude</ProjectItem>");
                 tt.WriteLine("    </TemplateContent>");
                 tt.Write("</VSTemplate>");
             }
@@ -58,6 +62,12 @@ namespace BuildTT
         private void UpdateVsixmanifest()
         {
             var filename = Path.Combine(_root, "EntityFramework Reverse POCO Generator\\source.extension.vsixmanifest");
+
+            // Tags.txt is the single source of truth for the marketplace tag list. It used to be repeated
+            // here as a string literal as well, and the two drifted - SQLite, MySQL and Oracle reached
+            // Tags.txt but not the manifest, which is the copy the marketplace actually reads.
+            var tags = File.ReadAllText(Path.Combine(_root, "EntityFramework Reverse POCO Generator\\Tags.txt")).Trim();
+
             using (var tt = File.CreateText(filename))
             {
                 tt.WriteLine("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
@@ -70,7 +80,7 @@ namespace BuildTT
                 tt.WriteLine("        <License>license.txt</License>");
                 tt.WriteLine("        <Icon>TemplateIcon.ico</Icon>");
                 tt.WriteLine("        <PreviewImage>PreviewImage.png</PreviewImage>");
-                tt.WriteLine("        <Tags>Reverse Poco, Data, Entity Framework, Code Generator, Database, reverse engineering, C#, SQL Server, PostgreSQL, POCO, Code First, CodeFirst</Tags>");
+                tt.WriteLine($"        <Tags>{tags}</Tags>");
                 tt.WriteLine("    </Metadata>");
                 tt.WriteLine("    <Installation>");
                 tt.WriteLine("        <InstallationTarget Version=\"[15.0,17.0)\" Id=\"Microsoft.VisualStudio.Community\" />");
@@ -104,7 +114,7 @@ namespace BuildTT
                 using (var archive = new ZipArchive(zipToOpen, ZipArchiveMode.Update))
                 {
                     CreateZipFile(archive, "Database.tt", Path.Combine(_root, "EntityFramework.Reverse.POCO.Generator\\Database.tt"));
-                    CreateZipFile(archive, "EF.Reverse.POCO.v3.ttinclude", Path.Combine(_root, "EntityFramework.Reverse.POCO.Generator\\EF.Reverse.POCO.v3.ttinclude"));
+                    CreateZipFile(archive, "EF.Reverse.POCO.v4.ttinclude", Path.Combine(_root, "EntityFramework.Reverse.POCO.Generator\\EF.Reverse.POCO.v4.ttinclude"));
                     CreateZipFile(archive, "MyTemplate.vstemplate", Path.Combine(_root, "ItemTemplate\\MyTemplate.vstemplate"));
                     CreateZipFile(archive, "PreviewImage.png", Path.Combine(_root, "EntityFramework Reverse POCO Generator\\PreviewImage.png"));
                     CreateZipFile(archive, "TemplateIcon.ico", Path.Combine(_root, "EntityFramework Reverse POCO Generator\\TemplateIcon.ico"));
