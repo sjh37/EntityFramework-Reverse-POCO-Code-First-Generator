@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using BuildTT.Application;
 using BuildTT.Infrastructure;
+using BuildTT.SettingsMetadata;
 
 namespace BuildTT
 {
@@ -17,6 +18,7 @@ namespace BuildTT
             UpdateEfrpgVersion(Path.Combine(generatorRoot, "EfrpgVersion.cs"));
             CreateTT(generatorRoot, ttRoot);
             CreateCoreTTInclude(generatorRoot, ttRoot);
+            SettingsMetadataWriter.Create(generatorRoot, ttRoot, version); // Reads back the Database.tt just written
         }
 
         private static void CreateTT(string generatorRoot, string ttRoot)

@@ -10,7 +10,7 @@ The generator is distributed as a VSIX (Visual Studio Extension) containing a T4
 
 ## Solution Structure
 
-- **`Generator/`** — Core library (`Efrpg` namespace, `netstandard2.0`). All generation logic lives here.
+- **`Generator/`** — Core library (`Efrpg` namespace, `net48`). All generation logic lives here.
 - **`BuildTT/`** — Console app that compiles the `Generator/` C# project into a single `.ttinclude` file (`EF.Reverse.POCO.v4.ttinclude`) that ships with the extension.
 - **`EntityFramework.Reverse.POCO.Generator/`** — The `.ttinclude` file output from BuildTT, plus the `Database.tt` template that users add to their projects.
 - **`EntityFramework Reverse POCO Generator/`** — VSIX packaging project.
@@ -103,21 +103,32 @@ When `Settings.GenerateSingleDbContext = false`, a plugin class implementing `IM
 
 ## Build Commands
 
+**`dotnet test` and `dotnet run` silently do nothing on the old-style `net48` projects** - `BuildTT`,
+`Generator.Tests.Unit` and `Generator.Tests.Integration`. There is no test host, so `dotnet test` restores,
+exits 0 and runs zero tests, which reads as a pass. Use `dotnet vstest` against the built assembly instead,
+and run `BuildTT.exe` directly.
+
 ```bash
 # Build the solution
-dotnet build EF.Reverse.POCO.GeneratorV3.sln
+dotnet build EF.Reverse.POCO.GeneratorV4.sln
 
-# Run unit tests (no DB required for most)
-dotnet test Generator.Tests.Unit/Generator.Tests.Unit.csproj
+# Regenerate EF.Reverse.POCO.v4.ttinclude, Database.tt, _File based templates and settings-metadata.v4.json
+dotnet build BuildTT/BuildTT.csproj
+(cd BuildTT/bin/Debug && ./BuildTT.exe)
 
-# Run EF Core unit tests
+# Run unit tests (no DB required for most).
+# The 6.2.0 adapter is required: 4.x throws "Unknown framework version 10.0" when the .NET 10 SDK is present.
+dotnet vstest Generator.Tests.Unit/bin/Debug/Generator.Tests.Unit.dll --TestAdapterPath:packages/NUnit3TestAdapter.6.2.0/build/net462
+
+# Run a single test fixture
+dotnet vstest Generator.Tests.Unit/bin/Debug/Generator.Tests.Unit.dll --TestAdapterPath:packages/NUnit3TestAdapter.6.2.0/build/net462 --TestCaseFilter:"FullyQualifiedName~PluralisationTests"
+
+# Run EF Core unit tests - SDK-style net8.0, so dotnet test works here
 dotnet test Generator.Tests.Unit.EFCore/Generator.Tests.Unit.EFCore.csproj
 
-# Run integration tests (requires SQL Server with EfrpgTest and Northwind databases)
-dotnet test Generator.Tests.Integration/Generator.Tests.Integration.csproj --filter "Category=Integration"
-
-# Run a single test by name
-dotnet test Generator.Tests.Unit/Generator.Tests.Unit.csproj --filter "FullyQualifiedName~PluralisationTests"
+# Run integration tests (requires SQL Server with EfrpgTest and Northwind databases, and the *.tt files
+# must have been executed first - see Testing Patterns). The trait name is TestCategory, not Category.
+dotnet vstest Generator.Tests.Integration/bin/Debug/Generator.Tests.Integration.dll --TestAdapterPath:packages/NUnit3TestAdapter.6.2.0/build/net462 --TestCaseFilter:"TestCategory=Integration"
 ```
 
 ## Packaging

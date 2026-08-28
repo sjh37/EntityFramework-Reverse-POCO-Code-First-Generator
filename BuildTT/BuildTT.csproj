@@ -83,6 +83,11 @@
     <Compile Include="Application\FileReader.cs" />
     <Compile Include="Application\IReaderStrategy.cs" />
     <Compile Include="Infrastructure\FileReaderStrategy.cs" />
+    <Compile Include="SettingsMetadata\JsonBuilder.cs" />
+    <Compile Include="SettingsMetadata\SettingsMetadataWriter.cs" />
+    <Compile Include="SettingsMetadata\SettingSource.cs" />
+    <Compile Include="SettingsMetadata\SettingsSourceParser.cs" />
+    <Compile Include="SettingsMetadata\StatementScanner.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TemplateFiles.cs" />

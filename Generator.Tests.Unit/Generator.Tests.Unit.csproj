@@ -137,6 +137,7 @@
     <Compile Include="IndexModelBuilderTests.cs" />
     <Compile Include="TemplateTransformationTests.cs" />
     <Compile Include="SchemaReaderTests.cs" />
+    <Compile Include="SettingsMetadataTests.cs" />
     <Compile Include="PluralisationTests.cs" />
     <Compile Include="DecimalPrecisionTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

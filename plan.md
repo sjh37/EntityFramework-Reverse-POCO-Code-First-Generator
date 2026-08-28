@@ -64,16 +64,59 @@ VSIX debugging is miserable. Anything worth testing goes in `Efrpg.Gui.Core` whe
 The GUI needs to know which settings exist, their types, enum values and help text. Hand-maintaining that
 list would drift from `Database.tt` the way the language mappings drifted from each other.
 
-- [ ] Extend `BuildTT` to emit `settings-metadata.json` alongside `Database.tt`
-- [ ] Include for each setting: name, CLR type, whether it is an enum and its members, default value
-- [ ] Parse the trailing `//` comment on each `Settings.*` line as the help text - `Database.tt` already
+- [x] Extend `BuildTT` to emit `settings-metadata.json` alongside `Database.tt`
+- [x] Include for each setting: name, CLR type, whether it is an enum and its members, default value
+- [x] Parse the trailing `//` comment on each `Settings.*` line as the help text - `Database.tt` already
       documents every setting inline, so the GUI's tooltips maintain themselves
-- [ ] Ship `settings-metadata.v4.json` in the VSIX
-- [ ] Hand-write `settings-metadata.v3.json` **once** - v3 is frozen at 3.14.1 and will never change, so it
+- [x] Ship `settings-metadata.v4.json` in the VSIX
+- [x] Hand-write `settings-metadata.v3.json` **once** - v3 is frozen at 3.14.1 and will never change, so it
       needs no generator. Derive it from the v3 `Database.tt` in git history
-- [ ] Unit test: every `Settings.*` assignment in `Database.tt` appears in the v4 metadata
+- [x] Unit test: every `Settings.*` assignment in `Database.tt` appears in the v4 metadata
 
-**Verification:** re-running BuildTT on an unchanged tree rewrites the metadata byte for byte.
+**Verification:** re-running BuildTT on an unchanged tree rewrites the metadata byte for byte. Confirmed.
+
+### As built
+
+`BuildTT/SettingsMetadata/` writes `EntityFramework.Reverse.POCO.Generator/settings-metadata.v4.json` -
+119 settings, 104 of them assigned in `Database.tt`. The VSIX links both metadata files rather than copying
+them, and they are deliberately kept out of `efrpoco.zip`, which is unpacked into the user's project.
+
+**Two sources, each answering only what it can.** Reflection over `Efrpg.Settings` is the authority on which
+settings exist and what type each one is - it cannot go stale, because it is the assembly the generator runs.
+The source text of `Database.tt` and `Settings.cs` is the authority on help text and on the value a new
+template starts with, neither of which survives compilation. `defaultValue` is therefore always the **source
+text**, never a reflected runtime value: `Settings.Namespace` evaluates to `"Efrpg"`, and
+`Settings.TemplateFolder` is `""` in code but `Path.Combine(Settings.Root, "Templates")` in the template. The
+GUI writes C# into a `.tt`, so source text is the thing it actually needs.
+
+**Emitted per setting:** `name`, `type`, `kind`, `section`, `help`, `defaultValue`, `inDatabaseTt`,
+`commentedOut`, `multiLine`, `runtimeOnly`, plus `isFlags` and `enumMembers` for enums. `kind` is the render
+hint the later phases classify on - `bool`, `string`, `char`, `number`, `enum`, `stringList`, `callback`,
+`complex`. The 27 `callback` and 3 `complex` settings are Phase 3's *"customised in code"* category, already
+identified.
+
+**Settings absent from `Database.tt` are still emitted** - 15 of them. Four (`PrependSchemaNameForTable`,
+`PrependSchemaNameForStoredProcedure`, `ReadStoredProcReturnObjectCompleted`,
+`ReadStoredProcReturnObjectException`) already appear in this repo's own `Tester.Integration.*` templates, so
+metadata built from `Database.tt` alone would leave the GUI blind to settings that do occur in real files. The
+four the generator fills in at run time (`Root`, `TemplateFile`, `DefaultSchema`, `FilterCount`) carry
+`runtimeOnly: true` rather than being dropped, so a new plumbing field surfaces as a spurious GUI entry
+instead of vanishing silently.
+
+`settings-metadata.v3.json` was produced once by running this same writer against the `Generator/` and
+`Database.tt` of tag `v3.14.1`, then frozen with a `note` recording that. It holds 121 settings: the v4 set
+plus `FileManagerType` and `DatabaseReaderPlugin`, which is exactly the difference the two files exist to keep
+apart. No setting changed type between v3 and v4.
+
+**Tests** are the five in `Generator.Tests.Unit/SettingsMetadataTests.cs`. They scan `Database.tt` with their
+own deliberately crude regex rather than calling BuildTT's parser - a test that reused the parser would agree
+with it about a setting it had dropped. Beyond the checklist item they assert both reverse directions (nothing
+described that `Settings` no longer has; nothing on `Settings` missing from the file - the "BuildTT was not
+run" guard, proved by adding a field and watching it fail), that every enum lists its members, and that the v3
+file has not been overwritten with a copy of the v4 one.
+
+**Left out deliberately:** `FilterSettings.Include*` is not in the metadata. Phase 2's table / view / stored
+procedure checkboxes map onto those five flags, so that is the moment to add a second array to this file.
 
 **Why two files.** `Settings.FileManagerType` is valid in v3 and poison in v4 - showing it for a v4 file
 would make the GUI write code that does not compile. The metadata is what keeps the two apart.
