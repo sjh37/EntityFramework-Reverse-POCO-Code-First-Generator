@@ -33,12 +33,24 @@ Recorded so they are not relitigated mid-build.
 ## Solution structure
 
 ```
-Efrpg.Gui.Core        netstandard2.0    Roslyn settings model, .tt parse/write, tool detection.
-                                        All the logic. No VS reference.
-Efrpg.Gui.Core.Tests  net10.0           NUnit against the above.
-Efrpg.Vsix            net48             Toolkit package, IWizard, .vsct, WPF views.
-                                        Kept deliberately thin.
+Efrpg.Gui.Core                          netstandard2.0  Roslyn settings model, .tt parse/write,
+                                                        tool detection. All the logic. No VS reference.
+Efrpg.Gui.Core.Tests                    net10.0         NUnit against the above.
+EntityFramework Reverse POCO Generator  net48           The EXISTING VSIX project, not a new one. Gains the
+                                                        Toolkit package, IWizard, .vsct and WPF views.
+                                                        Kept deliberately thin.
 ```
+
+**Only the two `Efrpg.Gui.Core*` projects are new.** The third row is the VSIX project that already ships;
+Phase 1 converts it from item-template-only rather than adding a second extension.
+
+**The extension identity and the output filename must not change.** `source.extension.vsixmanifest` carries
+`Id="EntityFramework_Reverse_POCO_Generator..d542a934-8bd6-4136-b490-5f0049d62033"` and the project's
+`<AssemblyName>` produces `EntityFramework Reverse POCO Generator.vsix`. That identity is what makes an
+existing install *upgrade*. Change either and the 576,893 installs get a stranger sitting alongside the
+extension they have, two entries on the marketplace, and two copies of the item template competing on
+Add - New Item. So the project is not renamed to `Efrpg.Vsix` or anything else, however tidy that would look
+next to `Efrpg.Gui.Core`.
 
 **The TFMs are forced, not chosen.** An in-process Visual Studio extension runs inside the VS process, which
 is .NET Framework - the existing VSIX project is already `<TargetFrameworkVersion>v4.8</TargetFrameworkVersion>`.
