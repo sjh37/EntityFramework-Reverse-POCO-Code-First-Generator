@@ -1,0 +1,65 @@
+<!--
+    The schema every wiki example is generated from.
+
+    This is a hand-written efrpg payload, not a captured one. It is deliberately tiny and deliberately
+    boring: every example on every Settings.* wiki page is generated from these three tables, so a reader
+    who has understood the schema once can read every page without re-learning it.
+
+    It is NOT the wire-contract fixture. Generator.Tests.Unit/WireContract/EfrpgResult.xml exists to prove
+    the tool and the template still agree about every attribute on the wire, so it is captured output and
+    must stay captured. This one exists to be readable, so it is written by hand. Keep them apart: making
+    this one "realistic" would make the pages unreadable, and making that one readable would stop it
+    catching drift.
+
+    The equivalent SQL Server DDL, which is what the wiki pages show the reader, is in DocSampleSchema.sql.
+    Keep the two in step - DocSampleSchemaTests asserts the shape a page relies on is actually here.
+
+    What each part is here to exercise:
+      dbo.Category      a plain lookup table, and the principal end of a foreign key
+      dbo.Product       identity PK, a SQL default, a computed column, a nullable and a non-nullable
+                        string, a decimal with precision and scale, and the dependent end of the FK
+      sales.Order       a table outside the default schema, for the schema-prepending settings
+-->
+<EfrpgResult schemaVersion="1"
+             toolVersion="1.0.0"
+             defaultSchema="dbo"
+             databaseDetails=""
+             includeSchema="true"
+             canReadStoredProcedures="true"
+             hasIdentityColumnSupport="true"
+             doNotSpecifySizeForMaxLength="false">
+
+  <Tables>
+    <!-- dbo.Category -->
+    <Row schemaName="dbo" tableName="Category" isView="false" isSynonym="false" ordinal="1" columnName="CategoryId"   typeName="int"      isNullable="false" maxLength="0"  precision="10" scale="0" dateTimePrecision="0" isIdentity="true"  isComputed="false" isRowGuid="false" generatedAlwaysType="0" isStoreGenerated="true"  primaryKey="true"  primaryKeyOrdinal="1" isForeignKey="false" synonymTriggerName="" default="" />
+    <Row schemaName="dbo" tableName="Category" isView="false" isSynonym="false" ordinal="2" columnName="CategoryName" typeName="nvarchar" isNullable="false" maxLength="50" precision="0"  scale="0" dateTimePrecision="0" isIdentity="false" isComputed="false" isRowGuid="false" generatedAlwaysType="0" isStoreGenerated="false" primaryKey="false" primaryKeyOrdinal="0" isForeignKey="false" synonymTriggerName="" default="" />
+
+    <!-- dbo.Product -->
+    <Row schemaName="dbo" tableName="Product" isView="false" isSynonym="false" ordinal="1" columnName="ProductId"    typeName="int"      isNullable="false" maxLength="0"   precision="10" scale="0" dateTimePrecision="0" isIdentity="true"  isComputed="false" isRowGuid="false" generatedAlwaysType="0" isStoreGenerated="true"  primaryKey="true"  primaryKeyOrdinal="1" isForeignKey="false" synonymTriggerName="" default="" />
+    <Row schemaName="dbo" tableName="Product" isView="false" isSynonym="false" ordinal="2" columnName="ProductName"  typeName="nvarchar" isNullable="false" maxLength="100" precision="0"  scale="0" dateTimePrecision="0" isIdentity="false" isComputed="false" isRowGuid="false" generatedAlwaysType="0" isStoreGenerated="false" primaryKey="false" primaryKeyOrdinal="0" isForeignKey="false" synonymTriggerName="" default="" />
+    <Row schemaName="dbo" tableName="Product" isView="false" isSynonym="false" ordinal="3" columnName="UnitPrice"    typeName="decimal"  isNullable="false" maxLength="0"   precision="18" scale="2" dateTimePrecision="0" isIdentity="false" isComputed="false" isRowGuid="false" generatedAlwaysType="0" isStoreGenerated="false" primaryKey="false" primaryKeyOrdinal="0" isForeignKey="false" synonymTriggerName="" default="((0))" />
+    <Row schemaName="dbo" tableName="Product" isView="false" isSynonym="false" ordinal="4" columnName="Notes"        typeName="nvarchar" isNullable="true"  maxLength="-1"  precision="0"  scale="0" dateTimePrecision="0" isIdentity="false" isComputed="false" isRowGuid="false" generatedAlwaysType="0" isStoreGenerated="false" primaryKey="false" primaryKeyOrdinal="0" isForeignKey="false" synonymTriggerName="" default="" />
+    <Row schemaName="dbo" tableName="Product" isView="false" isSynonym="false" ordinal="5" columnName="CategoryId"   typeName="int"      isNullable="false" maxLength="0"   precision="10" scale="0" dateTimePrecision="0" isIdentity="false" isComputed="false" isRowGuid="false" generatedAlwaysType="0" isStoreGenerated="false" primaryKey="false" primaryKeyOrdinal="0" isForeignKey="true"  synonymTriggerName="" default="" />
+    <Row schemaName="dbo" tableName="Product" isView="false" isSynonym="false" ordinal="6" columnName="DisplayLabel" typeName="nvarchar" isNullable="true"  maxLength="150" precision="0"  scale="0" dateTimePrecision="0" isIdentity="false" isComputed="true"  isRowGuid="false" generatedAlwaysType="0" isStoreGenerated="true"  primaryKey="false" primaryKeyOrdinal="0" isForeignKey="false" synonymTriggerName="" default="" />
+
+    <!-- sales.Order - outside the default schema -->
+    <Row schemaName="sales" tableName="Order" isView="false" isSynonym="false" ordinal="1" columnName="OrderId"     typeName="int"       isNullable="false" maxLength="0"  precision="10" scale="0" dateTimePrecision="0" isIdentity="true"  isComputed="false" isRowGuid="false" generatedAlwaysType="0" isStoreGenerated="true"  primaryKey="true"  primaryKeyOrdinal="1" isForeignKey="false" synonymTriggerName="" default="" />
+    <Row schemaName="sales" tableName="Order" isView="false" isSynonym="false" ordinal="2" columnName="OrderDate"   typeName="datetime2" isNullable="false" maxLength="0"  precision="0"  scale="0" dateTimePrecision="7" isIdentity="false" isComputed="false" isRowGuid="false" generatedAlwaysType="0" isStoreGenerated="false" primaryKey="false" primaryKeyOrdinal="0" isForeignKey="false" synonymTriggerName="" default="" />
+    <Row schemaName="sales" tableName="Order" isView="false" isSynonym="false" ordinal="3" columnName="CustomerRef" typeName="nvarchar"  isNullable="true"  maxLength="40" precision="0"  scale="0" dateTimePrecision="0" isIdentity="false" isComputed="false" isRowGuid="false" generatedAlwaysType="0" isStoreGenerated="false" primaryKey="false" primaryKeyOrdinal="0" isForeignKey="false" synonymTriggerName="" default="" />
+  </Tables>
+
+  <ForeignKeys>
+    <Row constraintName="FK_Product_Category" parentName="" childName=""
+         pkSchema="dbo" pkTableName="Category" pkColumn="CategoryId"
+         fkSchema="dbo" fkTableName="Product"  fkColumn="CategoryId"
+         ordinal="1" cascadeOnDelete="false" isNotEnforced="false" hasUniqueConstraint="false" />
+  </ForeignKeys>
+
+  <Indexes />
+  <ExtendedProperties />
+  <Sequences />
+  <Triggers />
+  <MemoryOptimisedTables />
+  <StoredProcedures />
+  <Errors />
+</EfrpgResult>

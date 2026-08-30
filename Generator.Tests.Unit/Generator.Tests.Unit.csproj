@@ -99,6 +99,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ColumnDefaultTests.cs" />
+    <Compile Include="DocSamples\DocSampleCatalogue.cs" />
+    <Compile Include="DocSamples\DocSampleExtractor.cs" />
+    <Compile Include="DocSamples\DocSampleRunner.cs" />
+    <Compile Include="DocSamples\DocSampleTests.cs" />
+    <Compile Include="DocSamples\StaticStateSnapshot.cs" />
+    <Compile Include="DocSamples\WikiSnippetDriftTests.cs" />
     <Compile Include="MakeUniqueTests.cs" />
     <Compile Include="TablesGetTableTests.cs" />
     <Compile Include="WireContractTests.cs" />
@@ -181,6 +187,12 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="WireContract\EnumData.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="DocSamples\DocSampleSchema.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="DocSamples\DocSampleSchema.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
