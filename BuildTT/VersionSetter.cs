@@ -83,21 +83,30 @@ namespace BuildTT
                 tt.WriteLine($"        <Tags>{tags}</Tags>");
                 tt.WriteLine("    </Metadata>");
                 tt.WriteLine("    <Installation>");
+                // No upper bound on the 17.x entries. From Visual Studio 2026 compatibility is decided by API
+                // version, not product version: VS supports API 17.x, reads only the lower bound and ignores
+                // the upper one. An open range is what VS 2026 emits for new extensions, and it means this
+                // never needs touching again for a new major release. VS 2022 still uses the old product-range
+                // model, and an open range satisfies it too. The [15.0,17.0) entries below cover VS 2017/2019,
+                // which predate all of this.
                 tt.WriteLine("        <InstallationTarget Version=\"[15.0,17.0)\" Id=\"Microsoft.VisualStudio.Community\" />");
-                tt.WriteLine("        <InstallationTarget Version=\"[17.0,18.0)\" Id=\"Microsoft.VisualStudio.Community\">");
+                tt.WriteLine("        <InstallationTarget Version=\"[17.0,)\" Id=\"Microsoft.VisualStudio.Community\">");
                 tt.WriteLine("            <ProductArchitecture>amd64</ProductArchitecture>");
                 tt.WriteLine("        </InstallationTarget>");
                 tt.WriteLine("        <InstallationTarget Version=\"[15.0,17.0)\" Id=\"Microsoft.VisualStudio.Pro\" />");
-                tt.WriteLine("        <InstallationTarget Version=\"[17.0,18.0)\" Id=\"Microsoft.VisualStudio.Pro\">");
+                tt.WriteLine("        <InstallationTarget Version=\"[17.0,)\" Id=\"Microsoft.VisualStudio.Pro\">");
                 tt.WriteLine("            <ProductArchitecture>amd64</ProductArchitecture>");
                 tt.WriteLine("        </InstallationTarget>");
                 tt.WriteLine("        <InstallationTarget Version=\"[15.0,17.0)\" Id=\"Microsoft.VisualStudio.Enterprise\" />");
-                tt.WriteLine("        <InstallationTarget Version=\"[17.0,18.0)\" Id=\"Microsoft.VisualStudio.Enterprise\">");
+                tt.WriteLine("        <InstallationTarget Version=\"[17.0,)\" Id=\"Microsoft.VisualStudio.Enterprise\">");
                 tt.WriteLine("            <ProductArchitecture>amd64</ProductArchitecture>");
                 tt.WriteLine("        </InstallationTarget>");
                 tt.WriteLine("    </Installation>");
                 tt.WriteLine("    <Assets>");
                 tt.WriteLine("        <Asset Type=\"Microsoft.VisualStudio.ItemTemplate\" d:Source=\"File\" Path=\"ItemTemplates\" d:TargetPath=\"ItemTemplates\\efrpoco.zip\" />");
+                // Without this the package assembly ships but Visual Studio never loads it: the pkgdef is present
+                // and inert. See EfrpgPackage in the VSIX project.
+                tt.WriteLine("        <Asset Type=\"Microsoft.VisualStudio.VsPackage\" d:Source=\"Project\" d:ProjectName=\"%CurrentProject%\" Path=\"|%CurrentProject%;PkgdefProjectOutputGroup|\" />");
                 tt.WriteLine("    </Assets>");
                 tt.WriteLine("    <Prerequisites>");
                 tt.WriteLine("        <Prerequisite Id=\"Microsoft.VisualStudio.Component.TextTemplating\" Version=\"[15.0,)\" DisplayName=\"Text Template Transformation\" />");
