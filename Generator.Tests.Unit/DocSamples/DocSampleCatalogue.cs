@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Efrpg;
+using Efrpg.Filtering;
 
 namespace Generator.Tests.Unit.DocSamples
 {
@@ -113,6 +114,168 @@ namespace Generator.Tests.Unit.DocSamples
                         DocSampleRunner.Generate(() => Settings.OnConfiguration = OnConfiguration.Omit),
                         context: 0)
                 },
+
+                // ---- POCO shape --------------------------------------------------------------------------
+                { "UsePascalCase/true",  () => Extras(() => Settings.UsePascalCase = true,  "class OrderLineItem") },
+                { "UsePascalCase/false", () => Extras(() => Settings.UsePascalCase = false, "class order_line_item") },
+
+                { "UseDataAnnotations/false", () => Product(() => Settings.UseDataAnnotations = false) },
+                { "UseDataAnnotations/true",  () => Product(() => Settings.UseDataAnnotations = true) },
+
+                { "UsePropertyInitialisers/false", () => Product(() => Settings.UsePropertyInitialisers = false) },
+                { "UsePropertyInitialisers/true",  () => Product(() => Settings.UsePropertyInitialisers = true) },
+
+                { "UseLazyLoading/false", () => Product(() => Settings.UseLazyLoading = false) },
+                { "UseLazyLoading/true",  () => Product(() => Settings.UseLazyLoading = true) },
+
+                { "NullableShortHand/true",  () => ProductConfiguration(() => Settings.NullableShortHand = true) },
+
+                { "AllowNullStrings/false", () => Product(() => Settings.AllowNullStrings = false) },
+                { "AllowNullStrings/true",  () => Product(() => Settings.AllowNullStrings = true) },
+
+                { "IncludeFieldNameConstants/false", () => Category(() => Settings.IncludeFieldNameConstants = false) },
+                { "IncludeFieldNameConstants/true",  () => Category(() => Settings.IncludeFieldNameConstants = true) },
+
+                { "IncludeColumnsWithDefaults/true",  () => Product(() => Settings.IncludeColumnsWithDefaults = true) },
+                { "IncludeColumnsWithDefaults/false", () => Product(() => Settings.IncludeColumnsWithDefaults = false) },
+
+                { "OrderProperties/Ordinal",      () => Product(() => Settings.OrderProperties = OrderProperties.Ordinal) },
+                { "OrderProperties/Alphabetical", () => Product(() => Settings.OrderProperties = OrderProperties.Alphabetical) },
+
+                { "TableSuffix/none", () => Outline(Default()) },
+                { "TableSuffix/Dto",  () => Outline(DocSampleRunner.Generate(() => Settings.TableSuffix = "Dto")) },
+
+                { "IncludeComments/AtEndOfField",   () => Category(() => Settings.IncludeComments = CommentsStyle.AtEndOfField) },
+                { "IncludeComments/InSummaryBlock", () => Category(() => Settings.IncludeComments = CommentsStyle.InSummaryBlock) },
+                { "IncludeComments/None",           () => Category(() => Settings.IncludeComments = CommentsStyle.None) },
+
+                { "CollectionType/List",                 () => Category(() => { Settings.CollectionType = "List"; Settings.CollectionInterfaceType = "ICollection"; }) },
+                { "CollectionType/ObservableCollection", () => Category(() => { Settings.CollectionType = "ObservableCollection"; Settings.CollectionInterfaceType = "IList"; }) },
+
+                // ---- Class and file furniture ------------------------------------------------------------
+                { "EntityClassesModifiers/public",         () => Line(Default(), "public class Category") },
+                { "EntityClassesModifiers/public-partial", () => Line(DocSampleRunner.Generate(() => Settings.EntityClassesModifiers = "public partial"), "class Category") },
+
+                { "ConfigurationClassName/Configuration", () => Outline(Default()) },
+                { "ConfigurationClassName/Map",           () => Outline(DocSampleRunner.Generate(() => Settings.ConfigurationClassName = "Map")) },
+
+                { "DbContextName/MyDbContext",   () => Outline(Default()) },
+                { "DbContextName/NorthwindData", () => Outline(DocSampleRunner.Generate(() => Settings.DbContextName = "NorthwindData")) },
+
+                { "DbContextInterfaceName/default", () => Outline(Default()) },
+                { "DbContextInterfaceName/custom",  () => Outline(DocSampleRunner.Generate(() => Settings.DbContextInterfaceName = "INorthwind")) },
+
+                { "AddIDbContextFactory/true",  () => Outline(Default()) },
+                { "AddIDbContextFactory/false", () => Outline(DocSampleRunner.Generate(() => Settings.AddIDbContextFactory = false)) },
+
+                { "AddUnitTestingDbContext/false", () => Outline(Default()) },
+                { "AddUnitTestingDbContext/true",  () => Outline(DocSampleRunner.Generate(() => Settings.AddUnitTestingDbContext = true)) },
+
+                { "DbContextBaseClass/DbContext", () => Line(Default(), "public class MyDbContext") },
+                { "DbContextBaseClass/Identity",  () => Line(DocSampleRunner.Generate(() => Settings.DbContextBaseClass = "IdentityDbContext<ApplicationUser>"), "class MyDbContext") },
+
+                { "DbContextInterfaceBaseClasses/IDisposable", () => Line(Default(), "public interface IMyDbContext") },
+                { "DbContextInterfaceBaseClasses/custom",      () => Line(DocSampleRunner.Generate(() => Settings.DbContextInterfaceBaseClasses = "IDisposable, IUnitOfWork"), "public interface IMyDbContext") },
+
+                { "UseRegions/true",  () => Regions(Default()) },
+                { "UseRegions/false", () => Regions(DocSampleRunner.Generate(() => Settings.UseRegions = false)) },
+
+                { "UseNamespace/true",  () => Line(Default(), "namespace MyApp.Data") },
+
+                { "UseFileScopedNamespaces/false", () => Line(Default(), "namespace MyApp.Data") },
+                { "UseFileScopedNamespaces/true",  () => Line(DocSampleRunner.Generate(() => Settings.UseFileScopedNamespaces = true), "namespace MyApp.Data") },
+
+                { "UsePragma/true",    () => Head(DocSampleRunner.Generate(() => Settings.UsePragma = true), 3) },
+                { "UseResharper/true", () => Head(DocSampleRunner.Generate(() => Settings.UseResharper = true), 8) },
+
+                { "AdditionalFileHeaderText/set", () => Head(DocSampleRunner.Generate(() =>
+                    Settings.AdditionalFileHeaderText = new List<string> { "// Owned by the Platform team", "// Do not edit by hand" }), 4) },
+
+                { "IncludeCodeGeneratedAttribute/true", () => DocSampleExtractor.ChangedRegion(
+                    DocSampleRunner.Generate(() => Settings.IncludeCodeGeneratedAttribute = true), Default(), context: 1) },
+
+                // ---- Configuration mapping ---------------------------------------------------------------
+                { "GenerateHasDefaultValueSql/false", () => ProductConfiguration(() => Settings.GenerateHasDefaultValueSql = false) },
+                { "GenerateHasDefaultValueSql/true",  () => ProductConfiguration(() => Settings.GenerateHasDefaultValueSql = true) },
+
+                { "PrependSchemaName/true",  () => Outline(Default()) },
+                { "PrependSchemaName/false", () => Outline(DocSampleRunner.Generate(() => Settings.PrependSchemaName = false)) },
+
+                // ---- Output layout -----------------------------------------------------------------------
+                { "GenerateSeparateFiles/true", () => DocSampleRunner.GenerateFileListing(() => { }) },
+
+                { "PocoFolder/foldered", () => DocSampleRunner.GenerateFileListing(() =>
+                    {
+                        Settings.ContextFolder           = "Data";
+                        Settings.InterfaceFolder         = "Data/Interface";
+                        Settings.PocoFolder              = "Data/Entities";
+                        Settings.PocoConfigurationFolder = "Data/Configuration";
+                    }) },
+
+                // ---- Callbacks ---------------------------------------------------------------------------
+                { "TableRename/before", () => Outline(Default()) },
+                { "TableRename/after",  () => Outline(DocSampleRunner.Generate(() =>
+                    Settings.TableRename = (name, schema, isView) => name == "Product" ? "CatalogueItem" : name)) },
+
+                { "UpdateTable/before", () => Line(Default(), "public class Product") },
+                { "UpdateTable/after",  () => Section(DocSampleRunner.Generate(() =>
+                    Settings.UpdateTable = table =>
+                    {
+                        if (table.NameHumanCase == "Product")
+                        {
+                            table.BaseClasses = " : IAuditable";
+                            table.Attributes.Add("[Serializable]");
+                        }
+                    }), "class Product") },
+
+                { "WriteInsideClassBody/after", () => Section(DocSampleRunner.Generate(() =>
+                    Settings.WriteInsideClassBody = t => t.NameHumanCase != "Category" ? string.Empty :
+                        "        public override string ToString()" + Environment.NewLine +
+                        "        {" + Environment.NewLine +
+                        "            return CategoryName;" + Environment.NewLine +
+                        "        }" + Environment.NewLine), "public class Category") },
+
+                { "ForeignKeyName/before", () => Product(() => { }) },
+                { "ForeignKeyName/after",  () => Product(() =>
+                    Settings.ForeignKeyName = (tableName, fk, fkName, relationship, attempt) =>
+                        fk.FkColumn == "CategoryId" && attempt == 1 ? "Group" : tableName) },
+
+                { "ForeignKeyFilterFunc/before", () => Category(() => { }) },
+                { "ForeignKeyFilterFunc/after",  () => Category(() =>
+                    Settings.ForeignKeyFilterFunc = fk => { fk.IncludeReverseNavigation = false; return fk; }) },
+
+                { "ForeignKeyAnnotationsProcessing/after", () => Product(() =>
+                    Settings.ForeignKeyAnnotationsProcessing = (fkTable, pkTable, propName, fkPropName) =>
+                        new[] { "System.Text.Json.Serialization.JsonIgnore" }) },
+
+                { "AdditionalReverseNavigationsDataAnnotations/after", () => Category(() =>
+                    Settings.AdditionalReverseNavigationsDataAnnotations = new[] { "JsonIgnore" }) },
+
+                // ---- Extras schema -----------------------------------------------------------------------
+                { "MappingTables/outline", () => Outline(DocSampleRunner.Generate(DocSampleRunner.Schema.Extras, () => { })) },
+
+                { "IncludeViews/true",  () => Outline(DocSampleRunner.Generate(DocSampleRunner.Schema.Extras, () => FilterSettings.IncludeViews = true)) },
+                { "IncludeViews/false", () => Outline(DocSampleRunner.Generate(DocSampleRunner.Schema.Extras, () => FilterSettings.IncludeViews = false)) },
+
+                { "IncludeExtendedPropertyComments/InSummaryBlock", () => Extras(() => Settings.IncludeExtendedPropertyComments = CommentsStyle.InSummaryBlock, "public class Document") },
+                { "IncludeExtendedPropertyComments/None",           () => Extras(() => Settings.IncludeExtendedPropertyComments = CommentsStyle.None, "public class Document") },
+
+                { "PrependSchemaNameForStoredProcedure/default",        () => StoredProcSignatures(() => { }) },
+                { "PrependSchemaNameForStoredProcedure/sales-excluded", () => StoredProcSignatures(() =>
+                    Settings.PrependSchemaNameForStoredProcedure = sp => !sp.Schema.DbName.Equals("sales", StringComparison.OrdinalIgnoreCase)) },
+
+                { "StoredProcedureRename/before", () => StoredProcSignatures(() => { }) },
+                { "StoredProcedureRename/after",  () => StoredProcSignatures(() =>
+                    Settings.StoredProcedureRename = sp => sp.NameHumanCase.StartsWith("Get") ? sp.NameHumanCase.Substring(3) : sp.NameHumanCase) },
+
+                { "StoredProcedureReturnModelRename/before", () => StoredProcSignatures(() => { }) },
+                { "StoredProcedureReturnModelRename/after",  () => StoredProcSignatures(() =>
+                    Settings.StoredProcedureReturnModelRename = (name, sp) => sp.NameHumanCase == "GetStudentsByCourse" ? "StudentSummary" : name) },
+
+                { "UsePropertiesForStoredProcResultSets/false", () => Extras(() => Settings.UsePropertiesForStoredProcResultSets = false, "class GetCourseReportReturnModel") },
+                { "UsePropertiesForStoredProcResultSets/true",  () => Extras(() => Settings.UsePropertiesForStoredProcResultSets = true,  "class GetCourseReportReturnModel") },
+
+                { "RowVersion/document", () => Extras(() => { }, "public class Document") },
             };
         }
 
@@ -130,6 +293,100 @@ namespace Generator.Tests.Unit.DocSamples
         private static string Product(Action configure)
         {
             return DocSampleExtractor.Section(DocSampleRunner.Generate(configure), "public class Product");
+        }
+
+        /// <summary>
+        ///     The generated Category entity class - smaller than Product, for settings whose effect shows on
+        ///     any class at all.
+        /// </summary>
+        private static string Category(Action configure)
+        {
+            return Section(DocSampleRunner.Generate(configure), "class Category");
+        }
+
+        /// <summary>
+        ///     The generated Product entity configuration, for settings that change the Fluent API mapping
+        ///     rather than the property declaration.
+        /// </summary>
+        private static string ProductConfiguration(Action configure)
+        {
+            return Section(DocSampleRunner.Generate(configure), "class ProductConfiguration");
+        }
+
+        /// <summary>
+        ///     A named block generated from the Extras schema.
+        /// </summary>
+        private static string Extras(Action configure, string marker)
+        {
+            return Section(DocSampleRunner.Generate(DocSampleRunner.Schema.Extras, configure), marker);
+        }
+
+        private static string Section(string generated, string marker)
+        {
+            return DocSampleExtractor.Section(generated, marker);
+        }
+
+        /// <summary>
+        ///     A single line, for settings whose whole effect is one declaration.
+        /// </summary>
+        private static string Line(string generated, string marker)
+        {
+            foreach (var line in generated.Replace("\r\n", "\n").Split('\n'))
+                if (line.Contains(marker))
+                    return line.Trim();
+
+            throw new ArgumentException(string.Format("No line in the generated output contains '{0}'.", marker));
+        }
+
+        /// <summary>
+        ///     The first n non-blank lines, for settings that only change the top of the file.
+        /// </summary>
+        private static string Head(string generated, int count)
+        {
+            return string.Join("\n", generated
+                .Replace("\r\n", "\n")
+                .Split('\n')
+                .Where(l => !string.IsNullOrWhiteSpace(l))
+                .Take(count));
+        }
+
+        /// <summary>
+        ///     Just the #region and #endregion directives, which is the whole of what Settings.UseRegions does.
+        /// </summary>
+        private static string Regions(string generated)
+        {
+            var regions = generated
+                .Replace("\r\n", "\n")
+                .Split('\n')
+                .Select(l => l.Trim())
+                .Where(l => l.StartsWith("#region") || l.StartsWith("#endregion"))
+                .ToList();
+
+            return regions.Count == 0 ? "// No #region directives are written." : string.Join("\n", regions);
+        }
+
+        /// <summary>
+        ///     The generated stored procedure caller signatures, minus the async and out-parameter overloads,
+        ///     which triple the length without saying anything extra.
+        /// </summary>
+        private static string StoredProcSignatures(Action configure)
+        {
+            var generated = DocSampleRunner.Generate(DocSampleRunner.Schema.Extras, () =>
+            {
+                FilterSettings.IncludeStoredProcedures = true;
+                if (configure != null) configure();
+            });
+
+            var lines = generated
+                .Replace("\r\n", "\n")
+                .Split('\n')
+                .Select(l => l.Trim())
+                .Where(l => l.StartsWith("List<") && l.Contains("ReturnModel") && l.EndsWith(");")
+                            && !l.Contains("Async") && !l.Contains("out int"))
+                .Distinct()
+                .ToList();
+
+            return lines.Count == 0 ? "// No stored procedure callers were generated." : string.Join("\n", lines);
         }
 
         /// <summary>

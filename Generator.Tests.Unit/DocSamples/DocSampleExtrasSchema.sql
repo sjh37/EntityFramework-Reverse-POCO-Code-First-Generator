@@ -43,9 +43,30 @@ EXEC sp_addextendedproperty
     @level2type = N'COLUMN', @level2name = N'Title';
 GO
 
+-- snake_case, so the naming settings have something to change
+CREATE TABLE dbo.order_line_item
+(
+    order_line_item_id int            NOT NULL IDENTITY(1, 1),
+    unit_price         decimal(18, 2) NOT NULL,
+    qty_ordered        int            NOT NULL,
+    CONSTRAINT PK_order_line_item PRIMARY KEY (order_line_item_id)
+);
+GO
+
 CREATE VIEW dbo.ActiveStudent
 AS
     SELECT StudentId, StudentName FROM dbo.Student;
+GO
+
+-- Two result sets, which is the only shape UsePropertiesForStoredProcResultSets changes
+CREATE PROCEDURE dbo.GetCourseReport @CourseId int
+AS
+    SELECT CourseId, Title FROM dbo.Course WHERE CourseId = @CourseId;
+
+    SELECT s.StudentId, s.StudentName
+    FROM   dbo.Student s
+           JOIN dbo.StudentCourse sc ON sc.StudentId = s.StudentId
+    WHERE  sc.CourseId = @CourseId;
 GO
 
 CREATE PROCEDURE dbo.GetStudentsByCourse @CourseId int

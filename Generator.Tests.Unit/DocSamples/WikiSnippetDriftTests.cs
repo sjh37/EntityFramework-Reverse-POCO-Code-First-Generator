@@ -32,6 +32,7 @@ namespace Generator.Tests.Unit.DocSamples
         public void CaptureStaticState()
         {
             _snapshot = StaticStateSnapshot.Capture();
+            DocSampleRunner.Pristine = _snapshot;
         }
 
         [OneTimeTearDown]

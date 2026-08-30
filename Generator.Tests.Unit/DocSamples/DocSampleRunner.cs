@@ -35,6 +35,13 @@ namespace Generator.Tests.Unit.DocSamples
         private const string LineFeed = "\n";
 
         /// <summary>
+        ///     The static state as it was before any sample ran, used to undo one sample's delegates before the
+        ///     next one runs. Set by the fixture in [OneTimeSetUp]; see the remarks on
+        ///     <see cref="ResetCallbacksToShippedBehaviour"/>.
+        /// </summary>
+        public static StaticStateSnapshot Pristine;
+
+        /// <summary>
         ///     Generates once with <paramref name="configure"/> applied on top of the shipped Database.tt defaults.
         /// </summary>
         /// <param name="configure">
@@ -178,6 +185,11 @@ namespace Generator.Tests.Unit.DocSamples
         /// </remarks>
         private static void ApplyDatabaseTtDefaults()
         {
+            // First, undo whatever the previous sample did - including its delegates, which cannot be written
+            // out by hand. Then lay the Database.tt values on top. Order matters: restoring afterwards would
+            // wipe the values assigned below.
+            ResetCallbacksToShippedBehaviour();
+
             Settings.DatabaseType                 = DatabaseType.SqlServer;
             Settings.TemplateType                 = TemplateType.EfCore10;
             Settings.GeneratorType                = GeneratorType.EfCore;
@@ -279,8 +291,6 @@ namespace Generator.Tests.Unit.DocSamples
 
             Settings.StoredProcedureReturnTypes = new Dictionary<string, string>();
 
-            ResetCallbacksToShippedBehaviour();
-
             Settings.Root = TempRoot();
 
             Inflector.IgnoreWordsThatEndWith = new List<string> { "Status", "To", "Data" };
@@ -292,42 +302,25 @@ namespace Generator.Tests.Unit.DocSamples
         }
 
         /// <summary>
-        ///     Restores the delegate settings to what the shipped Database.tt does, which for most of them is
-        ///     "nothing at all".
+        ///     Puts the delegate settings back to the shipped implementations.
         /// </summary>
+        /// <remarks>
+        ///     These cannot be reset by writing them out again here. Settings.ForeignKeyName alone is seventy
+        ///     lines of clash-resolution logic, and a hand-written stand-in would be a second copy of
+        ///     Settings.cs to keep in step - one that would quietly make every sample wrong rather than fail.
+        ///     So the fixture hands us a snapshot taken before any sample ran, and we restore from that.
+        ///     This is not theoretical: the sample that overrides ForeignKeyName leaked its "Group" navigation
+        ///     property name into four unrelated samples before this was added.
+        /// </remarks>
         private static void ResetCallbacksToShippedBehaviour()
         {
-            Settings.TableRename          = (name, schema, isView) => name;
-            Settings.UpdateTable          = table => { };
-            Settings.UpdateColumn         = (column, table, enumDefinitions, jsonColumnMappings) =>
-            {
-                Settings.ApplyJsonPropertyNameAttribute(column);
-                Settings.ApplyJsonColumnMappings(column, table, jsonColumnMappings);
-                Settings.ApplyDataAnnotations(column);
-                Settings.ApplyEnumTypeReplacement(column, table, enumDefinitions);
-            };
-            Settings.AddEnum              = table => { };
-            Settings.UpdateEnum           = enumeration => { };
-            Settings.UpdateEnumMember     = member => { };
-            Settings.WriteInsideClassBody = table => string.Empty;
-            Settings.ViewProcessing       = view => { };
+            if (Pristine == null)
+                throw new InvalidOperationException(
+                    "DocSampleRunner.Pristine has not been set. A fixture that generates samples must capture " +
+                    "StaticStateSnapshot in [OneTimeSetUp] and assign it to DocSampleRunner.Pristine, or one " +
+                    "sample's delegates leak into the next.");
 
-            Settings.AddEnumDefinitions      = definitions => { };
-            Settings.AddJsonColumnMappings   = mappings => { };
-            Settings.AddOwnedEntityMappings  = mappings => { };
-            Settings.AddExtraForeignKeys     = (filter, gen, foreignKeys, tables) => { };
-
-            Settings.StoredProcedureRename            = sp => sp.NameHumanCase;
-            Settings.StoredProcedureReturnModelRename = (name, sp) => name;
-            Settings.MappingTableRename               = (mappingTable, tableName, entityName) => entityName;
-            Settings.ForeignKeyFilterFunc             = fk => fk;
-            Settings.ForeignKeyAnnotationsProcessing  = (fkTable, pkTable, propName, fkPropName) => null;
-
-            Settings.PrependSchemaNameForTable           = table => true;
-            Settings.PrependSchemaNameForStoredProcedure = sp => true;
-
-            Settings.ReadStoredProcReturnObjectException = (ex, sp) => { sp.Error = ex.Message; };
-            Settings.ReadStoredProcReturnObjectCompleted = sp => { };
+            Pristine.Restore();
         }
 
         private static string TempRoot()

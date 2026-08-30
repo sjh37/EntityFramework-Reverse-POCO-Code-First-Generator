@@ -40,6 +40,11 @@
     <Row schemaName="dbo" tableName="Document" isView="false" isSynonym="false" ordinal="2" columnName="Title"      typeName="nvarchar"  isNullable="false" maxLength="100" precision="0"  scale="0" dateTimePrecision="0" isIdentity="false" isComputed="false" isRowGuid="false" generatedAlwaysType="0" isStoreGenerated="false" primaryKey="false" primaryKeyOrdinal="0" isForeignKey="false" synonymTriggerName="" default="" />
     <Row schemaName="dbo" tableName="Document" isView="false" isSynonym="false" ordinal="3" columnName="RowVersion" typeName="timestamp" isNullable="false" maxLength="8"   precision="0"  scale="0" dateTimePrecision="0" isIdentity="false" isComputed="false" isRowGuid="false" generatedAlwaysType="0" isStoreGenerated="true"  primaryKey="false" primaryKeyOrdinal="0" isForeignKey="false" synonymTriggerName="" default="" />
 
+    <!-- dbo.order_line_item - snake_case, so the naming settings have something to change -->
+    <Row schemaName="dbo" tableName="order_line_item" isView="false" isSynonym="false" ordinal="1" columnName="order_line_item_id" typeName="int"      isNullable="false" maxLength="0"  precision="10" scale="0" dateTimePrecision="0" isIdentity="true"  isComputed="false" isRowGuid="false" generatedAlwaysType="0" isStoreGenerated="true"  primaryKey="true"  primaryKeyOrdinal="1" isForeignKey="false" synonymTriggerName="" default="" />
+    <Row schemaName="dbo" tableName="order_line_item" isView="false" isSynonym="false" ordinal="2" columnName="unit_price"         typeName="decimal"  isNullable="false" maxLength="0"  precision="18" scale="2" dateTimePrecision="0" isIdentity="false" isComputed="false" isRowGuid="false" generatedAlwaysType="0" isStoreGenerated="false" primaryKey="false" primaryKeyOrdinal="0" isForeignKey="false" synonymTriggerName="" default="" />
+    <Row schemaName="dbo" tableName="order_line_item" isView="false" isSynonym="false" ordinal="3" columnName="qty_ordered"        typeName="int"      isNullable="false" maxLength="0"  precision="10" scale="0" dateTimePrecision="0" isIdentity="false" isComputed="false" isRowGuid="false" generatedAlwaysType="0" isStoreGenerated="false" primaryKey="false" primaryKeyOrdinal="0" isForeignKey="false" synonymTriggerName="" default="" />
+
     <!-- dbo.ActiveStudent - a view, so no declared primary key -->
     <Row schemaName="dbo" tableName="ActiveStudent" isView="true" isSynonym="false" ordinal="1" columnName="StudentId"   typeName="int"      isNullable="false" maxLength="0"   precision="10" scale="0" dateTimePrecision="0" isIdentity="false" isComputed="false" isRowGuid="false" generatedAlwaysType="0" isStoreGenerated="false" primaryKey="false" primaryKeyOrdinal="0" isForeignKey="false" synonymTriggerName="" default="" />
     <Row schemaName="dbo" tableName="ActiveStudent" isView="true" isSynonym="false" ordinal="2" columnName="StudentName" typeName="nvarchar" isNullable="true"  maxLength="100" precision="0"  scale="0" dateTimePrecision="0" isIdentity="false" isComputed="false" isRowGuid="false" generatedAlwaysType="0" isStoreGenerated="false" primaryKey="false" primaryKeyOrdinal="0" isForeignKey="false" synonymTriggerName="" default="" />
@@ -76,6 +81,21 @@
         </ResultSet>
       </ReturnModels>
     </Row>
+    <!-- Two result sets, which is the only shape UsePropertiesForStoredProcResultSets changes -->
+    <Row schema="dbo" name="GetCourseReport" isTableValuedFunction="false" isScalarValuedFunction="false" isStoredProcedure="true" returnModelsRead="true" returnModelError="">
+      <Parameter ordinal="1" mode="In" name="@CourseId" nameHumanCase="" dataType="int" returnDataType="" sqlDbType="Int" returnSqlDbType="VarChar" propertyType="int" returnPropertyType="string" userDefinedTypeName="" dateTimePrecision="0" maxLength="0" precision="10" scale="0" isSpatial="false" hasDefault="false" />
+      <ReturnModels>
+        <ResultSet index="0">
+          <Column columnName="CourseId" dataTypeFullName="System.Int32"  dataTypeName="Int32"  dataTypeNamespace="System" dataTypeAssemblyQualifiedName="System.Int32, mscorlib"  allowDBNull="false" unique="false" precision="10" scale="0" />
+          <Column columnName="Title"    dataTypeFullName="System.String" dataTypeName="String" dataTypeNamespace="System" dataTypeAssemblyQualifiedName="System.String, mscorlib" allowDBNull="false" unique="false" precision="0"  scale="0" />
+        </ResultSet>
+        <ResultSet index="1">
+          <Column columnName="StudentId"   dataTypeFullName="System.Int32"  dataTypeName="Int32"  dataTypeNamespace="System" dataTypeAssemblyQualifiedName="System.Int32, mscorlib"  allowDBNull="false" unique="false" precision="10" scale="0" />
+          <Column columnName="StudentName" dataTypeFullName="System.String" dataTypeName="String" dataTypeNamespace="System" dataTypeAssemblyQualifiedName="System.String, mscorlib" allowDBNull="true"  unique="false" precision="0"  scale="0" />
+        </ResultSet>
+      </ReturnModels>
+    </Row>
+
     <!-- Outside the default schema, for the schema-prepending settings -->
     <Row schema="sales" name="GetOrderTotals" isTableValuedFunction="false" isScalarValuedFunction="false" isStoredProcedure="true" returnModelsRead="true" returnModelError="">
       <Parameter ordinal="1" mode="In" name="@Year" nameHumanCase="" dataType="int" returnDataType="" sqlDbType="Int" returnSqlDbType="VarChar" propertyType="int" returnPropertyType="string" userDefinedTypeName="" dateTimePrecision="0" maxLength="0" precision="10" scale="0" isSpatial="false" hasDefault="false" />
