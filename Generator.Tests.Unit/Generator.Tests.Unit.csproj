@@ -132,6 +132,7 @@
     <Compile Include="NullMultiDbContextSettingsPlugin.cs" />
     <Compile Include="NullableReverseNavigationTests.cs" />
     <Compile Include="NullableContextTests.cs" />
+    <None Include="DocSamples\README.md" />
     <None Include="app.config" />
     <None Include="packages.config" />
     <Compile Include="MustacheUtfTest.cs" />
@@ -193,6 +194,12 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="DocSamples\DocSampleSchema.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="DocSamples\DocSampleExtrasSchema.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="DocSamples\DocSampleExtrasSchema.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

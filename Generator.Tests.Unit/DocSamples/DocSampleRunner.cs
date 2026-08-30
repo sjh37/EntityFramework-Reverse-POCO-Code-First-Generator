@@ -29,6 +29,12 @@ namespace Generator.Tests.Unit.DocSamples
     public static class DocSampleRunner
     {
         /// <summary>
+        ///     Samples are joined and compared with '\n' throughout, so a snippet does not change meaning when
+        ///     it moves between a Windows checkout and a Linux CI agent.
+        /// </summary>
+        private const string LineFeed = "\n";
+
+        /// <summary>
         ///     Generates once with <paramref name="configure"/> applied on top of the shipped Database.tt defaults.
         /// </summary>
         /// <param name="configure">
@@ -37,15 +43,26 @@ namespace Generator.Tests.Unit.DocSamples
         /// </param>
         public static string Generate(Action configure)
         {
+            return Generate(Schema.Core, configure);
+        }
+
+        /// <summary>
+        ///     Generates against a named fixture schema.
+        /// </summary>
+        public static string Generate(Schema schema, Action configure)
+        {
             ApplyDatabaseTtDefaults();
             configure?.Invoke();
+            FilterSettings.CheckSettings(); // Honour any FilterSettings the sample changed
 
             var outer = new GeneratedTextTransformation();
             var fileManagement = new FileManagementService(outer);
-            var generator = GeneratorFactory.Create(LoadSchema(), fileManagement, null);
+            var generator = GeneratorFactory.Create(LoadSchema(schema), fileManagement, null);
 
             if (generator == null || !generator.InitialisationOk)
                 throw new InvalidOperationException("The generator would not initialise for a doc sample.");
+
+            EnableEverythingOnTheFilters(generator);
 
             generator.ReadDatabase();
             generator.GenerateCode();
@@ -56,21 +73,98 @@ namespace Generator.Tests.Unit.DocSamples
         }
 
         /// <summary>
-        ///     Generates twice and returns both outputs, so a caller can show a before and an after.
+        ///     Generates with <c>GenerateSeparateFiles</c> on and returns the names of the files produced,
+        ///     which is the only way to show what the folder settings do.
         /// </summary>
-        public static DocSamplePair GeneratePair(Action before, Action after)
+        /// <remarks>
+        ///     This is the one path that does write to disk, into a temporary folder that is emptied first. The
+        ///     return value is the relative path of each file, sorted, so the sample is a stable file listing
+        ///     rather than code.
+        /// </remarks>
+        public static string GenerateFileListing(Action configure)
         {
-            return new DocSamplePair(Generate(before), Generate(after));
+            ApplyDatabaseTtDefaults();
+            Settings.GenerateSeparateFiles = true;
+            configure?.Invoke();
+            FilterSettings.CheckSettings();
+
+            var root = Path.Combine(TempRoot(), "files");
+            if (Directory.Exists(root))
+                Directory.Delete(root, true);
+            Directory.CreateDirectory(root);
+            Settings.Root = root;
+
+            var outer = new GeneratedTextTransformation();
+            var fileManagement = new FileManagementService(outer);
+            var generator = GeneratorFactory.Create(LoadSchema(Schema.Core), fileManagement, null);
+
+            if (generator == null || !generator.InitialisationOk)
+                throw new InvalidOperationException("The generator would not initialise for a doc sample.");
+
+            EnableEverythingOnTheFilters(generator);
+            generator.ReadDatabase();
+            generator.GenerateCode();
+            fileManagement.Process(true);
+
+            var files = Directory
+                .GetFiles(root, "*", SearchOption.AllDirectories)
+                .Select(f => f.Substring(root.Length).TrimStart(Path.DirectorySeparatorChar, '/').Replace(Path.DirectorySeparatorChar, '/'))
+                .Where(f => !f.EndsWith("Audit.txt", StringComparison.OrdinalIgnoreCase))
+                .OrderBy(f => f, StringComparer.Ordinal)
+                .ToList();
+
+            return files.Count == 0 ? "// No files generated." : string.Join(LineFeed, files);
         }
 
-        private static EfrpgResult LoadSchema()
+        /// <summary>
+        ///     Turns on views, synonyms, stored procedures and functions for the run.
+        /// </summary>
+        /// <remarks>
+        ///     The filters are built when the generator is created, from FilterSettings as it stood at that
+        ///     moment, so flipping FilterSettings.IncludeViews inside a sample's configure action would be too
+        ///     late. Setting it on the filters afterwards is what the integration tests do too.
+        /// </remarks>
+        private static void EnableEverythingOnTheFilters(Efrpg.Generators.Generator generator)
         {
-            return EfrpgResultXmlReader.Read(File.ReadAllText(SchemaPath()));
+            if (generator.FilterList == null)
+                return;
+
+            foreach (var filter in generator.FilterList.GetFilters())
+            {
+                filter.Value.IncludeViews                 = FilterSettings.IncludeViews;
+                filter.Value.IncludeSynonyms              = FilterSettings.IncludeSynonyms;
+                filter.Value.IncludeStoredProcedures      = FilterSettings.IncludeStoredProcedures;
+                filter.Value.IncludeTableValuedFunctions  = FilterSettings.IncludeTableValuedFunctions;
+                filter.Value.IncludeScalarValuedFunctions = FilterSettings.IncludeScalarValuedFunctions;
+            }
+        }
+
+        /// <summary>
+        ///     Which fixture schema a sample generates from.
+        /// </summary>
+        public enum Schema
+        {
+            /// <summary>Category, Product and sales.Order. Short enough to read once.</summary>
+            Core,
+
+            /// <summary>Adds many-to-many, a view, a stored procedure, rowversion and an extended property.</summary>
+            Extras
+        }
+
+        private static EfrpgResult LoadSchema(Schema schema)
+        {
+            return EfrpgResultXmlReader.Read(File.ReadAllText(SchemaPath(schema)));
         }
 
         public static string SchemaPath()
         {
-            return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "DocSamples", "DocSampleSchema.xml");
+            return SchemaPath(Schema.Core);
+        }
+
+        public static string SchemaPath(Schema schema)
+        {
+            var filename = schema == Schema.Extras ? "DocSampleExtrasSchema.xml" : "DocSampleSchema.xml";
+            return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "DocSamples", filename);
         }
 
         /// <summary>

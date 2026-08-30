@@ -160,6 +160,10 @@ Links to related settings and to the relevant deep-dive page.
 
 This is the part that makes the whole thing trustworthy, and it is built first.
 
+> **The harness documents itself in `Generator.Tests.Unit/DocSamples/README.md`**, and `CLAUDE.md` and
+> `AGENTS.md` both point at it. That file is the durable one - when this plan is finished and deleted,
+> everything needed to keep the examples working is still there.
+
 - [x] **`DocSamples` harness** under `Generator.Tests.Unit`, or a small console app beside `BuildTT`.
       It must not need a live database.
 - [x] **A fixture schema.** A hand-built `EfrpgResult` covering, in as few tables as possible: an identity PK,

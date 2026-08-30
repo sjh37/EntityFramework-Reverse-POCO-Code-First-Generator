@@ -1,0 +1,92 @@
+<!--
+    A second schema for the settings the three-table DocSampleSchema.xml cannot show.
+
+    Kept separate on purpose. Folding these tables into the main fixture would lengthen every snippet on
+    every page for the sake of the handful of settings that need them, and the main fixture's job is to stay
+    short enough to read once and recognise everywhere.
+
+    What each part is here to exercise:
+      dbo.Student / dbo.Course / dbo.StudentCourse   a many-to-many relationship through a mapping table
+      dbo.Document                                   a rowversion column, and a column with an extended property
+      dbo.ActiveStudent                              a view, which has no declared primary key
+      dbo.GetStudentsByCourse                        a stored procedure with a parameter and a result set
+
+    The equivalent DDL is in DocSampleExtrasSchema.sql.
+-->
+<EfrpgResult schemaVersion="1"
+             toolVersion="1.0.0"
+             defaultSchema="dbo"
+             databaseDetails=""
+             includeSchema="true"
+             canReadStoredProcedures="true"
+             hasIdentityColumnSupport="true"
+             doNotSpecifySizeForMaxLength="false">
+
+  <Tables>
+    <!-- dbo.Student -->
+    <Row schemaName="dbo" tableName="Student" isView="false" isSynonym="false" ordinal="1" columnName="StudentId"   typeName="int"      isNullable="false" maxLength="0"   precision="10" scale="0" dateTimePrecision="0" isIdentity="true"  isComputed="false" isRowGuid="false" generatedAlwaysType="0" isStoreGenerated="true"  primaryKey="true"  primaryKeyOrdinal="1" isForeignKey="false" synonymTriggerName="" default="" />
+    <Row schemaName="dbo" tableName="Student" isView="false" isSynonym="false" ordinal="2" columnName="StudentName" typeName="nvarchar" isNullable="false" maxLength="100" precision="0"  scale="0" dateTimePrecision="0" isIdentity="false" isComputed="false" isRowGuid="false" generatedAlwaysType="0" isStoreGenerated="false" primaryKey="false" primaryKeyOrdinal="0" isForeignKey="false" synonymTriggerName="" default="" />
+
+    <!-- dbo.Course -->
+    <Row schemaName="dbo" tableName="Course" isView="false" isSynonym="false" ordinal="1" columnName="CourseId" typeName="int"      isNullable="false" maxLength="0"   precision="10" scale="0" dateTimePrecision="0" isIdentity="true"  isComputed="false" isRowGuid="false" generatedAlwaysType="0" isStoreGenerated="true"  primaryKey="true"  primaryKeyOrdinal="1" isForeignKey="false" synonymTriggerName="" default="" />
+    <Row schemaName="dbo" tableName="Course" isView="false" isSynonym="false" ordinal="2" columnName="Title"    typeName="nvarchar" isNullable="false" maxLength="200" precision="0"  scale="0" dateTimePrecision="0" isIdentity="false" isComputed="false" isRowGuid="false" generatedAlwaysType="0" isStoreGenerated="false" primaryKey="false" primaryKeyOrdinal="0" isForeignKey="false" synonymTriggerName="" default="" />
+
+    <!-- dbo.StudentCourse - nothing but the two foreign keys, which is what makes it a mapping table -->
+    <Row schemaName="dbo" tableName="StudentCourse" isView="false" isSynonym="false" ordinal="1" columnName="StudentId" typeName="int" isNullable="false" maxLength="0" precision="10" scale="0" dateTimePrecision="0" isIdentity="false" isComputed="false" isRowGuid="false" generatedAlwaysType="0" isStoreGenerated="false" primaryKey="true" primaryKeyOrdinal="1" isForeignKey="true" synonymTriggerName="" default="" />
+    <Row schemaName="dbo" tableName="StudentCourse" isView="false" isSynonym="false" ordinal="2" columnName="CourseId"  typeName="int" isNullable="false" maxLength="0" precision="10" scale="0" dateTimePrecision="0" isIdentity="false" isComputed="false" isRowGuid="false" generatedAlwaysType="0" isStoreGenerated="false" primaryKey="true" primaryKeyOrdinal="2" isForeignKey="true" synonymTriggerName="" default="" />
+
+    <!-- dbo.Document - rowversion, and Title carries an extended property -->
+    <Row schemaName="dbo" tableName="Document" isView="false" isSynonym="false" ordinal="1" columnName="DocumentId" typeName="int"       isNullable="false" maxLength="0"   precision="10" scale="0" dateTimePrecision="0" isIdentity="true"  isComputed="false" isRowGuid="false" generatedAlwaysType="0" isStoreGenerated="true"  primaryKey="true"  primaryKeyOrdinal="1" isForeignKey="false" synonymTriggerName="" default="" />
+    <Row schemaName="dbo" tableName="Document" isView="false" isSynonym="false" ordinal="2" columnName="Title"      typeName="nvarchar"  isNullable="false" maxLength="100" precision="0"  scale="0" dateTimePrecision="0" isIdentity="false" isComputed="false" isRowGuid="false" generatedAlwaysType="0" isStoreGenerated="false" primaryKey="false" primaryKeyOrdinal="0" isForeignKey="false" synonymTriggerName="" default="" />
+    <Row schemaName="dbo" tableName="Document" isView="false" isSynonym="false" ordinal="3" columnName="RowVersion" typeName="timestamp" isNullable="false" maxLength="8"   precision="0"  scale="0" dateTimePrecision="0" isIdentity="false" isComputed="false" isRowGuid="false" generatedAlwaysType="0" isStoreGenerated="true"  primaryKey="false" primaryKeyOrdinal="0" isForeignKey="false" synonymTriggerName="" default="" />
+
+    <!-- dbo.ActiveStudent - a view, so no declared primary key -->
+    <Row schemaName="dbo" tableName="ActiveStudent" isView="true" isSynonym="false" ordinal="1" columnName="StudentId"   typeName="int"      isNullable="false" maxLength="0"   precision="10" scale="0" dateTimePrecision="0" isIdentity="false" isComputed="false" isRowGuid="false" generatedAlwaysType="0" isStoreGenerated="false" primaryKey="false" primaryKeyOrdinal="0" isForeignKey="false" synonymTriggerName="" default="" />
+    <Row schemaName="dbo" tableName="ActiveStudent" isView="true" isSynonym="false" ordinal="2" columnName="StudentName" typeName="nvarchar" isNullable="true"  maxLength="100" precision="0"  scale="0" dateTimePrecision="0" isIdentity="false" isComputed="false" isRowGuid="false" generatedAlwaysType="0" isStoreGenerated="false" primaryKey="false" primaryKeyOrdinal="0" isForeignKey="false" synonymTriggerName="" default="" />
+  </Tables>
+
+  <ForeignKeys>
+    <Row constraintName="FK_StudentCourse_Student" parentName="" childName=""
+         pkSchema="dbo" pkTableName="Student"       pkColumn="StudentId"
+         fkSchema="dbo" fkTableName="StudentCourse" fkColumn="StudentId"
+         ordinal="1" cascadeOnDelete="false" isNotEnforced="false" hasUniqueConstraint="false" />
+    <Row constraintName="FK_StudentCourse_Course" parentName="" childName=""
+         pkSchema="dbo" pkTableName="Course"        pkColumn="CourseId"
+         fkSchema="dbo" fkTableName="StudentCourse" fkColumn="CourseId"
+         ordinal="1" cascadeOnDelete="false" isNotEnforced="false" hasUniqueConstraint="false" />
+  </ForeignKeys>
+
+  <Indexes />
+
+  <ExtendedProperties>
+    <Row schemaName="dbo" tableName="Document" columnName="Title" propertyName="MS_Description" extendedProperty="The title shown to users. Not the file name." />
+  </ExtendedProperties>
+
+  <Sequences />
+  <Triggers />
+  <MemoryOptimisedTables />
+
+  <StoredProcedures>
+    <Row schema="dbo" name="GetStudentsByCourse" isTableValuedFunction="false" isScalarValuedFunction="false" isStoredProcedure="true" returnModelsRead="true" returnModelError="">
+      <Parameter ordinal="1" mode="In" name="@CourseId" nameHumanCase="" dataType="int" returnDataType="" sqlDbType="Int" returnSqlDbType="VarChar" propertyType="int" returnPropertyType="string" userDefinedTypeName="" dateTimePrecision="0" maxLength="0" precision="10" scale="0" isSpatial="false" hasDefault="false" />
+      <ReturnModels>
+        <ResultSet index="0">
+          <Column columnName="StudentId"   dataTypeFullName="System.Int32"  dataTypeName="Int32"  dataTypeNamespace="System" dataTypeAssemblyQualifiedName="System.Int32, mscorlib"  allowDBNull="false" unique="false" precision="10" scale="0" />
+          <Column columnName="StudentName" dataTypeFullName="System.String" dataTypeName="String" dataTypeNamespace="System" dataTypeAssemblyQualifiedName="System.String, mscorlib" allowDBNull="true"  unique="false" precision="0"  scale="0" />
+        </ResultSet>
+      </ReturnModels>
+    </Row>
+    <!-- Outside the default schema, for the schema-prepending settings -->
+    <Row schema="sales" name="GetOrderTotals" isTableValuedFunction="false" isScalarValuedFunction="false" isStoredProcedure="true" returnModelsRead="true" returnModelError="">
+      <Parameter ordinal="1" mode="In" name="@Year" nameHumanCase="" dataType="int" returnDataType="" sqlDbType="Int" returnSqlDbType="VarChar" propertyType="int" returnPropertyType="string" userDefinedTypeName="" dateTimePrecision="0" maxLength="0" precision="10" scale="0" isSpatial="false" hasDefault="false" />
+      <ReturnModels>
+        <ResultSet index="0">
+          <Column columnName="OrderId" dataTypeFullName="System.Int32"   dataTypeName="Int32"   dataTypeNamespace="System" dataTypeAssemblyQualifiedName="System.Int32, mscorlib"   allowDBNull="false" unique="false" precision="10" scale="0" />
+          <Column columnName="Total"   dataTypeFullName="System.Decimal" dataTypeName="Decimal" dataTypeNamespace="System" dataTypeAssemblyQualifiedName="System.Decimal, mscorlib" allowDBNull="true"  unique="false" precision="18" scale="2" />
+        </ResultSet>
+      </ReturnModels>
+    </Row>
+  </StoredProcedures>
+
+  <Errors />
+</EfrpgResult>

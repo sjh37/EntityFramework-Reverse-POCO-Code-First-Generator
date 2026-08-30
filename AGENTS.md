@@ -124,6 +124,20 @@ dotnet test Generator.Tests.Unit/Generator.Tests.Unit.csproj --filter "FullyQual
 
 `pack.bat` packages the VSIX item template (requires 7-Zip at `C:\Program Files\7-Zip\7z.exe`). Run after building if you need to update the VSIX item template zip.
 
+## Wiki documentation examples
+
+The code examples on the wiki's `Settings.*` pages are **generated, not written**. `Generator.Tests.Unit/DocSamples/`
+runs the generator over a hand-written schema fixture, and `WikiSnippetDriftTests` regenerates every block the
+wiki marks with `<!-- docsample: Key -->` and fails when a page has fallen behind.
+
+Read `Generator.Tests.Unit/DocSamples/README.md` before touching the wiki's generated code blocks or adding a
+new one. It covers the authoring loop, the two fixture schemas, and why `StaticStateSnapshot` is mandatory for
+any fixture that generates a sample.
+
+This exists because prose describing code drifts from the code. An audit found a documented setting that never
+existed, a helper method that never existed, three wrong defaults, and an example that does not compile on
+MySQL - all of it written by reading the source. Do not go back to hand-written examples.
+
 ## Testing Patterns
 
 - Unit tests use `FakeDatabaseReader` to avoid real DB connections.
