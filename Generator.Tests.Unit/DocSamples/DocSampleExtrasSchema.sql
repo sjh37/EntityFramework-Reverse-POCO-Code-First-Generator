@@ -33,6 +33,7 @@ CREATE TABLE dbo.Document
     DocumentId int           NOT NULL IDENTITY(1, 1),
     Title      nvarchar(100) NOT NULL,
     RowVersion rowversion    NOT NULL,
+    ReviewedByUserId int      NULL,
     CONSTRAINT PK_Document PRIMARY KEY (DocumentId)
 );
 

@@ -128,7 +128,8 @@ namespace Generator.Tests.Unit.DocSamples
                 { "UseLazyLoading/false", () => Product(() => Settings.UseLazyLoading = false) },
                 { "UseLazyLoading/true",  () => Product(() => Settings.UseLazyLoading = true) },
 
-                { "NullableShortHand/true",  () => ProductConfiguration(() => Settings.NullableShortHand = true) },
+                { "NullableShortHand/true",  () => Extras(() => Settings.NullableShortHand = true,  "public class Document") },
+                { "NullableShortHand/false", () => Extras(() => Settings.NullableShortHand = false, "public class Document") },
 
                 { "AllowNullStrings/false", () => Product(() => Settings.AllowNullStrings = false) },
                 { "AllowNullStrings/true",  () => Product(() => Settings.AllowNullStrings = true) },
@@ -162,7 +163,6 @@ namespace Generator.Tests.Unit.DocSamples
                 { "DbContextName/MyDbContext",   () => Outline(Default()) },
                 { "DbContextName/NorthwindData", () => Outline(DocSampleRunner.Generate(() => Settings.DbContextName = "NorthwindData")) },
 
-                { "DbContextInterfaceName/default", () => Outline(Default()) },
                 { "DbContextInterfaceName/custom",  () => Outline(DocSampleRunner.Generate(() => Settings.DbContextInterfaceName = "INorthwind")) },
 
                 { "AddIDbContextFactory/true",  () => Outline(Default()) },
@@ -180,8 +180,6 @@ namespace Generator.Tests.Unit.DocSamples
                 { "UseRegions/true",  () => Regions(Default()) },
                 { "UseRegions/false", () => Regions(DocSampleRunner.Generate(() => Settings.UseRegions = false)) },
 
-                { "UseNamespace/true",  () => Line(Default(), "namespace MyApp.Data") },
-
                 { "UseFileScopedNamespaces/false", () => Line(Default(), "namespace MyApp.Data") },
                 { "UseFileScopedNamespaces/true",  () => Line(DocSampleRunner.Generate(() => Settings.UseFileScopedNamespaces = true), "namespace MyApp.Data") },
 
@@ -191,8 +189,8 @@ namespace Generator.Tests.Unit.DocSamples
                 { "AdditionalFileHeaderText/set", () => Head(DocSampleRunner.Generate(() =>
                     Settings.AdditionalFileHeaderText = new List<string> { "// Owned by the Platform team", "// Do not edit by hand" }), 4) },
 
-                { "IncludeCodeGeneratedAttribute/true", () => DocSampleExtractor.ChangedRegion(
-                    DocSampleRunner.Generate(() => Settings.IncludeCodeGeneratedAttribute = true), Default(), context: 1) },
+                { "IncludeCodeGeneratedAttribute/false", () => Category(() => Settings.IncludeCodeGeneratedAttribute = false) },
+                { "IncludeCodeGeneratedAttribute/true",  () => Category(() => Settings.IncludeCodeGeneratedAttribute = true) },
 
                 // ---- Configuration mapping ---------------------------------------------------------------
                 { "GenerateHasDefaultValueSql/false", () => ProductConfiguration(() => Settings.GenerateHasDefaultValueSql = false) },
@@ -381,7 +379,10 @@ namespace Generator.Tests.Unit.DocSamples
                 .Replace("\r\n", "\n")
                 .Split('\n')
                 .Select(l => l.Trim())
-                .Where(l => l.StartsWith("List<") && l.Contains("ReturnModel") && l.EndsWith(");")
+                // A caller signature, not its async or out-parameter overloads, which triple the length
+                // without saying anything extra. Deliberately does not match on "ReturnModel": the rename
+                // samples change exactly that word, and filtering on it hid the renamed line.
+                .Where(l => l.StartsWith("List<") && l.EndsWith(");")
                             && !l.Contains("Async") && !l.Contains("out int"))
                 .Distinct()
                 .ToList();
