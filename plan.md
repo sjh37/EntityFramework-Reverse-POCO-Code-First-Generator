@@ -188,17 +188,48 @@ De-risks the plumbing before any UI depends on it.
 - [ ] Add the `Microsoft.VisualStudio.VsPackage` asset to `source.extension.vsixmanifest`
       **via `BuildTT/VersionSetter.cs:UpdateVsixmanifest`, not by hand** - that method writes the file
       wholesale, so a hand edit is deleted on the next BuildTT run
-- [ ] Build `EfrpgToolGate` in `Efrpg.Gui.Core`:
-  - [ ] Locate `efrpg` on PATH, and at `%USERPROFILE%\.dotnet\tools\efrpg.exe` as a fallback
-  - [ ] Run `efrpg --version`, parse the package version and the **wire format schema version**
-  - [ ] Compare the schema version against `EfrpgResultXmlReader.RequiredSchemaVersion`
-  - [ ] Check `dotnet --version` - `dotnet tool install` needs the **SDK**, not just the runtime
-  - [ ] Install: `dotnet tool install -g Efrpg`
-  - [ ] Update: `dotnet tool update -g Efrpg`
-  - [ ] Surface stderr verbatim on failure - do not swallow it
-- [ ] Unit test `EfrpgToolGate` against a fake process runner: missing, too old, current, no SDK, no network
+- [x] Build `EfrpgToolGate` in `Efrpg.Gui.Core`:
+  - [x] Locate `efrpg` on PATH, and at `%USERPROFILE%\.dotnet\tools\efrpg.exe` as a fallback
+  - [x] Run `efrpg --version`, parse the package version and the **wire format schema version**
+  - [x] Compare the schema version against `EfrpgResultXmlReader.RequiredSchemaVersion`
+  - [x] Check `dotnet --version` - `dotnet tool install` needs the **SDK**, not just the runtime
+  - [x] Install: `dotnet tool install -g Efrpg`
+  - [x] Update: `dotnet tool update -g Efrpg`
+  - [x] Surface stderr verbatim on failure - do not swallow it
+- [x] Unit test `EfrpgToolGate` against a fake process runner: missing, too old, current, no SDK, no network
 - [ ] Gate dialog with three choices: **Install/Update**, **Copy command**, **Continue anyway**
 - [ ] Always display the exact command next to the button
+
+### Chunk A as built - the gate
+
+`Efrpg.Gui.Core` (netstandard2.0) and `Efrpg.Gui.Core.Tests` (net10.0) exist and are in the solution. 13 tests
+against a hand-rolled `FakeProcessRunner`; nothing touches the machine's real tool install.
+
+`IProcessRunner` is the only seam, and **"failed to start" is a result rather than an exception** - a missing
+tool surfaces as a `Win32Exception` from `Process.Start`, which is the very thing the gate exists to detect, so
+it is information, not a fault. Everything is `async`: `dotnet tool install` can take the best part of a minute
+against a slow feed, and this is called from a dialog on the VS UI thread. Output is drained through the
+`OutputDataReceived` events, for the same reason `EfrpgToolRunner` drains on two threads - a child that fills
+the stdout pipe while the parent blocks on stderr deadlocks, and neither side times out.
+
+**The schema floor is duplicated, and guarded rather than shared.** `EfrpgResultXmlReader` must stay plain
+source under `Generator/` so BuildTT can concatenate it, which pins it to net48; `Efrpg.Gui.Core` is
+netstandard2.0 so the net48 VSIX and a modern test project can both consume it, and netstandard cannot
+reference net48. So each holds a copy and `Generator.Tests.Unit/ToolGateSchemaFloorTests.cs` fails if they
+diverge. Verified by bumping one and watching it fail - drift is otherwise silent, and would leave the gate
+approving a tool the reader then refuses.
+
+Real `efrpg --version` output, which the tests use verbatim: `efrpg 1.0.1` then
+`wire format schema version 1`, on stdout, exit 0. A tool predating the handshake prints no schema line, which
+parses as 0 and is correctly rejected - the same reading the reader gives a payload with no `schemaVersion`
+attribute.
+
+`EfrpgToolStatus.IsOnPath` is the PATH trap made explicit: when the tool is found only via the fallback it is
+on disk but not on the PATH this VS process inherited, so the bare-name resolution in `EfrpgToolRunner` will
+still fail. Phase 2 reads that flag to decide whether to invoke by full path and ask for a restart.
+
+**Still to do in Phase 1:** everything touching the VSIX - the two packages, the `ToolkitPackage`, the
+`VsPackage` asset via `VersionSetter`, and the gate dialog.
 
 **Check the schema version, not the package version.** The schema version is what the template actually
 floor-checks, so the gate becomes the same test the generator does - surfaced as a friendly dialog instead
@@ -208,6 +239,36 @@ of a comment in a broken output file.
 NuGet feed, or without permission to install.
 
 **Deliverable:** a command that reports tool status.
+
+---
+
+## A constraint that shapes every phase - the `**TODO**` placeholder
+
+A `.tt` added from the item template ships with the database name unset:
+
+```
+Settings.ConnectionString = "Data Source=(local);Initial Catalog=**TODO**;Integrated Security=True;..."
+```
+
+`efrpg` checks for that literal and returns an error without attempting a connection - *"the connection string
+still contains the placeholder \*\*TODO\*\*"*. **So a brand-new `.tt` cannot be reverse engineered, by
+construction.** Any code path that reaches for schema before the user has supplied a real connection string is
+work that can only end in an error dialog.
+
+What follows for each phase:
+
+- **Phase 1** is unaffected: `efrpg --version` takes no connection string. Do not "improve" the gate's liveness
+  check into a schema read - it would fail on exactly the machines the gate is meant to reassure.
+- **Phase 2's ordering is mandatory, not stylistic.** Gate, then connection dialog, then test connection, and
+  only then shell out for schema. The checkbox tree cannot be populated before that, so the wizard cannot open
+  on the table picker.
+- **Phase 3 must check before offering anything schema-backed.** The settings editor can be invoked on a file
+  the user has never configured, so `**TODO**` is also the reliable test for "unconfigured".
+
+`Generator.Init` carries its own `**TODO**` guard at `Generator/Generators/Generator.cs:107`, but the tool now
+fails first and the template only constructs the generator when the tool succeeded, so that guard no longer
+fires through the template path. Left alone rather than removed - it still protects the direct-construction
+route the unit tests use.
 
 ---
 

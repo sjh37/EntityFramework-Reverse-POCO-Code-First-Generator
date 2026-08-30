@@ -137,12 +137,16 @@
     <Compile Include="IndexModelBuilderTests.cs" />
     <Compile Include="TemplateTransformationTests.cs" />
     <Compile Include="SchemaReaderTests.cs" />
+    <Compile Include="ToolGateSchemaFloorTests.cs" />
     <Compile Include="SettingsMetadataTests.cs" />
     <Compile Include="PluralisationTests.cs" />
     <Compile Include="DecimalPrecisionTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Efrpg.Gui.Core\Efrpg.Gui.Core.csproj">
+      <Name>Efrpg.Gui.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Generator.Tests.Common\Generator.Tests.Common.csproj">
       <Project>{8fbbebb8-8e1f-480e-bf95-6658e4f4ef85}</Project>
       <Name>Generator.Tests.Common</Name>

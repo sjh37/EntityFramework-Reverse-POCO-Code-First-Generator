@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <!-- netstandard2.0 is load bearing: this assembly is consumed by the net48 in-process VSIX and by a modern
+         test project, and Roslyn ships netstandard2.0 for the same reason. Do not raise it. -->
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <RootNamespace>Efrpg.Gui</RootNamespace>
+    <AssemblyName>Efrpg.Gui.Core</AssemblyName>
+    <LangVersion>latest</LangVersion>
+    <Platforms>AnyCPU;ARM64</Platforms>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+  </PropertyGroup>
+
+</Project>
