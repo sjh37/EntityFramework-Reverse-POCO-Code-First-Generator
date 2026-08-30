@@ -277,28 +277,26 @@ namespace Generator.Tests.Unit
         [TestCase("22", "UserDocument", "User", "Id|ExternalUserId", false, "UserDocument", false, false, Relationship.OneToMany, "User_Document", "User", true, "CreatedByUserID")]
         [TestCase("23", "User", "UserDocument", "Id|UserId|CreatedByUserId", true, "User", false, true, Relationship.ManyToOne, "User_Document", "User", true, "UserID")]
         [TestCase("24", "UserDocument", "User", "Id|ExternalUserId", false, "UserDocument", false, false, Relationship.OneToMany, "User_Document", "User", true, "UserID")]
-        public void LegacyForeignKeyNames(string testOrder, string expected, string NameHumanCase, string columns, bool isParent, string tableNameHumanCase, bool checkForFkNameClashes,
+        public void ForeignKeyNames(string testOrder, string expected, string NameHumanCase, string columns, bool isParent, string tableNameHumanCase, bool checkForFkNameClashes,
             bool makeSingular, Relationship relationship, string fkTableName, string pkTableName, bool includeReverseNavigation, string fkColumn)
         {
             TestContext.Out.WriteLine(testOrder); // Keep this field to make sure test cases run in order as it's important
 
             // Arrange
-            var (table, foreignKey) = PrepareTest(NameHumanCase, columns, fkTableName, pkTableName, includeReverseNavigation, fkColumn, ForeignKeyNamingStrategy.Current);
+            var (table, foreignKey) = PrepareTest(NameHumanCase, columns, fkTableName, pkTableName, includeReverseNavigation, fkColumn);
 
             // Act
             var result = table.GetUniqueForeignKeyName(isParent, tableNameHumanCase, foreignKey, checkForFkNameClashes, makeSingular, relationship);
 
             // Assert
             Assert.AreEqual(expected, result);
-            Assert.AreEqual(ForeignKeyNamingStrategy.Current, Settings.ForeignKeyNamingStrategy);
         }
 
-        private (Table table, ForeignKey foreignKey) PrepareTest(string NameHumanCase, string columns, string fkTableName, string pkTableName, bool includeReverseNavigation, string fkColumn, ForeignKeyNamingStrategy foreignKeyNamingStrategy)
+        private (Table table, ForeignKey foreignKey) PrepareTest(string NameHumanCase, string columns, string fkTableName, string pkTableName, bool includeReverseNavigation, string fkColumn)
         {
             var table = tables.FirstOrDefault(x => x.NameHumanCase == NameHumanCase);
             if (table == null)
             {
-                Settings.ForeignKeyNamingStrategy = foreignKeyNamingStrategy;
                 table = new Table(null, new Schema("dbo"), NameHumanCase, false)
                 {
                     NameHumanCase = NameHumanCase

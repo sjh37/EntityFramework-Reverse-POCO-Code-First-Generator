@@ -23,9 +23,9 @@ namespace Generator.Tests.Integration
     public class SingleDatabaseTestMySql : SingleDatabaseTestBase
     {
         public void SetupMySql(string database, string connectionStringName, string dbContextName, TemplateType templateType,
-            GeneratorType generatorType, ForeignKeyNamingStrategy foreignKeyNamingStrategy)
+            GeneratorType generatorType)
         {
-            SetupDatabase(connectionStringName, dbContextName, templateType, generatorType, foreignKeyNamingStrategy);
+            SetupDatabase(connectionStringName, dbContextName, templateType, generatorType);
 
             Settings.ConnectionString = $"Server=localhost;Port=3306;Database={database};User Id=root;Password=efrpgTest123;";
             Settings.DatabaseType = DatabaseType.MySql;
@@ -45,15 +45,15 @@ namespace Generator.Tests.Integration
 
         [Test]
         [NonParallelizable]
-        [TestCase(ForeignKeyNamingStrategy.Current, false, false)]
-        [TestCase(ForeignKeyNamingStrategy.Current, true,  false)]
-        [TestCase(ForeignKeyNamingStrategy.Current, false, true)]
-        public void ReverseEngineerMySql_EfCore(ForeignKeyNamingStrategy foreignKeyNamingStrategy, bool useDataAnnotations, bool allowNullStrings)
+        [TestCase(false, false)]
+        [TestCase(true,  false)]
+        [TestCase(false, true)]
+        public void ReverseEngineerMySql_EfCore(bool useDataAnnotations, bool allowNullStrings)
         {
             // Arrange
             // Per-case settings must come after SetupMySql: SetupDatabase resets the leak-prone settings
             // (AllowNullStrings et al.) to defaults, so anything assigned before it is clobbered.
-            SetupMySql("EfrpgTest", "MyDbContext", "MyDbContext", TemplateType.EfCore8, GeneratorType.EfCore, foreignKeyNamingStrategy);
+            SetupMySql("EfrpgTest", "MyDbContext", "MyDbContext", TemplateType.EfCore8, GeneratorType.EfCore);
             Settings.GenerateSeparateFiles = false;
             Settings.UseMappingTables = false;
             Settings.UseDataAnnotations = useDataAnnotations;
@@ -75,8 +75,7 @@ namespace Generator.Tests.Integration
         {
             // Arrange - MySQL identifiers are commonly lower_snake_case, so leaving them alone is a realistic
             // choice here in a way it is not on SQL Server.
-            SetupMySql("EfrpgTest", "My_db_context", "Efrpg_db_context", TemplateType.EfCore8, GeneratorType.EfCore,
-                ForeignKeyNamingStrategy.Current);
+            SetupMySql("EfrpgTest", "My_db_context", "Efrpg_db_context", TemplateType.EfCore8, GeneratorType.EfCore);
             Settings.GenerateSeparateFiles = false;
             Settings.UsePascalCase = false;
             Settings.UseMappingTables = false;

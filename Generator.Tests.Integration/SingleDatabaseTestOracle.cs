@@ -22,9 +22,9 @@ namespace Generator.Tests.Integration
     public class SingleDatabaseTestOracle : SingleDatabaseTestBase
     {
         public void SetupOracle(string schema, string connectionStringName, string dbContextName, TemplateType templateType,
-            GeneratorType generatorType, ForeignKeyNamingStrategy foreignKeyNamingStrategy)
+            GeneratorType generatorType)
         {
-            SetupDatabase(connectionStringName, dbContextName, templateType, generatorType, foreignKeyNamingStrategy);
+            SetupDatabase(connectionStringName, dbContextName, templateType, generatorType);
 
             Settings.ConnectionString = $"User Id={schema};Password=abc123;Data Source=localhost:1521/pdb1;";
             Settings.DatabaseType = DatabaseType.Oracle;
@@ -44,15 +44,15 @@ namespace Generator.Tests.Integration
 
         [Test]
         [NonParallelizable]
-        [TestCase(ForeignKeyNamingStrategy.Current, false, false)]
-        [TestCase(ForeignKeyNamingStrategy.Current, true,  false)]
-        [TestCase(ForeignKeyNamingStrategy.Current, false, true)]
-        public void ReverseEngineerOracle_EfCore(ForeignKeyNamingStrategy foreignKeyNamingStrategy, bool useDataAnnotations, bool allowNullStrings)
+        [TestCase(false, false)]
+        [TestCase(true,  false)]
+        [TestCase(false, true)]
+        public void ReverseEngineerOracle_EfCore(bool useDataAnnotations, bool allowNullStrings)
         {
             // Arrange
             // Per-case settings must come after SetupOracle: SetupDatabase resets the leak-prone settings
             // (AllowNullStrings et al.) to defaults, so anything assigned before it is clobbered.
-            SetupOracle("efrpgtest", "MyDbContext", "MyDbContext", TemplateType.EfCore8, GeneratorType.EfCore, foreignKeyNamingStrategy);
+            SetupOracle("efrpgtest", "MyDbContext", "MyDbContext", TemplateType.EfCore8, GeneratorType.EfCore);
             Settings.GenerateSeparateFiles = false;
             Settings.UseMappingTables = false;
             Settings.UseDataAnnotations = useDataAnnotations;
@@ -74,8 +74,7 @@ namespace Generator.Tests.Integration
         {
             // Arrange - Oracle folds unquoted identifiers to UPPER_SNAKE_CASE, so this is the setting that decides
             // whether the generated model reads as C# or as a catalogue dump. Worth a golden of its own.
-            SetupOracle("efrpgtest", "My_db_context", "Efrpg_db_context", TemplateType.EfCore8, GeneratorType.EfCore,
-                ForeignKeyNamingStrategy.Current);
+            SetupOracle("efrpgtest", "My_db_context", "Efrpg_db_context", TemplateType.EfCore8, GeneratorType.EfCore);
             Settings.GenerateSeparateFiles = false;
             Settings.UsePascalCase = false;
             Settings.UseMappingTables = false;

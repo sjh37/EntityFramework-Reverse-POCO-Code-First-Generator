@@ -1,18 +1,27 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
-using Efrpg.Filtering;
 
-namespace Efrpg.ForeignKeyStrategies
+namespace Efrpg
 {
-    // v0.0.0 <= v4.0.0
-    public class LegacyForeignKeyNamingStrategy : BaseForeignKeyNamingStrategy, IForeignKeyNamingStrategy
+    /// <summary>
+    ///     Names the navigation properties a foreign key produces, resolving clashes against the table's own name, its
+    ///     column names, and the names already handed out for this table.
+    /// </summary>
+    /// <remarks>
+    ///     The five numbered attempts hand their number to Settings.ForeignKeyName, which is the callback a user
+    ///     overrides in their .tt to rename foreign keys. Those numbers are part of that public contract, so they are
+    ///     not renumbered.
+    /// </remarks>
+    public class ForeignKeyNaming
     {
+        private readonly Table _table;
+
         public List<string> ReverseNavigationUniquePropName;
         public List<string> ReverseNavigationUniquePropNameClashes;
 
-        public LegacyForeignKeyNamingStrategy(IDbContextFilter filter, Table table)
-            : base(filter, table)
+        public ForeignKeyNaming(Table table)
         {
+            _table = table;
             ReverseNavigationUniquePropNameClashes = new List<string>();
         }
 
@@ -152,6 +161,20 @@ namespace Efrpg.ForeignKeyStrategies
         public void ResetNavigationProperties()
         {
             ReverseNavigationUniquePropName = new List<string>();
+        }
+
+        /// <summary>
+        ///     A name the user supplied through Settings.AddExtraForeignKeys wins over anything generated here.
+        /// </summary>
+        private static string CheckForUserSpecifiedName(bool isParent, ForeignKey foreignKey)
+        {
+            if (isParent && !string.IsNullOrEmpty(foreignKey.ParentName))
+                return foreignKey.ParentName;
+
+            if (!isParent && !string.IsNullOrEmpty(foreignKey.ChildName))
+                return foreignKey.ChildName;
+
+            return null;
         }
     }
 }

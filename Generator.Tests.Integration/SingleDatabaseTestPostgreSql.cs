@@ -15,10 +15,9 @@ namespace Generator.Tests.Integration
     [Category(Constants.DbType.PostgreSql)]
     public class SingleDatabaseTestPostgreSql : SingleDatabaseTestBase
     {
-        public void SetupPostgreSQL(string database, string connectionStringName, string dbContextName, TemplateType templateType, GeneratorType generatorType,
-            ForeignKeyNamingStrategy foreignKeyNamingStrategy)
+        public void SetupPostgreSQL(string database, string connectionStringName, string dbContextName, TemplateType templateType, GeneratorType generatorType)
         {
-            SetupDatabase(connectionStringName, dbContextName, templateType, generatorType, foreignKeyNamingStrategy);
+            SetupDatabase(connectionStringName, dbContextName, templateType, generatorType);
 
             Settings.ConnectionString = $"Server=127.0.0.1;Port=5432;Database={database};User Id=testuser;Password=testtesttest;";
             Settings.DatabaseType = DatabaseType.PostgreSQL;
@@ -61,17 +60,17 @@ namespace Generator.Tests.Integration
 
         [Test]
         [NonParallelizable]
-        [TestCase(ForeignKeyNamingStrategy.Current, "EfrpgTest", "EfrpgTest", false, false)]
-        [TestCase(ForeignKeyNamingStrategy.Current, "Northwind", "Northwind", false, false)]
-        [TestCase(ForeignKeyNamingStrategy.Current, "Northwind", "Northwind", true, false)]
-        [TestCase(ForeignKeyNamingStrategy.Current, "Northwind", "Northwind", false, true)]
-        [TestCase(ForeignKeyNamingStrategy.Current, "Northwind", "Northwind", true, true)]
-        public void ReverseEngineerPostgreSQL_EfCore(ForeignKeyNamingStrategy foreignKeyNamingStrategy, string filenameBase, string database, bool allowNullStrings, bool nullableReverseNavigationProperties)
+        [TestCase("EfrpgTest", "EfrpgTest", false, false)]
+        [TestCase("Northwind", "Northwind", false, false)]
+        [TestCase("Northwind", "Northwind", true, false)]
+        [TestCase("Northwind", "Northwind", false, true)]
+        [TestCase("Northwind", "Northwind", true, true)]
+        public void ReverseEngineerPostgreSQL_EfCore(string filenameBase, string database, bool allowNullStrings, bool nullableReverseNavigationProperties)
         {
             // Arrange
             // Per-case settings must come after SetupPostgreSQL: SetupDatabase resets the leak-prone settings
             // (AllowNullStrings et al.) to defaults, so anything assigned before it is clobbered.
-            SetupPostgreSQL(database, "MyDbContext", "MyDbContext", TemplateType.EfCore8, GeneratorType.EfCore, foreignKeyNamingStrategy);
+            SetupPostgreSQL(database, "MyDbContext", "MyDbContext", TemplateType.EfCore8, GeneratorType.EfCore);
             Settings.GenerateSeparateFiles = false;
             Settings.UseMappingTables = false;
             Settings.AllowNullStrings = allowNullStrings;
@@ -95,7 +94,7 @@ namespace Generator.Tests.Integration
         public void ReverseEngineerPostgreSQL_Ef6()
         {
             // Arrange
-            SetupPostgreSQL("EfrpgTest", "MyEf6DbContext", "MyEf6DbContext", TemplateType.Ef6, GeneratorType.Ef6, ForeignKeyNamingStrategy.Current);
+            SetupPostgreSQL("EfrpgTest", "MyEf6DbContext", "MyEf6DbContext", TemplateType.Ef6, GeneratorType.Ef6);
             Settings.GenerateSeparateFiles = false;
             Settings.UseMappingTables = false;
 

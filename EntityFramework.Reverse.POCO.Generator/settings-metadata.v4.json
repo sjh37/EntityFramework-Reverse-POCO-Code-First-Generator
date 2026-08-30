@@ -44,7 +44,7 @@
       "type": "TemplateType",
       "kind": "enum",
       "section": "Settings",
-      "help": "EfCore8-10, Ef6, FileBasedCore8-10. FileBased specify folder using Settings.TemplateFolder",
+      "help": "Ef6, EfCore8-10, FileBasedEf6, FileBasedCore8-10. FileBased specify folder using Settings.TemplateFolder",
       "defaultValue": "TemplateType.EfCore10",
       "inDatabaseTt": true,
       "commentedOut": false,
@@ -250,7 +250,7 @@
       "type": "Elements",
       "kind": "enum",
       "section": "Elements to generate",
-      "help": null,
+      "help": "Combine with |. None, Poco, Context, Interface, PocoConfiguration, Enum",
       "defaultValue": "Elements.Poco | Elements.Context | Elements.Interface | Elements.PocoConfiguration | Elements.Enum",
       "inDatabaseTt": true,
       "commentedOut": false,
@@ -385,7 +385,7 @@
       "type": "OnConfiguration",
       "kind": "enum",
       "section": "Other settings",
-      "help": "EFCore only. Determines the code generated within DbContext.OnConfiguration(). Please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Settings.OnConfiguration",
+      "help": "Configuration, ConnectionString, Omit. EFCore only. Determines the code generated within DbContext.OnConfiguration(). Please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Settings.OnConfiguration",
       "defaultValue": "OnConfiguration.ConnectionString",
       "inDatabaseTt": true,
       "commentedOut": false,
@@ -568,13 +568,13 @@
       "type": "CommentsStyle",
       "kind": "enum",
       "section": "Other settings",
-      "help": "Adds comments to the generated code",
+      "help": "None, InSummaryBlock, AtEndOfField. Adds comments to the generated code",
       "defaultValue": "CommentsStyle.AtEndOfField",
       "inDatabaseTt": true,
       "commentedOut": false,
       "multiLine": false,
       "runtimeOnly": false,
-      "isFlags": true,
+      "isFlags": false,
       "enumMembers": [
         {
           "name": "None",
@@ -595,13 +595,13 @@
       "type": "CommentsStyle",
       "kind": "enum",
       "section": "Other settings",
-      "help": "Adds extended properties as comments to the generated code",
+      "help": "None, InSummaryBlock, AtEndOfField. Adds extended properties as comments to the generated code",
       "defaultValue": "CommentsStyle.InSummaryBlock",
       "inDatabaseTt": true,
       "commentedOut": false,
       "multiLine": false,
       "runtimeOnly": false,
-      "isFlags": true,
+      "isFlags": false,
       "enumMembers": [
         {
           "name": "None",
@@ -814,7 +814,7 @@
       "type": "GenerationLanguage",
       "kind": "enum",
       "section": "Other settings",
-      "help": null,
+      "help": "CSharp, Javascript. Javascript is SqlServer only, every other database falls back to CSharp.",
       "defaultValue": "GenerationLanguage.CSharp",
       "inDatabaseTt": true,
       "commentedOut": false,
@@ -1455,29 +1455,6 @@
       "commentedOut": false,
       "multiLine": false,
       "runtimeOnly": true
-    },
-    {
-      "name": "ForeignKeyNamingStrategy",
-      "type": "ForeignKeyNamingStrategy",
-      "kind": "enum",
-      "section": "Main settings",
-      "help": "Please use Legacy for now, Latest (not yet ready)",
-      "defaultValue": "ForeignKeyNamingStrategy.Current",
-      "inDatabaseTt": false,
-      "commentedOut": false,
-      "multiLine": false,
-      "runtimeOnly": false,
-      "isFlags": false,
-      "enumMembers": [
-        {
-          "name": "Current",
-          "value": 0
-        },
-        {
-          "name": "Beta",
-          "value": 1
-        }
-      ]
     },
     {
       "name": "OrderProperties",

@@ -21,10 +21,8 @@ namespace Generator.Tests.Integration
             string connectionStringName,
             string dbContextName,
             TemplateType templateType,
-            GeneratorType generatorType,
-            ForeignKeyNamingStrategy foreignKeyNamingStrategy)
+            GeneratorType generatorType)
         {
-            Settings.ForeignKeyNamingStrategy = foreignKeyNamingStrategy;
             Settings.TemplateType = templateType;
             Settings.GeneratorType = generatorType;
             Settings.ConnectionStringName = connectionStringName;
@@ -96,7 +94,7 @@ namespace Generator.Tests.Integration
                 path = Path.Combine(path, subFolder);
 
             Settings.Root = path;
-            var fullPath = Path.Combine(path, $"{filename}_{Settings.DatabaseType}_{Settings.TemplateType}_Fk{Settings.ForeignKeyNamingStrategy}.cs");
+            var fullPath = Path.Combine(path, $"{filename}_{Settings.DatabaseType}_{Settings.TemplateType}.cs");
 
             // Delete old generated files
             if (File.Exists(fullPath))
@@ -191,7 +189,7 @@ namespace Generator.Tests.Integration
 
         protected static void CompareAgainstTestComparison(string database)
         {
-            var comparisonFile = $"{database}_{Settings.DatabaseType}_{Settings.TemplateType}_Fk{Settings.ForeignKeyNamingStrategy}.cs";
+            var comparisonFile = $"{database}_{Settings.DatabaseType}_{Settings.TemplateType}.cs";
             var testRootPath = AppDomain.CurrentDomain.BaseDirectory;
             var testComparisonPath = Path.Combine(testRootPath, $"TestComparison\\{comparisonFile}");
             var testComparison = File.ReadAllText(testComparisonPath);

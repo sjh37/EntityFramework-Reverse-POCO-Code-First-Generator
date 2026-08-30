@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Efrpg.Filtering;
-using Efrpg.ForeignKeyStrategies;
 using Efrpg.Readers;
 using Efrpg.Templates;
 
@@ -42,7 +41,7 @@ namespace Efrpg
         public List<OwnedEntity> OwnedEntities = new List<OwnedEntity>(); // Owned entity groups defined via OwnedEntityMapping
 
         private readonly IDbContextFilter _filter;
-        private readonly IForeignKeyNamingStrategy _foreignKeyNamingStrategy;
+        private readonly ForeignKeyNaming _foreignKeyNaming;
 
         public Table(IDbContextFilter filter, Schema schema, string dbName, bool isView)
         {
@@ -52,7 +51,7 @@ namespace Efrpg
             IsView = isView;
             Columns = new List<Column>();
 
-            _foreignKeyNamingStrategy = ForeignKeyNamingStrategyFactory.Create(filter, this);
+            _foreignKeyNaming = new ForeignKeyNaming(this);
 
             ResetNavigationProperties();
             ExtendedProperty = new List<string>();
@@ -71,7 +70,7 @@ namespace Efrpg
 
         public void ResetNavigationProperties()
         {
-            _foreignKeyNamingStrategy.ResetNavigationProperties();
+            _foreignKeyNaming.ResetNavigationProperties();
 
             MappingConfiguration = new List<string>();
             ReverseNavigationProperty = new List<PropertyAndComments>();
@@ -144,7 +143,7 @@ namespace Efrpg
                 System.IO.File.AppendAllText("c:/temp/unit.txt", s);
             }*/
 
-            return _foreignKeyNamingStrategy.GetUniqueForeignKeyName(isParent, tableNameHumanCase, foreignKey, checkForFkNameClashes,
+            return _foreignKeyNaming.GetUniqueForeignKeyName(isParent, tableNameHumanCase, foreignKey, checkForFkNameClashes,
                 makeSingular, relationship);
         }
 

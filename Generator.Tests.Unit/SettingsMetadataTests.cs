@@ -107,6 +107,69 @@ namespace Generator.Tests.Unit
             }
         }
 
+        /// <summary>
+        ///     The trailing // comment on an enum setting is the only place Database.tt lists the values a user may
+        ///     pick from, and it is what the GUI will show. It rotted silently once already: the old
+        ///     ForeignKeyNamingStrategy setting read "Please use Legacy for now, Latest (not yet ready)" long after
+        ///     its members had been renamed to Current and Beta, so the comment named two values that did not exist
+        ///     and neither of the two that did. That setting has since been deleted; this test is what remains of it.
+        /// </summary>
+        [Test]
+        public void Metadata_EveryEnumSettingNamesAllItsMembersInTheHelpText()
+        {
+            using (var json = JsonDocument.Parse(File.ReadAllText(MetadataPath(V4Metadata))))
+            {
+                var gaps = new List<string>();
+
+                foreach (var setting in json.RootElement.GetProperty("settings").EnumerateArray())
+                {
+                    if (setting.GetProperty("kind").GetString() != "enum")
+                        continue;
+
+                    var help    = setting.GetProperty("help").GetString();
+                    var named   = NamesIn(help);
+                    var missing = setting
+                        .GetProperty("enumMembers")
+                        .EnumerateArray()
+                        .Select(x => x.GetProperty("name").GetString())
+                        .Where(x => !named.Contains(x))
+                        .ToList();
+
+                    if (missing.Any())
+                        gaps.Add(setting.GetProperty("name").GetString() + " omits " + string.Join(", ", missing));
+                }
+
+                Assert.That(gaps, Is.Empty,
+                    "These enum settings have members their help text never mentions, so the GUI would offer a value " +
+                    "Database.tt does not document, or document one that does not exist. Fix the trailing comment in " +
+                    "Generator/Settings.cs and in the footer of BuildTT/BuildTT.cs, then run BuildTT:" +
+                    Environment.NewLine + string.Join(Environment.NewLine, gaps));
+            }
+        }
+
+        /// <summary>
+        ///     Words in a help comment, with "EfCore8-10" expanded to EfCore8, EfCore9 and EfCore10 - the shorthand
+        ///     Database.tt uses so the reader is not given eight near-identical names to scan.
+        /// </summary>
+        private static HashSet<string> NamesIn(string help)
+        {
+            var names = new HashSet<string>(StringComparer.Ordinal);
+            if (string.IsNullOrEmpty(help))
+                return names;
+
+            foreach (Match word in Regex.Matches(help, @"[A-Za-z][A-Za-z0-9]*"))
+                names.Add(word.Value);
+
+            foreach (Match range in Regex.Matches(help, @"(?<stem>[A-Za-z]+)(?<from>\d+)-(?<to>\d+)"))
+            {
+                var stem = range.Groups["stem"].Value;
+                for (var n = int.Parse(range.Groups["from"].Value); n <= int.Parse(range.Groups["to"].Value); n++)
+                    names.Add(stem + n);
+            }
+
+            return names;
+        }
+
         private static IEnumerable<string> SettingsAssignedInDatabaseTt()
         {
             var lines = File.ReadAllLines(Path.Combine(RepositoryRoot(), TemplateFolder, "Database.tt"));
