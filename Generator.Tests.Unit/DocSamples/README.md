@@ -129,6 +129,12 @@ returns the file names, which is the only way to show what `PocoFolder` and frie
 sample's configure action is too late for the filter objects, so `EnableEverythingOnTheFilters` copies the
 values across afterwards. The integration tests do the same thing.
 
+**The generator version is stubbed out to `v4.x.x`.** BuildTT bumps the real version on release, and the
+`[GeneratedCode]` sample embeds it, so without this that one snippet would fail the drift test on every
+version bump. A failure that says nothing is worse than no failure - it trains people to ignore the test. If
+you add a sample containing anything else that changes on its own, stub that out the same way in
+`DocSampleRunner.Normalise`.
+
 **Snippets are compared with `\n`.** Line endings are normalised on both sides so a snippet does not change
 meaning between a Windows checkout and a Linux CI agent.
 
@@ -169,7 +175,8 @@ second one is what would have caught `Settings.ForeignKeyNamingStrategy`.
 
 ## Related
 
-- `plan-wiki-settings-docs.md` in the repository root - the checklist of which settings still need a page.
-  It is temporary and will be deleted when the pages are done; this file is not.
 - `WireContractTests.cs` - the other half of the "documentation cannot silently rot" idea, for the wire format
   rather than the wiki.
+- `plan-wiki-settings-docs.md` was the checklist that produced these pages. It is deleted now the work is
+  done; `git log --diff-filter=D -- plan-wiki-settings-docs.md` finds it if you want the reasoning behind a
+  decision that is not explained here.

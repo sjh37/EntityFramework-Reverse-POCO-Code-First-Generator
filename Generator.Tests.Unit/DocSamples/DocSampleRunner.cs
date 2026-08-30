@@ -340,7 +340,7 @@ namespace Generator.Tests.Unit.DocSamples
         /// </remarks>
         private static string Normalise(string generated)
         {
-            var lines = generated
+            var lines = StabiliseGeneratorVersion(generated)
                 .Replace("\r\n", "\n")
                 .Split('\n')
                 .Where(line => !IsLicenceNoise(line))
@@ -352,6 +352,22 @@ namespace Generator.Tests.Unit.DocSamples
                 lines.RemoveAt(lines.Count - 1);
 
             return string.Join("\n", lines);
+        }
+
+        /// <summary>
+        ///     Replaces the generator version inside a [GeneratedCode] attribute with a placeholder.
+        /// </summary>
+        /// <remarks>
+        ///     BuildTT bumps the version on release, which would otherwise make this one snippet fail the drift
+        ///     test on every version bump - a failure that says nothing and trains people to ignore the test. The
+        ///     shape is what the page is documenting; the digits are not.
+        /// </remarks>
+        private static string StabiliseGeneratorVersion(string generated)
+        {
+            return System.Text.RegularExpressions.Regex.Replace(
+                generated,
+                @"(\[GeneratedCode\(""EF\.Reverse\.POCO\.Generator"", "")[^""]*("")",
+                "${1}v4.x.x${2}");
         }
 
         private static bool IsLicenceNoise(string line)
