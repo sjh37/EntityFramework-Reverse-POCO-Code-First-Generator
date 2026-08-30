@@ -1,4 +1,4 @@
 ﻿// -----------------------------------------------------------------------------------------
 // efrpg tool reported an error:
-// Error connecting to database: Cannot open database "**TODO**" requested by the login. The login failed. Login failed for user 'Simon\simon'. 
+// Error: the connection string still contains the placeholder **TODO**. Edit Settings.ConnectionString near the top of Database.tt and point it at your own database. 
 // -----------------------------------------------------------------------------------------
