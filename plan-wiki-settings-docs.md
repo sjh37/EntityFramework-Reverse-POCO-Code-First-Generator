@@ -64,17 +64,17 @@ is read-mostly - the reader assigns it, but users legitimately read it in callba
 These have never been documented as settings. Some are mentioned in passing inside a deep-dive page, which is
 not the same thing.
 
-- [ ] `Settings.AddOwnedEntityMappings` - prose exists in `Owned-Entities.md`, no heading
+- [x] `Settings.AddOwnedEntityMappings` - prose exists in `Owned-Entities.md`, no heading
 - [x] `Settings.PrependSchemaNameForTable`
-- [ ] `Settings.PrependSchemaNameForStoredProcedure`
-- [ ] `Settings.MultiContextAllFieldsColumnProcessing`
-- [ ] `Settings.MultiContextAllFieldsTableProcessing`
-- [ ] `Settings.MultiContextAllFieldsStoredProcedureProcessing`
-- [ ] `Settings.MultiContextAllFieldsFunctionProcessing`
-- [ ] `Settings.Root` - used in examples across five pages, never explained
-- [ ] `Settings.TemplateFile`
-- [ ] `Settings.FilterCount`
-- [ ] `Settings.DefaultConstructorArgument`
+- [x] `Settings.PrependSchemaNameForStoredProcedure`
+- [x] `Settings.MultiContextAllFieldsColumnProcessing`
+- [x] `Settings.MultiContextAllFieldsTableProcessing`
+- [x] `Settings.MultiContextAllFieldsStoredProcedureProcessing`
+- [x] `Settings.MultiContextAllFieldsFunctionProcessing`
+- [x] `Settings.Root` - used in examples across five pages, never explained
+- [x] `Settings.TemplateFile`
+- [x] `Settings.FilterCount`
+- [x] `Settings.DefaultConstructorArgument`
 
 ### Not mentioned in `Database.tt` at all (11)
 
@@ -189,12 +189,12 @@ This is the part that makes the whole thing trustworthy, and it is built first.
 
 ## Navigation
 
-- [ ] **`_Sidebar.md`**: add a `Settings A-Z` link. Do not list 104 pages in the sidebar.
-- [ ] **`Settings-Reference.md`** becomes the A-Z index table, grouped by the same sections it uses now, with
+- [x] **`_Sidebar.md`**: add a `Settings A-Z` link. Do not list 104 pages in the sidebar.
+- [x] **`Settings-Reference.md`** becomes the A-Z index table, grouped by the same sections it uses now, with
       a one-line summary and a link per setting. Keep the existing anchors working where possible.
-- [ ] **`Settings-Callbacks.md`** keeps its pipeline preamble and becomes an index of the delegate settings.
-- [ ] **Every page links back** to the index and to its section neighbours.
-- [ ] **Deep-dive pages gain a "Settings on this page" box** linking to the per-setting pages they touch.
+- [x] **`Settings-Callbacks.md`** keeps its pipeline preamble and becomes an index of the delegate settings.
+- [x] **Every page links back** to the index and to its section neighbours.
+- [x] **Deep-dive pages gain a "Settings on this page" box** linking to the per-setting pages they touch.
 
 ## Order of work
 
@@ -236,177 +236,195 @@ decision must be recorded.
 
 ### Core and required
 
-- [ ] `Settings.DatabaseType` (tt)
-- [ ] `Settings.TemplateType` (tt)
-- [ ] `Settings.GeneratorType` (tt)
-- [ ] `Settings.ConnectionString` (tt) - no harness example
-- [ ] `Settings.ConnectionStringName` (tt)
-- [ ] `Settings.ConnectionStringActions` (tt)
-- [ ] `Settings.DbContextName` (tt)
-- [ ] `Settings.DbContextInterfaceName` (tt, commented)
-- [ ] `Settings.Namespace` (tt)
-- [ ] `Settings.UseNamespace` (tt)
-- [ ] `Settings.UseFileScopedNamespaces` (tt)
-- [ ] `Settings.GenerateSeparateFiles` (tt)
+- [x] `Settings.DatabaseType` (tt)
+- [x] `Settings.TemplateType` (tt)
+- [x] `Settings.GeneratorType` (tt)
+- [x] `Settings.ConnectionString` (tt) - no harness example
+- [x] `Settings.ConnectionStringName` (tt)
+- [x] `Settings.ConnectionStringActions` (tt)
+- [x] `Settings.DbContextName` (tt)
+- [x] `Settings.DbContextInterfaceName` (tt, commented)
+- [x] `Settings.Namespace` (tt)
+- [x] `Settings.UseNamespace` (tt)
+- [x] `Settings.UseFileScopedNamespaces` (tt)
+- [x] `Settings.GenerateSeparateFiles` (tt)
 - [x] `Settings.ElementsToGenerate` (tt)
 
 ### Output layout
 
-- [ ] `Settings.ContextFolder` (tt)
-- [ ] `Settings.InterfaceFolder` (tt)
-- [ ] `Settings.PocoFolder` (tt)
-- [ ] `Settings.PocoConfigurationFolder` (tt)
-- [ ] `Settings.OwnedEntityFolder` (!tt)
-- [ ] `Settings.UseFolderNameInNamespace` (tt)
-- [ ] `Settings.ContextNamespace` (tt)
-- [ ] `Settings.InterfaceNamespace` (tt)
-- [ ] `Settings.PocoNamespace` (tt)
-- [ ] `Settings.PocoConfigurationNamespace` (tt)
-- [ ] `Settings.FileExtension` (tt)
-- [ ] `Settings.GenerationLanguage` (tt)
+- [x] `Settings.ContextFolder` (tt)
+- [x] `Settings.InterfaceFolder` (tt)
+- [x] `Settings.PocoFolder` (tt)
+- [x] `Settings.PocoConfigurationFolder` (tt)
+- [x] `Settings.OwnedEntityFolder` (!tt)
+- [x] `Settings.UseFolderNameInNamespace` (tt)
+- [x] `Settings.ContextNamespace` (tt)
+- [x] `Settings.InterfaceNamespace` (tt)
+- [x] `Settings.PocoNamespace` (tt)
+- [x] `Settings.PocoConfigurationNamespace` (tt)
+- [x] `Settings.FileExtension` (tt)
+- [x] `Settings.GenerationLanguage` (tt)
 
 ### DbContext
 
-- [ ] `Settings.DbContextBaseClass` (tt)
-- [ ] `Settings.DbContextInterfaceBaseClasses` (tt)
+- [x] `Settings.DbContextBaseClass` (tt)
+- [x] `Settings.DbContextInterfaceBaseClasses` (tt)
 - [x] `Settings.OnConfiguration` (tt)
-- [ ] `Settings.AddParameterlessConstructorToDbContext` (tt)
-- [ ] `Settings.AddIDbContextFactory` (tt)
-- [ ] `Settings.AddUnitTestingDbContext` (tt)
-- [ ] `Settings.FakeDbContextInDebugOnlyMode` (tt)
-- [ ] `Settings.UseInheritedBaseInterfaceFunctions` (tt)
-- [ ] `Settings.AdditionalContextInterfaceItems` (tt)
-- [ ] `Settings.DbContextClassModifiers` (tt)
-- [ ] `Settings.DbContextInterfaceModifiers` (tt)
-- [ ] `Settings.EntityClassesModifiers` (tt)
-- [ ] `Settings.ConfigurationClassesModifiers` (tt)
-- [ ] `Settings.ResultClassModifiers` (tt)
-- [ ] `Settings.ConfigurationClassName` (tt)
+- [x] `Settings.AddParameterlessConstructorToDbContext` (tt)
+- [x] `Settings.AddIDbContextFactory` (tt)
+- [x] `Settings.AddUnitTestingDbContext` (tt)
+- [x] `Settings.FakeDbContextInDebugOnlyMode` (tt)
+- [x] `Settings.UseInheritedBaseInterfaceFunctions` (tt)
+- [x] `Settings.AdditionalContextInterfaceItems` (tt)
+- [x] `Settings.DbContextClassModifiers` (tt)
+- [x] `Settings.DbContextInterfaceModifiers` (tt)
+- [x] `Settings.EntityClassesModifiers` (tt)
+- [x] `Settings.ConfigurationClassesModifiers` (tt)
+- [x] `Settings.ResultClassModifiers` (tt)
+- [x] `Settings.ConfigurationClassName` (tt)
 
 ### POCO shape
 
-- [ ] `Settings.UsePascalCase` (tt)
-- [ ] `Settings.UsePascalCaseForEnumMembers` (!tt)
-- [ ] `Settings.UseDataAnnotations` (tt)
-- [ ] `Settings.UsePropertyInitialisers` (tt)
-- [ ] `Settings.UseLazyLoading` (tt)
-- [ ] `Settings.CollectionInterfaceType` (tt)
-- [ ] `Settings.CollectionType` (tt)
-- [ ] `Settings.NullableShortHand` (tt)
-- [ ] `Settings.AllowNullStrings` (tt)
-- [ ] `Settings.NullableReverseNavigationProperties` (tt)
+- [x] `Settings.UsePascalCase` (tt)
+- [x] `Settings.UsePascalCaseForEnumMembers` (!tt)
+- [x] `Settings.UseDataAnnotations` (tt)
+- [x] `Settings.UsePropertyInitialisers` (tt)
+- [x] `Settings.UseLazyLoading` (tt)
+- [x] `Settings.CollectionInterfaceType` (tt)
+- [x] `Settings.CollectionType` (tt)
+- [x] `Settings.NullableShortHand` (tt)
+- [x] `Settings.AllowNullStrings` (tt)
+- [x] `Settings.NullableReverseNavigationProperties` (tt)
 - [x] `Settings.UsePrivateSetterForComputedColumns` (tt)
-- [ ] `Settings.IncludeFieldNameConstants` (tt)
-- [ ] `Settings.IncludeColumnsWithDefaults` (tt)
-- [ ] `Settings.OrderProperties` (!tt)
-- [ ] `Settings.TableSuffix` (tt)
-- [ ] `Settings.TrimCharFields` (tt)
-- [ ] `Settings.UseMappingTables` (tt)
-- [ ] `Settings.DisableGeographyTypes` (tt)
+- [x] `Settings.IncludeFieldNameConstants` (tt)
+- [x] `Settings.IncludeColumnsWithDefaults` (tt)
+- [x] `Settings.OrderProperties` (!tt)
+- [x] `Settings.TableSuffix` (tt)
+- [x] `Settings.TrimCharFields` (tt)
+- [x] `Settings.UseMappingTables` (tt)
+- [x] `Settings.DisableGeographyTypes` (tt)
 
 ### Comments and file furniture
 
-- [ ] `Settings.IncludeComments` (tt)
-- [ ] `Settings.IncludeExtendedPropertyComments` (tt)
-- [ ] `Settings.UseRegions` (tt)
-- [ ] `Settings.UsePragma` (tt)
-- [ ] `Settings.UseResharper` (tt)
-- [ ] `Settings.ShowLicenseInfo` (tt)
-- [ ] `Settings.IncludeGeneratorVersionInCode` (tt)
-- [ ] `Settings.IncludeConnectionSettingComments` (tt)
-- [ ] `Settings.IncludeCodeGeneratedAttribute` (tt)
-- [ ] `Settings.AdditionalNamespaces` (tt)
-- [ ] `Settings.AdditionalFileHeaderText` (tt)
-- [ ] `Settings.AdditionalFileFooterText` (tt)
-- [ ] `Settings.AdditionalReverseNavigationsDataAnnotations` (tt)
-- [ ] `Settings.AdditionalForeignKeysDataAnnotations` (tt)
+- [x] `Settings.IncludeComments` (tt)
+- [x] `Settings.IncludeExtendedPropertyComments` (tt)
+- [x] `Settings.UseRegions` (tt)
+- [x] `Settings.UsePragma` (tt)
+- [x] `Settings.UseResharper` (tt)
+- [x] `Settings.ShowLicenseInfo` (tt)
+- [x] `Settings.IncludeGeneratorVersionInCode` (tt)
+- [x] `Settings.IncludeConnectionSettingComments` (tt)
+- [x] `Settings.IncludeCodeGeneratedAttribute` (tt)
+- [x] `Settings.AdditionalNamespaces` (tt)
+- [x] `Settings.AdditionalFileHeaderText` (tt)
+- [x] `Settings.AdditionalFileFooterText` (tt)
+- [x] `Settings.AdditionalReverseNavigationsDataAnnotations` (tt)
+- [x] `Settings.AdditionalForeignKeysDataAnnotations` (tt)
 
 ### Schema
 
-- [ ] `Settings.PrependSchemaName` (tt)
+- [x] `Settings.PrependSchemaName` (tt)
 - [x] `Settings.PrependSchemaNameForTable` (!tt)
-- [ ] `Settings.PrependSchemaNameForStoredProcedure` (!tt, **undocumented**)
-- [ ] `Settings.DefaultSchema` (!tt)
+- [x] `Settings.PrependSchemaNameForStoredProcedure` (!tt, **undocumented**)
+- [x] `Settings.DefaultSchema` (!tt)
 
 ### Configuration mapping
 
-- [ ] `Settings.GenerateHasDefaultValueSql` (tt)
-- [ ] `Settings.ColumnIdentity` (!tt)
-- [ ] `Settings.HiLoSequences` (tt)
+- [x] `Settings.GenerateHasDefaultValueSql` (tt)
+- [x] `Settings.ColumnIdentity` (!tt)
+- [x] `Settings.HiLoSequences` (tt)
 
 ### Stored procedures and functions
 
-- [ ] `Settings.UsePropertiesForStoredProcResultSets` (tt) - fold in the existing standalone page
-- [ ] `Settings.MergeMultipleStoredProcModelsIfAllSame` (tt)
-- [ ] `Settings.StoredProcedureReturnTypes` (tt, commented)
-- [ ] `Settings.StoredProcedureRename` (tt)
-- [ ] `Settings.StoredProcedureReturnModelRename` (tt)
-- [ ] `Settings.ReadStoredProcReturnObjectException` (!tt)
-- [ ] `Settings.ReadStoredProcReturnObjectCompleted` (!tt)
+- [x] `Settings.UsePropertiesForStoredProcResultSets` (tt) - fold in the existing standalone page
+- [x] `Settings.MergeMultipleStoredProcModelsIfAllSame` (tt)
+- [x] `Settings.StoredProcedureReturnTypes` (tt, commented)
+- [x] `Settings.StoredProcedureRename` (tt)
+- [x] `Settings.StoredProcedureReturnModelRename` (tt)
+- [x] `Settings.ReadStoredProcReturnObjectException` (!tt)
+- [x] `Settings.ReadStoredProcReturnObjectCompleted` (!tt)
 
 ### Naming and reshaping callbacks
 
-- [ ] `Settings.TableRename` (tt)
-- [ ] `Settings.UpdateTable` (tt)
+- [x] `Settings.TableRename` (tt)
+- [x] `Settings.UpdateTable` (tt)
 - [x] `Settings.UpdateColumn` (tt)
-- [ ] `Settings.ViewProcessing` (tt)
-- [ ] `Settings.WriteInsideClassBody` (tt)
-- [ ] `Settings.MappingTableRename` (tt)
-- [ ] `Settings.ForeignKeyName` (tt)
-- [ ] `Settings.ForeignKeyFilterFunc` (tt)
-- [ ] `Settings.ForeignKeyAnnotationsProcessing` (tt)
-- [ ] `Settings.AddExtraForeignKeys` (tt)
+- [x] `Settings.ViewProcessing` (tt)
+- [x] `Settings.WriteInsideClassBody` (tt)
+- [x] `Settings.MappingTableRename` (tt)
+- [x] `Settings.ForeignKeyName` (tt)
+- [x] `Settings.ForeignKeyFilterFunc` (tt)
+- [x] `Settings.ForeignKeyAnnotationsProcessing` (tt)
+- [x] `Settings.AddExtraForeignKeys` (tt)
 
 ### Enums
 
-- [ ] `Settings.Enumerations` (tt)
-- [ ] `Settings.AddEnum` (tt)
-- [ ] `Settings.UpdateEnum` (tt)
-- [ ] `Settings.UpdateEnumMember` (tt)
-- [ ] `Settings.AddEnumDefinitions` (tt)
+- [x] `Settings.Enumerations` (tt)
+- [x] `Settings.AddEnum` (tt)
+- [x] `Settings.UpdateEnum` (tt)
+- [x] `Settings.UpdateEnumMember` (tt)
+- [x] `Settings.AddEnumDefinitions` (tt)
 
 ### JSON and owned entities
 
-- [ ] `Settings.AddJsonColumnMappings` (tt)
-- [ ] `Settings.AddOwnedEntityMappings` (tt, **undocumented**)
+- [x] `Settings.AddJsonColumnMappings` (tt)
+- [x] `Settings.AddOwnedEntityMappings` (tt, **undocumented**)
 
 ### Multi-context
 
-- [ ] `Settings.GenerateSingleDbContext` (tt)
-- [ ] `Settings.MultiContextSettingsConnectionString` (tt)
-- [ ] `Settings.MultiContextSettingsPlugin` (tt)
-- [ ] `Settings.MultiContextAttributeDelimiter` (tt)
-- [ ] `Settings.MultiContextAllFieldsColumnProcessing` (tt, **undocumented**)
-- [ ] `Settings.MultiContextAllFieldsTableProcessing` (tt, **undocumented**)
-- [ ] `Settings.MultiContextAllFieldsStoredProcedureProcessing` (tt, **undocumented**)
-- [ ] `Settings.MultiContextAllFieldsFunctionProcessing` (tt, **undocumented**)
+- [x] `Settings.GenerateSingleDbContext` (tt)
+- [x] `Settings.MultiContextSettingsConnectionString` (tt)
+- [x] `Settings.MultiContextSettingsPlugin` (tt)
+- [x] `Settings.MultiContextAttributeDelimiter` (tt)
+- [x] `Settings.MultiContextAllFieldsColumnProcessing` (tt, **undocumented**)
+- [x] `Settings.MultiContextAllFieldsTableProcessing` (tt, **undocumented**)
+- [x] `Settings.MultiContextAllFieldsStoredProcedureProcessing` (tt, **undocumented**)
+- [x] `Settings.MultiContextAllFieldsFunctionProcessing` (tt, **undocumented**)
 
 ### Templates and performance
 
-- [ ] `Settings.TemplateFolder` (tt)
-- [ ] `Settings.CommandTimeout` (tt) - no harness example
-- [ ] `Settings.IncludeQueryTraceOn9481Flag` (tt) - no harness example, SQL Server only
+- [x] `Settings.TemplateFolder` (tt)
+- [x] `Settings.CommandTimeout` (tt) - no harness example
+- [x] `Settings.IncludeQueryTraceOn9481Flag` (tt) - no harness example, SQL Server only
 
 ### Runtime values and helpers - one shared page
 
-- [ ] `Settings.Root`, `Settings.TemplateFile`, `Settings.FilterCount`,
+- [x] `Settings.Root`, `Settings.TemplateFile`, `Settings.FilterCount`,
       `Settings.DefaultConstructorArgument` - read-only, set by the generator
-- [ ] `IsEf6()`, `IsEfCore8Plus()`, `IsEfCore9Plus()`, `IsEfCore10Plus()`, `EfCoreVersion()`
-- [ ] `DbContextClassIsPartial()`, `EntityClassesArePartial()`, `ConfigurationClassesArePartial()`
-- [ ] `DatabaseProvider()`, `DatabaseProviderAssemblyName()`, `SqlParameter()`, `SqlParameterValue()`,
+- [x] `IsEf6()`, `IsEfCore8Plus()`, `IsEfCore9Plus()`, `IsEfCore10Plus()`, `EfCoreVersion()`
+- [x] `DbContextClassIsPartial()`, `EntityClassesArePartial()`, `ConfigurationClassesArePartial()`
+- [x] `DatabaseProvider()`, `DatabaseProviderAssemblyName()`, `SqlParameter()`, `SqlParameterValue()`,
       `NeedsNullForgiving()`
-- [ ] `ApplyDataAnnotations()`, `ApplyEnumTypeReplacement()`, `ApplyJsonColumnMappings()`,
+- [x] `ApplyDataAnnotations()`, `ApplyEnumTypeReplacement()`, `ApplyJsonColumnMappings()`,
       `ApplyOwnedEntityMappings()`, `ApplyJsonPropertyNameAttribute()` - the helpers `UpdateColumn` calls.
       These are worth their own page, not a shared one: they are the only part of `UpdateColumn` most users
       touch, and the audit found one invented helper already being documented.
 
+## Status
+
+**Done.** 118 settings across 63 pages, every one reachable from the A-Z index. Every generated code block is
+produced by the harness and re-checked by `WikiSnippetDriftTests`; `SettingsPageCoverageTests` guards the
+index in both directions.
+
+Two deviations from the plan above, both taken because they make better documentation:
+
+- **Settings that are always set together share a page.** The five class modifier settings, the two collection
+  settings, the three connection string settings, the four `MultiContextAllFields*` callbacks, the read-only
+  runtime values. Sixty-three pages rather than a hundred and five. The index links every setting name, so the
+  reader never has to know which page a setting lives on.
+- **`Settings-Reference.md` is generated**, from `Generator.Tests.Unit/DocSamples/build_index.py`, rather than
+  hand-maintained.
+
+This file can now be deleted. Everything needed to keep the pages working lives in
+`Generator.Tests.Unit/DocSamples/README.md`, which `CLAUDE.md` and `AGENTS.md` both point at.
+
 ## Definition of done
 
-- [ ] Every row above is ticked.
-- [ ] No wiki page documents a member that does not exist. A test enumerates `Settings` by reflection and
+- [x] Every row above is ticked.
+- [x] No wiki page documents a member that does not exist. A test enumerates `Settings` by reflection and
       asserts a page exists for each, and that no `Settings.X` heading names a member that is not there.
       This is the check that would have caught `ForeignKeyNamingStrategy` and `ApplyColumnCustomizations`.
-- [ ] Every stated default matches `Database.tt`, asserted from `settings-metadata.v4.json`, which `BuildTT`
+- [x] Every stated default matches `Database.tt`, asserted from `settings-metadata.v4.json`, which `BuildTT`
       already generates and which already carries name, type, default, section and help text for all 118.
-- [ ] The drift test passes.
-- [ ] `_Sidebar.md`, `Settings-Reference.md` and `Settings-Callbacks.md` all point at the new pages.
+- [x] The drift test passes.
+- [x] `_Sidebar.md`, `Settings-Reference.md` and `Settings-Callbacks.md` all point at the new pages.

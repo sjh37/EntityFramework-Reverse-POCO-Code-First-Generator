@@ -150,6 +150,23 @@ something else, put it in the extras fixture or add a third.
 job is to prove the tool and the template still agree about every attribute on the wire. These two are written
 by hand because their job is to be readable. Do not merge them.
 
+## Rebuilding the settings index
+
+`Settings-Reference.md` on the wiki is an A-Z table linking every setting to its page. It is generated:
+
+```
+python Generator.Tests.Unit/DocSamples/build_index.py
+```
+
+The mapping of setting to page and one-line summary is the dictionary at the top of that script - the only
+hand-maintained part. Everything else is checked against `Settings.cs`, so the script refuses to run if a
+setting has no entry, if an entry names a setting that no longer exists, or if it points at a page that is
+not there. `index_header.md` is the prose above the table.
+
+`SettingsPageCoverageTests` is the same idea as a test, and runs with the rest of the suite: every setting
+must be listed in the index, and no wiki heading may name a member of `Settings` that does not exist. That
+second one is what would have caught `Settings.ForeignKeyNamingStrategy`.
+
 ## Related
 
 - `plan-wiki-settings-docs.md` in the repository root - the checklist of which settings still need a page.

@@ -104,6 +104,7 @@
     <Compile Include="DocSamples\DocSampleRunner.cs" />
     <Compile Include="DocSamples\DocSampleTests.cs" />
     <Compile Include="DocSamples\StaticStateSnapshot.cs" />
+    <Compile Include="DocSamples\SettingsPageCoverageTests.cs" />
     <Compile Include="DocSamples\WikiSnippetDriftTests.cs" />
     <Compile Include="MakeUniqueTests.cs" />
     <Compile Include="TablesGetTableTests.cs" />
@@ -133,6 +134,8 @@
     <Compile Include="NullableReverseNavigationTests.cs" />
     <Compile Include="NullableContextTests.cs" />
     <None Include="DocSamples\README.md" />
+    <None Include="DocSamples\build_index.py" />
+    <None Include="DocSamples\index_header.md" />
     <None Include="app.config" />
     <None Include="packages.config" />
     <Compile Include="MustacheUtfTest.cs" />
