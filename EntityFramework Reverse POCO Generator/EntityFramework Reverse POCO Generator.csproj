@@ -38,11 +38,13 @@
     <RootNamespace>EntityFramework_Reverse_POCO_Generator</RootNamespace>
     <AssemblyName>EntityFramework Reverse POCO Generator</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-    <GeneratePkgDefFile>false</GeneratePkgDefFile>
-    <IncludeAssemblyInVSIXContainer>false</IncludeAssemblyInVSIXContainer>
+    <GeneratePkgDefFile>true</GeneratePkgDefFile>
+    <IncludeAssemblyInVSIXContainer>true</IncludeAssemblyInVSIXContainer>
     <IncludeDebugSymbolsInVSIXContainer>false</IncludeDebugSymbolsInVSIXContainer>
     <IncludeDebugSymbolsInLocalVSIXDeployment>false</IncludeDebugSymbolsInLocalVSIXDeployment>
-    <CopyBuildOutputToOutputDirectory>false</CopyBuildOutputToOutputDirectory>
+    <CopyBuildOutputToOutputDirectory>true</CopyBuildOutputToOutputDirectory>
+    <!-- Old-style project, so PackageReference has to be opted into explicitly. -->
+    <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
     <CopyOutputSymbolsToOutputDirectory>false</CopyOutputSymbolsToOutputDirectory>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -82,6 +84,22 @@
     <PlatformTarget>ARM64</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="System.Windows.Forms" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Community.VisualStudio.Toolkit.17" Version="17.0.551" />
+    <!-- IWizard. A package rather than a HintPath into the VS install, so the build does not depend on
+         where Visual Studio happens to be, or on it being installed at all. -->
+    <PackageReference Include="Microsoft.VisualStudio.TemplateWizardInterface" Version="17.10.40170" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Efrpg.Gui.Core\Efrpg.Gui.Core.csproj">
+      <Name>Efrpg.Gui.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="EfrpgPackage.cs" />
+    <Compile Include="ReversePocoWizard.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

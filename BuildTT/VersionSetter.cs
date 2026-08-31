@@ -18,7 +18,7 @@ namespace BuildTT
         public void SetVersions()
         {
             UpdateVstemplate();
-            UpdateVsixmanifest();
+            UpdateVsixManifest();
 
             // Deliberately does NOT stamp the efrpg dotnet tool, which lives in its own repository and versions
             // independently of
@@ -55,11 +55,19 @@ namespace BuildTT
                 tt.WriteLine("        <ProjectItem SubType=\"\" TargetFileName=\"$fileinputname$.tt\" ReplaceParameters=\"false\">Database.tt</ProjectItem>");
                 tt.WriteLine("        <ProjectItem SubType=\"\" TargetFileName=\"EF.Reverse.POCO.v4.ttinclude\" ReplaceParameters=\"false\">EF.Reverse.POCO.v4.ttinclude</ProjectItem>");
                 tt.WriteLine("    </TemplateContent>");
+                // Reached by Visual Studio when the user picks this template from Add - New Item. This is how the GUI
+                // is invoked: no package, no pkgdef and no command table, all of which the .vsct route needed and none
+                // of which ever produced a menu in VS 2026. The assembly name must match AssemblyInfo exactly - a wrong
+                // strong name fails obscurely, with the template simply added and no wizard run.
+                tt.WriteLine("    <WizardExtension>");
+                tt.WriteLine($"        <Assembly>EntityFramework Reverse POCO Generator, Version={_version}.0, Culture=neutral, PublicKeyToken=null</Assembly>");
+                tt.WriteLine("        <FullClassName>EntityFramework_Reverse_POCO_Generator.ReversePocoWizard</FullClassName>");
+                tt.WriteLine("    </WizardExtension>");
                 tt.Write("</VSTemplate>");
             }
         }
 
-        private void UpdateVsixmanifest()
+        private void UpdateVsixManifest()
         {
             var filename = Path.Combine(_root, "EntityFramework Reverse POCO Generator\\source.extension.vsixmanifest");
 
@@ -107,6 +115,10 @@ namespace BuildTT
                 // Without this the package assembly ships but Visual Studio never loads it: the pkgdef is present
                 // and inert. See EfrpgPackage in the VSIX project.
                 tt.WriteLine("        <Asset Type=\"Microsoft.VisualStudio.VsPackage\" d:Source=\"Project\" d:ProjectName=\"%CurrentProject%\" Path=\"|%CurrentProject%;PkgdefProjectOutputGroup|\" />");
+                // Registers the assembly by name so the template engine can resolve the IWizard named in
+                // MyTemplate.vstemplate. Shipping the dll inside the VSIX is not enough on its own: without this the
+                // user gets "this template attempted to load component assembly ..." when they add the item.
+                tt.WriteLine("        <Asset Type=\"Microsoft.VisualStudio.Assembly\" d:Source=\"Project\" d:ProjectName=\"%CurrentProject%\" Path=\"|%CurrentProject%|\" AssemblyName=\"|%CurrentProject%;AssemblyName|\" />");
                 tt.WriteLine("    </Assets>");
                 tt.WriteLine("    <Prerequisites>");
                 tt.WriteLine("        <Prerequisite Id=\"Microsoft.VisualStudio.Component.TextTemplating\" Version=\"[15.0,)\" DisplayName=\"Text Template Transformation\" />");

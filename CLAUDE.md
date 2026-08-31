@@ -133,7 +133,19 @@ dotnet vstest Generator.Tests.Integration/bin/Debug/Generator.Tests.Integration.
 
 ## Packaging
 
-`pack.bat` packages the VSIX item template (requires 7-Zip at `C:\Program Files\7-Zip\7z.exe`). Run after building if you need to update the VSIX item template zip.
+The VSIX item template zip (`efrpoco.zip`) is built by `VersionSetter.BuildEfrpocoZip`, which runs only from
+`SetVersions()` - and that call is normally **commented out** in `BuildTT/Program.cs`, so an ordinary BuildTT
+run does not rebuild it. Uncomment those two lines when cutting a release, run BuildTT, then comment them back
+out. Leaving them enabled during development churns the four `efrpoco.zip` copies on every run, because
+`ZipArchive` stamps each entry with the current time.
+
+`SetVersions()` also stamps `source.extension.vsixmanifest` and `MyTemplate.vstemplate` from
+`BuildTT/version.txt`, and it rewrites the manifest **wholesale**. Never hand-edit that manifest and expect it
+to survive: put the change in `VersionSetter.UpdateVsixManifest` as well, or it is deleted the next time a
+release is cut. `AssemblyInfo.cs` is the one copy of the version `VersionSetter` does not own - bump it by hand.
+
+`pack.bat` used to build the zip with 7-Zip and was deleted: two mechanisms for one artefact, and the 7-Zip one
+needed a tool at a hard-coded path.
 
 ## Wiki documentation examples
 
@@ -148,6 +160,41 @@ any fixture that generates a sample.
 This exists because prose describing code drifts from the code. An audit found a documented setting that never
 existed, a helper method that never existed, three wrong defaults, and an example that does not compile on
 MySQL - all of it written by reading the source. Do not go back to hand-written examples.
+
+## Releasing
+
+Order matters at three points; the rest is ordinary.
+
+1. **Bump `BuildTT/version.txt`.** This is the source of truth.
+2. **Bump by hand the three copies `VersionSetter` does not own:**
+   - `Generator/Properties/AssemblyInfo.cs` - `AssemblyVersion` and `AssemblyFileVersion`
+   - `EntityFramework Reverse POCO Generator/Properties/AssemblyInfo.cs` - the same two
+   - `EntityFramework.Reverse.POCO.Generator/Northwind.tt` - its `// v` header. BuildTT writes `Database.tt`
+     but not this one.
+3. **Uncomment `SetVersions()`** in `BuildTT/Program.cs`.
+4. **Build BuildTT.** Not optional: `version.txt` is `CopyToOutputDirectory=Always`, so `BuildTT.exe` reads the
+   copy beside itself. Skip this and it stamps everything with the *previous* version and nothing complains.
+5. **Run `BuildTT/bin/Debug/BuildTT.exe`.** Regenerates `EF.Reverse.POCO.v4.ttinclude`, `Database.tt`,
+   `_File based templates`, `settings-metadata.v4.json` and `EfrpgVersion.cs`; stamps
+   `source.extension.vsixmanifest` and `MyTemplate.vstemplate`; rebuilds all four `efrpoco.zip` copies.
+6. **Re-comment `SetVersions()`** so day-to-day builds stop churning the zips.
+7. **Rebuild the solution.** Step 5 rewrote `EfrpgVersion.cs`, so until now `EF.Reverse.POCO.Generator.dll`
+   still carries the old version. The `.ttinclude` is already correct - BuildTT writes `EfrpgVersion.cs` before
+   it concatenates - but the compiled assembly is not.
+8. **Run the `*.tt` files, then the tests** (see Testing Patterns). Generated output feeds the tests, so the
+   order is not negotiable.
+9. **Build the VSIX in Release.** Output is
+   `EntityFramework Reverse POCO Generator\bin\Release\EntityFramework Reverse POCO Generator.vsix`.
+10. **Commit and tag**, then upload the `.vsix` to the marketplace.
+
+**Never change the extension identity.** `source.extension.vsixmanifest` carries
+`Id="EntityFramework_Reverse_POCO_Generator..d542a934-8bd6-4136-b490-5f0049d62033"` and the project's
+`<AssemblyName>` produces the `.vsix` filename. That identity is what makes an install *upgrade* rather than
+sit beside the extension users already have. Only the version changes.
+
+**A version already handed out is spent.** Visual Studio refuses to install a VSIX whose version matches one
+already installed - "this extension is already installed to all applicable products" - so a build shared with
+anyone, even informally, needs the next number rather than a rebuild.
 
 ## Testing Patterns
 
