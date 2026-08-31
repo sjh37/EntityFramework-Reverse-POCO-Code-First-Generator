@@ -197,7 +197,7 @@ De-risks the plumbing before any UI depends on it.
   - [x] Update: `dotnet tool update -g Efrpg`
   - [x] Surface stderr verbatim on failure - do not swallow it
 - [x] Unit test `EfrpgToolGate` against a fake process runner: missing, too old, current, no SDK, no network
-- [ ] Gate dialog with three choices: **Install/Update**, **Copy command**, **Continue anyway**
+- [x] Gate dialog with three choices: **Install/Update**, **Copy command**, **Continue anyway**
       (partly done: the wizard shows the problem and offers Continue anyway; Install/Update and Copy
       are still buttons to add)
 - [x] Always display the exact command next to the button
@@ -385,8 +385,8 @@ route the unit tests use.
 **This is the phase that addresses the acquisition collapse.** It needs no Roslyn at all. See
 [Sequencing](#sequencing) - if effort has to be cut, cut Phase 3, never this.
 
-- [ ] `ReversePocoWizard : Microsoft.VisualStudio.TemplateWizard.IWizard`
-- [ ] Wire it into `MyTemplate.vstemplate` via `<WizardExtension>` -
+- [x] `ReversePocoWizard : Microsoft.VisualStudio.TemplateWizard.IWizard`
+- [x] Wire it into `MyTemplate.vstemplate` via `<WizardExtension>` -
       **through `BuildTT/VersionSetter.cs:UpdateVstemplate`**, which also regenerates that file wholesale
 - [x] `RunStarted`: tool gate → connection dialog, then re-run the T4
 - [x] Shell out to `efrpg --secrets-stdin` for the schema (same binary and wire format the template uses)
@@ -400,7 +400,7 @@ route the unit tests use.
       revisited
 - [x] `throw new WizardBackoutException()` on cancel so VS cleans up the half-created item
 - [x] Reopen the dialog afterwards from the `.tt` file's right-click menu - **Reverse POCO: Settings...**
-- [ ] After a successful install, invoke the tool **by full path** for the wizard's own schema read, and
+- [x] After a successful install, invoke the tool **by full path** for the wizard's own schema read, and
       tell the user to restart Visual Studio before saving the `.tt`
 
 ### Email capture and first-run telemetry
