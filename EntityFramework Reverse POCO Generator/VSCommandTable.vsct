@@ -30,8 +30,17 @@
         <Parent guid="EfrpgCommandSet" id="ItemNodeGroup" />
         <CommandFlag>DynamicVisibility</CommandFlag>
         <Strings>
-          <ButtonText>Reverse POCO: Settings...</ButtonText>
+          <ButtonText>Reverse POCO: Connection...</ButtonText>
           <LocCanonicalName>.ReversePoco.ConfigureTemplate</LocCanonicalName>
+        </Strings>
+      </Button>
+
+      <Button guid="EfrpgCommandSet" id="SettingsEditorCommand" priority="0x0110" type="Button">
+        <Parent guid="EfrpgCommandSet" id="ItemNodeGroup" />
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <Strings>
+          <ButtonText>Reverse POCO: All settings...</ButtonText>
+          <LocCanonicalName>.ReversePoco.SettingsEditor</LocCanonicalName>
         </Strings>
       </Button>
 
@@ -61,6 +70,7 @@
     <GuidSymbol name="EfrpgCommandSet" value="{9c2e5b41-0d3a-4c7e-8f16-4a5d9e0b7c23}">
       <IDSymbol name="ItemNodeGroup" value="0x0001" />
       <IDSymbol name="ConfigureTemplateCommand" value="0x0100" />
+      <IDSymbol name="SettingsEditorCommand" value="0x0103" />
       <IDSymbol name="UpgradeToV4Command" value="0x0102" />
       <IDSymbol name="CheckEfrpgToolCommand" value="0x0101" />
     </GuidSymbol>

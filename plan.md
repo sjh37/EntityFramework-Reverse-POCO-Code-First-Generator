@@ -639,38 +639,68 @@ diff dialog.
 
 The Roslyn round-trip. Serves people who already bought.
 
-- [ ] `.vsct` command on `.tt` files, visible when the file includes **either** `EF.Reverse.POCO.v4.ttinclude`
+- [x] `.vsct` command on `.tt` files, visible when the file includes **either** `EF.Reverse.POCO.v4.ttinclude`
       **or** `EF.Reverse.POCO.v3.ttinclude` - the settings blocks are near-identical, and almost the whole
       installed base is still on v3
-- [ ] Detect the version from the `<#@ include file="..." #>` directive on line 1 and load the matching
+- [x] Detect the version from the `<#@ include file="..." #>` directive on line 1 and load the matching
       metadata file. **Version must be first-class, not inferred later**
-- [ ] **Do not hijack double-click or Open** - the paying base lives in the text editor and expects it
-- [ ] Parse: extract the text between the opening `<#` and its matching `#>`, wrap as `void M() { … }`,
-      `CSharpSyntaxTree.ParseText`
-- [ ] Walk for `ExpressionStatementSyntax` → `AssignmentExpressionSyntax` where the left is
-      `MemberAccessExpressionSyntax` on `Settings`
-- [ ] Classify the right-hand side:
-  - [ ] `LiteralExpressionSyntax` → editable (textbox / checkbox / number)
-  - [ ] `MemberAccessExpressionSyntax` on a known enum → dropdown, values from the Phase 0 metadata
-  - [ ] anything else (lambda, `new`, method call) → **read-only**, labelled
-        *"customised in code - edit in the editor"*
-- [ ] Show `FilterSettings.*.Add(...)` calls read-only
-- [ ] Write back by **replacing only `assignment.Right.Span`** in the original file text, offset by the
-      block's start position
-- [ ] Never re-render the syntax tree - that is what would eat comments, formatting and the T4 markers
+- [x] **Do not hijack double-click or Open** - the paying base lives in the text editor and expects it
+- [x] ~~Parse with `CSharpSyntaxTree.ParseText`~~ - **deviated, see below.** `StatementScanner` instead, the
+      same lexer BuildTT already uses on this exact file
+- [x] Find each `Settings.X = ...;` and record the span of its value
+- [x] Classify the right-hand side:
+  - [x] a literal → editable (textbox / checkbox / number / character)
+  - [x] a known enum member → dropdown, or a checklist for a flags setting, values from the Phase 0 metadata
+  - [x] anything else (lambda, `new`, method call, bare identifier) → **read-only**, labelled with why
+- [x] Show `FilterSettings.*.Add(...)` calls read-only
+- [x] Write back by **replacing only the value's span** in the original file text
+- [x] Never re-render the syntax tree - that is what would eat comments, formatting and the T4 markers
+
+### Roslyn was specified and was not used
+
+The plan called for `CSharpSyntaxTree.ParseText`. It is not there, deliberately.
+
+Roslyn would have to be loaded **in process by Visual Studio, which brings its own copy**, and
+`Efrpg.Gui.Core` cannot be exercised inside VS from any test here - so a binding conflict would surface only on
+a user's machine, which is exactly the class of failure this project has already paid for three times over
+(`RegisterWithCodebase`, `MergeWithCTO`, `DefaultInvisible`). The gain would have been small: the settings block
+is a flat list of one-per-line assignments, and `BuildTT/SettingsMetadata/StatementScanner.cs` already lexes it
+correctly - strings, verbatim strings, character literals, block comments, `//` inside a URL, brace depth - and
+has been doing so since Phase 0.
+
+That scanner now lives in `Efrpg.Gui.Core` and BuildTT compiles it **by link**, so there is one implementation
+and not two. The same lexer that decides what a setting *is* decides what the editor may rewrite.
+
+The seam is `TemplateSettingsDocument`. If Roslyn is ever wanted, that one class is what changes.
+
+### What makes it usable rather than just correct
+
+118 settings is a wall unless three things are true, and they drove the design:
+
+- **Search covers the help text, not just the name.** Nobody remembers `UseDataAnnotationsWithFluent`; they
+  remember roughly what it does. The search is also multi-term, so "context name" narrows.
+- **It opens on the section that matters.** Landing on `Settings` - connection string, context name, template
+  type - rather than an alphabetical list means the first screen is the one most people came for.
+- **Unusable settings are shown, not hidden.** A lambda, a `Path.Combine`, a commented-out line and a setting
+  the template never mentions each appear with their value and a one-line reason. Hiding them would send
+  somebody to the wiki looking for a setting that is already in their file.
 
 ### Round-trip tests (do these properly)
 
 This phase can silently destroy a paying customer's customisation. It deserves the paranoia applied to
 `WireContractTests`.
 
-- [ ] Fixtures: the real `Database.tt`, `Northwind.tt`, several `Tester.Integration.*` templates, **and a
-      v3 `Database.tt` taken from git history**
-- [ ] **Property: load, change one setting, save → the diff is exactly one line**
-- [ ] Load and save with no change → file is byte-for-byte identical
-- [ ] A template with a custom `Settings.ForeignKeyName` lambda survives untouched
-- [ ] A template with regex `FilterSettings` survives untouched
-- [ ] CRLF line endings preserved
+- [x] Fixtures: the real `Database.tt`, `Northwind.tt`, several `Tester.Integration.*` templates, **and a
+      v3 `Database.tt` taken from git history** - seven files, none written for this test
+- [x] **Property: load, change one setting, save → the diff is exactly one line**
+- [x] Load and save with no change → file is byte-for-byte identical
+- [x] A template with a custom `Settings.ForeignKeyName` lambda survives untouched
+- [x] A template with regex `FilterSettings` survives untouched
+- [x] CRLF line endings preserved, and an LF file stays LF
+
+The first two run as `[TestCaseSource]` over every fixture, so adding a template to the list adds it to both
+properties. The hand-written JSON reader is held to the same standard: both shipped metadata files are parsed
+with it **and** with `System.Text.Json`, and every value is compared.
 
 ---
 

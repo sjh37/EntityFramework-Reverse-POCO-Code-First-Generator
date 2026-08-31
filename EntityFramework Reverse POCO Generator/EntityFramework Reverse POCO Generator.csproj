@@ -129,6 +129,9 @@
     <Compile Include="CheckEfrpgToolCommand.cs" />
     <Compile Include="ConfigureTemplateCommand.cs" />
     <Compile Include="ConnectionDialog.cs" />
+    <Compile Include="SettingsEditorCommand.cs" />
+    <Compile Include="SettingsEditorDialog.cs" />
+    <Compile Include="SettingsMetadataFiles.cs" />
     <Compile Include="SolutionSelection.cs" />
     <Compile Include="TemplateFileUpdater.cs" />
     <Compile Include="UpgradePreviewDialog.cs" />

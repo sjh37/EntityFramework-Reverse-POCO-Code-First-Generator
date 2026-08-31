@@ -63,6 +63,38 @@ namespace Efrpg.Gui.Tests
                 "Generator.Tests.Unit", "WireContract", "EfrpgResult.xml"));
         }
 
+        /// <summary>The settings metadata for a template version, as shipped beside Database.tt.</summary>
+        public static string SettingsMetadata(string version)
+        {
+            return File.ReadAllText(Path.Combine(RepositoryRoot.Value,
+                "EntityFramework.Reverse.POCO.Generator", "settings-metadata." + version + ".json"));
+        }
+
+        /// <summary>
+        ///     Real .tt files from this repository, for the round-trip tests.
+        /// </summary>
+        /// <remarks>
+        ///     Deliberately varied: the shipped template, Northwind with its own filters, several tester
+        ///     templates that have been hand-edited over years, and a v3 file out of git history. The settings
+        ///     editor can silently destroy a paying customer's customisation, so it is tested against files
+        ///     nobody wrote for it.
+        /// </remarks>
+        public static IReadOnlyList<string> TemplateFixtures()
+        {
+            var paths = new[]
+            {
+                Path.Combine("EntityFramework.Reverse.POCO.Generator", "Database.tt"),
+                Path.Combine("EntityFramework.Reverse.POCO.Generator", "Northwind.tt"),
+                Path.Combine("Tester.Integration.EFCore10", "EfrpgTest.tt"),
+                Path.Combine("Tester.Integration.EFCore10", "Northwind.tt"),
+                Path.Combine("Tester.Integration.EFCore8", "EfrpgTest_no_pascal_casing.tt"),
+                Path.Combine("Tester.Integration.Ef6", "EfrpgTest.tt"),
+                Path.Combine("Efrpg.Gui.Core.Tests", "Fixtures", "Database.v3.14.1.tt")
+            };
+
+            return paths.Select(p => Path.Combine(RepositoryRoot.Value, p)).Where(File.Exists).ToList();
+        }
+
         /// <summary>
         ///     The members of one enum setting, in declaration order, as recorded by BuildTT's reflection over
         ///     Efrpg.Settings.

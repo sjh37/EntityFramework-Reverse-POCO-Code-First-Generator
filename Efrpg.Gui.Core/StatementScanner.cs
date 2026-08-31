@@ -1,4 +1,4 @@
-namespace BuildTT.SettingsMetadata
+namespace Efrpg.Gui
 {
     /// <summary>
     ///     Walks C# source one line at a time, tracking string, character and comment state, so that a statement's
@@ -11,6 +11,10 @@ namespace BuildTT.SettingsMetadata
     ///     example code, and those blocks contain braces and quotes that do not balance, so brace depth is only
     ///     meaningful if comments are skipped properly. Getting this wrong does not fail loudly - it silently drops
     ///     or mangles a setting - which is why it is a scanner rather than a regex.
+    ///
+    ///     Lives here rather than in BuildTT because both need it and neither may have its own copy: BuildTT reads
+    ///     the settings to emit the metadata, and the settings editor reads the same shapes out of a customer's .tt
+    ///     to decide what it may safely rewrite. BuildTT compiles this same file by link.
     /// </remarks>
     public class StatementScanner
     {

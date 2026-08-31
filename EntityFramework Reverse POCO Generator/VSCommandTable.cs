@@ -18,5 +18,6 @@ namespace EntityFramework_Reverse_POCO_Generator
         public const int ConfigureTemplateCommand = 0x0100;
         public const int CheckEfrpgToolCommand    = 0x0101;
         public const int UpgradeToV4Command       = 0x0102;
+        public const int SettingsEditorCommand    = 0x0103;
     }
 }
