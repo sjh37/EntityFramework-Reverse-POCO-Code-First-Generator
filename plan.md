@@ -388,17 +388,38 @@ route the unit tests use.
 - [ ] `ReversePocoWizard : Microsoft.VisualStudio.TemplateWizard.IWizard`
 - [ ] Wire it into `MyTemplate.vstemplate` via `<WizardExtension>` -
       **through `BuildTT/VersionSetter.cs:UpdateVstemplate`**, which also regenerates that file wholesale
-- [ ] `RunStarted`: tool gate → connection dialog → test connection
+- [x] `RunStarted`: tool gate → connection dialog (test connection still to do)
 - [ ] Shell out to `efrpg --secrets-stdin` for the schema (same binary and wire format the template uses)
 - [ ] Checkbox tree: tables, views, stored procedures
-- [ ] Fields: DbContext name, namespace, EF version, database type
-- [ ] Write answers into `replacementsDictionary`
-- [ ] Flip `ReplaceParameters` to `true` for `Database.tt` in the vstemplate
-- [ ] Unit test asserting `Database.tt` contains **zero `$` characters** - true today, and what makes token
-      substitution safe; the test stops that silently changing
-- [ ] `throw new WizardBackoutException()` on cancel so VS cleans up the half-created item
+- [ ] Fields: DbContext name (done), namespace, EF version, database type
+- [x] Write the answers into the generated `.tt` - see below, this is *not* `replacementsDictionary`
+- [x] ~~Flip `ReplaceParameters` to `true`~~ - deliberately not done, see below
+- [x] `Database.tt` confirmed to contain **zero `$` characters**, so it stays token-safe if this is ever
+      revisited
+- [x] `throw new WizardBackoutException()` on cancel so VS cleans up the half-created item
 - [ ] After a successful install, invoke the tool **by full path** for the wizard's own schema read, and
       tell the user to restart Visual Studio before saving the `.tt`
+
+### The answers are written into the .tt, not substituted as tokens
+
+The plan called for `ReplaceParameters="true"` and `$token$` substitution. That is not what was built, and
+deliberately so: `EntityFramework.Reverse.POCO.Generator/Database.tt` is itself executed in this repository -
+there is a `Database.cs` beside it - so putting tokens in the master would break it, and generating a second
+tokenised copy for the zip would be exactly the parallel-copy problem avoided everywhere else here.
+
+Instead `ProjectItemFinishedGenerating` records the path of the added `.tt` and `RunFinished` rewrites it
+through `TemplateSettingWriter`. That also reuses the anchored-edit approach Phase 3 needs, rather than
+inventing a second mechanism that Phase 3 would then replace.
+
+`TemplateSettingWriter` lives in `Efrpg.Gui.Core` and is unit tested, including **against the real shipped
+`Database.tt`** rather than only a fixture - so if BuildTT ever changes how those settings are emitted, the
+tests fail before a user meets a mangled template. It refuses anything that is not a single-line string
+literal: a commented-out setting means "not this one", and an enum or an expression would be turned into
+something that does not compile. Backslashes are escaped, because `Data Source=.\SQLEXPRESS` is the common case
+and an unescaped one produces a `.tt` that fails far from where it was written.
+
+Skipping the dialog is always allowed. The template with the placeholder still in it is a working starting
+point, and a wizard that will not let you out is worse than one that asks nothing.
 
 **The PATH trap.** VS caches its environment at launch, so a tool installed by the wizard is not on the PATH
 that `EfrpgToolRunner` uses - it calls `new ProcessStartInfo("efrpg", …)` and relies on PATH resolution.

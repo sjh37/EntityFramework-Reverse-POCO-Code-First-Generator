@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading;
 using EnvDTE;
 using Efrpg.Gui;
@@ -43,6 +44,81 @@ namespace EntityFramework_Reverse_POCO_Generator
 
             if (!Continue(gate, status))
                 throw new WizardBackoutException("The efrpg tool is not ready, so the template was not added.");
+
+            Ask(SuggestedDbContextName(replacementsDictionary));
+        }
+
+        /// <summary>
+        ///     Turns the name the user typed in Add - New Item into a DbContext name: "Northwind.tt" becomes
+        ///     "NorthwindDbContext". Falls back to the template's own default when there is nothing useful to use.
+        /// </summary>
+        private static string SuggestedDbContextName(IDictionary<string, string> replacements)
+        {
+            string safeName;
+            if (replacements == null || !replacements.TryGetValue("$safeitemname$", out safeName) || string.IsNullOrEmpty(safeName))
+                return "MyDbContext";
+
+            return safeName.EndsWith("DbContext", StringComparison.OrdinalIgnoreCase) ? safeName : safeName + "DbContext";
+        }
+
+        /// <summary>
+        ///     What the shipped template carries, so the user edits a database name rather than composing a
+        ///     connection string from nothing.
+        /// </summary>
+        private const string DefaultConnectionString =
+            "Data Source=(local);Initial Catalog=" + TemplateSettingWriter.Placeholder +
+            ";Integrated Security=True;MultipleActiveResultSets=True;Encrypt=false;TrustServerCertificate=true";
+
+        private string _templatePath;
+        private string _connectionString;
+        private string _dbContextName;
+
+        /// <summary>
+        ///     Asks for the connection string and DbContext name. Skipping is always allowed: the template is a
+        ///     perfectly good starting point with the placeholder still in it, and a wizard that will not let you
+        ///     out is worse than one that asks nothing.
+        /// </summary>
+        private void Ask(string suggestedDbContextName)
+        {
+            var dialog = new ConnectionDialog(DefaultConnectionString, suggestedDbContextName);
+            dialog.ShowModal();
+
+            if (!dialog.Confirmed)
+                return;
+
+            _connectionString = dialog.ConnectionString;
+            _dbContextName    = dialog.DbContextName;
+        }
+
+        /// <summary>
+        ///     Writes the answers into the .tt on disk, one line each, leaving everything else byte for byte as it
+        ///     was. Failing here must never break adding the file: the user still has a working template, just one
+        ///     they have to edit themselves.
+        /// </summary>
+        private void ApplyAnswers()
+        {
+            if (_templatePath == null || _connectionString == null || !File.Exists(_templatePath))
+                return;
+
+            try
+            {
+                var writer = new TemplateSettingWriter(File.ReadAllText(_templatePath));
+
+                writer.TrySetString("ConnectionString", _connectionString);
+
+                if (!string.IsNullOrEmpty(_dbContextName))
+                {
+                    writer.TrySetString("DbContextName", _dbContextName);
+                    writer.TrySetString("ConnectionStringName", _dbContextName);
+                }
+
+                File.WriteAllText(_templatePath, writer.Text);
+            }
+            catch (Exception)
+            {
+                // A read-only file, a virus scanner holding a lock, anything. The template is already added and
+                // usable; interrupting the user now would be worse than leaving them to edit one line.
+            }
         }
 
         private static EfrpgToolGate Gate()
@@ -78,8 +154,24 @@ namespace EntityFramework_Reverse_POCO_Generator
         {
         }
 
+        /// <summary>
+        ///     The .tt now exists on disk, so this is the first moment the answers can be written into it.
+        /// </summary>
         public void ProjectItemFinishedGenerating(ProjectItem projectItem)
         {
+            if (projectItem == null)
+                return;
+
+            try
+            {
+                var path = projectItem.FileNames[1];
+                if (path != null && path.EndsWith(".tt", StringComparison.OrdinalIgnoreCase))
+                    _templatePath = path;
+            }
+            catch (Exception)
+            {
+                // FileNames throws for item kinds that have no path. Nothing to write to, nothing to report.
+            }
         }
 
         public void BeforeOpeningFile(ProjectItem projectItem)
@@ -88,6 +180,7 @@ namespace EntityFramework_Reverse_POCO_Generator
 
         public void RunFinished()
         {
+            ApplyAnswers();
         }
 
         /// <summary>
