@@ -18,6 +18,13 @@ namespace EntityFramework_Reverse_POCO_Generator
     [Command(PackageGuids.EfrpgCommandSetString, PackageIds.CheckEfrpgToolCommand)]
     internal sealed class CheckEfrpgToolCommand : BaseCommand<CheckEfrpgToolCommand>
     {
+        protected override void BeforeQueryStatus(System.EventArgs e)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
+            Command.Visible = SolutionSelection.IsTemplate();
+        }
+
         protected override async Task ExecuteAsync(OleMenuCmdEventArgs e)
         {
             var gate   = new EfrpgToolGate(new ProcessRunner());

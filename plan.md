@@ -398,8 +398,34 @@ route the unit tests use.
 - [x] `Database.tt` confirmed to contain **zero `$` characters**, so it stays token-safe if this is ever
       revisited
 - [x] `throw new WizardBackoutException()` on cancel so VS cleans up the half-created item
+- [x] Reopen the dialog afterwards from the `.tt` file's right-click menu - **Reverse POCO: Settings...**
 - [ ] After a successful install, invoke the tool **by full path** for the wizard's own schema read, and
       tell the user to restart Visual Studio before saving the `.tt`
+
+### Email capture and first-run telemetry
+
+**The wizard is the only place in the product where a new user can be reached.** Lifetime, 2,582 website
+accounts have produced 653 paying customers - **25.3%** - but in the 91 days to 31 August 2026 there were
+1,523 downloads and **6 registrations**. The trial is not registration-gated (the 10-table limit is enforced
+in the generated code, not by a licence file anyone has to come and fetch), so roughly 1,500 leads a quarter
+are discarded: no email, no follow-up, no idea they existed.
+
+- [ ] Optional email capture step - honest framing, e.g. *"Get a trial licence key and release notes"*
+- [ ] Never block generation on it. A skipped email must not degrade the wizard
+- [ ] Post to the ReversePOCO site so the address lands in the same funnel as a registration
+- [ ] First-run telemetry, opt-out, no connection strings and no schema:
+  - [ ] wizard started
+  - [ ] connection test succeeded / failed (with the dialect, not the connection string)
+  - [ ] tool gate outcome - already present, installed by us, declined
+  - [ ] wizard completed and a `.tt` written
+- [ ] Publish what is collected, and honour a decline permanently
+
+**Without this the wizard improves the experience but tells you nothing about whether it worked.** Installs,
+first-run completions and connection successes are the three numbers that would say whether the acquisition
+problem is being fixed, and none of them exist today.
+
+**Also fix outside this plan:** `AspNetUsers.CreatedAtUtc` is NULL for 2,576 of 2,582 rows, so registration
+history cannot be measured at all before mid-2026.
 
 ### The answers are written into the .tt, not substituted as tokens
 
@@ -409,10 +435,10 @@ there is a `Database.cs` beside it - so putting tokens in the master would break
 tokenised copy for the zip would be exactly the parallel-copy problem avoided everywhere else here.
 
 Instead `ProjectItemFinishedGenerating` records the path of the added `.tt` and `RunFinished` rewrites it
-through `TemplateSettingWriter`. That also reuses the anchored-edit approach Phase 3 needs, rather than
+through `TemplateSettingsFile`. That also reuses the anchored-edit approach Phase 3 needs, rather than
 inventing a second mechanism that Phase 3 would then replace.
 
-`TemplateSettingWriter` lives in `Efrpg.Gui.Core` and is unit tested, including **against the real shipped
+`TemplateSettingsFile` lives in `Efrpg.Gui.Core` and is unit tested, including **against the real shipped
 `Database.tt`** rather than only a fixture - so if BuildTT ever changes how those settings are emitted, the
 tests fail before a user meets a mangled template. It refuses anything that is not a single-line string
 literal or a single-line `Type.Member` enum assignment. Everything else is refused rather than mangled: a
@@ -451,11 +477,37 @@ dropdown fails the build rather than quietly going missing from the UI.
 custom tool immediately - well before `RunFinished` - so the first generated `.cs` is always the efrpg tool's
 *"the connection string still contains \*\*TODO\*\*"* error. Writing the real connection string afterwards fixes
 the `.tt` but leaves that error sitting in the generated output, which is exactly the confusing first impression
-the wizard exists to remove. `ProjectItemFinishedGenerating` therefore keeps the `ProjectItem`, and after the
-file is written `VSProjectItem.RunCustomTool()` regenerates it.
+the wizard exists to remove. Re-running rather than suppressing the first pass: there is no supported way to
+stop the custom tool firing on add, and a second pass is cheap next to the schema read it performs.
 
-Re-running rather than suppressing the first pass: there is no supported way to stop the custom tool firing on
-add, and a second pass is cheap next to the schema read it performs.
+**Re-running has to go through the editor buffer, not the file on disk.** `TemplateFileUpdater` is the whole
+answer and the reason it exists. The T4 custom tool is an `IVsSingleFileGenerator`, and Visual Studio hands it
+the contents of the **editor buffer**, not the file. Visual Studio opens the `.tt` as soon as it is added, so
+writing straight to disk and calling `VSProjectItem.RunCustomTool()` regenerates from the stale text the buffer
+still holds - the `.tt` on disk is correct and the generated `.cs` still carries the placeholder error, which
+looks exactly like the file never having been written. That was shipped in 4.0.6 and 4.0.8 and is fixed in
+4.0.9.
+
+So: when the document is open, replace the buffer and `Document.Save()`. The save runs the generator by itself,
+and it is the same path the user takes by hand, which is the one Visual Studio supports best. Only when the
+document is *not* open is the file written directly, and then `RunCustomTool` is asked to run - falling back to
+reassigning the `CustomTool` property, because `VSProjectItem` is not available in every project system.
+
+### The dialog is reachable again after the file exists
+
+The wizard runs once. Somebody who pressed Skip, mistyped a database name, or wants to point the same template
+at a different server had no route back to it at all - the only option was to find the right line in the `.tt`
+by hand, which is the thing the GUI exists to avoid. **Reverse POCO: Settings...** on the `.tt` file's
+right-click menu opens the same dialog on what the file already says.
+
+That is why `TemplateSettingsFile` reads as well as writes, and why `TemplateConfiguration` lives in
+`Efrpg.Gui.Core` rather than in the dialog: reading the current values first is what stops OK replacing a
+user's own connection string with the SQL Server default. `TemplateConfigurationTests` asserts that reading a
+template and writing it straight back leaves it **byte for byte identical**.
+
+Both commands are `DynamicVisibility` + `DefaultInvisible` and their `BeforeQueryStatus` shows them only for a
+`.tt`. The group is parented to `IDM_VS_CTXT_ITEMNODE`, which Visual Studio draws for *every* file in the
+solution, so without that they would clutter the right-click menu of every file in every project.
 
 **The PATH trap.** VS caches its environment at launch, so a tool installed by the wizard is not on the PATH
 that `EfrpgToolRunner` uses - it calls `new ProcessStartInfo("efrpg", …)` and relies on PATH resolution.

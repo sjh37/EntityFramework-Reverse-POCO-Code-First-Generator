@@ -39,7 +39,7 @@ namespace Efrpg.Gui
         public string DisplayName { get; }
 
         /// <summary>
-        ///     A connection string with <see cref="TemplateSettingWriter.Placeholder"/> wherever the user has to
+        ///     A connection string with <see cref="TemplateSettingsFile.Placeholder"/> wherever the user has to
         ///     supply something. Every placeholder must be replaced before the dialog will let them continue.
         /// </summary>
         public string ConnectionString { get; }
@@ -47,7 +47,7 @@ namespace Efrpg.Gui
         /// <summary>One line under the connection box saying what the placeholders stand for.</summary>
         public string Hint { get; }
 
-        private const string Todo = TemplateSettingWriter.Placeholder;
+        private const string Todo = TemplateSettingsFile.Placeholder;
 
         /// <summary>
         ///     In the order the dropdown shows them: SQL Server first because it is what most users of this

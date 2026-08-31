@@ -127,7 +127,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CheckEfrpgToolCommand.cs" />
+    <Compile Include="ConfigureTemplateCommand.cs" />
     <Compile Include="ConnectionDialog.cs" />
+    <Compile Include="SolutionSelection.cs" />
+    <Compile Include="TemplateFileUpdater.cs" />
     <Compile Include="EfrpgPackage.cs" />
     <Compile Include="VSCommandTable.cs" />
     <Compile Include="EfrpgToolGateDialog.cs" />

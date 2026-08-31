@@ -39,13 +39,13 @@ namespace Efrpg.Gui.Tests
         [TestCaseSource(nameof(AllTargets))]
         public void EveryDefaultConnectionStringAsksForSomething(DatabaseTarget target)
         {
-            Assert.That(target.ConnectionString, Does.Contain(TemplateSettingWriter.Placeholder));
+            Assert.That(target.ConnectionString, Does.Contain(TemplateSettingsFile.Placeholder));
         }
 
         [TestCaseSource(nameof(AllTargets))]
         public void EveryTargetExplainsWhatToReplace(DatabaseTarget target)
         {
-            Assert.That(target.Hint, Does.Contain(TemplateSettingWriter.Placeholder));
+            Assert.That(target.Hint, Does.Contain(TemplateSettingsFile.Placeholder));
             Assert.That(target.DisplayName, Is.Not.Empty);
         }
 
@@ -69,7 +69,7 @@ namespace Efrpg.Gui.Tests
         [Test]
         public void IsUntouchedDefault_IsFalseOnceTheUserHasFilledThePlaceholderIn()
         {
-            var edited = DatabaseTarget.Default.ConnectionString.Replace(TemplateSettingWriter.Placeholder, "Northwind");
+            var edited = DatabaseTarget.Default.ConnectionString.Replace(TemplateSettingsFile.Placeholder, "Northwind");
 
             Assert.That(DatabaseTarget.IsUntouchedDefault(edited), Is.False);
         }

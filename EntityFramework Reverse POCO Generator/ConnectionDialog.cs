@@ -8,9 +8,8 @@ using Microsoft.VisualStudio.PlatformUI;
 namespace EntityFramework_Reverse_POCO_Generator
 {
     /// <summary>
-    ///     Asks for the database type, the template flavour, the connection string and the DbContext name when a
-    ///     template is first added, so the file the user ends up with is ready to save rather than carrying a
-    ///     placeholder they have to find and edit.
+    ///     Asks for the database type, the template flavour, the connection string and the DbContext name - when a
+    ///     template is first added, and again afterwards from the .tt file's right-click menu.
     /// </summary>
     /// <remarks>
     ///     This is the piece the whole GUI exists for. A newcomer today gets a .tt containing
@@ -36,39 +35,67 @@ namespace EntityFramework_Reverse_POCO_Generator
         private readonly TextBlock _templateHint;
         private readonly TextBlock _validation;
         private readonly Button _ok;
+        private readonly bool _isNewTemplate;
 
-        public string ConnectionString => _connectionString.Text.Trim();
+        /// <summary>The answers, valid once <see cref="Confirmed"/> is true.</summary>
+        public TemplateConfiguration Result
+        {
+            get
+            {
+                return new TemplateConfiguration(SelectedDatabase, SelectedTemplate,
+                    _connectionString.Text.Trim(), _dbContextName.Text.Trim());
+            }
+        }
 
-        public string DbContextName => _dbContextName.Text.Trim();
+        private DatabaseTarget SelectedDatabase => (DatabaseTarget) _database.SelectedItem;
 
-        public DatabaseTarget SelectedDatabase => (DatabaseTarget) _database.SelectedItem;
-
-        public TemplateTarget SelectedTemplate => (TemplateTarget) _template.SelectedItem;
+        private TemplateTarget SelectedTemplate => (TemplateTarget) _template.SelectedItem;
 
         /// <summary>
-        ///     True when the user pressed OK. On false the caller leaves the template exactly as the item template
-        ///     produced it, placeholder and all, which is still a working starting point.
+        ///     True when the user pressed OK. On false the caller leaves the .tt exactly as it found it, which for a
+        ///     new template means the placeholder is still there - a working starting point.
         /// </summary>
         public bool Confirmed { get; private set; }
 
-        public ConnectionDialog(string suggestedDbContextName)
+        /// <summary>
+        ///     Opens showing <paramref name="current"/>, which for an existing .tt is what that file already says.
+        /// </summary>
+        /// <remarks>
+        ///     Starting from the file's own values is not a nicety. A user reopening this to change one field would
+        ///     otherwise press OK and have their connection string replaced by the SQL Server default.
+        /// </remarks>
+        public ConnectionDialog(TemplateConfiguration current, bool isNewTemplate)
         {
+            if (current == null)
+                throw new ArgumentNullException(nameof(current));
+
+            _isNewTemplate = isNewTemplate;
+
             Title                 = "EntityFramework Reverse POCO Generator";
             Width                 = 680;
+            MinWidth              = 520;
             SizeToContent         = SizeToContent.Height;
-            ResizeMode            = ResizeMode.NoResize;
+
+            // Widening is worth allowing: connection strings are long, and the box wraps rather than scrolls.
+            // Height stays tied to the content, so there is never dead space below the buttons.
+            ResizeMode            = ResizeMode.CanResize;
             WindowStartupLocation = WindowStartupLocation.CenterOwner;
             HasMaximizeButton     = false;
             HasMinimizeButton     = false;
 
-            _database         = new ComboBox { ItemsSource = DatabaseTarget.All, SelectedItem = DatabaseTarget.Default, Padding = new Thickness(6, 4, 6, 4) };
-            _template         = new ComboBox { ItemsSource = TemplateTarget.All, SelectedItem = TemplateTarget.Default, Padding = new Thickness(6, 4, 6, 4) };
-            _connectionString = new TextBox { Text = DatabaseTarget.Default.ConnectionString, FontFamily = new FontFamily("Consolas"), Padding = new Thickness(6, 4, 6, 4), TextWrapping = TextWrapping.Wrap };
-            _dbContextName    = new TextBox { Text = suggestedDbContextName, Padding = new Thickness(6, 4, 6, 4) };
-            _connectionHint   = Hint(DatabaseTarget.Default.Hint);
+            _database         = new ComboBox { ItemsSource = DatabaseTarget.All, SelectedItem = current.Database, Padding = new Thickness(6, 4, 6, 4) };
+            _template         = new ComboBox { ItemsSource = TemplateTarget.All, SelectedItem = current.Template, Padding = new Thickness(6, 4, 6, 4) };
+            _connectionString = new TextBox { Text = current.ConnectionString, FontFamily = new FontFamily("Consolas"), Padding = new Thickness(6, 4, 6, 4), TextWrapping = TextWrapping.Wrap };
+            _dbContextName    = new TextBox { Text = current.DbContextName, Padding = new Thickness(6, 4, 6, 4) };
+            _connectionHint   = Hint(current.Database.Hint);
             _templateHint     = Hint(string.Empty);
-            _validation       = new TextBlock { TextWrapping = TextWrapping.Wrap, Margin = new Thickness(0, 0, 0, 10), Foreground = Brushes.OrangeRed };
+            _validation       = new TextBlock { TextWrapping = TextWrapping.Wrap, Margin = new Thickness(0, 0, 0, 10) };
             _ok               = new Button { Content = "OK", MinWidth = 90, Margin = new Thickness(0, 0, 8, 0), Padding = new Thickness(10, 4, 10, 4), IsDefault = true };
+
+            // A literal colour would be wrong in two of the three Visual Studio themes. The resource reference
+            // re-resolves when the user switches theme with the dialog open, which FindResource would not.
+            _validation.SetResourceReference(TextBlock.ForegroundProperty,
+                EnvironmentColors.ToolWindowValidationErrorTextBrushKey);
 
             _database.SelectionChanged    += (s, e) => DatabaseChanged();
             _template.SelectionChanged    += (s, e) => TemplateChanged();
@@ -89,6 +116,7 @@ namespace EntityFramework_Reverse_POCO_Generator
         ///     almost always the first thing a non-SQL-Server user does - the box is still pristine at that point,
         ///     so the swap happens exactly when it is wanted. Someone who fills in a SQL Server connection string
         ///     and then switches to Oracle keeps their text and has to rewrite it, which at least loses no work.
+        ///     Reopening the dialog on a configured template never swaps at all, for the same reason.
         /// </remarks>
         private void DatabaseChanged()
         {
@@ -104,8 +132,8 @@ namespace EntityFramework_Reverse_POCO_Generator
         }
 
         /// <summary>
-        ///     The file based templates read mustache files from Settings.TemplateFolder, which this wizard does not
-        ///     set, so say so here rather than letting the first save fail.
+        ///     The file based templates read mustache files from Settings.TemplateFolder, which this dialog does not
+        ///     set, so say so here rather than letting the next save fail.
         /// </summary>
         private void TemplateChanged()
         {
@@ -120,17 +148,25 @@ namespace EntityFramework_Reverse_POCO_Generator
 
         private UIElement Build()
         {
-            var skip = new Button { Content = "_Skip", MinWidth = 90, Padding = new Thickness(10, 4, 10, 4), IsCancel = true };
-            skip.Click += (s, e) => { Confirmed = false; DialogResult = false; Close(); };
+            var cancel = new Button
+            {
+                Content = _isNewTemplate ? "_Skip" : "_Cancel",
+                MinWidth = 90,
+                Padding = new Thickness(10, 4, 10, 4),
+                IsCancel = true
+            };
+            cancel.Click += (s, e) => { Confirmed = false; DialogResult = false; Close(); };
 
             var buttons = new StackPanel { Orientation = Orientation.Horizontal, HorizontalAlignment = HorizontalAlignment.Right };
             buttons.Children.Add(_ok);
-            buttons.Children.Add(skip);
+            buttons.Children.Add(cancel);
 
             var body = new StackPanel { Margin = new Thickness(16) };
             body.Children.Add(new TextBlock
             {
-                Text = "Point the template at your database. You can change any of this later by editing the .tt file.",
+                Text = _isNewTemplate
+                    ? "Point the template at your database. You can change any of this later by editing the .tt file, or by right-clicking it."
+                    : "Changing any of these rewrites that one line of the .tt and regenerates the output. Everything else in the file is left alone.",
                 TextWrapping = TextWrapping.Wrap,
                 Margin = new Thickness(0, 0, 0, 14)
             });
@@ -198,10 +234,11 @@ namespace EntityFramework_Reverse_POCO_Generator
         private void Validate()
         {
             var stillPlaceholder = _connectionString.Text.IndexOf(
-                TemplateSettingWriter.Placeholder, StringComparison.Ordinal) >= 0;
+                TemplateSettingsFile.Placeholder, StringComparison.Ordinal) >= 0;
 
             _validation.Text = stillPlaceholder
-                ? "Replace every " + TemplateSettingWriter.Placeholder + " above, or press Skip to edit the .tt yourself."
+                ? "Replace every " + TemplateSettingsFile.Placeholder + " above" +
+                  (_isNewTemplate ? ", or press Skip to edit the .tt yourself." : ".")
                 : string.Empty;
 
             _ok.IsEnabled = !stillPlaceholder && _connectionString.Text.Trim().Length > 0;

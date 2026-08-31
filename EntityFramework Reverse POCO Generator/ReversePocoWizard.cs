@@ -6,7 +6,6 @@ using EnvDTE;
 using Efrpg.Gui;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.TemplateWizard;
-using VSLangProj;
 
 namespace EntityFramework_Reverse_POCO_Generator
 {
@@ -62,10 +61,7 @@ namespace EntityFramework_Reverse_POCO_Generator
 
         private ProjectItem _templateItem;
         private string _templatePath;
-        private string _connectionString;
-        private string _dbContextName;
-        private DatabaseTarget _database;
-        private TemplateTarget _template;
+        private TemplateConfiguration _answers;
 
         /// <summary>
         ///     Asks which database and template to target, for a connection string and for a DbContext name.
@@ -74,57 +70,39 @@ namespace EntityFramework_Reverse_POCO_Generator
         /// </summary>
         private void Ask(string suggestedDbContextName)
         {
-            var dialog = new ConnectionDialog(suggestedDbContextName);
+            var dialog = new ConnectionDialog(TemplateConfiguration.ForNewTemplate(suggestedDbContextName), true);
             dialog.ShowModal();
 
-            if (!dialog.Confirmed)
-                return;
-
-            _connectionString = dialog.ConnectionString;
-            _dbContextName    = dialog.DbContextName;
-            _database         = dialog.SelectedDatabase;
-            _template         = dialog.SelectedTemplate;
+            if (dialog.Confirmed)
+                _answers = dialog.Result;
         }
 
         /// <summary>
-        ///     Writes the answers into the .tt on disk, one line each, leaving everything else byte for byte as it
-        ///     was. Failing here must never break adding the file: the user still has a working template, just one
-        ///     they have to edit themselves.
+        ///     Writes the answers into the .tt, one line each, leaving everything else byte for byte as it was, and
+        ///     regenerates.
         /// </summary>
+        /// <remarks>
+        ///     Adding a .tt fires its custom tool immediately, well before this runs, so the output sitting beside
+        ///     the file at this point is always the efrpg tool's "the connection string still contains **TODO**"
+        ///     error. Regenerating is therefore part of applying the answers, not an optional extra - see
+        ///     <see cref="TemplateFileUpdater"/> for why it has to go through the editor.
+        ///
+        ///     Failing here must never break adding the file: the user still has a working template, just one they
+        ///     have to save themselves.
+        /// </remarks>
         private void ApplyAnswers()
         {
             ThreadHelper.ThrowIfNotOnUIThread();
 
-            if (_templatePath == null || _connectionString == null || !File.Exists(_templatePath))
+            if (_templatePath == null || _answers == null || !File.Exists(_templatePath))
                 return;
 
             try
             {
-                var writer = new TemplateSettingWriter(File.ReadAllText(_templatePath));
+                var settings = new TemplateSettingsFile(File.ReadAllText(_templatePath));
+                string error;
 
-                writer.TrySetString("ConnectionString", _connectionString);
-
-                if (_database != null)
-                    writer.TrySetEnum("DatabaseType", _database.Name);
-
-                // GeneratorType is written alongside TemplateType, never on its own. The generator keeps the two
-                // independent, so an Ef6 template left with the default EfCore generator produces code that does
-                // not compile - and the user would meet that as a build error a long way from this dialog.
-                if (_template != null)
-                {
-                    writer.TrySetEnum("TemplateType", _template.Name);
-                    writer.TrySetEnum("GeneratorType", _template.GeneratorTypeName);
-                }
-
-                if (!string.IsNullOrEmpty(_dbContextName))
-                {
-                    writer.TrySetString("DbContextName", _dbContextName);
-                    writer.TrySetString("ConnectionStringName", _dbContextName);
-                }
-
-                File.WriteAllText(_templatePath, writer.Text);
-
-                Regenerate();
+                TemplateFileUpdater.Apply(_templateItem, _templatePath, _answers.ApplyTo(settings), out error);
             }
             catch (Exception)
             {
@@ -202,37 +180,6 @@ namespace EntityFramework_Reverse_POCO_Generator
             ThreadHelper.ThrowIfNotOnUIThread();
 
             ApplyAnswers();
-        }
-
-        /// <summary>
-        ///     Runs the T4 again, because Visual Studio already ran it once - on the template as unpacked, with the
-        ///     placeholder still in the connection string.
-        /// </summary>
-        /// <remarks>
-        ///     Adding a .tt to a project fires its custom tool immediately, well before RunFinished, so the first
-        ///     generated output is always the efrpg tool's "the connection string still contains **TODO**" error.
-        ///     Writing the real connection string afterwards fixes the .tt but leaves that error sitting in the
-        ///     generated .cs, which is exactly the confusing first impression this wizard exists to remove.
-        ///
-        ///     Re-running is done rather than trying to suppress the first pass: there is no supported way to stop
-        ///     the custom tool firing on add, and a second pass is cheap next to the schema read it performs.
-        /// </remarks>
-        private void Regenerate()
-        {
-            ThreadHelper.ThrowIfNotOnUIThread();
-
-            try
-            {
-                var vsProjectItem = _templateItem.Object as VSProjectItem;
-                if (vsProjectItem != null)
-                    vsProjectItem.RunCustomTool();
-            }
-            catch (Exception)
-            {
-                // The project system may not expose RunCustomTool, or the tool may fail for reasons of its own -
-                // an unreachable database being the obvious one. The .tt is correct either way, and saving it
-                // regenerates. Interrupting the user here would be worse than leaving them one keystroke.
-            }
         }
 
         /// <summary>

@@ -15,6 +15,7 @@ namespace EntityFramework_Reverse_POCO_Generator
 
     internal static class PackageIds
     {
-        public const int CheckEfrpgToolCommand = 0x0100;
+        public const int ConfigureTemplateCommand = 0x0100;
+        public const int CheckEfrpgToolCommand    = 0x0101;
     }
 }

@@ -14,7 +14,7 @@ namespace Efrpg.Gui.Tests
     ///     these settings differently, this fails and the wizard is fixed before a user meets a mangled template.
     /// </remarks>
     [TestFixture]
-    public class TemplateSettingWriterRealTemplateTests
+    public class TemplateSettingsFileRealTemplateTests
     {
         private static string ShippedTemplate()
         {
@@ -24,7 +24,7 @@ namespace Efrpg.Gui.Tests
         [Test]
         public void TheShippedTemplateIsUnconfigured()
         {
-            Assert.That(new TemplateSettingWriter(ShippedTemplate()).IsUnconfigured, Is.True,
+            Assert.That(new TemplateSettingsFile(ShippedTemplate()).IsUnconfigured, Is.True,
                 "A freshly generated Database.tt must still carry the placeholder, or the wizard has nothing to detect.");
         }
 
@@ -37,7 +37,7 @@ namespace Efrpg.Gui.Tests
         [TestCase("DbContextName")]
         public void TheWizardCanWrite(string settingName)
         {
-            var writer = new TemplateSettingWriter(ShippedTemplate());
+            var writer = new TemplateSettingsFile(ShippedTemplate());
 
             Assert.That(writer.TrySetString(settingName, "WizardWroteThis"), Is.True,
                 "Settings." + settingName + " is not a single-line string assignment in the shipped Database.tt any " +
@@ -49,7 +49,7 @@ namespace Efrpg.Gui.Tests
         [TestCase("GeneratorType", "Ef6")]
         public void TheWizardCanWriteTheEnums(string settingName, string memberName)
         {
-            var writer = new TemplateSettingWriter(ShippedTemplate());
+            var writer = new TemplateSettingsFile(ShippedTemplate());
 
             Assert.That(writer.TrySetEnum(settingName, memberName), Is.True,
                 "Settings." + settingName + " is not a single-line enum assignment in the shipped Database.tt any " +
@@ -77,7 +77,7 @@ namespace Efrpg.Gui.Tests
         public void WritingTheConnectionStringChangesOneLineAndClearsThePlaceholder()
         {
             var original = ShippedTemplate();
-            var writer   = new TemplateSettingWriter(original);
+            var writer   = new TemplateSettingsFile(original);
 
             writer.TrySetString("ConnectionString", @"Data Source=.\SQLEXPRESS;Initial Catalog=Northwind;Integrated Security=True");
 
@@ -96,7 +96,7 @@ namespace Efrpg.Gui.Tests
         public void WritingEverythingTheWizardWritesChangesSixLinesAndNothingElse()
         {
             var original = ShippedTemplate();
-            var writer   = new TemplateSettingWriter(original);
+            var writer   = new TemplateSettingsFile(original);
 
             writer.TrySetString("ConnectionString", "Data Source=localhost:1521/pdb1;User Id=hr;Password=secret;");
             writer.TrySetEnum("DatabaseType", "Oracle");
@@ -119,7 +119,7 @@ namespace Efrpg.Gui.Tests
         [Test]
         public void WritingLeavesTheIncludeDirectiveIntact()
         {
-            var writer = new TemplateSettingWriter(ShippedTemplate());
+            var writer = new TemplateSettingsFile(ShippedTemplate());
 
             writer.TrySetString("ConnectionString", "Data Source=(local);Initial Catalog=Northwind");
 

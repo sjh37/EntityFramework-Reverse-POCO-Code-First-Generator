@@ -9,7 +9,7 @@ namespace Efrpg.Gui.Tests
     ///     of these tests are about what is left alone rather than what is written.
     /// </summary>
     [TestFixture]
-    public class TemplateSettingWriterTests
+    public class TemplateSettingsFileTests
     {
         /// <summary>Copied from the real Database.tt, alignment and trailing comment included.</summary>
         private const string Template =
@@ -28,7 +28,7 @@ namespace Efrpg.Gui.Tests
         [Test]
         public void TrySetString_WritesTheValue()
         {
-            var writer = new TemplateSettingWriter(Template);
+            var writer = new TemplateSettingsFile(Template);
 
             var written = writer.TrySetString("DbContextName", "NorthwindDbContext");
 
@@ -39,7 +39,7 @@ namespace Efrpg.Gui.Tests
         [Test]
         public void TrySetString_ChangesExactlyOneLine()
         {
-            var writer = new TemplateSettingWriter(Template);
+            var writer = new TemplateSettingsFile(Template);
 
             writer.TrySetString("DbContextName", "NorthwindDbContext");
 
@@ -57,7 +57,7 @@ namespace Efrpg.Gui.Tests
         [Test]
         public void TrySetString_KeepsTheAlignmentAndTheTrailingComment()
         {
-            var writer = new TemplateSettingWriter(Template);
+            var writer = new TemplateSettingsFile(Template);
 
             writer.TrySetString("ConnectionString", "Data Source=(local);Initial Catalog=Northwind");
 
@@ -68,7 +68,7 @@ namespace Efrpg.Gui.Tests
         [Test]
         public void TrySetString_PreservesCrLf()
         {
-            var writer = new TemplateSettingWriter(Template);
+            var writer = new TemplateSettingsFile(Template);
 
             writer.TrySetString("DbContextName", "X");
 
@@ -83,7 +83,7 @@ namespace Efrpg.Gui.Tests
         [Test]
         public void TrySetString_EscapesBackslashesSoTheTemplateStillCompiles()
         {
-            var writer = new TemplateSettingWriter(Template);
+            var writer = new TemplateSettingsFile(Template);
 
             writer.TrySetString("ConnectionString", @"Data Source=.\SQLEXPRESS;Initial Catalog=Northwind");
 
@@ -93,7 +93,7 @@ namespace Efrpg.Gui.Tests
         [Test]
         public void TrySetString_EscapesQuotes()
         {
-            var writer = new TemplateSettingWriter(Template);
+            var writer = new TemplateSettingsFile(Template);
 
             writer.TrySetString("ConnectionString", "Data Source=(local);Password=a\"b");
 
@@ -107,7 +107,7 @@ namespace Efrpg.Gui.Tests
         [Test]
         public void TrySetString_LeavesACommentedOutSettingAlone()
         {
-            var writer = new TemplateSettingWriter(Template);
+            var writer = new TemplateSettingsFile(Template);
 
             var written = writer.TrySetString("DbContextInterfaceName", "IWhatever");
 
@@ -122,7 +122,7 @@ namespace Efrpg.Gui.Tests
         [Test]
         public void TrySetString_RefusesASettingThatIsNotAStringLiteral()
         {
-            var writer = new TemplateSettingWriter(Template);
+            var writer = new TemplateSettingsFile(Template);
 
             var written = writer.TrySetString("DatabaseType", "SqlServer");
 
@@ -133,7 +133,7 @@ namespace Efrpg.Gui.Tests
         [Test]
         public void TrySetString_UnknownSettingChangesNothing()
         {
-            var writer = new TemplateSettingWriter(Template);
+            var writer = new TemplateSettingsFile(Template);
 
             var written = writer.TrySetString("NoSuchSetting", "x");
 
@@ -144,7 +144,7 @@ namespace Efrpg.Gui.Tests
         [Test]
         public void TrySetEnum_WritesTheMemberAndLeavesTheTypeNameAlone()
         {
-            var writer = new TemplateSettingWriter(Template);
+            var writer = new TemplateSettingsFile(Template);
 
             var written = writer.TrySetEnum("DatabaseType", "Oracle");
 
@@ -156,7 +156,7 @@ namespace Efrpg.Gui.Tests
         [Test]
         public void TrySetEnum_ChangesExactlyOneLine()
         {
-            var writer = new TemplateSettingWriter(Template);
+            var writer = new TemplateSettingsFile(Template);
 
             writer.TrySetEnum("GeneratorType", "Ef6");
 
@@ -178,7 +178,7 @@ namespace Efrpg.Gui.Tests
         [Test]
         public void TrySetEnum_RefusesAStringSetting()
         {
-            var writer = new TemplateSettingWriter(Template);
+            var writer = new TemplateSettingsFile(Template);
 
             var written = writer.TrySetEnum("DbContextName", "Whatever");
 
@@ -193,7 +193,7 @@ namespace Efrpg.Gui.Tests
         [Test]
         public void TrySetEnum_RefusesACombinationOfFlags()
         {
-            var writer = new TemplateSettingWriter(Template);
+            var writer = new TemplateSettingsFile(Template);
 
             var written = writer.TrySetEnum("CommentsStyle", "None");
 
@@ -205,7 +205,7 @@ namespace Efrpg.Gui.Tests
         [Test]
         public void TrySetEnum_RefusesAMethodCall()
         {
-            var writer = new TemplateSettingWriter(Template);
+            var writer = new TemplateSettingsFile(Template);
 
             var written = writer.TrySetEnum("TemplateFolder", "Combine");
 
@@ -216,7 +216,7 @@ namespace Efrpg.Gui.Tests
         [Test]
         public void TrySetEnum_LeavesACommentedOutSettingAlone()
         {
-            var writer = new TemplateSettingWriter(Template);
+            var writer = new TemplateSettingsFile(Template);
 
             var written = writer.TrySetEnum("ColumnOrder", "Alphabetical");
 
@@ -234,7 +234,7 @@ namespace Efrpg.Gui.Tests
         [TestCase(" ")]
         public void TrySetEnum_RefusesAnythingThatIsNotAnIdentifier(string memberName)
         {
-            var writer = new TemplateSettingWriter(Template);
+            var writer = new TemplateSettingsFile(Template);
 
             var written = writer.TrySetEnum("DatabaseType", memberName);
 
@@ -245,7 +245,7 @@ namespace Efrpg.Gui.Tests
         [Test]
         public void TrySetEnum_UnknownSettingChangesNothing()
         {
-            var writer = new TemplateSettingWriter(Template);
+            var writer = new TemplateSettingsFile(Template);
 
             var written = writer.TrySetEnum("NoSuchSetting", "Whatever");
 
@@ -254,9 +254,70 @@ namespace Efrpg.Gui.Tests
         }
 
         [Test]
+        public void GetString_ReturnsTheValue()
+        {
+            var settings = new TemplateSettingsFile(Template);
+
+            Assert.That(settings.GetString("DbContextName"), Is.EqualTo("MyDbContext"));
+        }
+
+        [Test]
+        public void GetString_UnescapesBackslashesAndQuotes()
+        {
+            var settings = new TemplateSettingsFile(
+                @"    Settings.ConnectionString = ""Data Source=.\\SQLEXPRESS;Password=a\""b"";" + "\r\n");
+
+            Assert.That(settings.GetString("ConnectionString"),
+                Is.EqualTo(@"Data Source=.\SQLEXPRESS;Password=a""b"));
+        }
+
+        [Test]
+        public void GetString_IsNullForACommentedOutSetting()
+        {
+            var settings = new TemplateSettingsFile(Template);
+
+            Assert.That(settings.GetString("DbContextInterfaceName"), Is.Null);
+        }
+
+        [Test]
+        public void GetString_IsNullForASettingThatIsNotAStringLiteral()
+        {
+            var settings = new TemplateSettingsFile(Template);
+
+            Assert.That(settings.GetString("DatabaseType"), Is.Null);
+        }
+
+        [Test]
+        public void GetEnum_ReturnsTheMemberWithoutTheTypeName()
+        {
+            var settings = new TemplateSettingsFile(Template);
+
+            Assert.That(settings.GetEnum("DatabaseType"), Is.EqualTo("SqlServer"));
+        }
+
+        /// <summary>
+        ///     Reported as absent rather than as the first member, so the dialog shows the file's own default and
+        ///     ApplyTo then declines to overwrite the combination.
+        /// </summary>
+        [Test]
+        public void GetEnum_IsNullForACombinationOfFlags()
+        {
+            var settings = new TemplateSettingsFile(Template);
+
+            Assert.That(settings.GetEnum("CommentsStyle"), Is.Null);
+        }
+
+        [Test]
+        public void GetEnum_IsNullForACommentedOutSetting()
+        {
+            var settings = new TemplateSettingsFile(Template);
+
+            Assert.That(settings.GetEnum("ColumnOrder"), Is.Null);
+        }
+        [Test]
         public void IsUnconfigured_IsTrueWhileThePlaceholderRemains()
         {
-            var writer = new TemplateSettingWriter(Template);
+            var writer = new TemplateSettingsFile(Template);
 
             Assert.That(writer.IsUnconfigured, Is.True);
         }
@@ -264,7 +325,7 @@ namespace Efrpg.Gui.Tests
         [Test]
         public void IsUnconfigured_IsFalseOnceARealConnectionStringIsWritten()
         {
-            var writer = new TemplateSettingWriter(Template);
+            var writer = new TemplateSettingsFile(Template);
 
             writer.TrySetString("ConnectionString", "Data Source=(local);Initial Catalog=Northwind");
 
