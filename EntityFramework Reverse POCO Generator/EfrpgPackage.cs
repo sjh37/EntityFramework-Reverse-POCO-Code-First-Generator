@@ -2,32 +2,34 @@ using System;
 using System.Runtime.InteropServices;
 using System.Threading;
 using Community.VisualStudio.Toolkit;
+using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Task = System.Threading.Tasks.Task;
 
 namespace EntityFramework_Reverse_POCO_Generator
 {
     /// <summary>
-    ///     The extension's Visual Studio package. Until v4.0.1 this VSIX carried nothing but the item template and had
-    ///     no assembly at all.
+    ///     The extension's Visual Studio package: it owns the command table behind the .tt file's right-click menu.
     /// </summary>
     /// <remarks>
-    ///     Currently inert, and deliberately kept anyway: package registration is the one part of the VSIX plumbing
-    ///     that is proven to work here, so it is a working anchor for anything later that genuinely needs a package.
+    ///     Getting a menu to appear at all took seven attempts. Two things are load bearing and neither produces an
+    ///     error when missing. The project must set &lt;RegisterWithCodebase&gt;, or the pkgdef says Assembly= rather
+    ///     than CodeBase= and Visual Studio cannot load this unsigned assembly to read the managed ctmenu resource
+    ///     out of it. And VSPackage.resx must be marked MergeWithCTO, or the command table lands in a placeholder
+    ///     resource that ProvideMenuResource never looks in.
     ///
-    ///     It used to carry a Tools menu command declared in a .vsct. That never appeared in Visual Studio 2026 and
-    ///     the whole route was removed. The package registered correctly - its GUID reaches
-    ///     HKCU\...\18.0_&lt;hive&gt;_Config - but the command set GUID never reached the configuration at all, so no menu
-    ///     was ever drawn, with no error logged anywhere. If a menu is wanted later, start by finding out why the
-    ///     ctmenu resource is not merged; do not assume a context menu will fare better, because it is the same
-    ///     mechanism pointed at a different parent.
+    ///     **The autoload is not optional either.** The commands are DynamicVisibility and decide for themselves
+    ///     whether to appear, which needs BeforeQueryStatus to run, which needs this package loaded. Without the
+    ///     autoload it only loads when a command is first invoked - and a command nobody can see is never invoked.
+    ///     SolutionExists is the right trigger because everything here acts on a file in a solution.
     ///
-    ///     The GUI reaches users through IWizard instead - see ReversePocoWizard - which VS instantiates straight from
-    ///     the .vstemplate and which needs no package, no pkgdef and no command table.
+    ///     The wizard is separate and needs none of this: IWizard is instantiated straight from the .vstemplate,
+    ///     with no package, no pkgdef and no command table. See ReversePocoWizard.
     /// </remarks>
     [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
     [Guid(PackageGuidString)]
     [ProvideMenuResource("Menus.ctmenu", 1)]
+    [ProvideAutoLoad(VSConstants.UICONTEXT.SolutionExists_string, PackageAutoLoadFlags.BackgroundLoad)]
     public sealed class EfrpgPackage : ToolkitPackage
     {
         /// <summary>

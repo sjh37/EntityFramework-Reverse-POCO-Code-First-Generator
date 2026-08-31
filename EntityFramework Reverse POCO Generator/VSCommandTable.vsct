@@ -19,12 +19,16 @@
     </Groups>
 
     <Buttons>
-      <!-- DynamicVisibility so BeforeQueryStatus can hide these for everything that is not a .tt. Without it
-           both items would sit on the right-click menu of every file in every project. -->
+      <!-- DynamicVisibility so BeforeQueryStatus can hide these for everything that is not a .tt: they hang off
+           IDM_VS_CTXT_ITEMNODE, which Visual Studio draws for every file in every project.
+
+           Deliberately NOT DefaultInvisible. That flag is the state a command keeps until something calls
+           QueryStatus, and nothing does until the package is loaded - so in 4.0.11 all three items were invisible
+           everywhere, with nothing logged. Visible-until-told-otherwise fails the safe way round, and the package
+           now autoloads on SolutionExists so BeforeQueryStatus runs before the first right-click. -->
       <Button guid="EfrpgCommandSet" id="ConfigureTemplateCommand" priority="0x0100" type="Button">
         <Parent guid="EfrpgCommandSet" id="ItemNodeGroup" />
         <CommandFlag>DynamicVisibility</CommandFlag>
-        <CommandFlag>DefaultInvisible</CommandFlag>
         <Strings>
           <ButtonText>Reverse POCO: Settings...</ButtonText>
           <LocCanonicalName>.ReversePoco.ConfigureTemplate</LocCanonicalName>
@@ -34,7 +38,6 @@
       <Button guid="EfrpgCommandSet" id="UpgradeToV4Command" priority="0x0150" type="Button">
         <Parent guid="EfrpgCommandSet" id="ItemNodeGroup" />
         <CommandFlag>DynamicVisibility</CommandFlag>
-        <CommandFlag>DefaultInvisible</CommandFlag>
         <Strings>
           <ButtonText>Reverse POCO: Upgrade this template to v4...</ButtonText>
           <LocCanonicalName>.ReversePoco.UpgradeToV4</LocCanonicalName>
@@ -44,7 +47,6 @@
       <Button guid="EfrpgCommandSet" id="CheckEfrpgToolCommand" priority="0x0200" type="Button">
         <Parent guid="EfrpgCommandSet" id="ItemNodeGroup" />
         <CommandFlag>DynamicVisibility</CommandFlag>
-        <CommandFlag>DefaultInvisible</CommandFlag>
         <Strings>
           <ButtonText>Reverse POCO: Check efrpg tool...</ButtonText>
           <LocCanonicalName>.ReversePoco.CheckEfrpgTool</LocCanonicalName>

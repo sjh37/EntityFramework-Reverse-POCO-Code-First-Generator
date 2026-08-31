@@ -42,6 +42,8 @@ namespace EntityFramework_Reverse_POCO_Generator
         private readonly Button _ok;
         private readonly Button _test;
         private readonly bool _isNewTemplate;
+
+        private const string TestButtonText = "_Test connection";
         private readonly CancellationTokenSource _closing = new CancellationTokenSource();
         private JoinableTask _testRun;
 
@@ -100,7 +102,7 @@ namespace EntityFramework_Reverse_POCO_Generator
             _templateHint     = Hint(string.Empty);
             _validation       = new TextBlock { TextWrapping = TextWrapping.Wrap, Margin = new Thickness(0, 0, 0, 10) };
             _ok               = new Button { Content = "OK", MinWidth = 90, Margin = new Thickness(0, 0, 8, 0), Padding = new Thickness(10, 4, 10, 4), IsDefault = true };
-            _test             = new Button { Content = "_Test connection", MinWidth = 130, Padding = new Thickness(10, 4, 10, 4) };
+            _test             = new Button { Content = TestButtonText, MinWidth = 130, Padding = new Thickness(10, 4, 10, 4) };
 
             _database.SelectionChanged    += (s, e) => DatabaseChanged();
             _template.SelectionChanged    += (s, e) => TemplateChanged();
@@ -156,7 +158,8 @@ namespace EntityFramework_Reverse_POCO_Generator
             var databaseType     = SelectedDatabase != null ? SelectedDatabase.Name : DatabaseTarget.Default.Name;
 
             _test.IsEnabled = false;
-            Report("Connecting...", false);
+            _test.Content   = "Connecting...";
+            Report("Connecting to " + databaseType + "...", true);
 
             try
             {
@@ -183,17 +186,20 @@ namespace EntityFramework_Reverse_POCO_Generator
             finally
             {
                 if (!_closing.IsCancellationRequested)
+                {
                     _test.IsEnabled = true;
+                    _test.Content   = TestButtonText;
+                }
             }
         }
 
         private static string Describe(SchemaReadResult result)
         {
             if (!result.Succeeded)
-                return result.Error;
+                return "Could not connect. " + result.Error;
 
             var schema = result.Schema;
-            var summary = "Connected. " +
+            var summary = "Connected successfully. Found " +
                           Plural(schema.Count(DatabaseObjectKind.Table), "table") + ", " +
                           Plural(schema.Count(DatabaseObjectKind.View), "view") + ", " +
                           Plural(schema.Count(DatabaseObjectKind.StoredProcedure), "stored procedure") + ", " +
@@ -214,15 +220,22 @@ namespace EntityFramework_Reverse_POCO_Generator
         }
 
         /// <summary>
-        ///     One line under the buttons, in the theme's error colour when it is bad news and the ordinary text
-        ///     colour when it is not.
+        ///     One line under the buttons, always in the dialog's own text colour.
         /// </summary>
+        /// <remarks>
+        ///     It used to use ToolWindowValidationErrorTextBrushKey, which is tuned for a tool window's background
+        ///     and came out as a pale red that was hard to read against a dialog. Legibility is worth more here than
+        ///     the colour was: the message is one line under the buttons with nothing competing for attention, and
+        ///     bold carries the emphasis instead. DialogTextBrushKey is the one key guaranteed to be readable on
+        ///     this background in every theme.
+        /// </remarks>
         private void Report(string message, bool isProblem)
         {
-            _validation.Text = message;
-            _validation.SetResourceReference(TextBlock.ForegroundProperty, isProblem
-                ? EnvironmentColors.ToolWindowValidationErrorTextBrushKey
-                : EnvironmentColors.ToolWindowTextBrushKey);
+            _validation.Text       = message;
+            _validation.FontWeight = isProblem ? FontWeights.SemiBold : FontWeights.Normal;
+            _validation.Visibility = message.Length == 0 ? Visibility.Collapsed : Visibility.Visible;
+
+            _validation.SetResourceReference(TextBlock.ForegroundProperty, EnvironmentColors.DialogTextBrushKey);
         }
 
         /// <summary>
