@@ -1,6 +1,9 @@
+using System;
 using System.Runtime.InteropServices;
+using System.Threading;
 using Community.VisualStudio.Toolkit;
 using Microsoft.VisualStudio.Shell;
+using Task = System.Threading.Tasks.Task;
 
 namespace EntityFramework_Reverse_POCO_Generator
 {
@@ -24,6 +27,7 @@ namespace EntityFramework_Reverse_POCO_Generator
     /// </remarks>
     [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
     [Guid(PackageGuidString)]
+    [ProvideMenuResource("Menus.ctmenu", 1)]
     public sealed class EfrpgPackage : ToolkitPackage
     {
         /// <summary>
@@ -32,5 +36,16 @@ namespace EntityFramework_Reverse_POCO_Generator
         ///     existing extension. Neither may change once shipped.
         /// </summary>
         public const string PackageGuidString = "6f4b7d0e-6b1f-4a8e-9a1a-2b7c8d3e5f41";
+
+        /// <summary>
+        ///     Binds the commands. Not a wrapper around base that could be deleted: RegisterCommandsAsync discovers
+        ///     the [Command]-attributed BaseCommand classes in this assembly and wires each to the ID it declares in
+        ///     VSCommandTable.vsct. Without it the menu item appears but clicking it does nothing.
+        /// </summary>
+        protected override async Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
+        {
+            await base.InitializeAsync(cancellationToken, progress);
+            await this.RegisterCommandsAsync();
+        }
     }
 }

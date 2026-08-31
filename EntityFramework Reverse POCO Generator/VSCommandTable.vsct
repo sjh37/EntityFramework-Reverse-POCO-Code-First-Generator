@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CommandTable xmlns="http://schemas.microsoft.com/VisualStudio/2005-10-18/CommandTable" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <!-- vsshlids.h, NOT vsshell.h. vsshlids.h is the plain menu-ID header - IDM_VS_CTXT_ITEMNODE and friends - and
+       compiles with nothing but the VSSDK include path. vsshell.h is the COM interface header, and it #includes
+       Windows SDK headers (rpcndr.h, oaidl.h, oleidl.h) that only exist with the C++ workload installed, giving
+       VSCT1118. An earlier attempt used vsshell.h, hit that, and removed both Externs rather than correcting the
+       wrong one; the menu then never appeared. Do not "simplify" these away again. -->
+  <Extern href="stdidcmd.h" />
+  <Extern href="vsshlids.h" />
+
+  <Commands package="EfrpgPackage">
+    <Groups>
+      <!-- Right-click a file in Solution Explorer. This is where the .tt operations belong: the settings editor and
+           the v3-to-v4 upgrade both act on the file the user clicked. -->
+      <Group guid="EfrpgCommandSet" id="ItemNodeGroup" priority="0x0600">
+        <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_ITEMNODE" />
+      </Group>
+    </Groups>
+
+    <Buttons>
+      <Button guid="EfrpgCommandSet" id="CheckEfrpgToolCommand" priority="0x0100" type="Button">
+        <Parent guid="EfrpgCommandSet" id="ItemNodeGroup" />
+        <Strings>
+          <ButtonText>Reverse POCO: Check efrpg tool...</ButtonText>
+          <LocCanonicalName>.ReversePoco.CheckEfrpgTool</LocCanonicalName>
+        </Strings>
+      </Button>
+    </Buttons>
+  </Commands>
+
+  <Symbols>
+    <GuidSymbol name="EfrpgPackage" value="{6f4b7d0e-6b1f-4a8e-9a1a-2b7c8d3e5f41}" />
+
+    <GuidSymbol name="EfrpgCommandSet" value="{9c2e5b41-0d3a-4c7e-8f16-4a5d9e0b7c23}">
+      <IDSymbol name="ItemNodeGroup" value="0x0001" />
+      <IDSymbol name="CheckEfrpgToolCommand" value="0x0100" />
+    </GuidSymbol>
+  </Symbols>
+
+</CommandTable>

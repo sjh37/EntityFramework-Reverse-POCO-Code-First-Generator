@@ -233,26 +233,41 @@ still fail. Phase 2 reads that flag to decide whether to invoke by full path and
 **Still to do in Phase 1:** everything touching the VSIX - the two packages, the `ToolkitPackage`, the
 `VsPackage` asset via `VersionSetter`, and the gate dialog.
 
-### The command table route was abandoned, and why that was half a mistake
+### Menus need `RegisterWithCodebase`, and this cost seven attempts
 
-A Tools menu command was built first, as Phase 1's stated deliverable. It never appeared in Visual Studio 2026.
-Everything verifiable from outside VS was correct - the package registered (its GUID reaches the config hive),
-the pkgdef declared `Menus.ctmenu`, the compiled `.cto` was embedded, the `VSPackage.resources` container held
-it - and no error was logged anywhere, in the ActivityLog or elsewhere. It was removed in favour of `IWizard`.
+A menu command - first on the Tools menu, then on the item context menu - did not appear in Visual Studio 2026,
+through many rebuilds. Everything checkable was correct: the package registered, the pkgdef declared
+`Menus.ctmenu`, the `.cto` compiled with 0 errors, the resource sat in `VSPackage.resources` under the right
+key, and **nothing was logged anywhere** - not in the build, not in ActivityLog.xml.
 
-**The mechanism was not the problem; the configuration was.** EF Core Power Tools reaches its entire UI through
-exactly this route - `IDM_VS_CTXT_PROJNODE`, no Tools menu at all - so a `.vsct` demonstrably works in VS 2026.
-Two differences from what was built here, either of which could be the cause:
+**The fix is one MSBuild property:**
 
-- They include `<Extern href="vsshlids.h" />`. This attempt used `vsshell.h`, which is the COM *interface*
-  header and drags in Windows SDK C headers that need the C++ workload, giving `VSCT1118: Unable to locate
-  rpcndr.h`. `vsshlids.h` is the plain ID header - `IDM_VS_CTXT_PROJNODE`, `IDM_VS_MENU_TOOLS` - with no such
-  dependency. The wrong header was included, and then the includes were removed rather than corrected.
-- They reference `Microsoft.VSSDK.BuildTools`. It was added here, did not fix the header error (it could not -
-  those are Windows SDK headers, not VSSDK ones) and was removed.
+```xml
+<RegisterWithCodebase>true</RegisterWithCodebase>
+```
 
-So a context menu is recoverable, and it is the natural home for Phase 2b and Phase 3, both of which are
-right-click-on-a-`.tt` operations. Retry with the correct header before assuming anything is wrong.
+Without it `CreatePkgDef` emits `"Assembly"="<name>, Version=..., PublicKeyToken=null"`, which tells Visual
+Studio to resolve the package assembly **by name** from the GAC or the probing path. This assembly is unsigned
+and is not in the GAC, so VS cannot load it, cannot read the managed `Menus.ctmenu` resource out of it, and
+draws no menu. It never reaches a load *failure*, so there is nothing to log - the merge simply finds no data.
+With the property set the pkgdef says `"CodeBase"="$PackageFolder$\....dll"` and the menu appears.
+
+**How it was actually found, after six wrong answers reasoned from documentation:** diffing our deployed pkgdef
+against a *working* extension already installed on the same machine, in
+`%LOCALAPPDATA%\Microsoft\VisualStudio8.0_<hive>\Extensions`. One line differed. **When VSIX plumbing
+misbehaves, compare against something that works on the same box before reading any more docs.**
+
+Two things were fixed along the way and are still required:
+
+- `VSPackage.resx` marked `MergeWithCTO`. Without it the SDK writes the command table into a placeholder called
+  `_EmptyResource.resources`, and `ProvideMenuResource` only looks in `VSPackage.resources`. Also silent.
+- `<Extern href="vsshlids.h" />`, **not** `vsshell.h`. `vsshlids.h` is the plain menu-ID header and compiles
+  with only the VSSDK include path. `vsshell.h` is the COM interface header and pulls in Windows SDK headers
+  that need the C++ workload, giving `VSCT1118: Unable to locate rpcndr.h`. An earlier attempt used the wrong
+  one, hit that, and deleted both `Extern` elements rather than correcting it.
+
+`Microsoft.VSSDK.BuildTools` is referenced, as EF Core Power Tools does. It was not what fixed the header
+error, but it supplies the VSCT compiler rather than depending on the Visual Studio install.
 
 ### IWizard works, and needs one non-obvious asset
 
@@ -267,7 +282,9 @@ name, and without
        Path="|%CurrentProject%|" AssemblyName="|%CurrentProject%;AssemblyName|" />
 ```
 
-the user gets *"this template attempted to load component assembly ..."* on Add - New Item. The `<Assembly>`
+the user gets *"this template attempted to load component assembly ..."* on Add - New Item. This is the
+same root cause as the missing menu above - an unsigned assembly that cannot be resolved by name - just
+reached through the template engine rather than the package loader. The `<Assembly>`
 element in the vstemplate embeds `AssemblyVersion`, so both it and this asset are generated by `VersionSetter`
 from `version.txt`; a hand-written copy rots at the next version bump and the failure is obscure.
 

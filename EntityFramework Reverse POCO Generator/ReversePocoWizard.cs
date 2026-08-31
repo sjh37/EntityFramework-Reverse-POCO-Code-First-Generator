@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
-using System.Windows.Forms;
 using EnvDTE;
 using Efrpg.Gui;
 using Microsoft.VisualStudio.TemplateWizard;
@@ -33,7 +32,8 @@ namespace EntityFramework_Reverse_POCO_Generator
             // A brand-new .tt cannot be reverse engineered: it ships with **TODO** as the database name and efrpg
             // refuses that outright. So the tool check is the only thing worth doing before the file exists; asking
             // for a connection string and reading schema belongs after, once there is a file to write settings into.
-            var status = CheckTool();
+            var gate   = Gate();
+            var status = CheckTool(gate);
 
             if (status == null)
                 return; // The check itself failed; never block adding the file over that.
@@ -41,15 +41,19 @@ namespace EntityFramework_Reverse_POCO_Generator
             if (status.State == EfrpgToolState.Ready)
                 return;
 
-            if (!Continue(status))
+            if (!Continue(gate, status))
                 throw new WizardBackoutException("The efrpg tool is not ready, so the template was not added.");
         }
 
-        private static EfrpgToolStatus CheckTool()
+        private static EfrpgToolGate Gate()
+        {
+            return new EfrpgToolGate(new ProcessRunner());
+        }
+
+        private static EfrpgToolStatus CheckTool(EfrpgToolGate gate)
         {
             try
             {
-                var gate = new EfrpgToolGate(new ProcessRunner());
                 return gate.CheckAsync(CancellationToken.None).GetAwaiter().GetResult();
             }
             catch (Exception)
@@ -61,34 +65,13 @@ namespace EntityFramework_Reverse_POCO_Generator
         }
 
         /// <summary>
-        ///     Reports what is wrong and lets the user decide. The exact command is always shown, because it is the
-        ///     escape hatch for anyone behind a proxy, on an internal feed, or without permission to install.
+        ///     Shows the gate dialog and returns whether to carry on adding the template.
         /// </summary>
-        private static bool Continue(EfrpgToolStatus status)
+        private static bool Continue(EfrpgToolGate gate, EfrpgToolStatus status)
         {
-            var message = Describe(status) + Environment.NewLine + Environment.NewLine +
-                          "Add the template anyway?";
-
-            return MessageBox.Show(message, "EntityFramework Reverse POCO Generator",
-                       MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1) == DialogResult.Yes;
-        }
-
-        private static string Describe(EfrpgToolStatus status)
-        {
-            var what = status.State == EfrpgToolState.NotFound
-                ? "The efrpg tool is not installed, so nothing can be generated yet."
-                : status.State == EfrpgToolState.SchemaTooOld
-                    ? "The efrpg tool is too old for this version of the template and must be updated."
-                    : "The efrpg tool was found but did not run.";
-
-            var sdk = status.DotnetSdkPresent
-                ? string.Empty
-                : Environment.NewLine +
-                  "No .NET SDK was found either. 'dotnet tool install' needs the SDK, not just a runtime.";
-
-            return what + Environment.NewLine + Environment.NewLine +
-                   "To fix this, run:" + Environment.NewLine +
-                   "    " + status.FixCommand + sdk;
+            var dialog = new EfrpgToolGateDialog(gate, status);
+            dialog.ShowModal();
+            return dialog.Proceed;
         }
 
         public void ProjectFinishedGenerating(Project project)
