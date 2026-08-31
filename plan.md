@@ -388,7 +388,7 @@ route the unit tests use.
 - [ ] `ReversePocoWizard : Microsoft.VisualStudio.TemplateWizard.IWizard`
 - [ ] Wire it into `MyTemplate.vstemplate` via `<WizardExtension>` -
       **through `BuildTT/VersionSetter.cs:UpdateVstemplate`**, which also regenerates that file wholesale
-- [x] `RunStarted`: tool gate → connection dialog (test connection still to do)
+- [x] `RunStarted`: tool gate → connection dialog, then re-run the T4 (test connection still to do)
 - [ ] Shell out to `efrpg --secrets-stdin` for the schema (same binary and wire format the template uses)
 - [ ] Checkbox tree: tables, views, stored procedures
 - [ ] Fields: DbContext name (done), namespace, EF version, database type
@@ -420,6 +420,16 @@ and an unescaped one produces a `.tt` that fails far from where it was written.
 
 Skipping the dialog is always allowed. The template with the placeholder still in it is a working starting
 point, and a wizard that will not let you out is worse than one that asks nothing.
+
+**The T4 runs before the wizard finishes, so it has to be re-run.** Adding a `.tt` to a project fires its
+custom tool immediately - well before `RunFinished` - so the first generated `.cs` is always the efrpg tool's
+*"the connection string still contains \*\*TODO\*\*"* error. Writing the real connection string afterwards fixes
+the `.tt` but leaves that error sitting in the generated output, which is exactly the confusing first impression
+the wizard exists to remove. `ProjectItemFinishedGenerating` therefore keeps the `ProjectItem`, and after the
+file is written `VSProjectItem.RunCustomTool()` regenerates it.
+
+Re-running rather than suppressing the first pass: there is no supported way to stop the custom tool firing on
+add, and a second pass is cheap next to the schema read it performs.
 
 **The PATH trap.** VS caches its environment at launch, so a tool installed by the wizard is not on the PATH
 that `EfrpgToolRunner` uses - it calls `new ProcessStartInfo("efrpg", …)` and relies on PATH resolution.

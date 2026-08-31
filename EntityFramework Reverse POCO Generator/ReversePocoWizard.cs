@@ -5,6 +5,7 @@ using System.Threading;
 using EnvDTE;
 using Efrpg.Gui;
 using Microsoft.VisualStudio.TemplateWizard;
+using VSLangProj;
 
 namespace EntityFramework_Reverse_POCO_Generator
 {
@@ -66,6 +67,7 @@ namespace EntityFramework_Reverse_POCO_Generator
             "Data Source=(local);Initial Catalog=" + TemplateSettingWriter.Placeholder +
             ";Integrated Security=True;MultipleActiveResultSets=True;Encrypt=false;TrustServerCertificate=true";
 
+        private ProjectItem _templateItem;
         private string _templatePath;
         private string _connectionString;
         private string _dbContextName;
@@ -110,6 +112,8 @@ namespace EntityFramework_Reverse_POCO_Generator
                 }
 
                 File.WriteAllText(_templatePath, writer.Text);
+
+                Regenerate();
             }
             catch (Exception)
             {
@@ -163,7 +167,10 @@ namespace EntityFramework_Reverse_POCO_Generator
             {
                 var path = projectItem.FileNames[1];
                 if (path != null && path.EndsWith(".tt", StringComparison.OrdinalIgnoreCase))
+                {
+                    _templateItem = projectItem;
                     _templatePath = path;
+                }
             }
             catch (Exception)
             {
@@ -178,6 +185,35 @@ namespace EntityFramework_Reverse_POCO_Generator
         public void RunFinished()
         {
             ApplyAnswers();
+        }
+
+        /// <summary>
+        ///     Runs the T4 again, because Visual Studio already ran it once - on the template as unpacked, with the
+        ///     placeholder still in the connection string.
+        /// </summary>
+        /// <remarks>
+        ///     Adding a .tt to a project fires its custom tool immediately, well before RunFinished, so the first
+        ///     generated output is always the efrpg tool's "the connection string still contains **TODO**" error.
+        ///     Writing the real connection string afterwards fixes the .tt but leaves that error sitting in the
+        ///     generated .cs, which is exactly the confusing first impression this wizard exists to remove.
+        ///
+        ///     Re-running is done rather than trying to suppress the first pass: there is no supported way to stop
+        ///     the custom tool firing on add, and a second pass is cheap next to the schema read it performs.
+        /// </remarks>
+        private void Regenerate()
+        {
+            try
+            {
+                var vsProjectItem = _templateItem.Object as VSProjectItem;
+                if (vsProjectItem != null)
+                    vsProjectItem.RunCustomTool();
+            }
+            catch (Exception)
+            {
+                // The project system may not expose RunCustomTool, or the tool may fail for reasons of its own -
+                // an unreachable database being the obvious one. The .tt is correct either way, and saving it
+                // regenerates. Interrupting the user here would be worse than leaving them one keystroke.
+            }
         }
 
         /// <summary>
