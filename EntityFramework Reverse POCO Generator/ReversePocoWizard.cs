@@ -36,13 +36,10 @@ namespace EntityFramework_Reverse_POCO_Generator
             var gate   = Gate();
             var status = CheckTool(gate);
 
-            if (status == null)
-                return; // The check itself failed; never block adding the file over that.
-
-            if (status.State == EfrpgToolState.Ready)
-                return;
-
-            if (!Continue(gate, status))
+            // The gate only gates itself. A tool that is missing, stale or unrunnable is worth stopping for, but
+            // when it is fine - the normal case - there is nothing to say and the user goes straight to the
+            // questions. A null status means the check itself fell over, which is never worth blocking on.
+            if (status != null && status.State != EfrpgToolState.Ready && !Continue(gate, status))
                 throw new WizardBackoutException("The efrpg tool is not ready, so the template was not added.");
 
             Ask(SuggestedDbContextName(replacementsDictionary));
