@@ -1437,7 +1437,7 @@
       "type": "string",
       "kind": "string",
       "section": "Schema",
-      "help": "Set via DatabaseReader.DefaultSchema()",
+      "help": "Read from the database by the efrpg tool and applied in Generator.Init",
       "defaultValue": "null",
       "inDatabaseTt": false,
       "commentedOut": false,

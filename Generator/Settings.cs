@@ -1,4 +1,4 @@
-using Efrpg.Filtering;
+﻿using Efrpg.Filtering;
 using Efrpg.Generators;
 using Efrpg.LanguageMapping;
 using Efrpg.Templates;
@@ -189,7 +189,7 @@ namespace Efrpg
         // Ie. dbo.hello will be Hello.
         //     abc.hello will be Abc_Hello.
         public static bool PrependSchemaName = true; // Control if the schema name is prepended to the table name
-        public static string DefaultSchema = null; // Set via DatabaseReader.DefaultSchema()
+        public static string DefaultSchema = null; // Read from the database by the efrpg tool and applied in Generator.Init
 
         // Enables more granular control if the schema name should be prepended depending on the table
         public static Func<Table, bool> PrependSchemaNameForTable = delegate (Table table)

@@ -217,7 +217,7 @@
         // Ie. dbo.hello will be Hello.
         //     abc.hello will be Abc_Hello.
         public static bool PrependSchemaName = true; // Control if the schema name is prepended to the table name
-        public static string DefaultSchema = null; // Set via DatabaseReader.DefaultSchema()
+        public static string DefaultSchema = null; // Read from the database by the efrpg tool and applied in Generator.Init
 
         // Enables more granular control if the schema name should be prepended depending on the table
         public static Func<Table, bool> PrependSchemaNameForTable = delegate (Table table)
@@ -4915,7 +4915,7 @@
             _result = result;
             if (_result == null)
             {
-                _fileManagementService.Error("// Cannot create a database reader due to unknown database type.");
+                _fileManagementService.Error("// The efrpg tool returned no schema, so nothing can be generated.");
                 return;
             }
 
@@ -5922,19 +5922,21 @@
                 NormaliseStoredProcedureParameterName(parameter);
                 NormaliseStoredProcedureParameterTypes(parameter);
 
-                // The legacy readers stripped remaining special characters (underscores included) from the parameter
-                // names of everything they read return objects for - stored procedures and TVFs, but never scalar
-                // functions (see legacy SqlServerDatabaseReader.ReadStoredProcReturnObjects: procs.Where(x =>
-                // !x.IsScalarValuedFunction), "Tidy up parameters"). Scalar function parameters therefore keep their
-                // underscores (udf_net_sale(list_price)) while stored procedure parameters lose them (firstval).
+                // The readers that used to live in this project stripped remaining special characters (underscores
+                // included) from the parameter names of everything they read return objects for - stored procedures
+                // and TVFs, but never scalar functions. Scalar function parameters therefore keep their underscores
+                // (udf_net_sale(list_price)) while stored procedure parameters lose them (firstval). The readers now
+                // live in the separate efrpg tool repository; this behaviour is reproduced here because generated
+                // signatures depend on it, so it must not be "tidied" to be consistent.
                 if (!sp.IsScalarValuedFunction)
                     parameter.NameHumanCase = Regex.Replace(parameter.NameHumanCase, @"[^A-Za-z0-9@\s]*", string.Empty);
             }
         }
 
-        // Mirrors the legacy DatabaseReader parameter naming exactly: CleanUp, then title-case only when UsePascalCase,
-        // then the reserved-keyword escape. No further character stripping - that would eat underscores (list_price ->
-        // listprice) and non-Latin letters, changing generated signatures. CleanUp already handles illegal characters.
+        // Reproduces exactly what the readers did before they moved to the separate efrpg tool repository: CleanUp,
+        // then title-case only when UsePascalCase, then the reserved-keyword escape. No further character stripping -
+        // that would eat underscores (list_price -> listprice) and non-Latin letters, changing generated signatures.
+        // CleanUp already handles illegal characters.
         private static void NormaliseStoredProcedureParameterName(StoredProcedureParameter parameter)
         {
             var clean = NamingHelper.CleanUp((parameter.Name ?? string.Empty).Replace("@", string.Empty));
@@ -14506,9 +14508,9 @@ and limitations under the License.
         }
     }
 
-    // Transforms the raw enum rows returned by the efrpg tool into Enumeration/EnumerationMember
-    // objects, applying the same casing, grouping and description rules the legacy
-    // DatabaseReader.ReadEnums applied. Lives on the Generator (T4) side because it needs Inflector.
+    // Transforms the raw enum rows returned by the efrpg tool into Enumeration/EnumerationMember objects, applying
+    // the same casing, grouping and description rules the readers applied before they moved to the separate efrpg
+    // tool repository. Stays on the Generator (T4) side because it needs Inflector, which the tool does not have.
     public static class EnumBuilder
     {
         private static readonly Regex RemoveNonAlphaNumeric = new Regex(@"[^\w\d\s_-]", RegexOptions.Compiled);

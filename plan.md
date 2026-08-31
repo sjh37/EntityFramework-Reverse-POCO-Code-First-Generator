@@ -444,12 +444,38 @@ ubiquitous**, which matters given the licence check lives there.
 - [ ] Prompt unprompted the first time a v3 template is opened after the extension updates
 - [ ] Change the include directive to `EF.Reverse.POCO.v4.ttinclude`
 - [ ] Delete the `Settings.FileManagerType` assignment
+- [ ] Delete the `Settings.DatabaseReaderPlugin` assignment - same class of breakage, and it was missing from
+      this list until a v3.14.1 file was actually diffed against v4
 - [ ] Rewrite `if (Settings.GenerateSeparateFiles && Settings.FileManagerType == FileManagerType.EfCore)`
       to `if (Settings.GenerateSeparateFiles)`
 - [ ] Replace the entry-point block with the `EfrpgToolRunner.ReadDatabase` version
 - [ ] Replace `DatabaseReader.CleanUp` with `NamingHelper.CleanUp` if present
 - [ ] Show a diff preview and require confirmation before writing
 - [ ] **If the file does not match the expected shape exactly, refuse** and link to the upgrade guide
+
+**The full v3 to v4 delta, from diffing a real v3.14.1 `Database.tt`.** 18 blocks differ, and they split into
+two groups that must be treated differently.
+
+*Six edits that are required, because without them the template does not compile or does not run:*
+
+| Where | Change |
+|---|---|
+| line 1 | include directive -> `EF.Reverse.POCO.v4.ttinclude` |
+| ~17 | delete `Settings.FileManagerType` |
+| ~86 | delete `Settings.DatabaseReaderPlugin` |
+| ~70 | `if (GenerateSeparateFiles && FileManagerType == FileManagerType.EfCore)` -> `if (GenerateSeparateFiles)` |
+| ~656 | `DatabaseReader.CleanUp(fkName)` -> `NamingHelper.CleanUp(fkName)` |
+| ~812-823 | the entry-point block -> the `EfrpgToolRunner.ReadDatabase` version |
+
+*Twelve blocks that are cosmetic and must **not** be forced:* the version header, two `v3.ttinclude` mentions
+inside comment prose, and the trailing-comment improvements made in v4 (`DatabaseType`, `TemplateType`,
+`ElementsToGenerate`, `OnConfiguration`, `IncludeComments`, `IncludeExtendedPropertyComments`,
+`GenerationLanguage`). A customer's file will already differ here, and rewriting comments they may have edited
+themselves is exactly the over-reach the refusal rule exists to prevent.
+
+**The entry-point block is a replacement, not a patch.** In v3 `var fileManagement = new FileManagementService(outer);`
+sits *after* the commented-out machine.config lines; in v4 it moves *before* the try block. So the whole span
+has to go, which is the part most likely to vary between customer files and the most likely thing to refuse on.
 
 **Refusing is the important item.** During the v4 work, 24 tester templates were migrated by script and it
 took two passes - some carried an extra commented-out line inside the block the first pattern expected.

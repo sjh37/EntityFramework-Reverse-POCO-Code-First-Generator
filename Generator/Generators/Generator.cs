@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
@@ -119,7 +119,7 @@ namespace Efrpg.Generators
             _result = result;
             if (_result == null)
             {
-                _fileManagementService.Error("// Cannot create a database reader due to unknown database type.");
+                _fileManagementService.Error("// The efrpg tool returned no schema, so nothing can be generated.");
                 return;
             }
 
@@ -1126,19 +1126,21 @@ namespace Efrpg.Generators
                 NormaliseStoredProcedureParameterName(parameter);
                 NormaliseStoredProcedureParameterTypes(parameter);
 
-                // The legacy readers stripped remaining special characters (underscores included) from the parameter
-                // names of everything they read return objects for - stored procedures and TVFs, but never scalar
-                // functions (see legacy SqlServerDatabaseReader.ReadStoredProcReturnObjects: procs.Where(x =>
-                // !x.IsScalarValuedFunction), "Tidy up parameters"). Scalar function parameters therefore keep their
-                // underscores (udf_net_sale(list_price)) while stored procedure parameters lose them (firstval).
+                // The readers that used to live in this project stripped remaining special characters (underscores
+                // included) from the parameter names of everything they read return objects for - stored procedures
+                // and TVFs, but never scalar functions. Scalar function parameters therefore keep their underscores
+                // (udf_net_sale(list_price)) while stored procedure parameters lose them (firstval). The readers now
+                // live in the separate efrpg tool repository; this behaviour is reproduced here because generated
+                // signatures depend on it, so it must not be "tidied" to be consistent.
                 if (!sp.IsScalarValuedFunction)
                     parameter.NameHumanCase = Regex.Replace(parameter.NameHumanCase, @"[^A-Za-z0-9@\s]*", string.Empty);
             }
         }
 
-        // Mirrors the legacy DatabaseReader parameter naming exactly: CleanUp, then title-case only when UsePascalCase,
-        // then the reserved-keyword escape. No further character stripping - that would eat underscores (list_price ->
-        // listprice) and non-Latin letters, changing generated signatures. CleanUp already handles illegal characters.
+        // Reproduces exactly what the readers did before they moved to the separate efrpg tool repository: CleanUp,
+        // then title-case only when UsePascalCase, then the reserved-keyword escape. No further character stripping -
+        // that would eat underscores (list_price -> listprice) and non-Latin letters, changing generated signatures.
+        // CleanUp already handles illegal characters.
         private static void NormaliseStoredProcedureParameterName(StoredProcedureParameter parameter)
         {
             var clean = NamingHelper.CleanUp((parameter.Name ?? string.Empty).Replace("@", string.Empty));
