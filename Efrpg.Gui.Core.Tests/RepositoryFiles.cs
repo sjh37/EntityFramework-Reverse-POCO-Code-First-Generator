@@ -40,6 +40,20 @@ namespace Efrpg.Gui.Tests
         }
 
         /// <summary>
+        ///     A real efrpg payload, captured from the EfrpgTest database and kept as the wire contract fixture.
+        /// </summary>
+        /// <remarks>
+        ///     Parsing the same bytes the tool actually emitted is worth far more than parsing XML written by the
+        ///     author of the parser, and it means the GUI's name extractor fails alongside WireContractTests if the
+        ///     payload shape ever moves.
+        /// </remarks>
+        public static string WireContractPayload()
+        {
+            return File.ReadAllText(Path.Combine(RepositoryRoot.Value,
+                "Generator.Tests.Unit", "WireContract", "EfrpgResult.xml"));
+        }
+
+        /// <summary>
         ///     The members of one enum setting, in declaration order, as recorded by BuildTT's reflection over
         ///     Efrpg.Settings.
         /// </summary>

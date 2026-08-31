@@ -1,9 +1,13 @@
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using Efrpg.Gui;
 using Microsoft.VisualStudio.PlatformUI;
+using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Threading;
 
 namespace EntityFramework_Reverse_POCO_Generator
 {
@@ -31,11 +35,15 @@ namespace EntityFramework_Reverse_POCO_Generator
         private readonly ComboBox _template;
         private readonly TextBox _connectionString;
         private readonly TextBox _dbContextName;
+        private readonly TextBox _namespace;
         private readonly TextBlock _connectionHint;
         private readonly TextBlock _templateHint;
         private readonly TextBlock _validation;
         private readonly Button _ok;
+        private readonly Button _test;
         private readonly bool _isNewTemplate;
+        private readonly CancellationTokenSource _closing = new CancellationTokenSource();
+        private JoinableTask _testRun;
 
         /// <summary>The answers, valid once <see cref="Confirmed"/> is true.</summary>
         public TemplateConfiguration Result
@@ -43,7 +51,7 @@ namespace EntityFramework_Reverse_POCO_Generator
             get
             {
                 return new TemplateConfiguration(SelectedDatabase, SelectedTemplate,
-                    _connectionString.Text.Trim(), _dbContextName.Text.Trim());
+                    _connectionString.Text.Trim(), _dbContextName.Text.Trim(), _namespace.Text.Trim());
             }
         }
 
@@ -87,24 +95,134 @@ namespace EntityFramework_Reverse_POCO_Generator
             _template         = new ComboBox { ItemsSource = TemplateTarget.All, SelectedItem = current.Template, Padding = new Thickness(6, 4, 6, 4) };
             _connectionString = new TextBox { Text = current.ConnectionString, FontFamily = new FontFamily("Consolas"), Padding = new Thickness(6, 4, 6, 4), TextWrapping = TextWrapping.Wrap };
             _dbContextName    = new TextBox { Text = current.DbContextName, Padding = new Thickness(6, 4, 6, 4) };
+            _namespace        = new TextBox { Text = current.Namespace, Padding = new Thickness(6, 4, 6, 4) };
             _connectionHint   = Hint(current.Database.Hint);
             _templateHint     = Hint(string.Empty);
             _validation       = new TextBlock { TextWrapping = TextWrapping.Wrap, Margin = new Thickness(0, 0, 0, 10) };
             _ok               = new Button { Content = "OK", MinWidth = 90, Margin = new Thickness(0, 0, 8, 0), Padding = new Thickness(10, 4, 10, 4), IsDefault = true };
-
-            // A literal colour would be wrong in two of the three Visual Studio themes. The resource reference
-            // re-resolves when the user switches theme with the dialog open, which FindResource would not.
-            _validation.SetResourceReference(TextBlock.ForegroundProperty,
-                EnvironmentColors.ToolWindowValidationErrorTextBrushKey);
+            _test             = new Button { Content = "_Test connection", MinWidth = 130, Padding = new Thickness(10, 4, 10, 4) };
 
             _database.SelectionChanged    += (s, e) => DatabaseChanged();
             _template.SelectionChanged    += (s, e) => TemplateChanged();
             _connectionString.TextChanged += (s, e) => Validate();
+            _namespace.TextChanged        += (s, e) => Validate();
             _ok.Click                     += (s, e) => { Confirmed = true; DialogResult = true; Close(); };
+            _test.Click                   += (s, e) => Test();
+
+            // The read can take a couple of minutes against a slow or unreachable server. Closing the dialog
+            // cancels it - which kills the child process - and then waits for it, so no continuation is left
+            // running against a window that has gone. Joining here is safe rather than deadlocking precisely
+            // because it goes through the JoinableTaskFactory, which lets this thread run the continuation.
+            Closed += (s, e) => CancelTest();
 
             Content = Build();
             TemplateChanged();
             Validate();
+        }
+
+        /// <summary>
+        ///     Runs the real schema read, through the same tool and the same wire format the T4 template uses on
+        ///     save.
+        /// </summary>
+        /// <remarks>
+        ///     Testing any other way - opening a connection here directly - would prove something subtly different
+        ///     from what happens at generation time, which is what "it tested fine but generation fails" is made
+        ///     of. Reporting the object counts rather than a bare "OK" also answers the question behind the
+        ///     question: people press Test to find out whether they pointed it at the right database.
+        /// </remarks>
+        private void Test()
+        {
+            // VSSDK007 wants this awaited at the call site, which a Click handler cannot do. It is not abandoned:
+            // it is kept in _testRun and joined when the dialog closes, after cancellation, so nothing outlives
+            // the window it reports into. FileAndForget puts any fault in the activity log rather than losing it.
+#pragma warning disable VSSDK007
+            _testRun = ThreadHelper.JoinableTaskFactory.RunAsync(TestAsync);
+#pragma warning restore VSSDK007
+
+            _testRun.Task.FileAndForget("efrpg/gui/testconnection");
+        }
+
+        private void CancelTest()
+        {
+            _closing.Cancel();
+
+            if (_testRun != null)
+                _testRun.Join();
+        }
+
+        private async Task TestAsync()
+        {
+            var connectionString = _connectionString.Text.Trim();
+            var databaseType     = SelectedDatabase != null ? SelectedDatabase.Name : DatabaseTarget.Default.Name;
+
+            _test.IsEnabled = false;
+            Report("Connecting...", false);
+
+            try
+            {
+                await TaskScheduler.Default;
+
+                var runner = new ProcessRunner();
+                var status = await new EfrpgToolGate(runner).CheckAsync(_closing.Token);
+                var result = await new EfrpgSchemaReader(runner, status.ExecutablePath)
+                    .ReadAsync(databaseType, connectionString, _closing.Token);
+
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(_closing.Token);
+
+                Report(Describe(result), !result.Succeeded);
+            }
+            catch (OperationCanceledException)
+            {
+                // The dialog was closed while the read was in flight. There is nobody left to tell.
+            }
+            catch (Exception ex)
+            {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                Report(ex.Message, true);
+            }
+            finally
+            {
+                if (!_closing.IsCancellationRequested)
+                    _test.IsEnabled = true;
+            }
+        }
+
+        private static string Describe(SchemaReadResult result)
+        {
+            if (!result.Succeeded)
+                return result.Error;
+
+            var schema = result.Schema;
+            var summary = "Connected. " +
+                          Plural(schema.Count(DatabaseObjectKind.Table), "table") + ", " +
+                          Plural(schema.Count(DatabaseObjectKind.View), "view") + ", " +
+                          Plural(schema.Count(DatabaseObjectKind.StoredProcedure), "stored procedure") + ", " +
+                          Plural(schema.Count(DatabaseObjectKind.Function), "function") + ".";
+
+            if (!schema.CanReadStoredProcedures)
+                summary += " This login cannot read stored procedure definitions.";
+
+            if (schema.Errors.Count > 0)
+                summary += " " + Plural(schema.Errors.Count, "warning") + ": " + schema.Errors[0];
+
+            return summary;
+        }
+
+        private static string Plural(int count, string noun)
+        {
+            return count + " " + noun + (count == 1 ? string.Empty : "s");
+        }
+
+        /// <summary>
+        ///     One line under the buttons, in the theme's error colour when it is bad news and the ordinary text
+        ///     colour when it is not.
+        /// </summary>
+        private void Report(string message, bool isProblem)
+        {
+            _validation.Text = message;
+            _validation.SetResourceReference(TextBlock.ForegroundProperty, isProblem
+                ? EnvironmentColors.ToolWindowValidationErrorTextBrushKey
+                : EnvironmentColors.ToolWindowTextBrushKey);
         }
 
         /// <summary>
@@ -157,9 +275,17 @@ namespace EntityFramework_Reverse_POCO_Generator
             };
             cancel.Click += (s, e) => { Confirmed = false; DialogResult = false; Close(); };
 
-            var buttons = new StackPanel { Orientation = Orientation.Horizontal, HorizontalAlignment = HorizontalAlignment.Right };
-            buttons.Children.Add(_ok);
-            buttons.Children.Add(cancel);
+            var confirm = new StackPanel { Orientation = Orientation.Horizontal, HorizontalAlignment = HorizontalAlignment.Right };
+            confirm.Children.Add(_ok);
+            confirm.Children.Add(cancel);
+
+            // Test on the left, away from the buttons that dismiss the dialog: it is the one button here that can
+            // be pressed repeatedly, and it must not sit where a hurried double-click on OK would land.
+            var buttons = new DockPanel { LastChildFill = false };
+            DockPanel.SetDock(_test, Dock.Left);
+            DockPanel.SetDock(confirm, Dock.Right);
+            buttons.Children.Add(_test);
+            buttons.Children.Add(confirm);
 
             var body = new StackPanel { Margin = new Thickness(16) };
             body.Children.Add(new TextBlock
@@ -185,8 +311,16 @@ namespace EntityFramework_Reverse_POCO_Generator
                 Opacity = 0.75,
                 Margin = new Thickness(0, 0, 0, 12)
             });
-            body.Children.Add(Label("DbContext name"));
-            body.Children.Add(_dbContextName);
+            body.Children.Add(TwoColumns(
+                Label("DbContext name"), _dbContextName,
+                Label("Namespace"), _namespace));
+            body.Children.Add(new TextBlock
+            {
+                Text = "Leave the namespace blank to use the namespace of the project the .tt sits in.",
+                TextWrapping = TextWrapping.Wrap,
+                Opacity = 0.75,
+                Margin = new Thickness(0, 4, 0, 0)
+            });
             body.Children.Add(new Border { Height = 14 });
             body.Children.Add(_validation);
             body.Children.Add(buttons);
@@ -236,12 +370,22 @@ namespace EntityFramework_Reverse_POCO_Generator
             var stillPlaceholder = _connectionString.Text.IndexOf(
                 TemplateSettingsFile.Placeholder, StringComparison.Ordinal) >= 0;
 
-            _validation.Text = stillPlaceholder
-                ? "Replace every " + TemplateSettingsFile.Placeholder + " above" +
-                  (_isNewTemplate ? ", or press Skip to edit the .tt yourself." : ".")
-                : string.Empty;
+            var hasConnectionString = _connectionString.Text.Trim().Length > 0;
+            var canConnect          = !stillPlaceholder && hasConnectionString;
+            var namespaceIsValid    = Result.HasValidNamespace;
 
-            _ok.IsEnabled = !stillPlaceholder && _connectionString.Text.Trim().Length > 0;
+            if (stillPlaceholder)
+                Report("Replace every " + TemplateSettingsFile.Placeholder + " above" +
+                       (_isNewTemplate ? ", or press Skip to edit the .tt yourself." : "."), true);
+            else if (!namespaceIsValid)
+                Report("A namespace must be one or more identifiers separated by dots, such as Accounts.Billing.", true);
+            else
+                Report(string.Empty, false);
+
+            _ok.IsEnabled   = canConnect && namespaceIsValid;
+
+            // Testing does not care about the namespace, only about reaching the database.
+            _test.IsEnabled = canConnect;
         }
     }
 }

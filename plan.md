@@ -388,11 +388,12 @@ route the unit tests use.
 - [ ] `ReversePocoWizard : Microsoft.VisualStudio.TemplateWizard.IWizard`
 - [ ] Wire it into `MyTemplate.vstemplate` via `<WizardExtension>` -
       **through `BuildTT/VersionSetter.cs:UpdateVstemplate`**, which also regenerates that file wholesale
-- [x] `RunStarted`: tool gate → connection dialog, then re-run the T4 (test connection still to do)
-- [ ] Shell out to `efrpg --secrets-stdin` for the schema (same binary and wire format the template uses)
+- [x] `RunStarted`: tool gate → connection dialog, then re-run the T4
+- [x] Shell out to `efrpg --secrets-stdin` for the schema (same binary and wire format the template uses)
+- [x] **Test connection** button, reporting what was found rather than a bare OK
 - [ ] Checkbox tree: tables, views, stored procedures
 - [x] Fields: database type, template type, connection string, DbContext name - see below
-- [ ] Fields: namespace
+- [x] Fields: namespace
 - [x] Write the answers into the generated `.tt` - see below, this is *not* `replacementsDictionary`
 - [x] ~~Flip `ReplaceParameters` to `true`~~ - deliberately not done, see below
 - [x] `Database.tt` confirmed to contain **zero `$` characters**, so it stays token-safe if this is ever
@@ -492,6 +493,42 @@ So: when the document is open, replace the buffer and `Document.Save()`. The sav
 and it is the same path the user takes by hand, which is the one Visual Studio supports best. Only when the
 document is *not* open is the file written directly, and then `RunCustomTool` is asked to run - falling back to
 reassigning the `CustomTool` property, because `VSProjectItem` is not available in every project system.
+
+### Testing the connection runs the real thing
+
+**Test connection** invokes the same `efrpg` binary, with the same flags and the same wire format the T4 uses on
+save. Opening a `SqlConnection` in the dialog instead would prove something subtly different from what happens at
+generation time, which is what *"it tested fine but generation fails"* is made of. It reports the object counts -
+*24 tables, 3 views, 15 stored procedures* - because the question behind the question is almost always "did I point
+it at the right database", which a bare "OK" does not answer.
+
+The pieces, all in `Efrpg.Gui.Core` and all unit tested against the captured wire payload in
+`Generator.Tests.Unit/WireContract/`:
+
+- `IProcessRunner` gained a `standardInput` parameter. **The connection string goes over stdin, never on the
+  command line** - command lines are captured by process listings and by command-line audit logging (Sysmon event
+  1, EDR telemetry, ETW), which forwards them to a SIEM and to everyone with access to one. A test asserts the
+  database name appears in stdin and *not* in the arguments.
+- `SecretsXml` is **linked** into `Efrpg.Gui.Core` from `Generator/Readers/`, not copied. It has to produce
+  byte-identical XML to what the tool parses, and a second copy would be free to drift; compiling the one source
+  file into both assemblies is the only way to share it across the net48/netstandard2.0 line.
+- `DatabaseSchema.Parse` is a **name extractor, not a second `EfrpgResultXmlReader`**. It reads four attributes and
+  ignores everything else - which is also what lets a newer tool serve an older GUI. The real reader builds the
+  generator's whole object model and has to stay under `Generator/` for BuildTT to concatenate.
+- The executable path comes from `EfrpgToolGate`, never resolved again. That is the PATH trap below, already
+  solved once.
+
+Every row under `Tables` in the payload is a *column*, so the same table appears once per column and is collapsed;
+synonyms are skipped, being aliases for something already listed. That is the data the object picker needs, so the
+picker is now a UI job rather than a plumbing one.
+
+### Namespace is not a string setting
+
+`Settings.Namespace` ships as the bare identifier `DefaultNamespace` and becomes a quoted string only once
+somebody overrides it, so neither the string setter nor the enum setter can touch it. `TrySetExpression` replaces
+the whole right-hand side, and `TemplateConfiguration` validates the namespace against dotted identifiers before
+anything is written - what goes there becomes C# in the `.tt`, and an invalid value is left alone rather than
+written and broken. Clearing the field puts `DefaultNamespace` back.
 
 ### The dialog is reachable again after the file exists
 

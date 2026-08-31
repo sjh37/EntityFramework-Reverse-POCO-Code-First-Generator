@@ -10,6 +10,16 @@ namespace Efrpg.Gui
     /// </summary>
     public interface IProcessRunner
     {
-        Task<ProcessResult> RunAsync(string fileName, string arguments, CancellationToken cancellationToken);
+        /// <summary>
+        ///     Runs a process to completion. <paramref name="standardInput"/> is written to its stdin and stdin is
+        ///     then closed; pass null for a process that reads none.
+        /// </summary>
+        /// <remarks>
+        ///     stdin exists on this interface for one reason: the efrpg tool takes connection strings that way
+        ///     rather than on the command line, so they never reach a process listing or the command-line audit
+        ///     trail that Sysmon, EDR agents and ETW tracing forward to a SIEM.
+        /// </remarks>
+        Task<ProcessResult> RunAsync(string fileName, string arguments, string standardInput,
+            CancellationToken cancellationToken);
     }
 }

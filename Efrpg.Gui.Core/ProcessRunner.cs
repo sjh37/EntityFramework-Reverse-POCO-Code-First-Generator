@@ -20,11 +20,13 @@ namespace Efrpg.Gui
     /// </remarks>
     public sealed class ProcessRunner : IProcessRunner
     {
-        public async Task<ProcessResult> RunAsync(string fileName, string arguments, CancellationToken cancellationToken)
+        public async Task<ProcessResult> RunAsync(string fileName, string arguments, string standardInput,
+            CancellationToken cancellationToken)
         {
             var startInfo = new ProcessStartInfo(fileName, arguments)
             {
                 UseShellExecute        = false,
+                RedirectStandardInput  = standardInput != null,
                 RedirectStandardOutput = true,
                 RedirectStandardError  = true,
                 CreateNoWindow         = true,
@@ -56,6 +58,8 @@ namespace Efrpg.Gui
                 process.BeginOutputReadLine();
                 process.BeginErrorReadLine();
 
+                Write(process, standardInput);
+
                 using (cancellationToken.Register(() => Kill(process)))
                 {
                     var exitCode = await exited.Task.ConfigureAwait(false);
@@ -66,6 +70,27 @@ namespace Efrpg.Gui
                     return ProcessResult.Completed(exitCode, standardOutput.ToString(), standardError.ToString());
                 }
             }
+        }
+
+        /// <summary>
+        ///     Writes stdin and closes it, after output draining has started.
+        /// </summary>
+        /// <remarks>
+        ///     Order matters: a tool that fills the stdout pipe while the parent is still writing stdin deadlocks,
+        ///     and closing is not optional - the tool's own ReadToEnd never returns until stdin reaches end of
+        ///     stream. Written as UTF-8 bytes to the underlying stream because there is no StandardInputEncoding on
+        ///     this target, and the tool decodes UTF-8.
+        /// </remarks>
+        private static void Write(Process process, string standardInput)
+        {
+            if (standardInput == null)
+                return;
+
+            var bytes = Encoding.UTF8.GetBytes(standardInput);
+
+            process.StandardInput.BaseStream.Write(bytes, 0, bytes.Length);
+            process.StandardInput.BaseStream.Flush();
+            process.StandardInput.Close();
         }
 
         private static void Append(StringBuilder builder, string line)

@@ -69,6 +69,40 @@ namespace Efrpg.Gui
         }
 
         /// <summary>
+        ///     Returns the whole right-hand side of a single-line setting, exactly as written, or null.
+        /// </summary>
+        /// <remarks>
+        ///     For the settings that are neither a string literal nor a Type.Member enum. Settings.Namespace is
+        ///     the one that matters: it ships as <c>DefaultNamespace</c>, a bare identifier, and a user who wants
+        ///     their own namespace replaces the identifier with a quoted string - so reading and writing it means
+        ///     handling both shapes.
+        /// </remarks>
+        public string GetExpression(string settingName)
+        {
+            var match = ExpressionPattern(settingName).Match(_text);
+
+            return match.Success ? match.Groups["value"].Value.Trim() : null;
+        }
+
+        /// <summary>
+        ///     Replaces the whole right-hand side of a single-line setting.
+        /// </summary>
+        /// <remarks>
+        ///     Whatever is passed goes into the .tt as code, so callers are responsible for it being valid C#.
+        ///     Nothing here can check that, which is why this is used for exactly one setting and why
+        ///     TemplateConfiguration validates the namespace before it gets here rather than after.
+        /// </remarks>
+        public bool TrySetExpression(string settingName, string expression)
+        {
+            if (string.IsNullOrWhiteSpace(expression))
+                return false;
+
+            var match = ExpressionPattern(settingName).Match(_text);
+
+            return match.Success && Replace(match.Groups["value"], expression);
+        }
+
+        /// <summary>
         ///     Replaces the value of a single-line string setting. Returns false and changes nothing when the setting
         ///     is absent, commented out, or not a plain string literal - a user who has replaced it with an
         ///     expression meant that, and silently overwriting it would be the worst thing this class could do.
@@ -121,6 +155,17 @@ namespace Efrpg.Gui
         {
             return new Regex(
                 @"(?<head>^[ \t]*Settings\." + Name(settingName) + @"[ \t]*=[ \t]*[A-Za-z_]\w*[ \t]*\.[ \t]*)(?<value>[A-Za-z_]\w*)(?<tail>[ \t]*;)",
+                RegexOptions.Multiline);
+        }
+
+        /// <summary>
+        ///     Everything between the equals sign and the semicolon, on one line. Anchored at the start of a line
+        ///     like the others, so a commented-out setting never matches.
+        /// </summary>
+        private static Regex ExpressionPattern(string settingName)
+        {
+            return new Regex(
+                @"(?<head>^[ \t]*Settings\." + Name(settingName) + @"[ \t]*=[ \t]*)(?<value>[^;\r\n]+)(?<tail>;)",
                 RegexOptions.Multiline);
         }
 

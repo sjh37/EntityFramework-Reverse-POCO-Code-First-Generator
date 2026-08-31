@@ -68,7 +68,7 @@ namespace Efrpg.Gui.Tests
             var settings = Shipped();
 
             new TemplateConfiguration(DatabaseTarget.Find("Oracle"), TemplateTarget.Find("Ef6"),
-                "Data Source=localhost:1521/pdb1;User Id=hr;Password=secret;", "HrDbContext").ApplyTo(settings);
+                "Data Source=localhost:1521/pdb1;User Id=hr;Password=secret;", "HrDbContext", "Hr.Data").ApplyTo(settings);
 
             Assert.That(settings.GetEnum("DatabaseType"), Is.EqualTo("Oracle"));
             Assert.That(settings.GetEnum("TemplateType"), Is.EqualTo("Ef6"));
@@ -76,6 +76,7 @@ namespace Efrpg.Gui.Tests
             Assert.That(settings.GetString("ConnectionString"), Is.EqualTo("Data Source=localhost:1521/pdb1;User Id=hr;Password=secret;"));
             Assert.That(settings.GetString("DbContextName"), Is.EqualTo("HrDbContext"));
             Assert.That(settings.GetString("ConnectionStringName"), Is.EqualTo("HrDbContext"));
+            Assert.That(settings.GetString("Namespace"), Is.EqualTo("Hr.Data"));
         }
 
         /// <summary>
@@ -88,10 +89,68 @@ namespace Efrpg.Gui.Tests
             var settings = Shipped();
 
             new TemplateConfiguration(DatabaseTarget.Default, TemplateTarget.Find("FileBasedEf6"),
-                "Data Source=(local);Initial Catalog=Northwind", "MyDbContext").ApplyTo(settings);
+                "Data Source=(local);Initial Catalog=Northwind", "MyDbContext", string.Empty).ApplyTo(settings);
 
             Assert.That(settings.GetEnum("TemplateType"), Is.EqualTo("FileBasedEf6"));
             Assert.That(settings.GetEnum("GeneratorType"), Is.EqualTo("Ef6"));
+        }
+
+        /// <summary>
+        ///     Settings.Namespace ships as the bare identifier DefaultNamespace, so writing a namespace has to
+        ///     replace the whole right-hand side rather than the contents of a literal that is not there.
+        /// </summary>
+        [Test]
+        public void ApplyTo_AnEmptyNamespaceRestoresDefaultNamespace()
+        {
+            var settings = Shipped();
+
+            new TemplateConfiguration(DatabaseTarget.Default, TemplateTarget.Default,
+                "Data Source=(local);Initial Catalog=Northwind", "MyDbContext", "Accounts.Billing").ApplyTo(settings);
+            Assert.That(settings.GetString("Namespace"), Is.EqualTo("Accounts.Billing"));
+
+            new TemplateConfiguration(DatabaseTarget.Default, TemplateTarget.Default,
+                "Data Source=(local);Initial Catalog=Northwind", "MyDbContext", string.Empty).ApplyTo(settings);
+
+            Assert.That(settings.GetExpression("Namespace"),
+                Is.EqualTo(TemplateConfiguration.DefaultNamespaceExpression));
+        }
+
+        [Test]
+        public void ReadFrom_TheShippedTemplateReportsNoNamespaceBecauseItUsesDefaultNamespace()
+        {
+            Assert.That(TemplateConfiguration.ReadFrom(Shipped(), "Fallback").Namespace, Is.Empty);
+        }
+
+        [TestCase("", true)]
+        [TestCase("Accounts", true)]
+        [TestCase("Accounts.Billing", true)]
+        [TestCase("_private.Thing1", true)]
+        [TestCase("Accounts.", false)]
+        [TestCase("1Accounts", false)]
+        [TestCase("Accounts Billing", false)]
+        [TestCase("\"; Settings.ConnectionString = \"x", false)]
+        public void HasValidNamespace_AcceptsOnlyDottedIdentifiers(string candidate, bool expected)
+        {
+            var configuration = new TemplateConfiguration(DatabaseTarget.Default, TemplateTarget.Default,
+                "Data Source=(local);Initial Catalog=Northwind", "MyDbContext", candidate);
+
+            Assert.That(configuration.HasValidNamespace, Is.EqualTo(expected));
+        }
+
+        /// <summary>
+        ///     What goes into Settings.Namespace becomes C# in the .tt, so anything that is not a namespace is
+        ///     left alone rather than written and broken.
+        /// </summary>
+        [Test]
+        public void ApplyTo_LeavesAnInvalidNamespaceAlone()
+        {
+            var settings = Shipped();
+
+            new TemplateConfiguration(DatabaseTarget.Default, TemplateTarget.Default,
+                "Data Source=(local);Initial Catalog=Northwind", "MyDbContext", "not a namespace").ApplyTo(settings);
+
+            Assert.That(settings.GetExpression("Namespace"),
+                Is.EqualTo(TemplateConfiguration.DefaultNamespaceExpression));
         }
 
         [Test]
@@ -100,7 +159,7 @@ namespace Efrpg.Gui.Tests
             var settings = Shipped();
 
             new TemplateConfiguration(DatabaseTarget.Default, TemplateTarget.Default,
-                "Data Source=(local);Initial Catalog=Northwind", string.Empty).ApplyTo(settings);
+                "Data Source=(local);Initial Catalog=Northwind", string.Empty, string.Empty).ApplyTo(settings);
 
             Assert.That(settings.GetString("DbContextName"), Is.EqualTo("MyDbContext"));
         }
@@ -115,7 +174,7 @@ namespace Efrpg.Gui.Tests
             const string connectionString = @"Data Source=.\SQLEXPRESS;Initial Catalog=Northwind;Password=a""b\";
 
             var settings = Shipped();
-            new TemplateConfiguration(DatabaseTarget.Default, TemplateTarget.Default, connectionString, "X")
+            new TemplateConfiguration(DatabaseTarget.Default, TemplateTarget.Default, connectionString, "X", string.Empty)
                 .ApplyTo(settings);
 
             Assert.That(settings.GetString("ConnectionString"), Is.EqualTo(connectionString));

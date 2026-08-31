@@ -73,12 +73,12 @@ namespace Efrpg.Gui
             var sdk = await CheckDotnetSdkAsync(cancellationToken).ConfigureAwait(false);
 
             var path    = ExecutableName;
-            var version = await _runner.RunAsync(path, "--version", cancellationToken).ConfigureAwait(false);
+            var version = await _runner.RunAsync(path, "--version", null, cancellationToken).ConfigureAwait(false);
 
             if (!version.Started && !string.IsNullOrEmpty(FallbackExecutablePath))
             {
                 path    = FallbackExecutablePath;
-                version = await _runner.RunAsync(path, "--version", cancellationToken).ConfigureAwait(false);
+                version = await _runner.RunAsync(path, "--version", null, cancellationToken).ConfigureAwait(false);
             }
 
             if (!version.Started)
@@ -99,19 +99,19 @@ namespace Efrpg.Gui
 
         public Task<ProcessResult> InstallAsync(CancellationToken cancellationToken)
         {
-            return _runner.RunAsync(Dotnet, "tool install -g " + PackageId, cancellationToken);
+            return _runner.RunAsync(Dotnet, "tool install -g " + PackageId, null, cancellationToken);
         }
 
         public Task<ProcessResult> UpdateAsync(CancellationToken cancellationToken)
         {
-            return _runner.RunAsync(Dotnet, "tool update -g " + PackageId, cancellationToken);
+            return _runner.RunAsync(Dotnet, "tool update -g " + PackageId, null, cancellationToken);
         }
 
         private async Task<DotnetSdk> CheckDotnetSdkAsync(CancellationToken cancellationToken)
         {
             // 'dotnet --version' prints the SDK version and fails when only a runtime is installed, which is exactly
             // the distinction that matters: 'dotnet tool install' needs the SDK.
-            var result = await _runner.RunAsync(Dotnet, "--version", cancellationToken).ConfigureAwait(false);
+            var result = await _runner.RunAsync(Dotnet, "--version", null, cancellationToken).ConfigureAwait(false);
 
             if (!result.Succeeded)
                 return new DotnetSdk(false, null);

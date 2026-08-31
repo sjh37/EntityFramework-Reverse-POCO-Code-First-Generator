@@ -11,4 +11,11 @@
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
   </PropertyGroup>
 
+  <ItemGroup>
+    <!-- Linked, not copied. This is the template side of the secrets exchange and has to produce byte-identical
+         XML to what the efrpg tool parses; a second copy would be free to drift. Compiling the one source file
+         into both assemblies is the only way to share it, because Generator is net48 and this is netstandard2.0. -->
+    <Compile Include="..\Generator\Readers\SecretsXml.cs" Link="Linked\SecretsXml.cs" />
+  </ItemGroup>
+
 </Project>

@@ -1,4 +1,5 @@
 using System;
+using System.Text.RegularExpressions;
 
 namespace Efrpg.Gui
 {
@@ -14,12 +15,13 @@ namespace Efrpg.Gui
     public sealed class TemplateConfiguration
     {
         public TemplateConfiguration(DatabaseTarget database, TemplateTarget template, string connectionString,
-            string dbContextName)
+            string dbContextName, string namespaceName)
         {
             Database         = database ?? throw new ArgumentNullException(nameof(database));
             Template         = template ?? throw new ArgumentNullException(nameof(template));
             ConnectionString = connectionString ?? string.Empty;
             DbContextName    = dbContextName ?? string.Empty;
+            Namespace        = (namespaceName ?? string.Empty).Trim();
         }
 
         public DatabaseTarget Database { get; }
@@ -30,11 +32,29 @@ namespace Efrpg.Gui
 
         public string DbContextName { get; }
 
+        /// <summary>
+        ///     The namespace for the generated code, or empty to keep the template's <c>DefaultNamespace</c>, which
+        ///     resolves at generation time to the namespace of the project the .tt sits in.
+        /// </summary>
+        public string Namespace { get; }
+
+        /// <summary>What the shipped template holds in Settings.Namespace, and what empty means here.</summary>
+        public const string DefaultNamespaceExpression = "DefaultNamespace";
+
+        private static readonly Regex NamespacePattern =
+            new Regex(@"^[A-Za-z_]\w*(\.[A-Za-z_]\w*)*$");
+
+        /// <summary>
+        ///     True when the namespace can be written into the .tt as a string literal without producing code that
+        ///     does not compile. An empty namespace is valid and means "leave it as DefaultNamespace".
+        /// </summary>
+        public bool HasValidNamespace => Namespace.Length == 0 || NamespacePattern.IsMatch(Namespace);
+
         /// <summary>What a brand-new template should open on: the shipped defaults, with a name derived from the file.</summary>
         public static TemplateConfiguration ForNewTemplate(string dbContextName)
         {
             return new TemplateConfiguration(DatabaseTarget.Default, TemplateTarget.Default,
-                DatabaseTarget.Default.ConnectionString, dbContextName);
+                DatabaseTarget.Default.ConnectionString, dbContextName, string.Empty);
         }
 
         /// <summary>
@@ -57,7 +77,20 @@ namespace Efrpg.Gui
                 database,
                 template,
                 settings.GetString("ConnectionString") ?? database.ConnectionString,
-                settings.GetString("DbContextName") ?? fallbackDbContextName);
+                settings.GetString("DbContextName") ?? fallbackDbContextName,
+                ReadNamespace(settings));
+        }
+
+        /// <summary>
+        ///     Settings.Namespace ships as the bare identifier <c>DefaultNamespace</c> and becomes a quoted string
+        ///     once somebody overrides it, so both shapes have to be understood. Anything else - a concatenation, a
+        ///     call - reads back as empty, which leaves <see cref="ApplyTo"/> declining to touch it.
+        /// </summary>
+        private static string ReadNamespace(TemplateSettingsFile settings)
+        {
+            var literal = settings.GetString("Namespace");
+
+            return literal ?? string.Empty;
         }
 
         /// <summary>
@@ -84,7 +117,26 @@ namespace Efrpg.Gui
                 settings.TrySetString("ConnectionStringName", DbContextName);
             }
 
+            WriteNamespace(settings);
+
             return settings.Text;
+        }
+
+        /// <summary>
+        ///     Writes Settings.Namespace, switching the right-hand side between a quoted string and the bare
+        ///     <c>DefaultNamespace</c> identifier rather than only replacing a literal.
+        /// </summary>
+        /// <remarks>
+        ///     An invalid namespace is left alone rather than written. What goes here becomes C# in the .tt, and a
+        ///     user who has replaced the setting with an expression of their own gets to keep it.
+        /// </remarks>
+        private void WriteNamespace(TemplateSettingsFile settings)
+        {
+            if (!HasValidNamespace)
+                return;
+
+            settings.TrySetExpression("Namespace",
+                Namespace.Length == 0 ? DefaultNamespaceExpression : "\"" + Namespace + "\"");
         }
     }
 }

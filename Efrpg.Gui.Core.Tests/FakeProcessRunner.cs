@@ -19,6 +19,12 @@ namespace Efrpg.Gui.Tests
         /// </summary>
         public List<string> Calls { get; } = new();
 
+        /// <summary>
+        ///     What was written to each process's stdin, so a test can prove the connection string went there and
+        ///     not onto the command line.
+        /// </summary>
+        public List<string> StandardInput { get; } = new();
+
         public FakeProcessRunner Answer(string fileName, string arguments, ProcessResult result)
         {
             _answers[Key(fileName, arguments)] = result;
@@ -29,9 +35,11 @@ namespace Efrpg.Gui.Tests
         ///     Anything not explicitly answered is treated as "no such executable", which is the honest default: a
         ///     machine without the tool is exactly a machine where Process.Start throws.
         /// </summary>
-        public Task<ProcessResult> RunAsync(string fileName, string arguments, CancellationToken cancellationToken)
+        public Task<ProcessResult> RunAsync(string fileName, string arguments, string standardInput,
+            CancellationToken cancellationToken)
         {
             Calls.Add(Key(fileName, arguments));
+            StandardInput.Add(standardInput);
 
             return Task.FromResult(_answers.TryGetValue(Key(fileName, arguments), out var result)
                 ? result
