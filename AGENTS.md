@@ -172,9 +172,24 @@ Order matters at three points; the rest is ordinary.
    it concatenates - but the compiled assembly is not.
 8. **Run the `*.tt` files, then the tests** (see Testing Patterns). Generated output feeds the tests, so the
    order is not negotiable.
-9. **Build the VSIX in Release.** Output is
+9. **Rebuild the VSIX in Release - `-t:Rebuild`, never an incremental build.** Output is
    `EntityFramework Reverse POCO Generator\bin\Release\EntityFramework Reverse POCO Generator.vsix`.
-10. **Commit and tag**, then upload the `.vsix` to the marketplace.
+   `dotnet build` cannot build this project at all - it needs the VSSDK targets - so use the VS MSBuild at
+   `C:\Program Files\Microsoft Visual Studio\18\Community\MSBuild\Current\Bin\MSBuild.exe`, first with
+   `-t:Restore`, then with `-t:Rebuild -p:Configuration=Release`.
+10. **Verify the version inside the `.vsix`**, which is a zip: `extension.vsixmanifest` must carry the new
+    version in **both** `<Identity Version="...">` and the `Microsoft.VisualStudio.Assembly` asset's
+    `AssemblyName`. See below for why this is a separate step.
+11. **Commit and tag**, then upload the `.vsix` to the marketplace.
+
+**An incremental Release build ships a stale manifest.** The VSSDK does not always regenerate
+`extension.vsixmanifest` when only `source.extension.vsixmanifest` has changed, so the `.vsix` gets the
+*previous* version stamped into the `Microsoft.VisualStudio.Assembly` asset while containing the *new*
+assembly. `MyTemplate.vstemplate` asks for the new one by full name, nothing registers it, and adding a `.tt`
+fails with *"this template attempted to load component assembly ... Version=x.y.z"* - naming the version that
+is correct, which sends you looking in the wrong place entirely. The extension installs fine and the menu
+command still works, because only the `IWizard` lookup goes through that asset. `-t:Rebuild` and the check
+above are the whole fix.
 
 **Never change the extension identity.** `source.extension.vsixmanifest` carries
 `Id="EntityFramework_Reverse_POCO_Generator..d542a934-8bd6-4136-b490-5f0049d62033"` and the project's

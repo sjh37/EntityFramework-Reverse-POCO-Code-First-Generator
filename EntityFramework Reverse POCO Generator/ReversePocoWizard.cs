@@ -4,6 +4,7 @@ using System.IO;
 using System.Threading;
 using EnvDTE;
 using Efrpg.Gui;
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.TemplateWizard;
 using VSLangProj;
 
@@ -92,6 +93,8 @@ namespace EntityFramework_Reverse_POCO_Generator
         /// </summary>
         private void ApplyAnswers()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             if (_templatePath == null || _connectionString == null || !File.Exists(_templatePath))
                 return;
 
@@ -168,6 +171,10 @@ namespace EntityFramework_Reverse_POCO_Generator
         /// </summary>
         public void ProjectItemFinishedGenerating(ProjectItem projectItem)
         {
+            // Every IWizard callback runs on the UI thread, so this always holds - the analyser just
+            // wants it stated before anything touches the DTE object model.
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             if (projectItem == null)
                 return;
 
@@ -192,6 +199,8 @@ namespace EntityFramework_Reverse_POCO_Generator
 
         public void RunFinished()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             ApplyAnswers();
         }
 
@@ -210,6 +219,8 @@ namespace EntityFramework_Reverse_POCO_Generator
         /// </remarks>
         private void Regenerate()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             try
             {
                 var vsProjectItem = _templateItem.Object as VSProjectItem;
