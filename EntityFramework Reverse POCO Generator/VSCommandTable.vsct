@@ -31,6 +31,16 @@
         </Strings>
       </Button>
 
+      <Button guid="EfrpgCommandSet" id="UpgradeToV4Command" priority="0x0150" type="Button">
+        <Parent guid="EfrpgCommandSet" id="ItemNodeGroup" />
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultInvisible</CommandFlag>
+        <Strings>
+          <ButtonText>Reverse POCO: Upgrade this template to v4...</ButtonText>
+          <LocCanonicalName>.ReversePoco.UpgradeToV4</LocCanonicalName>
+        </Strings>
+      </Button>
+
       <Button guid="EfrpgCommandSet" id="CheckEfrpgToolCommand" priority="0x0200" type="Button">
         <Parent guid="EfrpgCommandSet" id="ItemNodeGroup" />
         <CommandFlag>DynamicVisibility</CommandFlag>
@@ -49,6 +59,7 @@
     <GuidSymbol name="EfrpgCommandSet" value="{9c2e5b41-0d3a-4c7e-8f16-4a5d9e0b7c23}">
       <IDSymbol name="ItemNodeGroup" value="0x0001" />
       <IDSymbol name="ConfigureTemplateCommand" value="0x0100" />
+      <IDSymbol name="UpgradeToV4Command" value="0x0102" />
       <IDSymbol name="CheckEfrpgToolCommand" value="0x0101" />
     </GuidSymbol>
   </Symbols>

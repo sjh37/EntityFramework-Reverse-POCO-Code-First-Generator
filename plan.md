@@ -565,18 +565,40 @@ The v3 to v4 migration is four mechanical edits - the same ones in the upgrade g
 the anchored span edits this GUI already does. **Getting the v3 base onto v4 is what makes the `efrpg` tool
 ubiquitous**, which matters given the licence check lives there.
 
-- [ ] Its own `.vsct` command, offered only when a v3 file is selected
+- [x] Its own `.vsct` command, offered only when a v3 file is selected
 - [ ] Prompt unprompted the first time a v3 template is opened after the extension updates
-- [ ] Change the include directive to `EF.Reverse.POCO.v4.ttinclude`
-- [ ] Delete the `Settings.FileManagerType` assignment
-- [ ] Delete the `Settings.DatabaseReaderPlugin` assignment - same class of breakage, and it was missing from
+- [x] Change the include directive to `EF.Reverse.POCO.v4.ttinclude`
+- [x] Delete the `Settings.FileManagerType` assignment
+- [x] Delete the `Settings.DatabaseReaderPlugin` assignment - same class of breakage, and it was missing from
       this list until a v3.14.1 file was actually diffed against v4
-- [ ] Rewrite `if (Settings.GenerateSeparateFiles && Settings.FileManagerType == FileManagerType.EfCore)`
+- [x] Rewrite `if (Settings.GenerateSeparateFiles && Settings.FileManagerType == FileManagerType.EfCore)`
       to `if (Settings.GenerateSeparateFiles)`
-- [ ] Replace the entry-point block with the `EfrpgToolRunner.ReadDatabase` version
-- [ ] Replace `DatabaseReader.CleanUp` with `NamingHelper.CleanUp` if present
-- [ ] Show a diff preview and require confirmation before writing
-- [ ] **If the file does not match the expected shape exactly, refuse** and link to the upgrade guide
+- [x] Replace the entry-point block with the `EfrpgToolRunner.ReadDatabase` version
+- [x] Replace `DatabaseReader.CleanUp` with `NamingHelper.CleanUp` if present
+- [x] Show a diff preview and require confirmation before writing
+- [x] **If the file does not match the expected shape exactly, refuse** and link to the upgrade guide
+
+### How it was built
+
+`TemplateUpgrade` in `Efrpg.Gui.Core`, tested against a **real v3.14.1 `Database.tt`** recovered from the commit
+before database reading moved into the tool (`Efrpg.Gui.Core.Tests/Fixtures/`), not a reconstruction of one.
+
+Three things are worth knowing:
+
+- **The entry point is compared by statement, not by text.** Blank lines and comments are stripped from the tail
+  before it is matched, so a file carrying its own commented-out notes inside that block still upgrades - which is
+  exactly what tripped the first pass when the 24 in-repo templates were migrated - while a genuinely restructured
+  one is refused.
+- **A leftover reference to a removed name is a refusal.** After the edits, any remaining `FileManagerType`,
+  `DatabaseReaderPlugin` or `DatabaseReader.` means the file mentions them somewhere this does not know how to
+  change, and the result would not compile. Those checks run only when nothing else already failed, so a refused
+  entry point does not also report the `FileManagerFactory.GetFileManagerType()` still inside it.
+- **`V4EntryPoint` is guarded against BuildTT.** A test asserts the constant is byte for byte the tail of the
+  shipped `Database.tt`, so a change to BuildTT's footer fails the build rather than leaving the upgrade emitting
+  last year's code.
+
+Line endings are preserved: a CRLF template stays CRLF and an LF one stays LF, because a whole-file line ending
+change shows up as every line differing in the user's next commit.
 
 **The full v3 to v4 delta, from diffing a real v3.14.1 `Database.tt`.** 18 blocks differ, and they split into
 two groups that must be treated differently.

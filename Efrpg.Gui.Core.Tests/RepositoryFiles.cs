@@ -40,6 +40,16 @@ namespace Efrpg.Gui.Tests
         }
 
         /// <summary>
+        ///     A real v3.14.1 Database.tt, recovered from the commit before database reading moved into the
+        ///     efrpg tool. The upgrade is tested against the file customers actually have, not a reconstruction.
+        /// </summary>
+        public static string V3Template()
+        {
+            return File.ReadAllText(Path.Combine(RepositoryRoot.Value,
+                "Efrpg.Gui.Core.Tests", "Fixtures", "Database.v3.14.1.tt"));
+        }
+
+        /// <summary>
         ///     A real efrpg payload, captured from the EfrpgTest database and kept as the wire contract fixture.
         /// </summary>
         /// <remarks>

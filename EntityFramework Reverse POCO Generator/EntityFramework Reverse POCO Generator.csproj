@@ -131,6 +131,8 @@
     <Compile Include="ConnectionDialog.cs" />
     <Compile Include="SolutionSelection.cs" />
     <Compile Include="TemplateFileUpdater.cs" />
+    <Compile Include="UpgradePreviewDialog.cs" />
+    <Compile Include="UpgradeToV4Command.cs" />
     <Compile Include="EfrpgPackage.cs" />
     <Compile Include="VSCommandTable.cs" />
     <Compile Include="EfrpgToolGateDialog.cs" />
