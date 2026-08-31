@@ -19,6 +19,10 @@ namespace Efrpg.Gui.Tests
             "    Settings.ConnectionString             = \"Data Source=(local);Initial Catalog=**TODO**;Integrated Security=True\"; // reverse engineer your database\r\n" +
             "    Settings.DbContextName                = \"MyDbContext\"; // Class name for the DbContext\r\n" +
             "    //Settings.DbContextInterfaceName     = \"IMyDbContext\"; // Defaults to \"I\" + DbContextName\r\n" +
+            "    Settings.GeneratorType                = GeneratorType.EfCore; // EfCore, Ef6, Custom\r\n" +
+            "    Settings.TemplateFolder               = Path.Combine(Settings.Root, \"Templates\");\r\n" +
+            "    Settings.CommentsStyle                = CommentsStyle.AtEndOfField | CommentsStyle.InSummaryBlock;\r\n" +
+            "    //Settings.ColumnOrder                = OrderProperties.Alphabetical;\r\n" +
             "#>\r\n";
 
         [Test]
@@ -132,6 +136,118 @@ namespace Efrpg.Gui.Tests
             var writer = new TemplateSettingWriter(Template);
 
             var written = writer.TrySetString("NoSuchSetting", "x");
+
+            Assert.That(written, Is.False);
+            Assert.That(writer.Text, Is.EqualTo(Template));
+        }
+
+        [Test]
+        public void TrySetEnum_WritesTheMemberAndLeavesTheTypeNameAlone()
+        {
+            var writer = new TemplateSettingWriter(Template);
+
+            var written = writer.TrySetEnum("DatabaseType", "Oracle");
+
+            Assert.That(written, Is.True);
+            Assert.That(writer.Text, Does.Contain(
+                "    Settings.DatabaseType                 = DatabaseType.Oracle; // SqlServer, SQLite, PostgreSQL"));
+        }
+
+        [Test]
+        public void TrySetEnum_ChangesExactlyOneLine()
+        {
+            var writer = new TemplateSettingWriter(Template);
+
+            writer.TrySetEnum("GeneratorType", "Ef6");
+
+            var before = Template.Split('\n');
+            var after  = writer.Text.Split('\n');
+            var changed = 0;
+            for (var i = 0; i < before.Length; i++)
+                if (before[i] != after[i])
+                    changed++;
+
+            Assert.That(after.Length, Is.EqualTo(before.Length), "The line count must not change.");
+            Assert.That(changed, Is.EqualTo(1), "Exactly one line may differ.");
+        }
+
+        /// <summary>
+        ///     A string setting written as an enum would produce Settings.DbContextName = MyDbContext; which does
+        ///     not compile.
+        /// </summary>
+        [Test]
+        public void TrySetEnum_RefusesAStringSetting()
+        {
+            var writer = new TemplateSettingWriter(Template);
+
+            var written = writer.TrySetEnum("DbContextName", "Whatever");
+
+            Assert.That(written, Is.False);
+            Assert.That(writer.Text, Is.EqualTo(Template));
+        }
+
+        /// <summary>
+        ///     A combination of flags is a deliberate choice. Replacing it with a single member would silently drop
+        ///     everything the user had turned on.
+        /// </summary>
+        [Test]
+        public void TrySetEnum_RefusesACombinationOfFlags()
+        {
+            var writer = new TemplateSettingWriter(Template);
+
+            var written = writer.TrySetEnum("CommentsStyle", "None");
+
+            Assert.That(written, Is.False);
+            Assert.That(writer.Text, Is.EqualTo(Template));
+        }
+
+        /// <summary>Path.Combine(...) looks like Type.Member up to the point the argument list starts.</summary>
+        [Test]
+        public void TrySetEnum_RefusesAMethodCall()
+        {
+            var writer = new TemplateSettingWriter(Template);
+
+            var written = writer.TrySetEnum("TemplateFolder", "Combine");
+
+            Assert.That(written, Is.False);
+            Assert.That(writer.Text, Is.EqualTo(Template));
+        }
+
+        [Test]
+        public void TrySetEnum_LeavesACommentedOutSettingAlone()
+        {
+            var writer = new TemplateSettingWriter(Template);
+
+            var written = writer.TrySetEnum("ColumnOrder", "Alphabetical");
+
+            Assert.That(written, Is.False);
+            Assert.That(writer.Text, Is.EqualTo(Template));
+        }
+
+        /// <summary>
+        ///     Anything but a bare identifier would be injected into the .tt as code, and there is nothing sensible
+        ///     to escape it to.
+        /// </summary>
+        [TestCase("Oracle; Settings.Namespace = \"pwned\"")]
+        [TestCase("Some.Thing")]
+        [TestCase("")]
+        [TestCase(" ")]
+        public void TrySetEnum_RefusesAnythingThatIsNotAnIdentifier(string memberName)
+        {
+            var writer = new TemplateSettingWriter(Template);
+
+            var written = writer.TrySetEnum("DatabaseType", memberName);
+
+            Assert.That(written, Is.False);
+            Assert.That(writer.Text, Is.EqualTo(Template));
+        }
+
+        [Test]
+        public void TrySetEnum_UnknownSettingChangesNothing()
+        {
+            var writer = new TemplateSettingWriter(Template);
+
+            var written = writer.TrySetEnum("NoSuchSetting", "Whatever");
 
             Assert.That(written, Is.False);
             Assert.That(writer.Text, Is.EqualTo(Template));

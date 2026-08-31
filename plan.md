@@ -391,7 +391,8 @@ route the unit tests use.
 - [x] `RunStarted`: tool gate → connection dialog, then re-run the T4 (test connection still to do)
 - [ ] Shell out to `efrpg --secrets-stdin` for the schema (same binary and wire format the template uses)
 - [ ] Checkbox tree: tables, views, stored procedures
-- [ ] Fields: DbContext name (done), namespace, EF version, database type
+- [x] Fields: database type, template type, connection string, DbContext name - see below
+- [ ] Fields: namespace
 - [x] Write the answers into the generated `.tt` - see below, this is *not* `replacementsDictionary`
 - [x] ~~Flip `ReplaceParameters` to `true`~~ - deliberately not done, see below
 - [x] `Database.tt` confirmed to contain **zero `$` characters**, so it stays token-safe if this is ever
@@ -414,12 +415,37 @@ inventing a second mechanism that Phase 3 would then replace.
 `TemplateSettingWriter` lives in `Efrpg.Gui.Core` and is unit tested, including **against the real shipped
 `Database.tt`** rather than only a fixture - so if BuildTT ever changes how those settings are emitted, the
 tests fail before a user meets a mangled template. It refuses anything that is not a single-line string
-literal: a commented-out setting means "not this one", and an enum or an expression would be turned into
-something that does not compile. Backslashes are escaped, because `Data Source=.\SQLEXPRESS` is the common case
-and an unescaped one produces a `.tt` that fails far from where it was written.
+literal or a single-line `Type.Member` enum assignment. Everything else is refused rather than mangled: a
+commented-out setting means "not this one", and a combination of flags, a method call or an expression would
+be turned into something that does not compile. Backslashes are escaped, because `Data Source=.\SQLEXPRESS` is
+the common case and an unescaped one produces a `.tt` that fails far from where it was written.
 
 Skipping the dialog is always allowed. The template with the placeholder still in it is a working starting
 point, and a wizard that will not let you out is worse than one that asks nothing.
+
+### The database type is chosen before the connection string, not after
+
+Oracle, PostgreSQL, MySQL and SQL Server share no connection-string keywords at all - Oracle wants
+`Data Source=host:port/service`, PostgreSQL wants `Server=;Port=;Database=`. An Oracle user handed a SQL Server
+connection string is no better off than one handed the placeholder, so the database dropdown sits above the
+connection box and fills it with the right skeleton. Every default carries `**TODO**` wherever the user has to
+supply something, and OK stays disabled until all of them are gone.
+
+Switching database swaps the connection string only while the box still holds an untouched default. Picking the
+database is almost always the first thing a non-SQL-Server user does, so the swap happens exactly when it is
+wanted; someone who has typed a connection string and then switches keeps their text rather than losing it.
+
+**`TemplateType` and `GeneratorType` are written together, never separately.** The generator keeps the two
+settings independent - nothing derives one from the other - so an `Ef6` template left with the default `EfCore`
+generator produces code that does not compile, a long way from the dialog that caused it. `TemplateTarget` holds
+the pairing and `TemplateTargetTests` checks every one of them.
+
+`DatabaseTarget` and `TemplateTarget` identify their values by **enum member name**, not by `Efrpg.DatabaseType`
+and `Efrpg.Templates.TemplateType` themselves: those live in the net48 `Generator` project and `Efrpg.Gui.Core`
+is netstandard2.0, so it cannot reference them. The name is what gets written into the `.tt` in any case. Drift
+is caught by testing both lists against the `enumMembers` recorded in **`settings-metadata.v4.json`** - the
+Phase 0 artefact, doing a second job. A database or template type added to the generator and left out of the
+dropdown fails the build rather than quietly going missing from the UI.
 
 **The T4 runs before the wizard finishes, so it has to be re-run.** Adding a `.tt` to a project fires its
 custom tool immediately - well before `RunFinished` - so the first generated `.cs` is always the efrpg tool's

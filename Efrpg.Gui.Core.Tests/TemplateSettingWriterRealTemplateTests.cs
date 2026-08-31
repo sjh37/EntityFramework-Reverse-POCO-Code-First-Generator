@@ -1,5 +1,3 @@
-using System;
-using System.IO;
 using System.Linq;
 using Efrpg.Gui;
 using NUnit.Framework;
@@ -20,15 +18,7 @@ namespace Efrpg.Gui.Tests
     {
         private static string ShippedTemplate()
         {
-            var folder = new DirectoryInfo(AppContext.BaseDirectory);
-            while (folder != null && !File.Exists(Path.Combine(folder.FullName, "EF.Reverse.POCO.GeneratorV4.sln")))
-                folder = folder.Parent;
-
-            if (folder == null)
-                throw new FileNotFoundException("Could not find the repository root above " + AppContext.BaseDirectory);
-
-            return File.ReadAllText(Path.Combine(folder.FullName,
-                "EntityFramework.Reverse.POCO.Generator", "Database.tt"));
+            return RepositoryFiles.DatabaseTemplate();
         }
 
         [Test]
@@ -54,6 +44,35 @@ namespace Efrpg.Gui.Tests
                 "more, so the wizard can no longer set it.");
         }
 
+        [TestCase("DatabaseType",  "Oracle")]
+        [TestCase("TemplateType",  "Ef6")]
+        [TestCase("GeneratorType", "Ef6")]
+        public void TheWizardCanWriteTheEnums(string settingName, string memberName)
+        {
+            var writer = new TemplateSettingWriter(ShippedTemplate());
+
+            Assert.That(writer.TrySetEnum(settingName, memberName), Is.True,
+                "Settings." + settingName + " is not a single-line enum assignment in the shipped Database.tt any " +
+                "more, so the wizard can no longer set it.");
+
+            Assert.That(writer.Text, Does.Contain(settingName.Replace("Settings.", string.Empty) + "." + memberName));
+        }
+
+        /// <summary>
+        ///     The dialog opens on its own defaults, so if those drift from what the shipped template already says
+        ///     the user is shown one thing and, on Skip, left with another.
+        /// </summary>
+        [Test]
+        public void TheDialogDefaultsMatchWhatTheShippedTemplateAlreadySays()
+        {
+            var template = ShippedTemplate();
+
+            Assert.That(template, Does.Contain("DatabaseType." + DatabaseTarget.Default.Name + ";"));
+            Assert.That(template, Does.Contain("TemplateType." + TemplateTarget.Default.Name + ";"));
+            Assert.That(template, Does.Contain("GeneratorType." + TemplateTarget.Default.GeneratorTypeName + ";"));
+            Assert.That(template, Does.Contain("= \"" + DatabaseTarget.Default.ConnectionString + "\";"));
+        }
+
         [Test]
         public void WritingTheConnectionStringChangesOneLineAndClearsThePlaceholder()
         {
@@ -67,6 +86,30 @@ namespace Efrpg.Gui.Tests
 
             Assert.That(after.Length, Is.EqualTo(before.Length));
             Assert.That(before.Where((l, i) => l != after[i]).Count(), Is.EqualTo(1));
+            Assert.That(writer.IsUnconfigured, Is.False);
+        }
+
+        /// <summary>
+        ///     Everything the wizard writes in one go, which is the only combination that actually ships.
+        /// </summary>
+        [Test]
+        public void WritingEverythingTheWizardWritesChangesSixLinesAndNothingElse()
+        {
+            var original = ShippedTemplate();
+            var writer   = new TemplateSettingWriter(original);
+
+            writer.TrySetString("ConnectionString", "Data Source=localhost:1521/pdb1;User Id=hr;Password=secret;");
+            writer.TrySetEnum("DatabaseType", "Oracle");
+            writer.TrySetEnum("TemplateType", "Ef6");
+            writer.TrySetEnum("GeneratorType", "Ef6");
+            writer.TrySetString("DbContextName", "HrDbContext");
+            writer.TrySetString("ConnectionStringName", "HrDbContext");
+
+            var before = original.Split('\n');
+            var after  = writer.Text.Split('\n');
+
+            Assert.That(after.Length, Is.EqualTo(before.Length));
+            Assert.That(before.Where((l, i) => l != after[i]).Count(), Is.EqualTo(6));
             Assert.That(writer.IsUnconfigured, Is.False);
         }
 

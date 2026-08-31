@@ -61,10 +61,47 @@ namespace Efrpg.Gui
             if (!match.Success)
                 return false;
 
-            _text = _text.Substring(0, match.Groups["value"].Index)
-                    + Escape(value)
-                    + _text.Substring(match.Groups["value"].Index + match.Groups["value"].Length);
+            return Replace(match.Groups["value"], Escape(value));
+        }
 
+        /// <summary>
+        ///     Replaces the member of a single-line enum setting, as in <c>Settings.DatabaseType = DatabaseType.SqlServer;</c>.
+        ///     The enum type name in the file is left exactly as written, so only the member after the dot changes.
+        /// </summary>
+        /// <remarks>
+        ///     Returns false and changes nothing when the setting is absent, commented out, or anything other than a
+        ///     bare <c>Type.Member</c> - a combination of flags, a call, a variable. Those are all deliberate on the
+        ///     user's part and rewriting them as a single member would silently change what the template does.
+        /// </remarks>
+        public bool TrySetEnum(string settingName, string memberName)
+        {
+            if (string.IsNullOrEmpty(settingName))
+                throw new ArgumentNullException(nameof(settingName));
+
+            // Anything but a plain identifier would be injected into the .tt as code. Nothing legitimate reaches
+            // here with one, so refuse rather than escape - there is nothing sensible to escape it to.
+            if (string.IsNullOrEmpty(memberName) || !Identifier.IsMatch(memberName))
+                return false;
+
+            // The tail requires the semicolon immediately after the member, which is what refuses "A.B | A.C;" and
+            // "Path.Combine(...);" - both would otherwise look like an enum member followed by more text.
+            var pattern = new Regex(
+                @"(?<head>^[ \t]*Settings\." + Regex.Escape(settingName) + @"[ \t]*=[ \t]*[A-Za-z_]\w*[ \t]*\.[ \t]*)(?<value>[A-Za-z_]\w*)(?<tail>[ \t]*;)",
+                RegexOptions.Multiline);
+
+            var match = pattern.Match(_text);
+            if (!match.Success)
+                return false;
+
+            return Replace(match.Groups["value"], memberName);
+        }
+
+        private static readonly Regex Identifier = new Regex(@"^[A-Za-z_]\w*$");
+
+        /// <summary>Swaps one matched group for new text, leaving every other byte of the file alone.</summary>
+        private bool Replace(Group value, string replacement)
+        {
+            _text = _text.Substring(0, value.Index) + replacement + _text.Substring(value.Index + value.Length);
             return true;
         }
 

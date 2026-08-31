@@ -59,27 +59,21 @@ namespace EntityFramework_Reverse_POCO_Generator
             return safeName.EndsWith("DbContext", StringComparison.OrdinalIgnoreCase) ? safeName : safeName + "DbContext";
         }
 
-        /// <summary>
-        ///     What the shipped template carries, so the user edits a database name rather than composing a
-        ///     connection string from nothing.
-        /// </summary>
-        private const string DefaultConnectionString =
-            "Data Source=(local);Initial Catalog=" + TemplateSettingWriter.Placeholder +
-            ";Integrated Security=True;MultipleActiveResultSets=True;Encrypt=false;TrustServerCertificate=true";
-
         private ProjectItem _templateItem;
         private string _templatePath;
         private string _connectionString;
         private string _dbContextName;
+        private DatabaseTarget _database;
+        private TemplateTarget _template;
 
         /// <summary>
-        ///     Asks for the connection string and DbContext name. Skipping is always allowed: the template is a
-        ///     perfectly good starting point with the placeholder still in it, and a wizard that will not let you
-        ///     out is worse than one that asks nothing.
+        ///     Asks which database and template to target, for a connection string and for a DbContext name.
+        ///     Skipping is always allowed: the template is a perfectly good starting point with the placeholder
+        ///     still in it, and a wizard that will not let you out is worse than one that asks nothing.
         /// </summary>
         private void Ask(string suggestedDbContextName)
         {
-            var dialog = new ConnectionDialog(DefaultConnectionString, suggestedDbContextName);
+            var dialog = new ConnectionDialog(suggestedDbContextName);
             dialog.ShowModal();
 
             if (!dialog.Confirmed)
@@ -87,6 +81,8 @@ namespace EntityFramework_Reverse_POCO_Generator
 
             _connectionString = dialog.ConnectionString;
             _dbContextName    = dialog.DbContextName;
+            _database         = dialog.SelectedDatabase;
+            _template         = dialog.SelectedTemplate;
         }
 
         /// <summary>
@@ -104,6 +100,18 @@ namespace EntityFramework_Reverse_POCO_Generator
                 var writer = new TemplateSettingWriter(File.ReadAllText(_templatePath));
 
                 writer.TrySetString("ConnectionString", _connectionString);
+
+                if (_database != null)
+                    writer.TrySetEnum("DatabaseType", _database.Name);
+
+                // GeneratorType is written alongside TemplateType, never on its own. The generator keeps the two
+                // independent, so an Ef6 template left with the default EfCore generator produces code that does
+                // not compile - and the user would meet that as a build error a long way from this dialog.
+                if (_template != null)
+                {
+                    writer.TrySetEnum("TemplateType", _template.Name);
+                    writer.TrySetEnum("GeneratorType", _template.GeneratorTypeName);
+                }
 
                 if (!string.IsNullOrEmpty(_dbContextName))
                 {
