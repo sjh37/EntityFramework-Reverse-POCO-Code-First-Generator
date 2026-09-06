@@ -7,6 +7,7 @@ namespace Efrpg.Templates
 {
     /// <summary>
     /// {{Mustache}} template documentation available at https://github.com/jehugaleahsa/mustache-sharp
+    /// This template is also used for EfCore 9 and 10.
     /// </summary>
     public class TemplateEfCore8 : Template
     {
