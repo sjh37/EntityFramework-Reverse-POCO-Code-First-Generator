@@ -488,7 +488,7 @@
       "type": "bool",
       "kind": "bool",
       "section": "Other settings",
-      "help": "Must be false for TemplateType.EfCore2-4. If true, mapping will be used, and no mapping tables will be generated. If false, all tables will be generated.",
+      "help": "If true, mapping will be used, and no mapping tables will be generated. If false, all tables will be generated.",
       "defaultValue": "false",
       "inDatabaseTt": true,
       "commentedOut": false,

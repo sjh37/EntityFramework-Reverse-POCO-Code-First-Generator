@@ -50,6 +50,15 @@ namespace Efrpg.Gui.Tests
         }
 
         /// <summary>
+        ///     A real tester template whose connection string is an environment variable rather than a literal -
+        ///     the way credentials are kept out of source control, and the case the connection dialog once got wrong.
+        /// </summary>
+        public static string AzureTemplate()
+        {
+            return File.ReadAllText(Path.Combine(RepositoryRoot.Value, "Tester.Integration.EFCore10", "Azure.tt"));
+        }
+
+        /// <summary>
         ///     A real efrpg payload, captured from the EfrpgTest database and kept as the wire contract fixture.
         /// </summary>
         /// <remarks>
@@ -87,6 +96,7 @@ namespace Efrpg.Gui.Tests
                 Path.Combine("EntityFramework.Reverse.POCO.Generator", "Northwind.tt"),
                 Path.Combine("Tester.Integration.EFCore10", "EfrpgTest.tt"),
                 Path.Combine("Tester.Integration.EFCore10", "Northwind.tt"),
+                Path.Combine("Tester.Integration.EFCore10", "Azure.tt"),
                 Path.Combine("Tester.Integration.EFCore8", "EfrpgTest_no_pascal_casing.tt"),
                 Path.Combine("Tester.Integration.Ef6", "EfrpgTest.tt"),
                 Path.Combine("Efrpg.Gui.Core.Tests", "Fixtures", "Database.v3.14.1.tt")

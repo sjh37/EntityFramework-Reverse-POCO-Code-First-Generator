@@ -36,14 +36,18 @@ namespace EntityFramework_Reverse_POCO_Generator
             if (path == null || !File.Exists(path))
                 return;
 
-            var text     = File.ReadAllText(path);
-            var settings = new TemplateSettingsFile(text);
+            var text          = File.ReadAllText(path);
+            var settings      = new TemplateSettingsFile(text);
+            var configuration = TemplateConfiguration.ReadFrom(settings, Path.GetFileNameWithoutExtension(path) + "DbContext");
 
-            if (settings.IsUnconfigured)
+            // The literal, or what the template's own code produces when that code is an environment variable or
+            // a file. Anything else - the placeholder, a variable this cannot evaluate - is a reason, not a read.
+            string problem;
+            var connectionString = configuration.ResolveConnectionString(out problem);
+
+            if (connectionString == null)
             {
-                await VS.MessageBox.ShowWarningAsync(Caption,
-                    "The template's connection string still contains " + TemplateSettingsFile.Placeholder +
-                    ", so there is no database to read yet. Use \"Reverse POCO: Connection...\" first.");
+                await VS.MessageBox.ShowWarningAsync(Caption, problem);
                 return;
             }
 
@@ -54,10 +58,8 @@ namespace EntityFramework_Reverse_POCO_Generator
                 return;
             }
 
-            var configuration = TemplateConfiguration.ReadFrom(settings, Path.GetFileNameWithoutExtension(path) + "DbContext");
-
             var dialog = new ObjectPickerDialog(Path.GetFileName(path), document, null,
-                token => SchemaReading.ReadAsync(configuration.Database.Name, configuration.ConnectionString, token),
+                token => SchemaReading.ReadAsync(configuration.Database.Name, connectionString, token),
                 false);
 
             dialog.ShowModal();

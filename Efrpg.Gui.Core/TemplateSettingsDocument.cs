@@ -106,6 +106,158 @@ namespace Efrpg.Gui
             return Build(text);
         }
 
+        /// <summary>
+        ///     Switches a commented-out assignment on with a new value: the value is replaced and the <c>//</c>
+        ///     marker removed, and nothing else on the line moves, so it lines up with its neighbours as the
+        ///     template's author aligned it.
+        /// </summary>
+        public TemplateSettingsDocument WithUncommentedValue(SettingAssignment assignment, string newValueText)
+        {
+            if (assignment == null)
+                throw new ArgumentNullException(nameof(assignment));
+
+            if (!assignment.IsCommentedOut)
+                return WithValue(assignment, newValueText);
+
+            if (newValueText == null)
+                throw new ArgumentNullException(nameof(newValueText));
+
+            if (assignment.SpansMultipleLines)
+                throw new InvalidOperationException(
+                    "Settings." + assignment.Name + " spans more than one line and cannot be rewritten from a form.");
+
+            // The value first: it sits after the marker, so removing the marker afterwards does not move it.
+            var text = _text.Substring(0, assignment.ValueStart)
+                       + newValueText
+                       + _text.Substring(assignment.ValueStart + assignment.ValueLength);
+
+            text = text.Substring(0, assignment.CommentMarkerStart)
+                   + text.Substring(assignment.CommentMarkerStart + assignment.CommentMarkerLength);
+
+            return Build(text);
+        }
+
+        /// <summary>
+        ///     Adds an assignment the template does not have, as one new line beside an existing one. The new
+        ///     line copies the anchor's indentation, puts its equals sign in the same column when the name fits,
+        ///     and carries the help text as a trailing comment - the shape every line in Database.tt has.
+        /// </summary>
+        /// <param name="anchor">An assignment already in the file, chosen by the caller for being a neighbour.</param>
+        /// <param name="insertAfter">After the anchor's last line, or before its first.</param>
+        public TemplateSettingsDocument WithNewAssignment(string name, string valueText, string help,
+            SettingAssignment anchor, bool insertAfter)
+        {
+            if (string.IsNullOrEmpty(name))
+                throw new ArgumentNullException(nameof(name));
+
+            if (valueText == null)
+                throw new ArgumentNullException(nameof(valueText));
+
+            if (anchor == null)
+                throw new ArgumentNullException(nameof(anchor));
+
+            return Insert(name, valueText, help, insertAfter ? anchor.EndLineNumber : anchor.LineNumber - 1, anchor.LineNumber, true);
+        }
+
+        /// <summary>
+        ///     Adds an assignment directly after an arbitrary line - a section heading, typically - taking only
+        ///     the indentation from it. No column alignment, because a comment's equals sign means nothing.
+        /// </summary>
+        public TemplateSettingsDocument WithNewAssignmentAfterLine(string name, string valueText, string help, int lineNumber)
+        {
+            if (string.IsNullOrEmpty(name))
+                throw new ArgumentNullException(nameof(name));
+
+            if (valueText == null)
+                throw new ArgumentNullException(nameof(valueText));
+
+            return Insert(name, valueText, help, lineNumber, lineNumber, false);
+        }
+
+        /// <summary>
+        ///     The one-based number of the first comment line whose text starts with <paramref name="text"/>, as
+        ///     in the <c>// Generate files in sub-folders ****</c> headings Database.tt groups its settings under.
+        ///     Minus one when there is none.
+        /// </summary>
+        public int FindCommentLine(string text)
+        {
+            if (string.IsNullOrWhiteSpace(text))
+                return -1;
+
+            var lines = SplitKeepingOffsets(_text);
+
+            for (var i = 0; i < lines.Count; i++)
+            {
+                var trimmed = lines[i].Text.TrimStart();
+                if (trimmed.StartsWith("//", StringComparison.Ordinal) &&
+                    trimmed.Substring(2).TrimStart().StartsWith(text.Trim(), StringComparison.Ordinal))
+                    return i + 1;
+            }
+
+            return -1;
+        }
+
+        private TemplateSettingsDocument Insert(string name, string valueText, string help, int at, int formatLineNumber, bool align)
+        {
+            var lines  = SplitKeepingOffsets(_text);
+            var format = lines[formatLineNumber - 1].Text;
+
+            var indent  = format.Substring(0, format.Length - format.TrimStart(' ', '\t').Length);
+            var equals  = align ? format.IndexOf('=') : -1;
+            var head    = indent + "Settings." + name;
+            var padding = equals > head.Length ? new string(' ', equals - head.Length) : " ";
+            var comment = string.IsNullOrWhiteSpace(help) ? string.Empty : " // " + help.Trim();
+            var line    = head + padding + "= " + valueText.Trim() + ";" + comment;
+
+            return Build(Join(InsertLine(lines, at, line)));
+        }
+
+        /// <summary>
+        ///     Inserts a line at a position, taking the line ending of the line before it. A file whose last line
+        ///     has no newline gets one there, and the new last line inherits the missing ending instead.
+        /// </summary>
+        private List<Line> InsertLine(List<Line> lines, int at, string text)
+        {
+            var ending = at > 0 ? lines[at - 1].LineEnding : at < lines.Count ? lines[at].LineEnding : DominantEnding();
+
+            if (ending.Length == 0)
+            {
+                ending        = DominantEnding();
+                lines[at - 1] = new Line(lines[at - 1].Text, lines[at - 1].Offset, ending);
+                lines.Insert(at, new Line(text, -1, string.Empty));
+                return lines;
+            }
+
+            lines.Insert(at, new Line(text, -1, ending));
+            return lines;
+        }
+
+        private string DominantEnding()
+        {
+            var lf   = 0;
+            var crlf = 0;
+
+            foreach (var line in SplitKeepingOffsets(_text))
+            {
+                if (line.LineEnding == "\r\n")
+                    crlf++;
+                else if (line.LineEnding == "\n")
+                    lf++;
+            }
+
+            return lf > crlf ? "\n" : "\r\n";
+        }
+
+        private static string Join(IEnumerable<Line> lines)
+        {
+            var text = new System.Text.StringBuilder();
+
+            foreach (var line in lines)
+                text.Append(line.Text).Append(line.LineEnding);
+
+            return text.ToString();
+        }
+
         private static TemplateSettingsDocument Build(string text)
         {
             return new TemplateSettingsDocument(text, Scan(text), FindFilterLines(text));
@@ -174,13 +326,19 @@ namespace Efrpg.Gui
                 {
                     value += fragment.Substring(0, scanner.TerminatorIndex);
 
+                    var comment = match.Groups["comment"];
+
                     assignments.Add(new SettingAssignment(
                         match.Groups["name"].Value,
                         value,
                         valueStart,
                         start + 1,
-                        match.Groups["comment"].Success,
-                        i > start));
+                        i + 1,
+                        comment.Success,
+                        comment.Success ? first.Offset + comment.Index : -1,
+                        comment.Success ? comment.Length : 0,
+                        i > start,
+                        match.Groups["indent"].Value));
 
                     return i;
                 }
@@ -193,7 +351,7 @@ namespace Efrpg.Gui
             return lines.Count - 1;
         }
 
-        private static IReadOnlyList<Line> SplitKeepingOffsets(string text)
+        private static List<Line> SplitKeepingOffsets(string text)
         {
             var lines  = new List<Line>();
             var offset = 0;

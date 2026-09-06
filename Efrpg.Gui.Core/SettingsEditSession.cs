@@ -103,13 +103,96 @@ namespace Efrpg.Gui
             foreach (var item in _items.Where(i => i.IsChanged))
             {
                 var assignment = document.Find(item.Name);
-                if (assignment == null)
-                    continue;
 
-                document = document.WithValue(assignment, item.PendingValueText);
+                if (assignment == null)
+                    document = Add(document, item);
+                else if (assignment.IsCommentedOut)
+                    document = document.WithUncommentedValue(assignment, item.PendingValueText);
+                else
+                    document = document.WithValue(assignment, item.PendingValueText);
             }
 
             return document.Text;
+        }
+
+        /// <summary>
+        ///     Adds a line for a setting the template lacks, beside the settings it belongs with.
+        /// </summary>
+        /// <remarks>
+        ///     The catalogue is in Database.tt order, so the nearest setting of the same section that the file does
+        ///     have - looking backwards first, then forwards - marks the spot the shipped template would have used.
+        ///     A setting whose whole section is missing goes after whatever precedes it in the catalogue. Appending
+        ///     to the end of the file is never an option: the settings block closes long before the end.
+        /// </remarks>
+        private TemplateSettingsDocument Add(TemplateSettingsDocument document, SettingEditorItem item)
+        {
+            var settings = Catalogue.Settings;
+            var index    = IndexOf(settings, item.Name);
+
+            // Assignments deeper than the block's usual indentation sit inside an if, as the sub-folder settings
+            // do behind GenerateSeparateFiles. A neighbour there would put the new line under that condition.
+            var baseIndent = document.Assignments.Count == 0 ? 0 : document.Assignments.Min(a => a.Indent.Length);
+
+            var anchor = Nearest(document, settings, index, -1, item.Section, baseIndent)
+                         ?? Nearest(document, settings, index, +1, item.Section, baseIndent);
+
+            if (anchor != null)
+                return document.WithNewAssignment(item.Name, item.PendingValueText, item.Help, anchor.Assignment, anchor.IsBefore);
+
+            // No usable neighbour in the section: under its heading, which is where Database.tt would have it.
+            var heading = document.FindCommentLine(item.Section);
+            if (heading > 0)
+                return document.WithNewAssignmentAfterLine(item.Name, item.PendingValueText, item.Help, heading);
+
+            anchor = Nearest(document, settings, index, -1, null, baseIndent)
+                     ?? Nearest(document, settings, index, +1, null, baseIndent);
+
+            if (anchor == null)
+                throw new InvalidOperationException("This template has no Settings block to add Settings." + item.Name + " to.");
+
+            return document.WithNewAssignment(item.Name, item.PendingValueText, item.Help, anchor.Assignment, anchor.IsBefore);
+        }
+
+        private static int IndexOf(IReadOnlyList<SettingDefinition> settings, string name)
+        {
+            for (var i = 0; i < settings.Count; i++)
+                if (string.Equals(settings[i].Name, name, StringComparison.Ordinal))
+                    return i;
+
+            return -1;
+        }
+
+        /// <summary>
+        ///     The nearest setting in one direction that the file actually has, optionally restricted to a section.
+        /// </summary>
+        private static Anchor Nearest(TemplateSettingsDocument document, IReadOnlyList<SettingDefinition> settings,
+            int from, int step, string section, int baseIndent)
+        {
+            for (var i = from + step; i >= 0 && i < settings.Count; i += step)
+            {
+                if (section != null && !string.Equals(settings[i].Section, section, StringComparison.Ordinal))
+                    continue;
+
+                var assignment = document.Find(settings[i].Name);
+                if (assignment != null && assignment.Indent.Length <= baseIndent)
+                    return new Anchor(assignment, step < 0);
+            }
+
+            return null;
+        }
+
+        private sealed class Anchor
+        {
+            public Anchor(SettingAssignment assignment, bool isBefore)
+            {
+                Assignment = assignment;
+                IsBefore   = isBefore;
+            }
+
+            public SettingAssignment Assignment { get; }
+
+            /// <summary>True when the anchor precedes the new line, so the line goes after it.</summary>
+            public bool IsBefore { get; }
         }
     }
 }

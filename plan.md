@@ -576,6 +576,29 @@ the whole right-hand side, and `TemplateConfiguration` validates the namespace a
 anything is written - what goes there becomes C# in the `.tt`, and an invalid value is left alone rather than
 written and broken. Clearing the field puts `DefaultNamespace` back.
 
+### A connection string set in code is shown, not replaced
+
+The tester `Azure.tt` files keep their credentials out of source control with
+`Settings.ConnectionString = Environment.GetEnvironmentVariable("ReversePoco", EnvironmentVariableTarget.User);`,
+and the first dialog got that badly wrong: it read the line as "no literal", fell back to the SQL Server default,
+showed the placeholder as if the template were unconfigured, and on OK silently wrote nothing for it.
+
+`ConnectionStringSource` classifies the line into exactly four shapes. A **literal** is editable. An
+**environment variable** - `Environment.GetEnvironmentVariable("NAME")`, with or without a target, with or
+without `System.` - and a **file with a literal path** - `File.ReadAllText("...")` - are read-only in the box
+but can be *resolved*, so Test and the object picker still work for them: the T4 runs inside this same Visual
+Studio process as this same user, so the value fetched here is the value generation will use. Both accept a
+trailing `.Trim()` and a literal after `??`. **Anything else** is read-only and opaque, with the code shown and
+"Test needs a value it can read".
+
+That last line is deliberate and stays where it is. `File.ReadAllText(path)` with a variable, a
+`ConfigurationManager` lookup, a helper call - each is one step from evaluating arbitrary C# in the GUI, which
+is a compiler in-process, which this project is not going to become. A developer who obtains the connection
+string that way keeps a working dialog for every other field, and knows why Test is off.
+
+Reading a verbatim literal, `@"Data Source=.\SQLEXPRESS..."`, was the same class of bug and is fixed alongside:
+`TemplateSettingsFile` now reads both forms and writes back in whichever the file used.
+
 ### The dialog is reachable again after the file exists
 
 The wizard runs once. Somebody who pressed Skip, mistyped a database name, or wants to point the same template
@@ -738,9 +761,16 @@ The seam is `TemplateSettingsDocument`. If Roslyn is ever wanted, that one class
   remember roughly what it does. The search is also multi-term, so "context name" narrows.
 - **It opens on the section that matters.** Landing on `Settings` - connection string, context name, template
   type - rather than an alphabetical list means the first screen is the one most people came for.
-- **Unusable settings are shown, not hidden.** A lambda, a `Path.Combine`, a commented-out line and a setting
-  the template never mentions each appear with their value and a one-line reason. Hiding them would send
-  somebody to the wiki looking for a setting that is already in their file.
+- **Unusable settings are shown, not hidden.** A lambda and a `Path.Combine` appear with their value and a
+  one-line reason. Hiding them would send somebody to the wiki looking for a setting that is already in their
+  file.
+- **A setting the file lacks can still be set, and so can a commented-out one.** The line is added beside its
+  section neighbours - the catalogue is in Database.tt order, so the nearest present setting of the same section
+  marks the spot - with the neighbours' indentation, the equals sign in the same column, and the template's own
+  help text as the trailing comment. Deleting a line from Database.tt and adding it back through the editor
+  reproduces the file byte for byte, which is the test. A commented-out line is switched on by changing it: the
+  `//` goes and nothing else on the line moves. It is never appended to the end of the file, because the settings
+  block closes long before that. The generator's run-time settings and the callbacks stay read-only.
 
 ### Round-trip tests (do these properly)
 

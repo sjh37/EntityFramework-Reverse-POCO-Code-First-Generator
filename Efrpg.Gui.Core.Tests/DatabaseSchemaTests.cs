@@ -52,6 +52,25 @@ namespace Efrpg.Gui.Tests
             Assert.That(names.Distinct(StringComparer.OrdinalIgnoreCase).Count(), Is.EqualTo(names.Count));
         }
 
+        /// <summary>
+        ///     Every row under StoredProcedures is a parameter, so a procedure with three parameters appears three
+        ///     times in the payload and must appear once in the picker. The captured payload has 15 rows for 11
+        ///     routines; shipped uncollapsed, each copy had its own checkbox and only the first ever responded.
+        /// </summary>
+        [Test]
+        public void Parse_CollapsesTheParameterRowsIntoOneEntryPerRoutine()
+        {
+            var names = Real().Objects
+                .Where(o => o.Kind != DatabaseObjectKind.Table && o.Kind != DatabaseObjectKind.View)
+                .Select(o => o.FullName)
+                .ToList();
+
+            Assert.That(names, Is.Not.Empty);
+            Assert.That(names.Distinct(StringComparer.OrdinalIgnoreCase).Count(), Is.EqualTo(names.Count));
+            Assert.That(names.Count, Is.LessThan(RepositoryFiles.WireContractPayload().Split(new[] { "<StoredProcedures>" }, StringSplitOptions.None)[1].Split(new[] { "<Row " }, StringSplitOptions.None).Length - 1),
+                "the payload should hold more rows than routines, or this test proves nothing");
+        }
+
         [Test]
         public void Parse_QualifiesNamesWithTheirSchema()
         {

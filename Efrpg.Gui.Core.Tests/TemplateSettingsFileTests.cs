@@ -331,5 +331,43 @@ namespace Efrpg.Gui.Tests
 
             Assert.That(writer.IsUnconfigured, Is.False);
         }
+
+        private const string VerbatimTemplate =
+            "<#\r\n" +
+            "    Settings.ConnectionString = @\"Data Source=.\\SQLEXPRESS;Initial Catalog=\"\"Old\"\"\"; // named instance\r\n" +
+            "#>\r\n";
+
+        [Test]
+        public void GetString_ReadsAVerbatimLiteral()
+        {
+            Assert.That(new TemplateSettingsFile(VerbatimTemplate).GetString("ConnectionString"),
+                Is.EqualTo("Data Source=.\\SQLEXPRESS;Initial Catalog=\"Old\""));
+        }
+
+        /// <summary>A template written with @"" stays that way, so the diff is the value and not the style.</summary>
+        [Test]
+        public void TrySetString_KeepsAVerbatimLiteralVerbatim()
+        {
+            var writer = new TemplateSettingsFile(VerbatimTemplate);
+
+            var written = writer.TrySetString("ConnectionString", "Data Source=.\\SQLEXPRESS;Initial Catalog=\"New\"");
+
+            Assert.That(written, Is.True);
+            Assert.That(writer.Text, Is.EqualTo(
+                "<#\r\n" +
+                "    Settings.ConnectionString = @\"Data Source=.\\SQLEXPRESS;Initial Catalog=\"\"New\"\"\"; // named instance\r\n" +
+                "#>\r\n"));
+            Assert.That(writer.GetString("ConnectionString"), Is.EqualTo("Data Source=.\\SQLEXPRESS;Initial Catalog=\"New\""));
+        }
+
+        [Test]
+        public void TrySetString_RefusesAnExpression()
+        {
+            var writer = new TemplateSettingsFile(
+                "<#\r\n    Settings.ConnectionString = Environment.GetEnvironmentVariable(\"ReversePoco\", EnvironmentVariableTarget.User);\r\n#>\r\n");
+
+            Assert.That(writer.TrySetString("ConnectionString", "Data Source=x"), Is.False);
+            Assert.That(writer.Text, Does.Contain("GetEnvironmentVariable"));
+        }
     }
 }

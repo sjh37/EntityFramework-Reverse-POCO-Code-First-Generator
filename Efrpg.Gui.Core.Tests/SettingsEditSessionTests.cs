@@ -152,13 +152,14 @@ namespace Efrpg.Gui.Tests
         }
 
         [Test]
-        public void ACommentedOutSettingIsShownAndSaysWhyItIsNotEditable()
+        public void ACommentedOutSettingIsEditableAndSaysChangingItSwitchesItOn()
         {
             var item = Shipped().Find("DbContextInterfaceName");
 
             Assert.That(item.Assignment, Is.Not.Null);
-            Assert.That(item.Assignment.IsCommentedOut, Is.True);
-            Assert.That(item.ReadOnlyReason, Does.Contain("Commented out"));
+            Assert.That(item.IsCommentedOut, Is.True);
+            Assert.That(item.IsEditable, Is.True);
+            Assert.That(item.Hint, Does.Contain("Commented out"));
         }
 
         [TestCase("ForeignKeyName")]

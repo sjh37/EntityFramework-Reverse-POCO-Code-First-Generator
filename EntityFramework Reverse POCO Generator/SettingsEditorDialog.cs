@@ -108,7 +108,8 @@ namespace EntityFramework_Reverse_POCO_Generator
             header.Children.Add(new TextBlock
             {
                 Text = "Search " + _session.Items.Count + " settings by name, section or description. " +
-                       "Only the line you change is rewritten - comments and formatting are left alone.",
+                       "Only the lines you change are rewritten, and a setting the file does not have is added beside its " +
+                       "neighbours. Comments and formatting are left alone.",
                 TextWrapping = TextWrapping.Wrap,
                 Opacity = 0.75,
                 Margin = new Thickness(0, 0, 0, 8)
@@ -298,6 +299,16 @@ namespace EntityFramework_Reverse_POCO_Generator
             var right = new StackPanel();
             right.Children.Add(item.IsEditable ? Editor(item) : ReadOnlyValue(item));
 
+            if (item.Hint != null)
+                right.Children.Add(new TextBlock
+                {
+                    Text = item.Hint,
+                    TextWrapping = TextWrapping.Wrap,
+                    FontStyle = FontStyles.Italic,
+                    Opacity = 0.7,
+                    Margin = new Thickness(0, 2, 0, 0)
+                });
+
             if (item.Help.Length > 0)
                 right.Children.Add(new TextBlock
                 {
@@ -323,11 +334,13 @@ namespace EntityFramework_Reverse_POCO_Generator
 
         private UIElement RevertLink(SettingEditorItem item)
         {
-            var was = item.Assignment == null ? string.Empty : item.Assignment.ValueText.Trim();
+            var was = item.Assignment == null
+                ? "not set"
+                : item.Assignment.IsCommentedOut ? "commented out" : Shorten(item.Assignment.ValueText.Trim());
 
             var revert = new Button
             {
-                Content = "Undo - was " + Shorten(was),
+                Content = "Undo - was " + was,
                 Padding = new Thickness(0),
                 Margin = new Thickness(0, 4, 0, 0),
                 HorizontalAlignment = HorizontalAlignment.Left,

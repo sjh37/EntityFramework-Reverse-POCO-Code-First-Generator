@@ -113,12 +113,16 @@ namespace Efrpg.Gui
 
         /// <summary>
         ///     Stored procedures and both flavours of function arrive in the same element, told apart by flags.
+        ///     Every row is a <em>parameter</em>, exactly as every Tables row is a column, so a routine appears
+        ///     once per parameter and has to be collapsed the same way.
         /// </summary>
         private static IEnumerable<DatabaseObject> Routines(XElement root)
         {
             return root.Elements("StoredProcedures").Elements("Row")
                 .Select(r => new DatabaseObject(Attribute(r, "schema"), Attribute(r, "name"), RoutineKind(r)))
-                .Where(o => o.Name.Length > 0);
+                .Where(o => o.Name.Length > 0)
+                .GroupBy(o => o.Schema + "." + o.Name, StringComparer.OrdinalIgnoreCase)
+                .Select(g => g.First());
         }
 
         private static DatabaseObjectKind RoutineKind(XElement row)

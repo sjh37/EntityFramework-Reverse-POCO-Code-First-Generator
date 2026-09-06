@@ -16,19 +16,40 @@ namespace Efrpg.Gui
     {
         public TemplateConfiguration(DatabaseTarget database, TemplateTarget template, string connectionString,
             string dbContextName, string namespaceName)
+            : this(database, template, connectionString, dbContextName, namespaceName, null)
+        {
+        }
+
+        /// <param name="source">
+        ///     Where the template's connection string comes from. Null means a literal the dialog may write; anything
+        ///     not editable makes <paramref name="connectionString"/> display text only and <see cref="ApplyTo"/>
+        ///     leave the line alone.
+        /// </param>
+        public TemplateConfiguration(DatabaseTarget database, TemplateTarget template, string connectionString,
+            string dbContextName, string namespaceName, ConnectionStringSource source)
         {
             Database         = database ?? throw new ArgumentNullException(nameof(database));
             Template         = template ?? throw new ArgumentNullException(nameof(template));
             ConnectionString = connectionString ?? string.Empty;
             DbContextName    = dbContextName ?? string.Empty;
             Namespace        = (namespaceName ?? string.Empty).Trim();
+            Source           = source ?? ConnectionStringSource.ForLiteral(ConnectionString);
         }
 
         public DatabaseTarget Database { get; }
 
         public TemplateTarget Template { get; }
 
+        /// <summary>
+        ///     The connection string when <see cref="IsConnectionStringEditable"/>; otherwise the code that sets it,
+        ///     for display.
+        /// </summary>
         public string ConnectionString { get; }
+
+        /// <summary>Where the connection string comes from, which decides whether the dialog may write it.</summary>
+        public ConnectionStringSource Source { get; }
+
+        public bool IsConnectionStringEditable => Source.IsEditable;
 
         public string DbContextName { get; }
 
@@ -63,7 +84,9 @@ namespace Efrpg.Gui
         /// <remarks>
         ///     Anything unreadable falls back to the default rather than failing: a user who has replaced a setting
         ///     with an expression still deserves a working dialog for the other fields, and <see cref="ApplyTo"/>
-        ///     will refuse to overwrite the expression anyway.
+        ///     will refuse to overwrite the expression anyway. The connection string is the exception: an expression
+        ///     there is shown as itself, read-only, because showing the placeholder instead would tell the user
+        ///     their configured template is unconfigured.
         /// </remarks>
         public static TemplateConfiguration ReadFrom(TemplateSettingsFile settings, string fallbackDbContextName)
         {
@@ -72,13 +95,31 @@ namespace Efrpg.Gui
 
             var database = DatabaseTarget.Find(settings.GetEnum("DatabaseType")) ?? DatabaseTarget.Default;
             var template = TemplateTarget.Find(settings.GetEnum("TemplateType")) ?? TemplateTarget.Default;
+            var source   = ConnectionStringSource.Read(settings);
+
+            string connectionString;
+            switch (source.Kind)
+            {
+                case ConnectionStringKind.Literal:
+                    connectionString = source.Value;
+                    break;
+
+                case ConnectionStringKind.Missing:
+                    connectionString = database.ConnectionString;
+                    break;
+
+                default:
+                    connectionString = source.Expression;
+                    break;
+            }
 
             return new TemplateConfiguration(
                 database,
                 template,
-                settings.GetString("ConnectionString") ?? database.ConnectionString,
+                connectionString,
                 settings.GetString("DbContextName") ?? fallbackDbContextName,
-                ReadNamespace(settings));
+                ReadNamespace(settings),
+                source);
         }
 
         /// <summary>
@@ -94,6 +135,34 @@ namespace Efrpg.Gui
         }
 
         /// <summary>
+        ///     The connection string to actually connect with: the literal, or what the template's own code
+        ///     produces when that code is a shape this assembly understands. Null with a reason otherwise, including
+        ///     when the literal still carries the placeholder.
+        /// </summary>
+        public string ResolveConnectionString(out string error)
+        {
+            if (!IsConnectionStringEditable)
+                return Source.Resolve(out error);
+
+            error = null;
+
+            if (ConnectionString.IndexOf(TemplateSettingsFile.Placeholder, StringComparison.Ordinal) >= 0)
+            {
+                error = "The template's connection string still contains " + TemplateSettingsFile.Placeholder +
+                        ", so there is no database to read yet. Use \"Reverse POCO: Connection...\" first.";
+                return null;
+            }
+
+            if (ConnectionString.Trim().Length == 0)
+            {
+                error = "The template has no connection string. Use \"Reverse POCO: Connection...\" first.";
+                return null;
+            }
+
+            return ConnectionString.Trim();
+        }
+
+        /// <summary>
         ///     Writes every answer into the settings file and returns the new text. Settings the file does not
         ///     express as a plain single-line assignment are left exactly as they are.
         /// </summary>
@@ -102,7 +171,11 @@ namespace Efrpg.Gui
             if (settings == null)
                 throw new ArgumentNullException(nameof(settings));
 
-            settings.TrySetString("ConnectionString", ConnectionString);
+            // A connection string set in code is the user's, and the dialog showed it read-only. TrySetString
+            // would refuse anyway; being explicit here is what keeps that from ever being "fixed".
+            if (IsConnectionStringEditable)
+                settings.TrySetString("ConnectionString", ConnectionString);
+
             settings.TrySetEnum("DatabaseType", Database.Name);
 
             // GeneratorType is written alongside TemplateType, never on its own. The generator keeps the two

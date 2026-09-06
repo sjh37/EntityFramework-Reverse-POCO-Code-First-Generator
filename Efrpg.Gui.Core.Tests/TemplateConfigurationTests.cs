@@ -28,17 +28,85 @@ namespace Efrpg.Gui.Tests
 
         /// <summary>
         ///     The whole point of reading first: a user reopening the dialog to change one field must not have the
-        ///     rest of their template quietly reset to the defaults.
+        ///     rest of their template quietly reset to the defaults. Run over the shipped template and over the
+        ///     one whose connection string is code.
         /// </summary>
-        [Test]
-        public void ReadingAndWritingBackWithoutChangingAnythingLeavesTheFileByteForByteIdentical()
+        [TestCase(true)]
+        [TestCase(false)]
+        public void ReadingAndWritingBackWithoutChangingAnythingLeavesTheFileByteForByteIdentical(bool shipped)
         {
-            var original = RepositoryFiles.DatabaseTemplate();
+            var original = shipped ? RepositoryFiles.DatabaseTemplate() : RepositoryFiles.AzureTemplate();
 
             var text = TemplateConfiguration.ReadFrom(new TemplateSettingsFile(original), "Fallback")
                 .ApplyTo(new TemplateSettingsFile(original));
 
             Assert.That(text, Is.EqualTo(original));
+        }
+
+        /// <summary>
+        ///     The bug this exists for. Reading an expression as "no literal" and falling back to the default
+        ///     showed a configured template as unconfigured, and OK then silently wrote nothing for it.
+        /// </summary>
+        [Test]
+        public void ReadFrom_AConnectionStringSetInCodeIsShownAsItselfAndIsNotEditable()
+        {
+            var configuration = TemplateConfiguration.ReadFrom(new TemplateSettingsFile(RepositoryFiles.AzureTemplate()), "Fallback");
+
+            Assert.That(configuration.IsConnectionStringEditable, Is.False);
+            Assert.That(configuration.Source.Kind, Is.EqualTo(ConnectionStringKind.EnvironmentVariable));
+            Assert.That(configuration.ConnectionString, Is.EqualTo("Environment.GetEnvironmentVariable(\"ReversePoco\", EnvironmentVariableTarget.User)"));
+            Assert.That(configuration.DbContextName, Is.EqualTo("AzureContext"));
+        }
+
+        [Test]
+        public void ApplyTo_NeverReplacesAConnectionStringSetInCode()
+        {
+            var azure    = RepositoryFiles.AzureTemplate();
+            var settings = new TemplateSettingsFile(azure);
+            var source   = ConnectionStringSource.Read(settings);
+
+            new TemplateConfiguration(DatabaseTarget.Default, TemplateTarget.Default,
+                "Data Source=(local);Initial Catalog=Typed", "Renamed", string.Empty, source).ApplyTo(settings);
+
+            Assert.That(settings.Text, Does.Contain("Settings.ConnectionString        = Environment.GetEnvironmentVariable(\"ReversePoco\", EnvironmentVariableTarget.User);"));
+            Assert.That(settings.Text, Does.Not.Contain("Initial Catalog=Typed"));
+            Assert.That(settings.GetString("DbContextName"), Is.EqualTo("Renamed"));
+        }
+
+        [Test]
+        public void ResolveConnectionString_RefusesThePlaceholderWithAPointerToTheConnectionDialog()
+        {
+            string error;
+            var value = TemplateConfiguration.ReadFrom(Shipped(), "Fallback").ResolveConnectionString(out error);
+
+            Assert.That(value, Is.Null);
+            Assert.That(error, Does.Contain(TemplateSettingsFile.Placeholder).And.Contain("Reverse POCO: Connection..."));
+        }
+
+        [Test]
+        public void ResolveConnectionString_ReturnsALiteralAsIs()
+        {
+            string error;
+            var value = new TemplateConfiguration(DatabaseTarget.Default, TemplateTarget.Default,
+                " Data Source=(local);Initial Catalog=Northwind ", "X", string.Empty).ResolveConnectionString(out error);
+
+            Assert.That(error, Is.Null);
+            Assert.That(value, Is.EqualTo("Data Source=(local);Initial Catalog=Northwind"));
+        }
+
+        [Test]
+        public void ResolveConnectionString_ResolvesTheAzureTemplateThroughItsVariable()
+        {
+            var configuration = TemplateConfiguration.ReadFrom(new TemplateSettingsFile(RepositoryFiles.AzureTemplate()), "Fallback");
+
+            string error;
+            var value = configuration.ResolveConnectionString(out error);
+
+            // Whether the variable is set depends on the machine; either answer must be the honest one.
+            if (value == null)
+                Assert.That(error, Does.Contain("ReversePoco").And.Contain("not set"));
+            else
+                Assert.That(error, Is.Null);
         }
 
         [Test]

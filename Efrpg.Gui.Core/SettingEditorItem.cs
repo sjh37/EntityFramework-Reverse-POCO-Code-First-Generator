@@ -40,13 +40,39 @@ namespace Efrpg.Gui
 
         /// <summary>The value as written in the file, or the generator's own default when the file is silent.</summary>
         public string CurrentValueText =>
-            _newValueText ?? (Assignment != null ? Assignment.ValueText.Trim() : Definition.DefaultValue);
+            _newValueText ?? (Assignment != null ? Assignment.ValueText.Trim() : Definition.DefaultValue ?? string.Empty);
 
-        /// <summary>True once a new value has been set that differs from what the file says.</summary>
+        /// <summary>The template has no line for this setting. Changing it adds one.</summary>
+        public bool IsAbsent => Assignment == null;
+
+        /// <summary>The template's line is commented out. Changing it switches the line on.</summary>
+        public bool IsCommentedOut => Assignment != null && Assignment.IsCommentedOut;
+
+        /// <summary>
+        ///     True once a new value has been set that the file does not already say. For a setting the file lacks
+        ///     or has commented out, any value at all is a change, because writing it is what the user asked for.
+        /// </summary>
         public bool IsChanged =>
-            _newValueText != null && Assignment != null && _newValueText != Assignment.ValueText;
+            _newValueText != null && (Assignment == null || Assignment.IsCommentedOut || _newValueText != Assignment.ValueText);
 
         public bool IsEditable => ReadOnlyReason == null;
+
+        /// <summary>
+        ///     What changing this row will do to the file when it is more than replacing a value, or null.
+        /// </summary>
+        public string Hint
+        {
+            get
+            {
+                if (!IsEditable)
+                    return null;
+
+                if (IsAbsent)
+                    return "Not set in this template. Changing it adds the line beside its neighbours.";
+
+                return IsCommentedOut ? "Commented out in the template. Changing it switches the line on." : null;
+            }
+        }
 
         /// <summary>Why this row is not editable, or null when it is. Shown next to the value.</summary>
         public string ReadOnlyReason
@@ -57,16 +83,17 @@ namespace Efrpg.Gui
                 if (byType != null)
                     return byType;
 
+                // Absent is fine: the generator's default is shown, and a change adds the line.
                 if (Assignment == null)
-                    return "Not set in this template - add it to the .tt to override the default.";
-
-                if (Assignment.IsCommentedOut)
-                    return "Commented out in the template. Remove the // to use it.";
+                    return null;
 
                 if (Assignment.SpansMultipleLines)
-                    return "Written across several lines - edit it in the editor.";
+                    return (Assignment.IsCommentedOut ? "Commented out, and w" : "W") + "ritten across several lines - edit it in the editor.";
 
-                return CanParse() ? null : "Set to an expression rather than a plain value - edit it in the editor.";
+                if (CanParse())
+                    return null;
+
+                return (Assignment.IsCommentedOut ? "Commented out, and s" : "S") + "et to an expression rather than a plain value - edit it in the editor.";
             }
         }
 

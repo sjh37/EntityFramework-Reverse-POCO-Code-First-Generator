@@ -53,8 +53,12 @@ namespace Efrpg.Gui
         public string GetString(string settingName)
         {
             var match = StringPattern(settingName).Match(_text);
+            if (match.Success)
+                return Unescape(match.Groups["value"].Value);
 
-            return match.Success ? Unescape(match.Groups["value"].Value) : null;
+            var verbatim = VerbatimPattern(settingName).Match(_text);
+
+            return verbatim.Success ? verbatim.Groups["value"].Value.Replace("\"\"", "\"") : null;
         }
 
         /// <summary>
@@ -110,8 +114,16 @@ namespace Efrpg.Gui
         public bool TrySetString(string settingName, string value)
         {
             var match = StringPattern(settingName).Match(_text);
+            if (match.Success)
+                return Replace(match.Groups["value"], Escape(value));
 
-            return match.Success && Replace(match.Groups["value"], Escape(value));
+            // A verbatim literal stays verbatim, so the diff is the value and not the style. One cannot hold a
+            // line break without becoming two lines, and nothing this writes should contain one anyway.
+            var verbatim = VerbatimPattern(settingName).Match(_text);
+            if (!verbatim.Success || value == null || value.IndexOfAny(new[] { '\r', '\n' }) >= 0)
+                return false;
+
+            return Replace(verbatim.Groups["value"], value.Replace("\"", "\"\""));
         }
 
         /// <summary>
@@ -144,6 +156,17 @@ namespace Efrpg.Gui
         {
             return new Regex(
                 @"(?<head>^[ \t]*Settings\." + Name(settingName) + @"[ \t]*=[ \t]*"")(?<value>(?:[^""\\]|\\.)*)(?<tail>"";)",
+                RegexOptions.Multiline);
+        }
+
+        /// <summary>
+        ///     The same for a verbatim literal, <c>@"..."</c>, where the only escape is a doubled quote. Named SQL
+        ///     Server instances make these common: <c>@"Data Source=.\SQLEXPRESS"</c> reads better than the escaped form.
+        /// </summary>
+        private static Regex VerbatimPattern(string settingName)
+        {
+            return new Regex(
+                @"(?<head>^[ \t]*Settings\." + Name(settingName) + @"[ \t]*=[ \t]*@"")(?<value>(?:[^""]|"""")*)(?<tail>"";)",
                 RegexOptions.Multiline);
         }
 

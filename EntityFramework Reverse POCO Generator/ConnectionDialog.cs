@@ -58,6 +58,12 @@ namespace EntityFramework_Reverse_POCO_Generator
         private DatabaseTarget _shownDatabase;
 
         /// <summary>
+        ///     Where the template's connection string comes from. When it is code rather than a literal the box is
+        ///     read-only and shows the code, and OK leaves that line alone.
+        /// </summary>
+        private readonly ConnectionStringSource _source;
+
+        /// <summary>
         ///     The schema from the last successful Test, when the connection string has not changed since, so the
         ///     object picker that follows can open on it instead of reading the database a second time.
         /// </summary>
@@ -69,7 +75,7 @@ namespace EntityFramework_Reverse_POCO_Generator
             get
             {
                 return new TemplateConfiguration(SelectedDatabase, SelectedTemplate,
-                    _connectionString.Text.Trim(), _dbContextName.Text.Trim(), _namespace.Text.Trim());
+                    _connectionString.Text.Trim(), _dbContextName.Text.Trim(), _namespace.Text.Trim(), _source);
             }
         }
 
@@ -97,6 +103,7 @@ namespace EntityFramework_Reverse_POCO_Generator
 
             _isNewTemplate = isNewTemplate;
             _shownDatabase = current.Database;
+            _source        = current.Source;
 
             Title                 = "EntityFramework Reverse POCO Generator";
             Width                 = 680;
@@ -112,7 +119,7 @@ namespace EntityFramework_Reverse_POCO_Generator
 
             _database         = new ComboBox { ItemsSource = DatabaseTarget.All, SelectedItem = current.Database, Padding = new Thickness(6, 4, 6, 4) };
             _template         = new ComboBox { ItemsSource = TemplateTarget.All, SelectedItem = current.Template, Padding = new Thickness(6, 4, 6, 4) };
-            _connectionString = new TextBox { Text = current.ConnectionString, FontFamily = new FontFamily("Consolas"), Padding = new Thickness(6, 4, 6, 4), TextWrapping = TextWrapping.Wrap };
+            _connectionString = new TextBox { Text = current.ConnectionString, FontFamily = new FontFamily("Consolas"), Padding = new Thickness(6, 4, 6, 4), TextWrapping = TextWrapping.Wrap, IsReadOnly = !_source.IsEditable, Opacity = _source.IsEditable ? 1.0 : 0.75 };
             _dbContextName    = new TextBox { Text = current.DbContextName, Padding = new Thickness(6, 4, 6, 4) };
             _namespace        = new TextBox { Text = current.Namespace, Padding = new Thickness(6, 4, 6, 4) };
             _connectionHint   = Hint(current.Database.Hint);
@@ -171,8 +178,16 @@ namespace EntityFramework_Reverse_POCO_Generator
 
         private async Task TestAsync()
         {
-            var connectionString = _connectionString.Text.Trim();
+            string problem       = null;
+            var boxText          = _connectionString.Text;
+            var connectionString = _source.IsEditable ? boxText.Trim() : _source.Resolve(out problem);
             var databaseType     = SelectedDatabase != null ? SelectedDatabase.Name : DatabaseTarget.Default.Name;
+
+            if (connectionString == null)
+            {
+                Report(problem, true);
+                return;
+            }
 
             _test.IsEnabled = false;
             _test.Content   = "Connecting...";
@@ -188,7 +203,7 @@ namespace EntityFramework_Reverse_POCO_Generator
 
                 // Only kept while it still describes what is in the box. A read that finished after the user
                 // edited the connection string is about a different database.
-                if (result.Succeeded && _connectionString.Text.Trim() == connectionString && SelectedDatabase != null && SelectedDatabase.Name == databaseType)
+                if (result.Succeeded && _connectionString.Text == boxText && SelectedDatabase != null && SelectedDatabase.Name == databaseType)
                     TestedSchema = result.Schema;
 
                 Report(Describe(result), !result.Succeeded);
@@ -274,6 +289,16 @@ namespace EntityFramework_Reverse_POCO_Generator
             if (target == null || ReferenceEquals(target, _shownDatabase))
                 return;
 
+            if (!_source.IsEditable)
+            {
+                // The box shows code, not a value, so only the hint and the test follow the database.
+                _shownDatabase       = target;
+                TestedSchema         = null;
+                _connectionHint.Text = target.Hint;
+                Validate();
+                return;
+            }
+
             if (_shownDatabase != null)
                 _typed[_shownDatabase] = _connectionString.Text;
 
@@ -343,7 +368,9 @@ namespace EntityFramework_Reverse_POCO_Generator
             body.Children.Add(_connectionHint);
             body.Children.Add(new TextBlock
             {
-                Text = "Stored in the .tt file, which is usually in source control. Prefer integrated security over a password.",
+                Text = _source.IsEditable
+                    ? "Stored in the .tt file, which is usually in source control. Prefer integrated security over a password."
+                    : "Set in code, from " + _source.Description + ". Edit it in the .tt to change it; OK leaves this line alone.",
                 TextWrapping = TextWrapping.Wrap,
                 Opacity = 0.75,
                 Margin = new Thickness(0, 0, 0, 12)
@@ -404,22 +431,38 @@ namespace EntityFramework_Reverse_POCO_Generator
         /// </summary>
         private void Validate()
         {
-            var stillPlaceholder = _connectionString.Text.IndexOf(
-                TemplateSettingsFile.Placeholder, StringComparison.Ordinal) >= 0;
+            var namespaceIsValid = Result.HasValidNamespace;
+            string problem       = null;
+            bool canConnect;
 
-            var hasConnectionString = _connectionString.Text.Trim().Length > 0;
-            var canConnect          = !stillPlaceholder && hasConnectionString;
-            var namespaceIsValid    = Result.HasValidNamespace;
+            if (_source.IsEditable)
+            {
+                var stillPlaceholder = _connectionString.Text.IndexOf(TemplateSettingsFile.Placeholder, StringComparison.Ordinal) >= 0;
 
-            if (stillPlaceholder)
-                Report("Replace every " + TemplateSettingsFile.Placeholder + " above" +
-                       (_isNewTemplate ? ", or press Skip to edit the .tt yourself." : "."), true);
-            else if (!namespaceIsValid)
-                Report("A namespace must be one or more identifiers separated by dots, such as Accounts.Billing.", true);
+                canConnect = !stillPlaceholder && _connectionString.Text.Trim().Length > 0;
+
+                if (stillPlaceholder)
+                    problem = "Replace every " + TemplateSettingsFile.Placeholder + " above" +
+                              (_isNewTemplate ? ", or press Skip to edit the .tt yourself." : ".");
+            }
             else
-                Report(string.Empty, false);
+            {
+                // Code the dialog will not rewrite. Whether it can be tested depends on whether the value can be
+                // fetched here: an environment variable or a file can, anything else cannot.
+                string unresolved;
+                canConnect = _source.Resolve(out unresolved) != null;
 
-            _ok.IsEnabled   = canConnect && namespaceIsValid;
+                if (!canConnect)
+                    problem = unresolved + (_source.CanResolve ? string.Empty : " Test needs a value it can read.");
+            }
+
+            if (problem == null && !namespaceIsValid)
+                problem = "A namespace must be one or more identifiers separated by dots, such as Accounts.Billing.";
+
+            Report(problem ?? string.Empty, true);
+
+            // When the connection string is code, OK is about the other fields and writes nothing for that line.
+            _ok.IsEnabled = (canConnect || !_source.IsEditable) && namespaceIsValid;
 
             // Testing does not care about the namespace, only about reaching the database.
             _test.IsEnabled = canConnect;

@@ -11,18 +11,28 @@ namespace Efrpg.Gui
     /// </remarks>
     public sealed class SettingAssignment
     {
-        public SettingAssignment(string name, string valueText, int valueStart, int lineNumber,
-            bool isCommentedOut, bool spansMultipleLines)
+        public SettingAssignment(string name, string valueText, int valueStart, int lineNumber, int endLineNumber,
+            bool isCommentedOut, int commentMarkerStart, int commentMarkerLength, bool spansMultipleLines, string indent)
         {
-            Name               = name;
-            ValueText          = valueText ?? string.Empty;
-            ValueStart         = valueStart;
-            LineNumber         = lineNumber;
-            IsCommentedOut     = isCommentedOut;
-            SpansMultipleLines = spansMultipleLines;
+            Indent              = indent ?? string.Empty;
+            Name                = name;
+            ValueText           = valueText ?? string.Empty;
+            ValueStart          = valueStart;
+            LineNumber          = lineNumber;
+            EndLineNumber       = endLineNumber;
+            IsCommentedOut      = isCommentedOut;
+            CommentMarkerStart  = commentMarkerStart;
+            CommentMarkerLength = commentMarkerLength;
+            SpansMultipleLines  = spansMultipleLines;
         }
 
         public string Name { get; }
+
+        /// <summary>
+        ///     The whitespace before the line's first character. Deeper than the block's usual indentation means
+        ///     the assignment sits inside an if or a loop, which is not a place to add a neighbour.
+        /// </summary>
+        public string Indent { get; }
 
         /// <summary>The right-hand side exactly as written, without the semicolon.</summary>
         public string ValueText { get; }
@@ -36,10 +46,25 @@ namespace Efrpg.Gui
         public int LineNumber { get; }
 
         /// <summary>
+        ///     One-based line holding the terminating semicolon. The same as <see cref="LineNumber"/> unless the
+        ///     assignment spans several lines. A new line added after this assignment goes after this one.
+        /// </summary>
+        public int EndLineNumber { get; }
+
+        /// <summary>
         ///     The line is commented out, so the generator never sees it. Shown, because a user looking for a
         ///     setting needs to be told it is switched off rather than left to conclude it does not exist.
         /// </summary>
         public bool IsCommentedOut { get; }
+
+        /// <summary>
+        ///     Index into the template text of the <c>//</c> marker and the whitespace after it, when
+        ///     <see cref="IsCommentedOut"/>. Removing exactly that span switches the line on without moving its
+        ///     alignment relative to the lines around it. Minus one otherwise.
+        /// </summary>
+        public int CommentMarkerStart { get; }
+
+        public int CommentMarkerLength { get; }
 
         /// <summary>
         ///     A lambda or an object initialiser running past the end of its first line. Never rewritten from a
