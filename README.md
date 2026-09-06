@@ -10,6 +10,11 @@ Reverse engineers an existing database and generates Entity Framework Code First
 
 Please note that this is not the Microsoft reverse generator. This generator creates code as if you reverse-engineered a database and lovingly created the code by hand. It also allows you to customise the generated code to your liking.
 
+### Requirements
+
+* **Visual Studio 2022 or later**, including Visual Studio 2026. The v4 extension does not install on Visual Studio 2017 or 2019; v3 remains available for those.
+* **The `efrpg` dotnet tool**, which reads your database: `dotnet tool install -g Efrpg`. It needs the .NET 10 runtime and is installed once per machine.
+
 ### Watch a short video clip (no audio)
 [![Watch the video](https://reversepocostorage.blob.core.windows.net/public-file-share/efcore-first-run.jpg)](https://reversepocostorage.blob.core.windows.net/public-file-share/efcore-first-run.mp4)
 
@@ -25,7 +30,6 @@ Go to the [ReversePOCO](https://www.reversepoco.co.uk) website for your licence 
 ### Supported databases
 
 * SQL Server
-* SQL Server Compact 3.5 and 4.0
 * PostgreSQL
 * MySQL
 * Oracle
