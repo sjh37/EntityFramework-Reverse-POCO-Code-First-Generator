@@ -28,9 +28,6 @@
     Settings.DisableGeographyTypes        = false;
     Settings.GenerateHasDefaultValueSql   = true; // EFCore only. If true, will emit .HasDefaultValueSql() in the entity configuration for columns with a SQL default, making defaults queryable via EF model reflection.
 
-    // If GenerateSingleDbContext = false, this will generate multiple db contexts. Please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Generating-multiple-database-contexts-in-a-single-go
-    Settings.GenerateSingleDbContext              = true; // Set this to false to generate multiple db contexts.
-    Settings.MultiContextSettingsConnectionString = ""; // Leave empty to read data from same database in ConnectionString above. If settings are in another database, specify the connection string here.
 
     // Elements to generate ***************************************************************************************************************
     // Add the elements that should be generated when the template is executed.
@@ -50,9 +47,8 @@
     // Filtering can now be done via one or more Regex's and one or more functions.
     // Gone are the days of a single do-it-all regex, you can now split them up into many smaller Regex's.
     // You can have as many as you like, and mix and match them.
-    // These settings are only used by the single context filter SingleContextFilter (Settings.GenerateSingleDbContext = true)
+    // These settings are used by the SingleContextFilter class.
     // For further information please visit https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Filtering
-    // For multi-context filtering (Settings.GenerateSingleDbContext = false), please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Generating-multiple-database-contexts-in-a-single-go
     // Single-context filtering is done via FilterSettings and SingleContextFilter classes.
     // Override the filters here, or edit directly the FilterSettings and SingleContextFilter classes located at the top of EF.Reverse.POCO.v4.ttinclude
     FilterSettings.Reset();
@@ -154,11 +150,9 @@
     {
         // Connection strings are passed to the tool over stdin, never on the command line, so they stay out of
         // process listings and command-line audit logs. See SecretsXml and EfrpgToolRunner.
-        var efrpgMultiContext = !Settings.GenerateSingleDbContext && string.IsNullOrWhiteSpace(Settings.MultiContextSettingsPlugin);
         toolResult = EfrpgToolRunner.ReadDatabase(
             FilterSettings.IncludeStoredProcedures || FilterSettings.IncludeTableValuedFunctions || FilterSettings.IncludeScalarValuedFunctions,
-            FilterSettings.IncludeSynonyms,
-            efrpgMultiContext);
+            FilterSettings.IncludeSynonyms);
     }
     catch (Exception efrpgEx)
     {

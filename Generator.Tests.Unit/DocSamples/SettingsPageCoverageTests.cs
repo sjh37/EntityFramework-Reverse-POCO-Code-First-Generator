@@ -88,7 +88,6 @@ namespace Generator.Tests.Unit.DocSamples
         private static readonly string[] KnownNonSettings =
         {
             "DatabaseReaderPlugin", "FileManagerType",  // Removed in v4; documented as such
-            "MultiContextAllFields",                    // The shared page's wildcard title
             "OnConfiguration",                          // Also an enum type name
             "Runtime",                                  // Settings.Runtime-Values page title
         };

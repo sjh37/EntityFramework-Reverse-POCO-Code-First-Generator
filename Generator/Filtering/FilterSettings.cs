@@ -3,9 +3,8 @@
 namespace Efrpg.Filtering
 {
     // Filtering **************************************************************************************************************************
-    // These settings are only used by the single context filter SingleContextFilter (Settings.GenerateSingleDbContext = true)
+    // These settings are used by the SingleContextFilter class.
     // Please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Filtering
-    // For multi-context filtering (Settings.GenerateSingleDbContext = false), please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Generating-multiple-database-contexts-in-a-single-go
     // Use the following filters to exclude or include schemas/tables/views/columns/stored procedures.
     // You can have as many as you like, and mix and match them.
     // They run in the order defined below. For help with Regex's try https://regexr.com

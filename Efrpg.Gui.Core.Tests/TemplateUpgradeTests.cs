@@ -33,6 +33,78 @@ namespace Efrpg.Gui.Tests
             Assert.That(result.Succeeded, Is.True);
         }
 
+        /// <summary>
+        ///     v4 removed multi-context generation, so the eight settings behind it are compile errors in a v4
+        ///     template. A stock v3 file assigns all eight, four of them as multi-line delegates; every one goes,
+        ///     whole, and the prose above them stays.
+        /// </summary>
+        [Test]
+        public void TheMultiContextSettingsAreDeletedWholeIncludingTheDelegates()
+        {
+            var result = Upgraded();
+            var code   = result.Text.Replace("\r\n", "\n").Split('\n')
+                .Where(l => !l.TrimStart().StartsWith("//", StringComparison.Ordinal))
+                .ToList();
+
+            Assert.That(code, Has.None.Contains("Settings.GenerateSingleDbContext"));
+            Assert.That(code, Has.None.Contains("Settings.MultiContext"));
+            Assert.That(code, Has.None.Contains("allFields"), "a delegate body was left behind");
+            Assert.That(result.Changes.Count(c => c.Description.Contains("multi-context generation was removed")), Is.EqualTo(8));
+            Assert.That(result.Text, Does.Contain("// If GenerateSingleDbContext = true"), "prose is not rewritten");
+        }
+
+        [Test]
+        public void ATemplateThatGeneratesMultipleContextsIsRefusedAndPointedAtV3()
+        {
+            var template = RepositoryFiles.V3Template().Replace(
+                "Settings.GenerateSingleDbContext              = true;",
+                "Settings.GenerateSingleDbContext              = false;");
+
+            var result = TemplateUpgrade.Upgrade(template);
+
+            Assert.That(result.Succeeded, Is.False);
+            Assert.That(result.Blockers.Single(), Does.Contain("multiple DbContexts").And.Contain("v3"));
+        }
+
+        [Test]
+        public void TheTemplateFolderSettingIsDeleted()
+        {
+            // The stock v3 prose still mentions it, in a comment line and in the trailing comment on the
+            // TemplateType line; only code counts.
+            var code = Upgraded().Text.Replace("\r\n", "\n").Split('\n')
+                .Select(l => l.IndexOf("//", StringComparison.Ordinal) is var i && i >= 0 ? l.Substring(0, i) : l)
+                .ToList();
+
+            Assert.That(code, Has.None.Contains("Settings.TemplateFolder"));
+        }
+
+        [TestCase("Settings.TemplateType                 = TemplateType.EfCore10;", "Settings.TemplateType                 = TemplateType.FileBasedCore10;", "file-based")]
+        [TestCase("Settings.GeneratorType                = GeneratorType.EfCore;", "Settings.GeneratorType                = GeneratorType.Custom;", "GeneratorType.Custom")]
+        public void ATemplateUsingARemovedTemplateOrGeneratorTypeIsRefused(string stock, string replaced, string reason)
+        {
+            var template = RepositoryFiles.V3Template().Replace(stock, replaced);
+            Assert.That(template, Is.Not.EqualTo(RepositoryFiles.V3Template()), "the fixture line must exist");
+
+            var result = TemplateUpgrade.Upgrade(template);
+
+            Assert.That(result.Succeeded, Is.False);
+            Assert.That(result.Blockers.Single(), Does.Contain(reason).And.Contain("v3"));
+        }
+
+        /// <summary>A removed setting used somewhere the upgrade does not rewrite is a refusal, not a compile error later.</summary>
+        [Test]
+        public void AMultiContextSettingUsedInCodeElsewhereIsRefused()
+        {
+            var template = RepositoryFiles.V3Template().Replace(
+                "    Settings.GenerateSingleDbContext              = true;",
+                "    Settings.GenerateSingleDbContext              = true;\r\n    if (Settings.MultiContextAttributeDelimiter == '~') { }");
+
+            var result = TemplateUpgrade.Upgrade(template);
+
+            Assert.That(result.Succeeded, Is.False);
+            Assert.That(result.Blockers.Single(), Does.Contain("Settings.MultiContext"));
+        }
+
         /// <summary>The six edits, each of which the template does not compile or does not run without.</summary>
         [Test]
         public void AllSixRequiredEditsAreMade()
@@ -52,11 +124,12 @@ namespace Efrpg.Gui.Tests
         }
 
         [Test]
-        public void EverySixEditIsReportedSoTheUserCanSeeItBeforeItIsWritten()
+        public void EveryEditIsReportedSoTheUserCanSeeItBeforeItIsWritten()
         {
             var changes = Upgraded().Changes;
 
-            Assert.That(changes.Count, Is.EqualTo(6));
+            // The six v3-to-v4 edits, the eight multi-context settings v4 removed, and Settings.TemplateFolder.
+            Assert.That(changes.Count, Is.EqualTo(15));
             Assert.That(changes.Select(c => c.Description), Has.All.Not.Empty);
         }
 
@@ -81,10 +154,11 @@ namespace Efrpg.Gui.Tests
 
         /// <summary>
         ///     Only complete lines are removed, so the settings above and below keep their alignment and the file
-        ///     shrinks by exactly the two deleted lines.
+        ///     shrinks by exactly the deleted statements: the two one-line settings, and the eight multi-context
+        ///     statements however many lines each spans in the fixture.
         /// </summary>
         [Test]
-        public void OnlyTheTwoDeletedSettingsChangeTheLineCountBeforeTheEntryPoint()
+        public void OnlyTheDeletedSettingsChangeTheLineCountBeforeTheEntryPoint()
         {
             var before = RepositoryFiles.V3Template();
             var after  = Upgraded().Text;
@@ -92,7 +166,12 @@ namespace Efrpg.Gui.Tests
             var beforeHead = before.Substring(0, before.IndexOf("var outer =", StringComparison.Ordinal));
             var afterHead  = after.Substring(0, after.IndexOf("var outer =", StringComparison.Ordinal));
 
-            Assert.That(Lines(afterHead), Is.EqualTo(Lines(beforeHead) - 2));
+            var multiContextLines = TemplateSettingsDocument.Parse(before).Assignments
+                .Where(a => !a.IsCommentedOut && (a.Name == "GenerateSingleDbContext" || a.Name.StartsWith("MultiContext", StringComparison.Ordinal)))
+                .Sum(a => a.EndLineNumber - a.LineNumber + 1);
+
+            Assert.That(multiContextLines, Is.GreaterThan(8), "the four delegates span several lines each");
+            Assert.That(Lines(afterHead), Is.EqualTo(Lines(beforeHead) - 3 - multiContextLines));
         }
 
         [Test]
@@ -206,7 +285,7 @@ namespace Efrpg.Gui.Tests
             var result = TemplateUpgrade.Upgrade(string.Join("\r\n", lines));
 
             Assert.That(result.Succeeded, Is.True);
-            Assert.That(result.Changes.Count, Is.EqualTo(5));
+            Assert.That(result.Changes.Count, Is.EqualTo(14));
         }
 
         private static int Lines(string text)

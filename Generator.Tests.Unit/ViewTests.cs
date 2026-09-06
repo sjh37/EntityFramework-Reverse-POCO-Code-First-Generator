@@ -16,7 +16,7 @@
     public class ViewTests
     {
         private List<RawTable> _rawTables;
-        private GeneratorCustom _sut;
+        private GeneratorEfCore _sut;
 
         [OneTimeSetUp]
         public void OneTimeSetUp()
@@ -24,7 +24,7 @@
             var fileManagement = new FileManagementService(new GeneratedTextTransformation());
 
             _rawTables = new List<RawTable>();
-            _sut = new GeneratorCustom(fileManagement);
+            _sut = new GeneratorEfCore(fileManagement);
             _sut.Init(FakeDatabaseReader.CreateResult(), string.Empty);
         }
 

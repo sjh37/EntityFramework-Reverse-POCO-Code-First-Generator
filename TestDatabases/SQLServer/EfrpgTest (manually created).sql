@@ -142,13 +142,6 @@ ALTER DATABASE [EfrpgTest_Settings] SET PAGE_VERIFY CHECKSUM
 GO
 USE [EfrpgTest_Settings]
 GO
-IF NOT EXISTS (SELECT name FROM sys.filegroups WHERE is_default=1 AND name = N'PRIMARY')
-	ALTER DATABASE [EfrpgTest_Settings] MODIFY FILEGROUP [PRIMARY] DEFAULT
-GO
-*/
-
-USE [EfrpgTest_Settings]
-GO
 
 -- This will create the tables necessary for multi-context generation
 IF SCHEMA_ID(N'MultiContext') IS NULL

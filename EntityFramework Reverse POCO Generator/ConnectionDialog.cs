@@ -45,7 +45,6 @@ namespace EntityFramework_Reverse_POCO_Generator
         /// </summary>
         private string _lastDbContextName;
         private readonly TextBlock _connectionHint;
-        private readonly TextBlock _templateHint;
         private readonly TextBlock _validation;
         private readonly Button _ok;
         private readonly Button _test;
@@ -132,13 +131,11 @@ namespace EntityFramework_Reverse_POCO_Generator
             _lastDbContextName    = current.DbContextName;
             _namespace        = new TextBox { Text = current.Namespace, Padding = new Thickness(6, 4, 6, 4) };
             _connectionHint   = Hint(current.Database.Hint);
-            _templateHint     = Hint(string.Empty);
             _validation       = new TextBlock { TextWrapping = TextWrapping.Wrap, Margin = new Thickness(0, 0, 0, 10) };
             _ok               = new Button { Content = "OK", MinWidth = 90, Margin = new Thickness(0, 0, 8, 0), Padding = new Thickness(10, 4, 10, 4), IsDefault = true };
             _test             = new Button { Content = TestButtonText, MinWidth = 130, Padding = new Thickness(10, 4, 10, 4) };
 
             _database.SelectionChanged    += (s, e) => DatabaseChanged();
-            _template.SelectionChanged    += (s, e) => TemplateChanged();
             _connectionString.TextChanged += (s, e) => { TestedSchema = null; Validate(); };
             _namespace.TextChanged        += (s, e) => Validate();
             _dbContextName.TextChanged    += (s, e) => FollowDbContextName();
@@ -152,7 +149,6 @@ namespace EntityFramework_Reverse_POCO_Generator
             Closed += (s, e) => CancelTest();
 
             Content = Build();
-            TemplateChanged();
             Validate();
         }
 
@@ -333,21 +329,6 @@ namespace EntityFramework_Reverse_POCO_Generator
             _lastDbContextName = _dbContextName.Text;
         }
 
-        /// <summary>
-        ///     The file based templates read mustache files from Settings.TemplateFolder, which this dialog does not
-        ///     set, so say so here rather than letting the next save fail.
-        /// </summary>
-        private void TemplateChanged()
-        {
-            var target = SelectedTemplate;
-
-            _templateHint.Text = target != null && target.RequiresTemplateFolder
-                ? "File based templates read from Settings.TemplateFolder in the .tt. Point it at your mustache folder before saving."
-                : string.Empty;
-
-            _templateHint.Visibility = _templateHint.Text.Length == 0 ? Visibility.Collapsed : Visibility.Visible;
-        }
-
         private UIElement Build()
         {
             var cancel = new Button
@@ -383,7 +364,6 @@ namespace EntityFramework_Reverse_POCO_Generator
             body.Children.Add(TwoColumns(
                 Label("Database"), _database,
                 Label("Template"), _template));
-            body.Children.Add(_templateHint);
             body.Children.Add(new Border { Height = 12 });
             body.Children.Add(Label("Connection string"));
             body.Children.Add(_connectionString);

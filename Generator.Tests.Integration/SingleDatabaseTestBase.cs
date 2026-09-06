@@ -27,8 +27,6 @@ namespace Generator.Tests.Integration
             Settings.GeneratorType = generatorType;
             Settings.ConnectionStringName = connectionStringName;
             Settings.DbContextName = dbContextName;
-            Settings.GenerateSingleDbContext = true;
-            Settings.MultiContextSettingsPlugin = null;
             Settings.Enumerations = null;
             Settings.PrependSchemaName = true;
             Settings.DisableGeographyTypes = false;
@@ -87,7 +85,6 @@ namespace Generator.Tests.Integration
         {
             Inflector.IgnoreWordsThatEndWith = new List<string> { "Status", "To", "Data" };
             Inflector.PluralisationService = new EnglishPluralizationService();
-            Settings.GenerateSingleDbContext = true;
 
             var path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             if (!string.IsNullOrEmpty(subFolder))
@@ -155,7 +152,7 @@ namespace Generator.Tests.Integration
         {
             // includeSynonyms is always true: the tests enable IncludeSynonyms on every filter after the tool has
             // already run, so the synonym rows must be in the result up front.
-            return EfrpgToolRunner.ReadDatabase(includeStoredProcedures, includeSynonyms: true, multiContext: false);
+            return EfrpgToolRunner.ReadDatabase(includeStoredProcedures, includeSynonyms: true);
         }
 
         protected static void CompareAgainstFolderTestComparison(string subFolder)

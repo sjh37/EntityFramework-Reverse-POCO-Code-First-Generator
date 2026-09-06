@@ -28,7 +28,6 @@ namespace Efrpg.Gui.Tests
             var document = Shipped();
 
             Assert.That(document.RefusalReason, Is.Null);
-            Assert.That(document.GeneratesSingleContext, Is.True);
             Assert.That(document.Flag(FilterFlag.IncludeViews), Is.True);
             Assert.That(document.Flag(FilterFlag.IncludeStoredProcedures), Is.True);
             Assert.That(document.Flag(FilterFlag.IncludeTableValuedFunctions), Is.False);
@@ -226,16 +225,6 @@ namespace Efrpg.Gui.Tests
             Assert.That(document.In(FilterList.Table).Single().CanEvaluate, Is.False);
             Assert.That(document.In(FilterList.StoredProcedure).Single().CanEvaluate, Is.False);
             Assert.That(document.In(FilterList.Table).Single().Text, Does.Contain("RegexOptions.IgnoreCase"));
-        }
-
-        [Test]
-        public void Parse_RefusesAMultiContextTemplate()
-        {
-            var document = TemplateFilterDocument.Parse(
-                "<#\n    FilterSettings.AddDefaults();\n    Settings.GenerateSingleDbContext = false;\n#>\n");
-
-            Assert.That(document.GeneratesSingleContext, Is.False);
-            Assert.That(document.RefusalReason, Does.Contain("GenerateSingleDbContext"));
         }
 
         [Test]

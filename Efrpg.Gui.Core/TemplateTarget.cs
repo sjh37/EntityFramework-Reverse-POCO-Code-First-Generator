@@ -21,12 +21,11 @@ namespace Efrpg.Gui
     /// </remarks>
     public sealed class TemplateTarget
     {
-        private TemplateTarget(string name, string displayName, string generatorTypeName, bool requiresTemplateFolder)
+        private TemplateTarget(string name, string displayName, string generatorTypeName)
         {
             Name                   = name;
             DisplayName            = displayName;
             GeneratorTypeName      = generatorTypeName;
-            RequiresTemplateFolder = requiresTemplateFolder;
         }
 
         /// <summary>The TemplateType enum member name, written into the .tt verbatim.</summary>
@@ -38,27 +37,16 @@ namespace Efrpg.Gui
         /// <summary>The GeneratorType enum member name that must accompany it.</summary>
         public string GeneratorTypeName { get; }
 
-        /// <summary>
-        ///     True for the FileBased templates, which read mustache files from Settings.TemplateFolder. The wizard
-        ///     does not set that folder, so it says so rather than leaving the user with a template that fails on
-        ///     first save.
-        /// </summary>
-        public bool RequiresTemplateFolder { get; }
-
         private const string EfCore = "EfCore";
         private const string Ef6    = "Ef6";
 
-        /// <summary>Newest first, then EF6, then the file-based variants, which are an advanced choice.</summary>
+        /// <summary>Newest first, then EF6.</summary>
         public static IReadOnlyList<TemplateTarget> All { get; } = new[]
         {
-            new TemplateTarget("EfCore10",        "EF Core 10",                   EfCore, false),
-            new TemplateTarget("EfCore9",         "EF Core 9",                    EfCore, false),
-            new TemplateTarget("EfCore8",         "EF Core 8",                    EfCore, false),
-            new TemplateTarget("Ef6",             "Entity Framework 6",           Ef6,    false),
-            new TemplateTarget("FileBasedCore10", "File based - EF Core 10",      EfCore, true),
-            new TemplateTarget("FileBasedCore9",  "File based - EF Core 9",       EfCore, true),
-            new TemplateTarget("FileBasedCore8",  "File based - EF Core 8",       EfCore, true),
-            new TemplateTarget("FileBasedEf6",    "File based - EF 6",            Ef6,    true)
+            new TemplateTarget("EfCore10", "EF Core 10",         EfCore),
+            new TemplateTarget("EfCore9",  "EF Core 9",          EfCore),
+            new TemplateTarget("EfCore8",  "EF Core 8",          EfCore),
+            new TemplateTarget("Ef6",      "Entity Framework 6", Ef6)
         };
 
         /// <summary>What the dialog opens on, and what the shipped Database.tt already says.</summary>

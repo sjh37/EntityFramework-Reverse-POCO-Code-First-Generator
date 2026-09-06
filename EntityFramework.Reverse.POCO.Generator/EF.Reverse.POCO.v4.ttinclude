@@ -1,6 +1,6 @@
 <#
 // Copyright (C) Simon Hughes 2012
-// v4.0.24
+// v4.0.25
 // If you want to submit a pull request, please modify the Generator C# project as this file
 // is automatically constructed from the C# Generator project during the build process.
 #>
@@ -44,8 +44,8 @@
         // Main settings **********************************************************************************************************************
         // The following entries are the only required settings.
         public static DatabaseType DatabaseType = DatabaseType.SqlServer; // SqlServer, SQLite, PostgreSQL, MySql, Oracle
-        public static TemplateType TemplateType = TemplateType.EfCore10; // Ef6, EfCore8-10, FileBasedEf6, FileBasedCore8-10. FileBased specify folder using Settings.TemplateFolder
-        public static GeneratorType GeneratorType = GeneratorType.EfCore; // EfCore, Ef6, Custom. Custom edit GeneratorCustom class to provide your own implementation
+        public static TemplateType TemplateType = TemplateType.EfCore10; // Ef6, EfCore8-10
+        public static GeneratorType GeneratorType = GeneratorType.EfCore; // EfCore, Ef6
         public static bool UseMappingTables = false; // Can only be set to true for EF6. If true, mapping will be used and no mapping tables will be generated. If false, all tables will be generated.
         public static string ConnectionString = ""; // This is used by the generator to reverse engineer your database
         public static string ConnectionStringActions = ""; // EFCore only. Additional method chain to append to the database provider setup in OnConfiguring. e.g. ".EnableRetryOnFailure(maxRetryCount: 10, maxRetryDelay: TimeSpan.FromSeconds(30), errorNumbersToAdd: null)"
@@ -53,7 +53,6 @@
         public static string DbContextName = "MyDbContext"; // Class name for the DbContext to be generated.
         public static bool GenerateSeparateFiles = false;
         public static string Namespace = typeof(Settings).Namespace; // Override the default namespace here. Example: Namespace = "CustomNamespace";
-        public static string TemplateFolder = ""; // Only used if Settings.TemplateType = TemplateType.FileBased. Specify folder name where the mustache folders can be found. Please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Custom-file-based-templates
         public static bool AddUnitTestingDbContext = true; // Will add a FakeDbContext and FakeDbSet for easy unit testing
         public static bool FakeDbContextInDebugOnlyMode = false; // If true, wraps Fake* classes in #if DEBUG / #endif so they are excluded from Release builds
 
@@ -958,78 +957,6 @@
             //});
         };
 
-        // Generate multiple db contexts in a single go ***************************************************************************************
-        // Generating multiple contexts at a time requires you specifying which tables, and columns to generate for each context.
-        // As this generator can now generate multiple db contexts in a single go, filtering is done a per db context, and no longer global.
-        // If GenerateSingleDbContext = true (default), please modify SingleContextFilter, this is where your previous global settings should go.
-        // If GenerateSingleDbContext = false, this will generate multiple db contexts. Please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Generating-multiple-database-contexts-in-a-single-go
-        public static bool GenerateSingleDbContext = true;
-        public static string MultiContextSettingsConnectionString = ""; // Leave empty to read data from same database in ConnectionString above. If settings are in another database, specify the connection string here.
-        public static string MultiContextSettingsPlugin = ""; // Only used for unit testing Generator project as you can't (yet) inherit from IMultiContextSettingsPlugin. "c:\\Path\\YourMultiDbSettingsReader.dll,Full.Name.Of.Class.Including.Namespace". This will allow you to specify a pluggable provider for reading your MultiContext settings.
-        public static char MultiContextAttributeDelimiter = '~'; // The delimiter used for splitting MultiContext attributes
-
-        public static Action<Column, Table, Dictionary<string, object>> MultiContextAllFieldsColumnProcessing = delegate (Column column, Table table, Dictionary<string, object> allFields)
-        {
-            // Examples of how to use additional custom fields from the MultiContext.[Column] table
-            // INT example
-            /*if (allFields.ContainsKey("DummyInt"))
-            {
-                var o = allFields["DummyInt"];
-                column.ExtendedProperty += string.Format(" DummyInt = {0}", (int) o);
-            }*/
-
-            // VARCHAR example
-            /*if (allFields.ContainsKey("Test"))
-            {
-                var o = allFields["Test"];
-                column.ExtendedProperty += string.Format(" Test = {0}", o.ToString());
-            }*/
-
-            // DATETIME example
-            /*if (allFields.ContainsKey("date_of_birth"))
-            {
-                var o = allFields["date_of_birth"];
-                var date = Convert.ToDateTime(o);
-                column.ExtendedProperty += string.Format(" date_of_birth = {0}", date.ToLongDateString());
-            }*/
-        };
-
-        public static Action<Table, Dictionary<string, object>> MultiContextAllFieldsTableProcessing = delegate (Table table, Dictionary<string, object> allFields)
-        {
-            // Examples of how to use additional custom fields from the MultiContext.[Table] table
-            // VARCHAR example
-            /*if (allFields.ContainsKey("Notes"))
-            {
-                var o = allFields["Notes"];
-                if (string.IsNullOrEmpty(table.AdditionalComment))
-                    table.AdditionalComment = string.Empty;
-
-                table.AdditionalComment += string.Format(" Test = {0}", o.ToString());
-            }*/
-        };
-
-        public static Action<StoredProcedure, Dictionary<string, object>> MultiContextAllFieldsStoredProcedureProcessing = delegate (StoredProcedure sp, Dictionary<string, object> allFields)
-        {
-            // Examples of how to use additional custom fields from the MultiContext.[Table] table
-            // VARCHAR example
-            /*if (allFields.ContainsKey("CustomRename"))
-            {
-                var o = allFields["CustomRename"];
-                sp.NameHumanCase = o.ToString();
-            }*/
-        };
-
-        public static Action<StoredProcedure, Dictionary<string, object>> MultiContextAllFieldsFunctionProcessing = delegate (StoredProcedure sp, Dictionary<string, object> allFields)
-        {
-            // Examples of how to use additional custom fields from the MultiContext.[Table] table
-            // VARCHAR example
-            /*if (allFields.ContainsKey("CustomRename"))
-            {
-                var o = allFields["CustomRename"];
-                sp.NameHumanCase = o.ToString();
-            }*/
-        };
-
         // Helper functions ***************************************************************************************************************
         public static bool DbContextClassIsPartial()
         {
@@ -1065,7 +992,7 @@
         // Don't forget to take a look at SingleContextFilter and FilterSettings classes!
         // That's it, nothing else to configure ***********************************************************************************************
 
-        public static bool IsEf6() => TemplateType == TemplateType.Ef6 || TemplateType == TemplateType.FileBasedEf6;
+        public static bool IsEf6() => TemplateType == TemplateType.Ef6;
         public static bool IsEfCore8Plus() => EfCoreVersion() >= 8;
         public static bool IsEfCore9Plus() => EfCoreVersion() >= 9;
         public static bool IsEfCore10Plus() => EfCoreVersion() >= 10;
@@ -1074,19 +1001,15 @@
             switch (TemplateType)
             {
                 case TemplateType.EfCore8:
-                case TemplateType.FileBasedCore8:
                     return 8;
 
                 case TemplateType.EfCore9:
-                case TemplateType.FileBasedCore9:
                     return 9;
 
                 case TemplateType.EfCore10:
-                case TemplateType.FileBasedCore10:
                     return 10;
 
                 case TemplateType.Ef6:
-                case TemplateType.FileBasedEf6:
                 default:
                     return 0;
             }
@@ -1195,8 +1118,7 @@
 
         public static void CheckSettings()
         {
-            if (TemplateType == TemplateType.Ef6 ||
-                TemplateType == TemplateType.FileBasedEf6)
+            if (TemplateType == TemplateType.Ef6)
             {
                 // Nullable reference types are only supported in language version 8.0 or greater
                 AllowNullStrings = false;
@@ -1206,9 +1128,8 @@
     }
 
     // Filtering **************************************************************************************************************************
-    // These settings are only used by the single context filter SingleContextFilter (Settings.GenerateSingleDbContext = true)
+    // These settings are used by the SingleContextFilter class.
     // Please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Filtering
-    // For multi-context filtering (Settings.GenerateSingleDbContext = false), please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Generating-multiple-database-contexts-in-a-single-go
     // Use the following filters to exclude or include schemas/tables/views/columns/stored procedures.
     // You can have as many as you like, and mix and match them.
     // They run in the order defined below. For help with Regex's try https://regexr.com
@@ -1518,37 +1439,6 @@
             filters.RemoveAll(filter => filter.GetType() == typeof(RegexIncludeFilter));
             var singleIncludeFilter = (IFilterType<T>) new RegexIncludeFilter(singleRegex);
             filters.Add(singleIncludeFilter);
-        }
-    }
-
-
-
-
-
-
-    // ****************************************************************************************************************************************
-    // **************************** No more settings to adjust. Rest of the generator code below. *********************************************
-    // ****************************************************************************************************************************************
-
-    public static class AssemblyHelper
-    {
-        public static object LoadPlugin(string assemblyAndType)
-        {
-            var assemblyInfo = assemblyAndType.Split(',');
-            return LoadPlugin(assemblyInfo[0], assemblyInfo[1]);
-        }
-
-        /// <summary>
-        /// Load a plugin
-        /// </summary>
-        /// <param name="assemblyFile">Full path including DLL name. i.e. "C:\\S\\Source (open source)\\EntityFramework-Reverse-POCO-Code-Generator\\Generator.Tests.Unit\\\bin\\Debug\\Generator.Tests.Unit.dll"</param>
-        /// <param name="typeName">Fully qualified class name, including any namespaces. i.e. "Generator.Tests.Unit.MultiContextSettingsPlugin"</param>
-        /// <returns></returns>
-        public static object LoadPlugin(string assemblyFile, string typeName)
-        {
-            var asm = Assembly.LoadFrom(assemblyFile.Trim());
-            var dynType = asm.GetType(typeName.Trim(), true, false);
-            return Activator.CreateInstance(dynType);
         }
     }
 
@@ -2015,7 +1905,7 @@
     {
         public static string Version()
         {
-            return "v4.0.24";
+            return "v4.0.25";
         }
     }
 
@@ -2273,14 +2163,13 @@
         {
             Settings.FilterCount = filters.Count;
 
-            _writeToOuter = Settings.GenerateSingleDbContext && !Settings.GenerateSeparateFiles;
+            _writeToOuter = !Settings.GenerateSeparateFiles;
 
             // For debug
             /*var a = _writeToOuter;
             var b = Settings.FilterCount;
             var c = Settings.GenerateSeparateFiles;
             var d = Settings.TemplateType;
-            var e = Settings.GenerateSingleDbContext;
             var f = filters.First().Key;*/
 
             foreach (var filter in filters)
@@ -2450,63 +2339,15 @@
 
     public class DbContextFilterList : IDbContextFilterList
     {
-        private List<MultiContextSettings> _multiContextSettings;
-        private Dictionary<string, IDbContextFilter> _filters;  // Key = database context name, which also becomes the sub-namespace used to encapsulate the many db contexts
+        private Dictionary<string, IDbContextFilter> _filters;  // Key = database context name, which also becomes the sub-namespace used to encapsulate the classes
 
         public bool ReadDbContextSettings(EfrpgResult result, string singleDbContextSubNamespace = "")
         {
             _filters = new Dictionary<string, IDbContextFilter>();
 
-            if (Settings.GenerateSingleDbContext)
-            {
-                // No need to read the database for settings, as they are provided by the user customisable class SingleContextFilter
-                var filter = new SingleContextFilter { SubNamespace = singleDbContextSubNamespace };
-                _filters.Add(string.IsNullOrWhiteSpace(singleDbContextSubNamespace) ? string.Empty : singleDbContextSubNamespace, filter);
-
-                return true;
-            }
-
-            // Read in multi database context settings
-            if (!string.IsNullOrWhiteSpace(Settings.MultiContextSettingsPlugin))
-            {
-                // Use plugin
-                // We know the plugin implements (IMultiContextSettingsPlugin) interface but we can't direct cast it so we copy the object
-                var plugin = AssemblyHelper.LoadPlugin(Settings.MultiContextSettingsPlugin);
-
-                var pluginType = plugin.GetType();
-                // remoteSettingsListObject is a List<MultiContextSettings> object
-                var remoteSettingsListObject = (IList) pluginType.InvokeMember("ReadSettings", System.Reflection.BindingFlags.InvokeMethod, null, plugin, null);
-
-                _multiContextSettings = new List<MultiContextSettings>();
-                var remoteSettingsList = remoteSettingsListObject.Cast<object>();
-
-                foreach (var remoteSettings in remoteSettingsList)
-                {
-                    var multiContextSettings = new MultiContextSettings();
-                    MultiContextSettingsCopy.Copy(remoteSettings, multiContextSettings);
-                    _multiContextSettings.Add(multiContextSettings);
-                }
-            }
-            else
-            {
-                if (result == null)
-                    return false;
-
-                // Use multi-context settings provided by the dotnet tool via EfrpgResult
-                _multiContextSettings = result.MultiContextSettings ?? new List<MultiContextSettings>();
-            }
-
-            if (_multiContextSettings == null || _multiContextSettings.Count == 0)
-                return false;
-
-            foreach (var setting in _multiContextSettings)
-            {
-                var filter = new MultiContextFilter(setting);
-                if (!string.IsNullOrWhiteSpace(setting.Filename) && !_filters.ContainsKey(setting.Filename))
-                    _filters.Add(setting.Filename, filter);
-                else
-                    _filters.Add(setting.Name, filter);
-            }
+            // No need to read the database for settings, as they are provided by the user customisable class SingleContextFilter
+            var filter = new SingleContextFilter { SubNamespace = singleDbContextSubNamespace };
+            _filters.Add(string.IsNullOrWhiteSpace(singleDbContextSubNamespace) ? string.Empty : singleDbContextSubNamespace, filter);
 
             return true;
         }
@@ -2514,11 +2355,6 @@
         public Dictionary<string, IDbContextFilter> GetFilters()
         {
             return _filters;
-        }
-
-        public List<MultiContextSettings> GetMultiContextSettings()
-        {
-            return _multiContextSettings;
         }
 
         public bool IncludeViews()
@@ -2545,6 +2381,24 @@
         {
             return _filters.Any(x => x.Value.IncludeScalarValuedFunctions);
         }
+    }
+    /// <summary>
+    /// Create enumeration from database table
+    /// public enum Name
+    /// {
+    ///     NameField = ValueField,
+    ///     etc
+    /// }
+    /// </summary>
+    public class EnumerationSettings
+    {
+        public string Name { get; set; } // Enum to generate. e.g. "DaysOfWeek" would result in "public enum DaysOfWeek {...}" if the GroupField is set to a value then {GroupField} must be used in this name. e.g. "DaysOfWeek{GroupField}"
+        public string Table { get; set; } // Database table containing enum values. e.g. "DaysOfWeek"
+        public string NameField { get; set; } // Column containing the name for the enum. e.g. "TypeName"
+        public string ValueField { get; set; } // Column containing the values for the enum. e.g. "TypeId"
+        public string GroupField { get; set; } // [optional] Column containing the group name for the enum. This is used if multiple Enums are in the same table. if this is populated, use {GroupField} in the Name property. e.g. "{GroupField}Enum"
+        public string DescriptionField { get; set; } // [optional] Column containing the description for each enum member. When set, a [Description("...")] attribute is emitted for members whose description is non-empty.
+        public bool GenerateDescriptionFromName { get; set; } // [optional] If true and no description is available from DescriptionField, a [Description("...")] attribute is generated from the enum member name converted to human-readable text.
     }
     public enum FilterType
     {
@@ -2615,7 +2469,6 @@
     {
         bool ReadDbContextSettings(EfrpgResult result, string singleDbContextSubNamespace = null);
         Dictionary<string, IDbContextFilter> GetFilters();
-        List<MultiContextSettings> GetMultiContextSettings();
         bool IncludeViews();
         bool IncludeSynonyms();
         bool IncludeStoredProcedures();
@@ -2629,709 +2482,6 @@
     public interface IFilterType<in T> : IFilter
     {
         bool IsExcluded(T item);
-    }
-
-
-    public class MultiContextFilter : DbContextFilter
-    {
-        private readonly MultiContextSettings _settings;
-        private readonly MultiContextNameNormalisation _normalisation;
-
-        private readonly List<string> _allowedSchemas;
-        private readonly List<string> _allowedTables;
-        private readonly Dictionary<string, List<string>> _allowedColumns; // Key = table name, value = list of columns
-        private readonly List<string> _allowedStoredProcs; // Stored procedures
-        private readonly List<string> _allowedFunctions; // Table/Scalar valued functions
-
-        public MultiContextFilter(MultiContextSettings settings)
-        {
-            _settings = settings;
-
-            IncludeViews = settings.IncludeViews();
-            IncludeSynonyms = false;
-            IncludeTableValuedFunctions = settings.IncludeFunctions(); // If true, for EF6 install the "EntityFramework.CodeFirstStoreFunctions" Nuget Package.
-            IncludeScalarValuedFunctions = IncludeTableValuedFunctions; // Scalar/Table function filters are not separate in this filter.
-            IncludeStoredProcedures = IncludeScalarValuedFunctions || IncludeTableValuedFunctions || settings.IncludeStoredProcedures();
-            SubNamespace = settings.GetNamespace();
-
-            _allowedSchemas = new List<string>();
-            _allowedTables = new List<string>();
-            _allowedColumns = new Dictionary<string, List<string>>();
-            _allowedStoredProcs = new List<string>();
-            _allowedFunctions = new List<string>();
-
-            // Pre-process the settings
-            _normalisation = new MultiContextNameNormalisation(settings.BaseSchema);
-            _allowedSchemas.Add(_normalisation.DefaultSchema);
-
-            // Tables
-            foreach (var t in settings.Tables)
-            {
-                var tableName = _normalisation.Normalise(t.Name);
-                SchemaAndName tableDbName = null;
-                if (!string.IsNullOrEmpty(t.DbName))
-                {
-                    t.DbName = t.DbName.Replace("[", "").Replace("]", "");
-                    tableDbName = _normalisation.Normalise(t.DbName);
-                    _allowedTables.Add(tableDbName.ToString());
-
-                    // Override schema with the one defined in DbName
-                    tableName.Schema = tableDbName.Schema;
-                }
-                _allowedTables.Add(tableName.ToString());
-
-
-                SchemaAndName tablePluralName = null;
-                if (!string.IsNullOrEmpty(t.PluralName))
-                {
-                    tablePluralName = _normalisation.Normalise(t.PluralName);
-                    tablePluralName.Schema = tableName.Schema;
-                    _allowedTables.Add(tablePluralName.ToString());
-                }
-
-
-                var cols = new List<string>();
-                foreach (var c in t.Columns)
-                {
-                    var columnName = _normalisation.Normalise(c.Name);
-                    cols.Add(columnName.Name.ToLowerInvariant());
-
-                    if (!string.IsNullOrEmpty(c.DbName))
-                    {
-                        c.DbName = c.DbName.Replace("[", "").Replace("]", "");
-                        var columnDbName = _normalisation.Normalise(c.DbName);
-                        cols.Add(columnDbName.Name.ToLowerInvariant());
-                    }
-                }
-
-                if (cols.Any())
-                {
-                    cols = cols.Distinct().ToList();
-                    _allowedColumns.Add(tableName.ToString(), cols);
-
-                    if (tableDbName != null && !_allowedColumns.ContainsKey(tableDbName.ToString()))
-                        _allowedColumns.Add(tableDbName.ToString(), cols);
-
-                    if (tablePluralName != null && !_allowedColumns.ContainsKey(tablePluralName.ToString()))
-                        _allowedColumns.Add(tablePluralName.ToString(), cols);
-                }
-            }
-            _allowedTables = _allowedTables.Distinct().ToList();
-
-            // Find schemas used in tables
-            var tableSchemas = _allowedTables
-                .Where(x => x.Contains('.'))
-                .Select(t => t.Split('.').First().ToLowerInvariant())
-                .Distinct()
-                .ToList();
-            _allowedSchemas.AddRange(tableSchemas);
-            _allowedSchemas = _allowedSchemas.Distinct().ToList();
-
-
-            // Stored procedures
-            foreach (var sp in settings.StoredProcedures)
-            {
-                var spName = _normalisation.Normalise(sp.Name);
-                if (!string.IsNullOrEmpty(sp.DbName))
-                {
-                    var spDbName = _normalisation.Normalise(sp.DbName);
-                    _allowedStoredProcs.Add(spDbName.ToString());
-
-                    // Override schema with the one defined in DbName
-                    spName.Schema = spDbName.Schema;
-                }
-                _allowedStoredProcs.Add(spName.ToString());
-            }
-            _allowedStoredProcs = _allowedStoredProcs.Distinct().ToList();
-
-
-            // Functions
-            foreach (var f in settings.Functions)
-            {
-                var funcName = _normalisation.Normalise(f.Name);
-                if (!string.IsNullOrEmpty(f.DbName))
-                {
-                    var funcDbName = _normalisation.Normalise(f.DbName);
-                    _allowedFunctions.Add(funcDbName.ToString());
-
-                    // Override schema with the one defined in DbName
-                    funcName.Schema = funcDbName.Schema;
-                }
-                _allowedFunctions.Add(funcName.ToString());
-            }
-            _allowedFunctions = _allowedFunctions.Distinct().ToList();
-        }
-
-        public MultiContextSettings GetSettings()
-        {
-            return _settings;
-        }
-
-        public override bool IsExcluded(EntityName item)
-        {
-            if (string.IsNullOrEmpty(item.DbName))
-                return true;
-
-            // Schema
-            var schema = item as Schema;
-            if (schema != null)
-                return !_allowedSchemas.Contains(item.DbName.ToLowerInvariant());
-
-
-            // Table
-            var table = item as Table;
-            if (table != null)
-            {
-                var search = $"{table.Schema.DbName}.{table.DbName}".ToLowerInvariant();
-                if (_allowedTables.Contains(search))
-                    return false; // Allowed
-
-                if (!string.IsNullOrEmpty(table.NameHumanCase))
-                {
-                    search = $"{table.Schema.DbName}.{table.NameHumanCase}".ToLowerInvariant();
-                    if (_allowedTables.Contains(search))
-                        return false; // Allowed
-                }
-
-                return true; // Excluded
-            }
-
-
-            // Column
-            var column = item as Column;
-            if (column != null)
-            {
-                var key = $"{column.ParentTable.Schema.DbName}.{column.ParentTable.DbName}".ToLowerInvariant();
-                if (!_allowedColumns.ContainsKey(key) && !string.IsNullOrEmpty(column.ParentTable.NameHumanCase))
-                {
-                    key = $"{column.ParentTable.Schema.DbName}.{column.ParentTable.NameHumanCase}".ToLowerInvariant();
-                    if (!_allowedColumns.ContainsKey(key))
-                        return true; // Excluded as could not find table
-                }
-
-                var cols = _allowedColumns[key];
-                if (cols.Contains(item.DbName.ToLowerInvariant()))
-                    return false; // Allowed
-
-                if (!string.IsNullOrEmpty(item.NameHumanCase) && cols.Contains(item.NameHumanCase.ToLowerInvariant()))
-                    return false; // Allowed
-
-                return true; // Excluded
-            }
-
-
-            // Stored procedure
-            var sp = item as StoredProcedure;
-            if (sp != null)
-            {
-                var search = $"{sp.Schema.DbName}.{sp.DbName}".ToLowerInvariant();
-                if (sp.IsStoredProcedure && _allowedStoredProcs.Contains(search))
-                    return false; // Allowed
-                if ((sp.IsTableValuedFunction || sp.IsScalarValuedFunction) && _allowedFunctions.Contains(search))
-                    return false; // Allowed
-
-                if (!string.IsNullOrEmpty(sp.NameHumanCase))
-                {
-                    search = $"{sp.Schema.DbName}.{sp.NameHumanCase}".ToLowerInvariant();
-                    if (sp.IsStoredProcedure && _allowedStoredProcs.Contains(search))
-                        return false; // Allowed
-                    if ((sp.IsTableValuedFunction || sp.IsScalarValuedFunction) && _allowedFunctions.Contains(search))
-                        return false; // Allowed
-                }
-
-                return true; // Excluded
-            }
-
-            return true; // Always exclude unless found
-        }
-
-        public override string TableRename(string name, string schema, bool isView)
-        {
-            var tableSettings = FindTableSetting(name, schema);
-            if (tableSettings != null && !string.IsNullOrWhiteSpace(tableSettings.Name))
-                return tableSettings.Name;
-
-            // Callback to Settings, which can be set within <database>.tt
-            if (Settings.TableRename != null)
-                return Settings.TableRename(name, schema, isView);
-
-            return name;
-        }
-
-        public override string MappingTableRename(string mappingTable, string tableName, string entityName)
-        {
-            // Callback to Settings, which can be set within <database>.tt
-            if (Settings.MappingTableRename != null)
-                return Settings.MappingTableRename(mappingTable, tableName, entityName);
-
-            return entityName;
-        }
-
-        public override void UpdateTable(Table table)
-        {
-            var t = FindTableSetting(table.DbName, table.Schema.DbName);
-            if (t != null)
-            {
-                if (!string.IsNullOrEmpty(t.Description))
-                    table.AdditionalComment = t.Description;
-
-                if (!string.IsNullOrEmpty(t.PluralName))
-                    table.PluralNameOverride = t.PluralName;
-
-                if (!string.IsNullOrEmpty(t.DbSetModifier))
-                    table.DbSetModifier = t.DbSetModifier;
-
-                if (!string.IsNullOrEmpty(t.Attributes))
-                    table.Attributes.AddRange(t.Attributes.Split(Settings.MultiContextAttributeDelimiter));
-            }
-
-            // Callback to Settings, which can be set within <database>.tt
-            Settings.UpdateTable?.Invoke(table);
-
-            if (t.AllFields != null)
-            {
-                Settings.MultiContextAllFieldsTableProcessing?.Invoke(table, t.AllFields);
-
-                // Examples of how to use additional custom fields from the MultiContext.[Table] table
-                // VARCHAR example
-                /*if (t.AllFields.ContainsKey("Notes"))
-                {
-                    var o = t.AllFields["Notes"];
-                    if (string.IsNullOrEmpty(table.AdditionalComment))
-                        table.AdditionalComment = string.Empty;
-
-                    table.AdditionalComment += string.Format(" Test = {0}", o.ToString());
-                }*/
-            }
-        }
-
-        public override void UpdateColumn(Column column, Table table)
-        {
-            var t = FindTableSetting(table.DbName, table.Schema.DbName);
-            if (t != null)
-            {
-                var name = column.DbName.ToLowerInvariant();
-                var nameHumanCase = column.NameHumanCase.ToLowerInvariant();
-
-                var col = FindColumnSetting(t, name, nameHumanCase);
-                if (col != null)
-                {
-                    column.NameHumanCase = col.Name;
-
-                    if (!string.IsNullOrEmpty(col.Attributes))
-                        column.Attributes.AddRange(col.Attributes.Split(Settings.MultiContextAttributeDelimiter));
-
-                    if (col.OverrideModifier != null)
-                        column.OverrideModifier = col.OverrideModifier.Value;
-
-                    if (col.IsPrimaryKey != null)
-                        column.IsPrimaryKey = col.IsPrimaryKey.Value;
-
-                    if (!string.IsNullOrEmpty(col.EnumType))
-                    {
-                        column.PropertyType = col.EnumType;
-
-                        // Only prepend the cast if it isn't already present, otherwise a column whose enum
-                        // type is configured via more than one mechanism ends up double-cast: (Type) (Type) 0
-                        var cast = "(" + col.EnumType + ")";
-                        if (!string.IsNullOrEmpty(column.Default) && !column.Default.StartsWith(cast, StringComparison.Ordinal))
-                            column.Default = cast + " " + column.Default;
-                    }
-
-                    if (col.IsNullable != null)
-                        column.IsNullable = col.IsNullable.Value;
-
-                    if (!string.IsNullOrEmpty(col.PropertyType))
-                        column.PropertyType = col.PropertyType;
-
-                    if (col.AllFields != null)
-                    {
-                        Settings.MultiContextAllFieldsColumnProcessing?.Invoke(column, table, col.AllFields);
-
-                        // Examples of how to use additional custom fields from the MultiContext.[Column] table
-                        // INT example
-                        /*if (col.AllFields.ContainsKey("DummyInt"))
-                        {
-                            var o = col.AllFields["DummyInt"];
-                            column.ExtendedProperty += string.Format(" DummyInt = {0}", (int) o);
-                        }*/
-
-                        // VARCHAR example
-                        /*if (col.AllFields.ContainsKey("Test"))
-                        {
-                            var o = col.AllFields["Test"];
-                            column.ExtendedProperty += string.Format(" Test = {0}", o.ToString());
-                        }*/
-
-                        // DATETIME example
-                        /*if (col.AllFields.ContainsKey("date_of_birth"))
-                        {
-                            var o = col.AllFields["date_of_birth"];
-                            var date = Convert.ToDateTime(o);
-                            column.ExtendedProperty += string.Format(" date_of_birth = {0}", date.ToLongDateString());
-                        }*/
-                    }
-                }
-            }
-
-            // Callback to Settings, which can be set within <database>.tt
-            Settings.UpdateColumn?.Invoke(column, table, null, null);
-        }
-
-        public override void AddEnum(Table table)
-        {
-
-        }
-
-        public override void UpdateEnum(Enumeration enumeration)
-        {
-
-        }
-
-        public override void UpdateEnumMember(EnumerationMember enumerationMember)
-        {
-
-        }
-
-        public override void ViewProcessing(Table view)
-        {
-            // Find the multi-context settings for this view
-            var t = FindTableSetting(view.DbName, view.Schema.DbName);
-            if (t != null)
-            {
-                // Find the multi-context columns which have a setting in IsPrimaryKey
-                var requiredPrimaryKeys = t.Columns
-                    .Where(c => c.IsPrimaryKey.HasValue)
-                    .Select(c => new
-                    {
-                        Name = _normalisation.Normalise(c.Name, c.DbName).Name.ToLowerInvariant(),
-                        DbName = _normalisation.Normalise(c.DbName)?.Name.ToLowerInvariant(),
-                        IsPrimaryKey = c.IsPrimaryKey.Value
-                    })
-                    .ToList();
-
-                if (!requiredPrimaryKeys.Any())
-                    return;
-
-                // Find the column settings which have an IsPrimaryKey set to true/false;
-                var requiredFalse = requiredPrimaryKeys.Where(x => !x.IsPrimaryKey).ToList();
-                var requiredTrue = requiredPrimaryKeys.Where(x => x.IsPrimaryKey).ToList();
-                var dbNamesFalse = requiredFalse.Where(x => !string.IsNullOrEmpty(x.DbName)).Select(x => x.DbName).ToList();
-                var dbNamesTrue = requiredTrue.Where(x => !string.IsNullOrEmpty(x.DbName)).Select(x => x.DbName).ToList();
-                var colFalse = requiredFalse.Select(x => x.Name).ToList();
-                var colTrue = requiredTrue.Select(x => x.Name).ToList();
-
-                foreach (var col in view.Columns.Where(c => dbNamesFalse.Contains(c.DbName.ToLowerInvariant()) || colFalse.Contains(c.NameHumanCase.ToLowerInvariant())))
-                    col.IsPrimaryKey = false;
-
-                foreach (var col in view.Columns.Where(c => dbNamesTrue.Contains(c.DbName.ToLowerInvariant()) || colTrue.Contains(c.NameHumanCase.ToLowerInvariant())))
-                {
-                    col.IsPrimaryKey = true;
-                    col.IsNullable = false;
-                }
-            }
-
-            // Callback to Settings, which can be set within <database>.tt
-            Settings.ViewProcessing?.Invoke(view);
-        }
-
-        public override string StoredProcedureRename(StoredProcedure sp)
-        {
-            var storedProcSetting = FindStoredProcSetting(sp);
-            if (storedProcSetting != null)
-            {
-                if (storedProcSetting.AllFields != null)
-                {
-                    Settings.MultiContextAllFieldsStoredProcedureProcessing?.Invoke(sp, storedProcSetting.AllFields);
-
-                    // Examples of how to use additional custom fields from the MultiContext.[Table] table
-                    // VARCHAR example
-                    /*if (storedProcSetting.AllFields.ContainsKey("CustomRename"))
-                    {
-                        var o = storedProcSetting.AllFields["CustomRename"];
-                        sp.NameHumanCase = o.ToString();
-                    }*/
-                }
-                return storedProcSetting.Name;
-            }
-
-            var functionSetting = FindFunctionSetting(sp);
-            if (functionSetting != null)
-            {
-                if (functionSetting.AllFields != null)
-                {
-                    Settings.MultiContextAllFieldsFunctionProcessing?.Invoke(sp, functionSetting.AllFields);
-
-                    // Examples of how to use additional custom fields from the MultiContext.[Table] table
-                    // VARCHAR example
-                    /*if (functionSetting.AllFields.ContainsKey("CustomRename"))
-                    {
-                        var o = functionSetting.AllFields["CustomRename"];
-                        sp.NameHumanCase = o.ToString();
-                    }*/
-                }
-                return functionSetting.Name;
-            }
-
-            // Callback to Settings, which can be set within <database>.tt
-            if (Settings.StoredProcedureRename != null)
-                return Settings.StoredProcedureRename(sp);
-
-            return sp.NameHumanCase;
-        }
-
-        public override string StoredProcedureReturnModelRename(string name, StoredProcedure sp)
-        {
-            var procSetting = FindStoredProcSetting(sp);
-            if (procSetting != null && !string.IsNullOrWhiteSpace(procSetting.ReturnModel))
-                return procSetting.ReturnModel;
-
-            // Callback to Settings, which can be set within <database>.tt
-            if (Settings.StoredProcedureReturnModelRename != null)
-                return Settings.StoredProcedureReturnModelRename(name, sp);
-
-            return name;
-        }
-
-        public override ForeignKey ForeignKeyFilter(ForeignKey fk)
-        {
-            // Return null to exclude this foreign key, or set IncludeReverseNavigation = false
-            // to include the foreign key but not generate reverse navigation properties.
-            // Example, to exclude all foreign keys for the Categories table, use:
-            //if (fk.PkTableName == "Categories")
-            //    return null;
-
-            // Example, to exclude reverse navigation properties for tables ending with Type, use:
-            //if (fk.PkTableName.EndsWith("Type"))
-            //    fk.IncludeReverseNavigation = false;
-
-            // You can also change the access modifier of the foreign-key's navigation property:
-            //if(fk.PkTableName == "Categories")
-            //     fk.AccessModifier = "internal";
-
-            return fk;
-        }
-
-        public override string[] ForeignKeyAnnotationsProcessing(Table fkTable, Table pkTable, string propName, string fkPropName)
-        {
-            // Callback to Settings, which can be set within <database>.tt
-            if (Settings.ForeignKeyAnnotationsProcessing != null)
-                return Settings.ForeignKeyAnnotationsProcessing(fkTable, pkTable, propName, fkPropName);
-
-            return null;
-        }
-
-        private MultiContextTableSettings FindTableSetting(string name, string schema)
-        {
-            var search = $"{schema}.{name}".ToLowerInvariant();
-            return _settings.Tables
-                .FirstOrDefault(t => search == _normalisation.Normalise(t.Name, t.DbName).ToString() ||
-                                     search == _normalisation.Normalise(t.DbName)?.ToString());
-        }
-
-        private MultiContextColumnSettings FindColumnSetting(MultiContextTableSettings table, string dbName, string nameHumanCase)
-        {
-            return table.Columns
-                .FirstOrDefault(t => nameHumanCase == _normalisation.Normalise(t.Name, t.DbName).Name.ToLowerInvariant() ||
-                                     dbName == _normalisation.Normalise(t.DbName)?.Name.ToLowerInvariant());
-        }
-
-        private MultiContextStoredProcedureSettings FindStoredProcSetting(StoredProcedure sp)
-        {
-            var search = $"{sp.Schema.DbName}.{sp.DbName}".ToLowerInvariant();
-            return _settings.StoredProcedures
-                .FirstOrDefault(t => search == _normalisation.Normalise(t.Name, t.DbName).ToString() ||
-                                     search == _normalisation.Normalise(t.DbName)?.ToString());
-        }
-
-        private MultiContextFunctionSettings FindFunctionSetting(StoredProcedure sp)
-        {
-            var search = $"{sp.Schema.DbName}.{sp.DbName}".ToLowerInvariant();
-            return _settings.Functions
-                .FirstOrDefault(t => search == _normalisation.Normalise(t.Name, t.DbName).ToString() ||
-                                     search == _normalisation.Normalise(t.DbName)?.ToString());
-        }
-    }
-    public class MultiContextNameNormalisation
-    {
-        public readonly string DefaultSchema;
-
-        public MultiContextNameNormalisation(string defaultSchema)
-        {
-            DefaultSchema = string.IsNullOrWhiteSpace(defaultSchema) ? Settings.DefaultSchema?.Trim().ToLowerInvariant() : defaultSchema.Trim().ToLowerInvariant();
-        }
-
-        public SchemaAndName Normalise(string name)
-        {
-            if (string.IsNullOrWhiteSpace(name))
-                return null;
-
-            var parts = name.Split('.');
-            var numParts = parts.Length;
-            var schema = numParts >= 2 ? parts[numParts - 2].Trim() : DefaultSchema;
-            var final = parts[numParts - 1].Trim();
-            return new SchemaAndName(schema, final);
-        }
-
-        public SchemaAndName Normalise(string name, string dbName)
-        {
-            if (string.IsNullOrWhiteSpace(name))
-                return null;
-
-            var db = Normalise(dbName);
-
-            var parts = name.Split('.');
-            var numParts = parts.Length;
-            var schema = db?.Schema ?? DefaultSchema;
-            if (numParts >= 2)
-                schema = parts[numParts - 2].Trim();
-            var final = parts[numParts - 1].Trim();
-            return new SchemaAndName(schema, final);
-        }
-    }
-
-    // Unless table/column/stored proc/etc is explicitly listed here, it will be excluded.
-    public class MultiContextSettings
-    {
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public string Namespace { get; set; } // Optional
-        public string TemplatePath { get; set; }
-        public string Filename { get; set; }
-
-        // Defaults to use if not specified for an object
-        public string BaseSchema { get; set; }
-
-        public Dictionary<string, object> AllFields { get; set; } // Here you will find all fields, including any extra custom fields not listed above
-
-        public List<MultiContextTableSettings> Tables { get; set; }
-        public List<MultiContextStoredProcedureSettings> StoredProcedures { get; set; }
-        public List<MultiContextFunctionSettings> Functions { get; set; }
-        public List<EnumerationSettings> Enumerations { get; set; }
-        public List<MultiContextForeignKeySettings> ForeignKeys { get; set; }
-
-        public MultiContextSettings()
-        {
-            Tables = new List<MultiContextTableSettings>();
-            StoredProcedures = new List<MultiContextStoredProcedureSettings>();
-            Functions = new List<MultiContextFunctionSettings>();
-            Enumerations = new List<EnumerationSettings>();
-            ForeignKeys = new List<MultiContextForeignKeySettings>();
-        }
-
-        public bool IncludeViews()
-        {
-            return Tables.Any();
-        }
-
-        public bool IncludeStoredProcedures()
-        {
-            return StoredProcedures.Any();
-        }
-
-        public bool IncludeFunctions()
-        {
-            return Functions.Any();
-        }
-
-        public string GetNamespace()
-        {
-            if (!string.IsNullOrEmpty(Namespace))
-                return Namespace;
-
-            return !string.IsNullOrEmpty(Name) ? Name : string.Empty;
-        }
-    }
-
-    public class MultiContextTableSettings
-    {
-        public string Name { get; set; }
-        public string Description { get; set; } // [optional] Comment added to table class
-        public string PluralName { get; set; } // [optional] Override auto-plural name
-        public string DbName { get; set; } // [optional] Name of table in database. Specify only if the db table name is different from the "Name" property.
-        public string Attributes { get; set; } // [optional] Use a tilda ~ delimited list of attributes to add to this table property. e.g. [CustomSecurity(Security.ReadOnly)]~[AnotherAttribute]~[Etc]
-                                               //            The tilda ~ delimiter used in Attributes can be changed if you set Settings.MultiContextAttributeDelimiter = '~'; to something else.
-        public string DbSetModifier { get; set; } // [optional] Will override setting of table.DbSetModifier. Default is "public".
-
-        public Dictionary<string, object> AllFields { get; set; } // Here you will find all fields, including any extra custom fields not listed above
-        public List<MultiContextColumnSettings> Columns { get; set; }
-    }
-
-    public class MultiContextColumnSettings
-    {
-        public string Name { get; set; }
-        public string DbName { get; set; } // [optional] Name of column in database. Specify only if the db column name is different from the "Name" property.
-        public bool? IsPrimaryKey { get; set; } // [optional] Useful for views as views don't have primary keys.
-        public bool? OverrideModifier { get; set; } // [optional] Adds "override" modifier.
-        public string EnumType { get; set; } // [optional] Use enum type instead of data type
-        public string Attributes { get; set; } // [optional] Use a tilda ~ delimited list of attributes to add to a poco property. e.g. [CustomSecurity(Security.ReadOnly)]~[Required]
-        public string PropertyType { get; set; } // [optional] Will override setting of column.PropertyType
-        public bool? IsNullable { get; set; } // [optional] Will override setting of column.IsNullable
-
-        public Dictionary<string, object> AllFields { get; set; } // Here you will find all fields, including any extra custom fields not listed above
-    }
-
-    public class MultiContextStoredProcedureSettings
-    {
-        public string Name { get; set; }
-        public string DbName { get; set; } // [optional] Name of stored proc in database. Specify only if the db stored proc name is different from the "Name" property.
-        public string ReturnModel { get; set; } // [optional] Specify a return model for stored proc
-
-        public Dictionary<string, object> AllFields { get; set; } // Here you will find all fields, including any extra custom fields not listed above
-    }
-
-    public class MultiContextFunctionSettings
-    {
-        public string Name { get; set; }
-        public string DbName { get; set; } // [optional] Name of function in database. Specify only if the db function name is different from the "Name" property.
-
-        public Dictionary<string, object> AllFields { get; set; } // Here you will find all fields, including any extra custom fields not listed above
-    }
-
-    /// <summary>
-    /// Create enumeration from database table
-    /// public enum Name
-    /// {
-    ///     NameField = ValueField,
-    ///     etc
-    /// }
-    /// </summary>
-    public class EnumerationSettings
-    {
-        public string Name { get; set; } // Enum to generate. e.g. "DaysOfWeek" would result in "public enum DaysOfWeek {...}" if the GroupField is set to a value then {GroupField} must be used in this name. e.g. "DaysOfWeek{GroupField}"
-        public string Table { get; set; } // Database table containing enum values. e.g. "DaysOfWeek"
-        public string NameField { get; set; } // Column containing the name for the enum. e.g. "TypeName"
-        public string ValueField { get; set; } // Column containing the values for the enum. e.g. "TypeId"
-        public string GroupField { get; set; } // [optional] Column containing the group name for the enum. This is used if multiple Enums are in the same table. if this is populated, use {GroupField} in the Name property. e.g. "{GroupField}Enum"
-        public string DescriptionField { get; set; } // [optional] Column containing the description for each enum member. When set, a [Description("...")] attribute is emitted for members whose description is non-empty.
-        public bool GenerateDescriptionFromName { get; set; } // [optional] If true and no description is available from DescriptionField, a [Description("...")] attribute is generated from the enum member name converted to human-readable text.
-
-        public Dictionary<string, object> AllFields { get; set; } // Here you will find all fields, including any extra custom fields not listed above
-    }
-
-    /// <summary>
-    /// Existing foreign keys will be read and used as normal from the source database, however you can specify extra foreign keys here.
-    /// Define extra navigation relationships, such as views, since views don’t have relationships.
-    /// Specify names as defined in the database, not how they will be named in C#
-    /// </summary>
-    public class MultiContextForeignKeySettings
-    {
-        public string ConstraintName { get; set; } // Name of the foreign key
-        public string ParentName { get; set; } // [optional] Name of the parent foreign key property. If NULL it will be generated.
-        public string ChildName { get; set; } // [optional] Name of the child foreign key property. If NULL it will be generated.
-
-        public string PkSchema { get; set; } // [optional] Will default to MultiContext.Context.BaseSchema
-        public string PkTableName { get; set; }
-        public string PkColumn { get; set; }
-
-        public string FkSchema { get; set; } // [optional] Will default to MultiContext.Context.BaseSchema
-        public string FkTableName { get; set; }
-        public string FkColumn { get; set; }
-
-        public int Ordinal { get; set; } // Order of this item
-        public bool CascadeOnDelete { get; set; } // If false will add .WillCascadeOnDelete(false)
-        public bool IsNotEnforced { get; set; } // If not enforced, it means foreign key is optional. .HasOptional(...) or .HasRequired(...)
-        public bool HasUniqueConstraint { get; set; } // True if this FK points to columns that have a unique constraint against them
     }
 
     public class PeriodFilter : IFilterType<EntityName>
@@ -3427,11 +2577,6 @@
         // Return true to exclude the schema, return false to include it
         public bool IsExcluded(EntityName schema)
         {
-            // Exclude schema with a name of 'MultiContext' as this is reserved by the generator for multi-context generation.
-            // See https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Generating-multiple-database-contexts-in-a-single-go
-            if (schema.DbName.Equals("MultiContext", StringComparison.InvariantCultureIgnoreCase))
-                return true;
-
             // Example: Exclude any schema with 'audit' anywhere in its name.
             //if (schema.Name.ToLowerInvariant().Contains("audit"))
             //    return true;
@@ -5116,28 +4261,12 @@
                 // Read enumeration values from the database. The AddEnum callbacks above may have
                 // added entries to the enumeration lists, so this must happen after them. The efrpg
                 // tool is re-invoked here with the now-resolved enumeration specs (see ReadEnumsViaTool).
-                if (Settings.GenerateSingleDbContext)
+                if (Settings.Enumerations != null && Settings.Enumerations.Count > 0)
                 {
-                    if (Settings.Enumerations != null && Settings.Enumerations.Count > 0)
+                    var enumerations = ReadEnumsViaTool(Settings.Enumerations);
+                    if (enumerations.Count > 0)
                     {
-                        var enumerations = ReadEnumsViaTool(Settings.Enumerations);
-                        if (enumerations.Count > 0)
-                        {
-                            foreach (var filterKeyValuePair in FilterList.GetFilters())
-                                filterKeyValuePair.Value.Enums.AddRange(enumerations);
-                        }
-                    }
-                }
-                else
-                {
-                    foreach (var filterKeyValuePair in FilterList.GetFilters())
-                    {
-                        var multiContextSetting = ((MultiContextFilter) filterKeyValuePair.Value).GetSettings();
-                        if (multiContextSetting?.Enumerations == null || multiContextSetting.Enumerations.Count == 0)
-                            continue;
-
-                        var enumerations = ReadEnumsViaTool(multiContextSetting.Enumerations);
-                        if (enumerations.Count > 0)
+                        foreach (var filterKeyValuePair in FilterList.GetFilters())
                             filterKeyValuePair.Value.Enums.AddRange(enumerations);
                     }
                 }
@@ -5518,32 +4647,14 @@
 
         private void AddForeignKeysToFilters(List<RawForeignKey> rawForeignKeys)
         {
-            if (Settings.GenerateSingleDbContext && (rawForeignKeys == null || !rawForeignKeys.Any()))
+            if (rawForeignKeys == null || !rawForeignKeys.Any())
                 return;
-
-            if (rawForeignKeys == null)
-                rawForeignKeys = new List<RawForeignKey>();
-            //else
-            //SortForeignKeys(rawForeignKeys);
 
             foreach (var filterKeyValuePair in FilterList.GetFilters())
             {
                 var filter = filterKeyValuePair.Value;
                 var fks = new List<RawForeignKey>();
                 fks.AddRange(rawForeignKeys/*.OrderBy(x => x.SortOrder).ThenBy(x => x.FkTableName).ThenBy(x => x.PkTableName)*/);
-
-                if (!Settings.GenerateSingleDbContext)
-                {
-                    var multiContextSetting = ((MultiContextFilter) filter).GetSettings();
-                    if (multiContextSetting?.ForeignKeys != null)
-                    {
-                        fks.AddRange(multiContextSetting.ForeignKeys.Select(x =>
-                            new RawForeignKey(x.ConstraintName, x.ParentName, x.ChildName,
-                                x.PkColumn, x.FkColumn, x.PkSchema, x.PkTableName,
-                                x.FkSchema, x.FkTableName, x.Ordinal, x.CascadeOnDelete,
-                                x.IsNotEnforced, x.HasUniqueConstraint)));
-                    }
-                }
 
                 if (!fks.Any())
                     continue;
@@ -6426,28 +5537,10 @@
             try
             {
                 CreateOutputFolders();
-                var fallback = Settings.TemplateFolder;
                 foreach (var filter in FilterList.GetFilters())
                 {
                     _fileManagementService.UseFileManager(filter.Key);
-                    if (!Settings.GenerateSingleDbContext)
-                    {
-                        // Multi-context
-                        Settings.DbContextInterfaceName = null;
-                        Settings.DbContextName = ((MultiContextFilter) filter.Value).GetSettings().Name ?? filter.Key;
-
-                        if (Settings.TemplateType == TemplateType.FileBasedCore8 ||
-                            Settings.TemplateType == TemplateType.FileBasedCore9)
-                        {
-                            // Use file based templates, set the path
-                            var multiContextSetting = ((MultiContextFilter) filter.Value).GetSettings();
-                            if (multiContextSetting != null && !string.IsNullOrEmpty(multiContextSetting.TemplatePath))
-                                Settings.TemplateFolder = multiContextSetting.TemplatePath;
-                        }
-                    }
-
                     GenerateCode(filter.Value);
-                    Settings.TemplateFolder = fallback; // Reset back
                 }
             }
             catch (Exception x)
@@ -6809,11 +5902,6 @@
 
                 _preHeaderInfo.AppendLine(string.Format("//     Connection String:      \"{0}\"", ZapPassword(Settings.ConnectionString)));
 
-                if (!Settings.GenerateSingleDbContext)
-                {
-                    var conn = string.IsNullOrWhiteSpace(Settings.MultiContextSettingsConnectionString) ? Settings.ConnectionString : Settings.MultiContextSettingsConnectionString;
-                    _preHeaderInfo.AppendLine(string.Format("//     Multi-context settings: \"{0}\"", ZapPassword(conn)));
-                }
                 _preHeaderInfo.AppendLine("//");
             }
         }
@@ -6827,71 +5915,6 @@
         private string FormatError(Exception ex)
         {
             return ex.Message.Replace("\r\n", "\n").Replace("\n", " ");
-        }
-    }
-
-    // Fill in the following functions with your own code if not using EF6 / EfCore
-    // Take a look at GeneratorEf6 and GeneratorEfCore to see what's been done for those.
-    public class GeneratorCustom : Generator
-    {
-        public GeneratorCustom(FileManagementService fileManagementService)
-            : base(fileManagementService)
-        {
-        }
-
-        protected override bool AllowFkToNonPrimaryKey()
-        {
-            return false;
-        }
-
-        protected override bool FkMustHaveSameNumberOfColumnsAsPrimaryKey()
-        {
-            return true;
-        }
-
-        protected override void SetupEntity(Column c)
-        {
-        }
-
-        protected override void SetupConfig(Column c)
-        {
-            c.Config = string.Empty;
-        }
-
-        public override string PrimaryKeyModelBuilder(Table table)
-        {
-            return null;
-        }
-
-        public override List<string> IndexModelBuilder(Table t)
-        {
-            return null;
-        }
-
-        public override string IndexModelBuilder(Column c)
-        {
-            return null;
-        }
-
-        protected override string GetHasMethod(Relationship relationship, IList<Column> fkCols, IList<Column> pkCols, bool isNotEnforced, bool fkHasUniqueConstraint)
-        {
-            return null;
-        }
-
-        protected override string GetWithMethod(Relationship relationship, IList<Column> fkCols, string fkPropName, string manyToManyMapping, string mapKey,
-            bool includeReverseNavigation, string hasMethod, string pkTableNameHumanCase, string fkTableNameHumanCase, string primaryKeyColumns, bool fkHasUniqueConstraint)
-        {
-            return string.Empty;
-        }
-
-        protected override string GetCascadeOnDelete(bool cascadeOnDelete)
-        {
-            return string.Empty;
-        }
-
-        protected override string GetForeignKeyConstraintName(string foreignKeyConstraintName)
-        {
-            return string.Empty;
         }
     }
 
@@ -7589,8 +6612,6 @@
                     generator = new GeneratorEfCore(fileManagementService);
                     break;
 
-                case GeneratorType.Custom:
-                    generator = new GeneratorCustom(fileManagementService);
                     break;
 
                 default:
@@ -14055,7 +13076,6 @@ and limitations under the License.
         public List<RawTrigger>              Triggers              { get; set; } = new List<RawTrigger>();
         public List<RawMemoryOptimisedTable> MemoryOptimisedTables { get; set; } = new List<RawMemoryOptimisedTable>();
         public List<RawExtendedProperty>     ExtendedProperties    { get; set; } = new List<RawExtendedProperty>();
-        public List<MultiContextSettings>    MultiContextSettings  { get; set; } = new List<MultiContextSettings>();
 
         public bool HasErrors => Errors.Any();
     }
@@ -14102,10 +13122,6 @@ and limitations under the License.
             result.MemoryOptimisedTables = Rows(root, "MemoryOptimisedTables",ReadMemoryOptimisedTable);
             result.StoredProcedures      = Rows(root, "StoredProcedures",     ReadStoredProcedure);
             result.Errors                = Rows(root, "Errors",               ReadError);
-
-            var mcs = root.Element("MultiContextSettings");
-            if (mcs != null)
-                result.MultiContextSettings = mcs.Elements("Context").Select(ReadContext).ToList();
 
             return result;
         }
@@ -14303,133 +13319,6 @@ and limitations under the License.
             return string.Equals(s, "true", StringComparison.OrdinalIgnoreCase);
         }
 
-        private static List<T> ChildRows<T>(XElement parent, string section, string itemName, Func<XElement, T> reader)
-        {
-            var el = parent.Element(section);
-            return el != null ? el.Elements(itemName).Select(reader).ToList() : new List<T>();
-        }
-
-        private static Dictionary<string, object> ReadAllFields(XElement e)
-        {
-            var result = new Dictionary<string, object>();
-            var af = e.Element("AllFields");
-            if (af != null)
-            {
-                foreach (var f in af.Elements("Field"))
-                {
-                    var key = Str(f, "name");
-                    if (!string.IsNullOrEmpty(key) && !result.ContainsKey(key))
-                        result[key] = Str(f, "value");
-                }
-            }
-            return result;
-        }
-
-        private static MultiContextSettings ReadContext(XElement e)
-        {
-            return new MultiContextSettings
-            {
-                Name             = Str(e, "name"),
-                Description      = Str(e, "description"),
-                Namespace        = Str(e, "namespace"),
-                TemplatePath     = Str(e, "templatePath"),
-                Filename         = Str(e, "filename"),
-                BaseSchema       = Str(e, "baseSchema"),
-                AllFields        = ReadAllFields(e),
-                Tables           = ChildRows(e, "Tables",           "Table",           ReadContextTable),
-                StoredProcedures = ChildRows(e, "StoredProcedures", "StoredProcedure", ReadContextStoredProcedure),
-                Functions        = ChildRows(e, "Functions",        "Function",        ReadContextFunction),
-                Enumerations     = ChildRows(e, "Enumerations",     "Enumeration",     ReadContextEnumeration),
-                ForeignKeys      = ChildRows(e, "ForeignKeys",      "ForeignKey",      ReadContextForeignKey),
-            };
-        }
-
-        private static MultiContextTableSettings ReadContextTable(XElement e)
-        {
-            return new MultiContextTableSettings
-            {
-                Name          = Str(e, "name"),
-                Description   = Str(e, "description"),
-                PluralName    = Str(e, "pluralName"),
-                DbName        = Str(e, "dbName"),
-                Attributes    = Str(e, "attributes"),
-                DbSetModifier = Str(e, "dbSetModifier"),
-                AllFields     = ReadAllFields(e),
-                Columns       = ChildRows(e, "Columns", "Column", ReadContextColumn),
-            };
-        }
-
-        private static MultiContextColumnSettings ReadContextColumn(XElement e)
-        {
-            return new MultiContextColumnSettings
-            {
-                Name             = Str(e, "name"),
-                DbName           = Str(e, "dbName"),
-                IsPrimaryKey     = BoolOpt(e, "isPrimaryKey"),
-                OverrideModifier = BoolOpt(e, "overrideModifier"),
-                EnumType         = Str(e, "enumType"),
-                Attributes       = Str(e, "attributes"),
-                PropertyType     = Str(e, "propertyType"),
-                IsNullable       = BoolOpt(e, "isNullable"),
-                AllFields        = ReadAllFields(e),
-            };
-        }
-
-        private static MultiContextStoredProcedureSettings ReadContextStoredProcedure(XElement e)
-        {
-            return new MultiContextStoredProcedureSettings
-            {
-                Name        = Str(e, "name"),
-                DbName      = Str(e, "dbName"),
-                ReturnModel = Str(e, "returnModel"),
-                AllFields   = ReadAllFields(e),
-            };
-        }
-
-        private static MultiContextFunctionSettings ReadContextFunction(XElement e)
-        {
-            return new MultiContextFunctionSettings
-            {
-                Name      = Str(e, "name"),
-                DbName    = Str(e, "dbName"),
-                AllFields = ReadAllFields(e),
-            };
-        }
-
-        private static EnumerationSettings ReadContextEnumeration(XElement e)
-        {
-            return new EnumerationSettings
-            {
-                Name                        = Str(e, "name"),
-                Table                       = Str(e, "table"),
-                NameField                   = Str(e, "nameField"),
-                ValueField                  = Str(e, "valueField"),
-                GroupField                  = Str(e, "groupField"),
-                DescriptionField            = Str(e, "descriptionField"),
-                GenerateDescriptionFromName = Bool(e, "generateDescriptionFromName"),
-                AllFields                   = ReadAllFields(e),
-            };
-        }
-
-        private static MultiContextForeignKeySettings ReadContextForeignKey(XElement e)
-        {
-            return new MultiContextForeignKeySettings
-            {
-                ConstraintName      = Str(e, "constraintName"),
-                ParentName          = Str(e, "parentName"),
-                ChildName           = Str(e, "childName"),
-                PkSchema            = Str(e, "pkSchema"),
-                PkTableName         = Str(e, "pkTableName"),
-                PkColumn            = Str(e, "pkColumn"),
-                FkSchema            = Str(e, "fkSchema"),
-                FkTableName         = Str(e, "fkTableName"),
-                FkColumn            = Str(e, "fkColumn"),
-                Ordinal             = Int(e, "ordinal"),
-                CascadeOnDelete     = Bool(e, "cascadeOnDelete"),
-                IsNotEnforced       = Bool(e, "isNotEnforced"),
-                HasUniqueConstraint = Bool(e, "hasUniqueConstraint"),
-            };
-        }
     }
 
     // Runs the 'efrpg' dotnet tool as a child process. Connection strings go over stdin (see SecretsXml), never on
@@ -14440,20 +13329,15 @@ and limitations under the License.
     public static class EfrpgToolRunner
     {
         // Full schema read. This is the first tool invocation of a run.
-        public static EfrpgResult ReadDatabase(bool includeStoredProcedures, bool includeSynonyms, bool multiContext)
+        public static EfrpgResult ReadDatabase(bool includeStoredProcedures, bool includeSynonyms)
         {
-            var args = string.Format("--database {0} --timeout {1} --secrets-stdin{2}{3}{4}",
+            var args = string.Format("--database {0} --timeout {1} --secrets-stdin{2}{3}",
                 Settings.DatabaseType,
                 Settings.CommandTimeout,
                 includeStoredProcedures ? " --stored-procedures" : string.Empty,
-                includeSynonyms ? " --synonyms" : string.Empty,
-                multiContext ? " --multi-context" : string.Empty);
+                includeSynonyms ? " --synonyms" : string.Empty);
 
-            var secrets = SecretsXml.Write(
-                Settings.ConnectionString,
-                multiContext ? Settings.MultiContextSettingsConnectionString : null);
-
-            return EfrpgResultXmlReader.Read(Execute(args, secrets));
+            return EfrpgResultXmlReader.Read(Execute(args, SecretsXml.Write(Settings.ConnectionString)));
         }
 
         // Second invocation, once the Generator's AddEnum callbacks have resolved the enumeration specs. The specs
@@ -14463,7 +13347,7 @@ and limitations under the License.
             var args = string.Format("--database {0} --timeout {1} --secrets-stdin {2}",
                 Settings.DatabaseType, Settings.CommandTimeout, extraArgs);
 
-            return Execute(args, SecretsXml.Write(Settings.ConnectionString, null));
+            return Execute(args, SecretsXml.Write(Settings.ConnectionString));
         }
 
         public static string Execute(string args, string secretsXml)
@@ -15049,13 +13933,10 @@ and limitations under the License.
     // line in the first place. Keeping the value off the command line is the actual fix.
     public static class SecretsXml
     {
-        public static string Write(string connection, string multiContextConnection)
+        public static string Write(string connection)
         {
             var root = new XElement("Secrets",
                 new XElement("Connection", connection ?? string.Empty));
-
-            if (!string.IsNullOrWhiteSpace(multiContextConnection))
-                root.Add(new XElement("MultiContextConnection", multiContextConnection));
 
             return root.ToString(SaveOptions.DisableFormatting);
         }
@@ -16556,8 +15437,7 @@ and limitations under the License.
     public enum GeneratorType
     {
         Ef6,
-        EfCore,
-        Custom
+        EfCore
     }
 
     /// <summary>
@@ -19939,192 +18819,9 @@ public enum {{EnumName}}{{#newline}}
                 case TemplateType.EfCore10:
                     return new TemplateEfCore8();
 
-                case TemplateType.FileBasedEf6:
-                    return new TemplateFileBased();
-
-                case TemplateType.FileBasedCore8:
-                case TemplateType.FileBasedCore9:
-                case TemplateType.FileBasedCore10:
-                    return new TemplateFileBased();
-
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-        }
-    }
-
-    /// <summary>
-    /// {{Mustache}} template documentation available at https://github.com/jehugaleahsa/mustache-sharp
-    /// </summary>
-    public class TemplateFileBased : Template
-    {
-        private readonly Dictionary<string, string> _cacheText;
-        private readonly Dictionary<string, List<string>> _cacheList;
-
-        public TemplateFileBased()
-        {
-            _cacheText = new Dictionary<string, string>();
-            _cacheList = new Dictionary<string, List<string>>();
-        }
-
-        public override string Usings()
-        {
-            return CacheText(TemplateFileBasedConstants.Mustache.Usings);
-        }
-
-        public override List<string> DatabaseContextInterfaceUsings(InterfaceModel data)
-        {
-            return CacheList(TemplateFileBasedConstants.Text.DatabaseContextInterfaceUsings);
-        }
-
-        public override string DatabaseContextInterface()
-        {
-            return CacheText(TemplateFileBasedConstants.Mustache.DatabaseContextInterface);
-        }
-
-        public override List<string> DatabaseContextUsings(ContextModel data)
-        {
-            return CacheList(TemplateFileBasedConstants.Text.DatabaseContextUsings);
-        }
-
-        public override string DatabaseContext()
-        {
-            return CacheText(TemplateFileBasedConstants.Mustache.DatabaseContext);
-        }
-
-        public override List<string> DatabaseContextFactoryUsings(FactoryModel data)
-        {
-            return CacheList(TemplateFileBasedConstants.Text.DatabaseContextFactoryUsings);
-        }
-
-        public override string DatabaseContextFactory()
-        {
-            return CacheText(TemplateFileBasedConstants.Mustache.DatabaseContextFactory);
-        }
-
-        public override List<string> FakeDatabaseContextUsings(FakeContextModel data, IDbContextFilter filter)
-        {
-            return CacheList(TemplateFileBasedConstants.Text.FakeDatabaseContextUsings);
-        }
-
-        public override string FakeDatabaseContext()
-        {
-            return CacheText(TemplateFileBasedConstants.Mustache.FakeDatabaseContext);
-        }
-
-        public override List<string> FakeDbSetUsings(FakeDbSetModel data)
-        {
-            return CacheList(TemplateFileBasedConstants.Text.FakeDbSetUsings);
-        }
-
-        public override string FakeDbSet()
-        {
-            return CacheText(TemplateFileBasedConstants.Mustache.FakeDbSet);
-        }
-
-        public override List<string> PocoUsings(PocoModel data)
-        {
-            var usings = new List<string>(CacheList(TemplateFileBasedConstants.Text.PocoUsings));
-
-            // Add dynamic namespaces based on column types
-            if ((data.HasHierarchyId || Settings.UseDataAnnotations) && !usings.Contains("Microsoft.EntityFrameworkCore"))
-                usings.Add("Microsoft.EntityFrameworkCore");
-
-            if (data.HasSqlVector && !usings.Contains("Microsoft.Data.SqlTypes"))
-                usings.Add("Microsoft.Data.SqlTypes");
-
-            return usings;
-        }
-
-        public override string Poco()
-        {
-            return CacheText(TemplateFileBasedConstants.Mustache.Poco);
-        }
-
-        public override List<string> PocoConfigurationUsings(PocoConfigurationModel data)
-        {
-            return CacheList(TemplateFileBasedConstants.Text.PocoConfigurationUsings);
-        }
-
-        public override string PocoConfiguration()
-        {
-            return CacheText(TemplateFileBasedConstants.Mustache.PocoConfiguration);
-        }
-
-        public override List<string> StoredProcReturnModelUsings()
-        {
-            return CacheList(TemplateFileBasedConstants.Text.StoredProcReturnModelUsings);
-        }
-
-        public override string StoredProcReturnModels()
-        {
-            return CacheText(TemplateFileBasedConstants.Mustache.StoredProcReturnModels);
-        }
-
-        public override List<string> EnumUsings()
-        {
-            return CacheList(TemplateFileBasedConstants.Text.EnumUsings);
-        }
-
-        public override string Enums()
-        {
-            return CacheText(TemplateFileBasedConstants.Mustache.Enums);
-        }
-
-        // Owned entity class generation via file-based templates is not yet supported.
-        // To generate owned entity classes, use the EfCore template type and set Settings.GenerateOwnedEntityClasses = true.
-        public override List<string> OwnedEntityClassUsings(OwnedEntityClassModel data) => new List<string>();
-        public override string OwnedEntityClass() => string.Empty;
-
-        private string CacheText(string filename)
-        {
-            if (_cacheText.ContainsKey(filename))
-                return _cacheText[filename];
-
-            var file = Path.Combine(Settings.TemplateFolder, filename);
-            var text = File.ReadAllText(file);
-            _cacheText.Add(filename, text);
-            return text;
-        }
-
-        private List<string> CacheList(string filename)
-        {
-            if (_cacheList.ContainsKey(filename))
-                return _cacheList[filename];
-
-            var file = Path.Combine(Settings.TemplateFolder, filename);
-            var lines = File.ReadLines(file).ToList();
-            _cacheList.Add(filename, lines);
-            return lines;
-        }
-    }
-    public static class TemplateFileBasedConstants
-    {
-        public static class Mustache
-        {
-            public const string Usings                   = "Usings.mustache";
-            public const string DatabaseContextInterface = "DatabaseContextInterface.mustache";
-            public const string DatabaseContext          = "DatabaseContext.mustache";
-            public const string DatabaseContextFactory   = "DatabaseContextFactory.mustache";
-            public const string FakeDatabaseContext      = "FakeDatabaseContext.mustache";
-            public const string FakeDbSet                = "FakeDbSet.mustache";
-            public const string Poco                     = "Poco.mustache";
-            public const string PocoConfiguration        = "PocoConfiguration.mustache";
-            public const string StoredProcReturnModels   = "StoredProcReturnModels.mustache";
-            public const string Enums                    = "Enums.mustache";
-        }
-
-        public static class Text
-        {
-            public const string DatabaseContextInterfaceUsings = "DatabaseContextInterfaceUsings.txt";
-            public const string DatabaseContextUsings          = "DatabaseContextUsings.txt";
-            public const string DatabaseContextFactoryUsings   = "DatabaseContextFactoryUsings.txt";
-            public const string FakeDatabaseContextUsings      = "FakeDatabaseContextUsings.txt";
-            public const string FakeDbSetUsings                = "FakeDbSetUsings.txt";
-            public const string PocoUsings                     = "PocoUsings.txt";
-            public const string PocoConfigurationUsings        = "PocoConfigurationUsings.txt";
-            public const string StoredProcReturnModelUsings    = "StoredProcReturnModelUsings.txt";
-            public const string EnumUsings                     = "EnumUsings.txt";
         }
     }
     public enum TemplateType
@@ -20132,163 +18829,7 @@ public enum {{EnumName}}{{#newline}}
         Ef6,
         EfCore8,
         EfCore9,
-        EfCore10,
-        FileBasedEf6,
-        FileBasedCore8,
-        FileBasedCore9,
-        FileBasedCore10
-    }
-
-    /// <summary>
-    /// Purpose of this class is to serve the plugin implementation. When reading MultiContextSettings
-    /// from an external DLL the returned object cannot be directly casted because type differs.
-    /// It has to be copied to the local implementation of the MultiContextSettings class
-    /// </summary>
-    public static class MultiContextSettingsCopy
-    {
-        /// <summary>
-        /// Copies properties with the same Name and Type
-        /// </summary>
-        /// <param name="source"></param>
-        /// <param name="dest"></param>
-        private static void CopyPropertiesFrom(object source, object dest)
-        {
-            var fromProperties = source.GetType().GetProperties();
-            var toProperties = dest.GetType().GetProperties();
-
-            foreach (var fromProperty in fromProperties)
-            {
-                var toProperty = toProperties.FirstOrDefault(x => fromProperty.Name == x.Name);
-                if (toProperty != null)
-                {
-                    if (toProperty.Name == fromProperty.Name && toProperty.PropertyType.FullName == fromProperty.PropertyType.FullName)
-                        toProperty.SetValue(dest, fromProperty.GetValue(source));
-                }
-            }
-        }
-
-        public static void Copy(object source, MultiContextSettings dest)
-        {
-            CopyPropertiesFrom(source, dest);
-
-            var fromProperties = source.GetType().GetProperties();
-
-            // Tables
-            var fromProperty = fromProperties.FirstOrDefault(x => x.Name == nameof(MultiContextSettings.Tables));
-            if (fromProperty != null)
-            {
-                var listValue = (IList) fromProperty.GetValue(source);
-                if (listValue != null)
-                {
-                    dest.Tables = new List<MultiContextTableSettings>();
-
-                    foreach (var item in listValue)
-                    {
-                        var tableSettings = new MultiContextTableSettings();
-                        CopyMultiContextTableSettings(item, tableSettings);
-                        dest.Tables.Add(tableSettings);
-                    }
-                }
-            }
-
-            // StoredProcedures
-            fromProperty = fromProperties.FirstOrDefault(x => x.Name == nameof(MultiContextSettings.StoredProcedures));
-            if (fromProperty != null)
-            {
-                var listValue = (IList) fromProperty.GetValue(source);
-                if (listValue != null)
-                {
-                    dest.StoredProcedures = new List<MultiContextStoredProcedureSettings>();
-
-                    foreach (var item in listValue)
-                    {
-                        var spSettings = new MultiContextStoredProcedureSettings();
-                        CopyPropertiesFrom(item, spSettings);
-                        dest.StoredProcedures.Add(spSettings);
-                    }
-                }
-            }
-
-            // Functions
-            fromProperty = fromProperties.FirstOrDefault(x => x.Name == nameof(MultiContextSettings.Functions));
-            if (fromProperty != null)
-            {
-                var listValue = (IList) fromProperty.GetValue(source);
-                if (listValue != null)
-                {
-                    dest.Functions = new List<MultiContextFunctionSettings>();
-
-                    foreach (var item in listValue)
-                    {
-                        var functionSettings = new MultiContextFunctionSettings();
-                        CopyPropertiesFrom(item, functionSettings);
-                        dest.Functions.Add(functionSettings);
-                    }
-                }
-            }
-
-            // Enumerations
-            fromProperty = fromProperties.FirstOrDefault(x => x.Name == nameof(MultiContextSettings.Enumerations));
-            if (fromProperty != null)
-            {
-                var listValue = (IList) fromProperty.GetValue(source);
-                if (listValue != null)
-                {
-                    dest.Enumerations = new List<EnumerationSettings>();
-
-                    foreach (var item in listValue)
-                    {
-                        var enumSettings = new EnumerationSettings();
-                        CopyPropertiesFrom(item, enumSettings);
-                        dest.Enumerations.Add(enumSettings);
-                    }
-                }
-            }
-
-
-            // ForeignKeys
-            fromProperty = fromProperties.FirstOrDefault(x => x.Name == nameof(MultiContextSettings.ForeignKeys));
-            if (fromProperty != null)
-            {
-                var listValue = (IList) fromProperty.GetValue(source);
-                if (listValue != null)
-                {
-                    dest.ForeignKeys = new List<MultiContextForeignKeySettings>();
-
-                    foreach (var item in listValue)
-                    {
-                        var fkSettings = new MultiContextForeignKeySettings();
-                        CopyPropertiesFrom(item, fkSettings);
-                        dest.ForeignKeys.Add(fkSettings);
-                    }
-                }
-            }
-        }
-
-        private static void CopyMultiContextTableSettings(object source, MultiContextTableSettings dest)
-        {
-            CopyPropertiesFrom(source, dest);
-
-            var fromProperties = source.GetType().GetProperties();
-
-            // Columns
-            var fromProperty = fromProperties.FirstOrDefault(x => x.Name == nameof(MultiContextTableSettings.Columns));
-            if (fromProperty == null)
-                return;
-
-            var listValue = (IList) fromProperty.GetValue(source);
-            if (listValue == null)
-                return;
-
-            dest.Columns = new List<MultiContextColumnSettings>();
-
-            foreach (var item in listValue)
-            {
-                var columnsSettings = new MultiContextColumnSettings();
-                CopyPropertiesFrom(item, columnsSettings);
-                dest.Columns.Add(columnsSettings);
-            }
-        }
+        EfCore10
     }
 
     public static void ArgumentNotNull<T>(T arg, string name) where T : class

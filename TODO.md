@@ -38,11 +38,6 @@ reader to read across databases.
 
 `SynonymsSQL` deliberately returns an empty string. `ALL_SYNONYMS` is there whenever someone asks for it.
 
-## 6. `IMultiDbContextSettingsPlugin` is excluded from the tool build
-
-It depends on Generator types, so the tool cannot compile it. If the tool ever needs it, the interface has to be
-redesigned to stand alone.
-
 ## 7. `MySqlToCSharp` maps `tinyint` to `SByte`
 
 The BCL name, where every other entry in every mapping uses the C# keyword. It compiles and

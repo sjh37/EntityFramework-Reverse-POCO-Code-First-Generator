@@ -142,7 +142,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MultiContextDatabaseReverseEngineerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SingleDatabaseTestBase.cs" />
     <Compile Include="SingleDatabaseTestMySql.cs" />

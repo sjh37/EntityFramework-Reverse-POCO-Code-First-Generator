@@ -46,14 +46,6 @@
         <LastGenOutput>EnumViaTables.cs</LastGenOutput>
         <Generator>TextTemplatingFileGenerator</Generator>
       </Content>
-      <Content Include="Multi context many files\MCMF.tt">
-        <LastGenOutput>MCMF.cs</LastGenOutput>
-        <Generator>TextTemplatingFileGenerator</Generator>
-      </Content>
-      <Content Include="Multi context single files\MCSF.tt">
-        <LastGenOutput>MCSF.cs</LastGenOutput>
-        <Generator>TextTemplatingFileGenerator</Generator>
-      </Content>
       <Content Include="Northwind.tt">
         <Generator>TextTemplatingFileGenerator</Generator>
         <LastGenOutput>Northwind.cs</LastGenOutput>
@@ -126,16 +118,6 @@
       </Compile>
       <Compile Update="EnumViaTables.cs">
         <DependentUpon>EnumViaTables.tt</DependentUpon>
-        <DesignTime>True</DesignTime>
-        <AutoGen>True</AutoGen>
-      </Compile>
-      <Compile Update="Multi context many files\MCMF.cs">
-        <DependentUpon>MCMF.tt</DependentUpon>
-        <DesignTime>True</DesignTime>
-        <AutoGen>True</AutoGen>
-      </Compile>
-      <Compile Update="Multi context single files\MCSF.cs">
-        <DependentUpon>MCSF.tt</DependentUpon>
         <DesignTime>True</DesignTime>
         <AutoGen>True</AutoGen>
       </Compile>

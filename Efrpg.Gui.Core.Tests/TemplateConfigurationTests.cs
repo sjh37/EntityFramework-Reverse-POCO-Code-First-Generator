@@ -228,10 +228,10 @@ namespace Efrpg.Gui.Tests
         {
             var settings = Shipped();
 
-            new TemplateConfiguration(DatabaseTarget.Default, TemplateTarget.Find("FileBasedEf6"),
+            new TemplateConfiguration(DatabaseTarget.Default, TemplateTarget.Find("Ef6"),
                 "Data Source=(local);Initial Catalog=Northwind", "MyDbContext", string.Empty).ApplyTo(settings);
 
-            Assert.That(settings.GetEnum("TemplateType"), Is.EqualTo("FileBasedEf6"));
+            Assert.That(settings.GetEnum("TemplateType"), Is.EqualTo("Ef6"));
             Assert.That(settings.GetEnum("GeneratorType"), Is.EqualTo("Ef6"));
         }
 

@@ -21,8 +21,6 @@ namespace Efrpg.Generators
                     generator = new GeneratorEfCore(fileManagementService);
                     break;
 
-                case GeneratorType.Custom:
-                    generator = new GeneratorCustom(fileManagementService);
                     break;
 
                 default:

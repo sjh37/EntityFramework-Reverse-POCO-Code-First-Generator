@@ -90,7 +90,6 @@
     <Compile Include="..\Efrpg.Gui.Core\StatementScanner.cs" Link="SettingsMetadata\StatementScanner.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TemplateFiles.cs" />
     <Compile Include="VersionSetter.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -30,8 +30,8 @@ namespace BuildTT
     // For help on the various Types below, please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Common-Settings.*Types-explained
     // The following entries are the only required settings.
     Settings.DatabaseType                 = DatabaseType.SqlServer; // SqlServer, SQLite, PostgreSQL, MySql, Oracle
-    Settings.TemplateType                 = TemplateType.EfCore10; // Ef6, EfCore8-10, FileBasedEf6, FileBasedCore8-10. FileBased specify folder using Settings.TemplateFolder
-    Settings.GeneratorType                = GeneratorType.EfCore; // EfCore, Ef6, Custom. Custom edit GeneratorCustom class to provide your own implementation
+    Settings.TemplateType                 = TemplateType.EfCore10; // Ef6, EfCore8-10
+    Settings.GeneratorType                = GeneratorType.EfCore; // EfCore, Ef6
     Settings.ConnectionString             = ""Data Source=(local);Initial Catalog=**TODO**;Integrated Security=True;MultipleActiveResultSets=True;Encrypt=false;TrustServerCertificate=true""; // This is used by the generator to reverse engineer your database
     Settings.ConnectionStringActions      = """"; // EFCore only. Additional method chain to append to the database provider setup in OnConfiguring. e.g. "".EnableRetryOnFailure(maxRetryCount: 10, maxRetryDelay: TimeSpan.FromSeconds(30), errorNumbersToAdd: null)""
     Settings.ConnectionStringName         = ""MyDbContext""; // ConnectionString key as specified in your app.config/web.config/appsettings.json. Not used by the generator, but is placed into the generated DbContext constructor.
@@ -40,7 +40,6 @@ namespace BuildTT
     Settings.GenerateSeparateFiles        = false;
     Settings.Namespace                    = DefaultNamespace; // Override the default namespace here. Please use double quotes, example: ""Accounts.Billing""
     Settings.UseFileScopedNamespaces      = false; // If true, uses C# 10 file-scoped namespace syntax (namespace X;) instead of block-scoped (namespace X { })
-    Settings.TemplateFolder               = Path.Combine(Settings.Root, ""Templates""); // Only used if Settings.TemplateType = TemplateType.FileBased. Specify folder name where the mustache folders can be found. Please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Custom-file-based-templates
     Settings.AddUnitTestingDbContext      = true;  // Will add a FakeDbContext and FakeDbSet for easy unit testing. Read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/FakeDbContext
     Settings.FakeDbContextInDebugOnlyMode = false; // If true, wraps Fake* classes in #if DEBUG / #endif so they are excluded from Release builds.
 
@@ -49,9 +48,8 @@ namespace BuildTT
     // Filtering can now be done via one or more Regex's and one or more functions.
     // Gone are the days of a single do-it-all regex, you can now split them up into many smaller Regex's.
     // You can have as many as you like, and mix and match them.
-    // These settings are only used by the single context filter SingleContextFilter (Settings.GenerateSingleDbContext = true)
+    // These settings are used by the SingleContextFilter class.
     // For further information please visit https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Filtering
-    // For multi-context filtering (Settings.GenerateSingleDbContext = false), please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Generating-multiple-database-contexts-in-a-single-go
     // Single-context filtering is done via FilterSettings and SingleContextFilter classes.
     // Override the filters here, or edit directly the FilterSettings and SingleContextFilter classes located at the top of EF.Reverse.POCO.v4.ttinclude
     FilterSettings.Reset();
@@ -736,79 +734,6 @@ namespace BuildTT
     };
 
 
-    // Generate multiple db contexts in a single go ***************************************************************************************
-    // Generating multiple contexts at a time requires you specifying which tables, and columns to generate for each context.
-    // As this generator can now generate multiple db contexts in a single go, filtering is done a per db context, and no longer global.
-    // If GenerateSingleDbContext = true (default), please modify SingleContextFilter, this is where your previous global settings should go.
-    // If GenerateSingleDbContext = false, this will generate multiple db contexts. Please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Generating-multiple-database-contexts-in-a-single-go
-    Settings.GenerateSingleDbContext              = true; // Set this to false to generate multiple db contexts.
-    Settings.MultiContextSettingsConnectionString = """"; // Leave empty to read data from same database in ConnectionString above. If settings are in another database, specify the connection string here.
-    Settings.MultiContextSettingsPlugin           = """"; // Only used for unit testing Generator project as you can't (yet) inherit from IMultiContextSettingsPlugin. ""c:\\Path\\YourMultiDbSettingsReader.dll,Full.Name.Of.Class.Including.Namespace"". This will allow you to specify a pluggable provider for reading your MultiContext settings.
-    Settings.MultiContextAttributeDelimiter       = '~'; // The delimiter used for splitting MultiContext attributes
-
-    Settings.MultiContextAllFieldsColumnProcessing = delegate (Column column, Table table, Dictionary<string, object> allFields)
-    {
-        // Examples of how to use additional custom fields from the MultiContext.[Column] table
-        // INT example
-        /*if (allFields.ContainsKey(""DummyInt""))
-        {
-            var o = allFields[""DummyInt""];
-            column.ExtendedProperty += string.Format("" DummyInt = {0}"", (int) o);
-        }*/
-
-        // VARCHAR example
-        /*if (allFields.ContainsKey(""Test""))
-        {
-            var o = allFields[""Test""];
-            column.ExtendedProperty += string.Format("" Test = {0}"", o.ToString());
-        }*/
-
-        // DATETIME example
-        /*if (allFields.ContainsKey(""date_of_birth""))
-        {
-            var o = allFields[""date_of_birth""];
-            var date = Convert.ToDateTime(o);
-            column.ExtendedProperty += string.Format("" date_of_birth = {0}"", date.ToLongDateString());
-        }*/
-    };
-
-    Settings.MultiContextAllFieldsTableProcessing = delegate (Table table, Dictionary<string, object> allFields)
-    {
-        // Examples of how to use additional custom fields from the MultiContext.[Table] table
-        // VARCHAR example
-        /*if (allFields.ContainsKey(""Notes""))
-        {
-            var o = allFields[""Notes""];
-            if (string.IsNullOrEmpty(table.AdditionalComment))
-                table.AdditionalComment = string.Empty;
-
-            table.AdditionalComment += string.Format("" Test = {0}"", o.ToString());
-        }*/
-    };
-
-    Settings.MultiContextAllFieldsStoredProcedureProcessing = delegate (StoredProcedure sp, Dictionary<string, object> allFields)
-    {
-        // Examples of how to use additional custom fields from the MultiContext.[Table] table
-        // VARCHAR example
-        /*if (allFields.ContainsKey(""CustomRename""))
-        {
-            var o = allFields[""CustomRename""];
-            sp.NameHumanCase = o.ToString();
-        }*/
-    };
-
-    Settings.MultiContextAllFieldsFunctionProcessing = delegate (StoredProcedure sp, Dictionary<string, object> allFields)
-    {
-        // Examples of how to use additional custom fields from the MultiContext.[Table] table
-        // VARCHAR example
-        /*if (allFields.ContainsKey(""CustomRename""))
-        {
-            var o = allFields[""CustomRename""];
-            sp.NameHumanCase = o.ToString();
-        }*/
-    };
-
-
     // Don't forget to take a look at SingleContextFilter and FilterSettings classes!
     // That's it, nothing else to configure ***********************************************************************************************
 
@@ -833,11 +758,9 @@ namespace BuildTT
     {
         // Connection strings are passed to the tool over stdin, never on the command line, so they stay out of
         // process listings and command-line audit logs. See SecretsXml and EfrpgToolRunner.
-        var efrpgMultiContext = !Settings.GenerateSingleDbContext && string.IsNullOrWhiteSpace(Settings.MultiContextSettingsPlugin);
         toolResult = EfrpgToolRunner.ReadDatabase(
             FilterSettings.IncludeStoredProcedures || FilterSettings.IncludeTableValuedFunctions || FilterSettings.IncludeScalarValuedFunctions,
-            FilterSettings.IncludeSynonyms,
-            efrpgMultiContext);
+            FilterSettings.IncludeSynonyms);
     }
     catch (Exception efrpgEx)
     {

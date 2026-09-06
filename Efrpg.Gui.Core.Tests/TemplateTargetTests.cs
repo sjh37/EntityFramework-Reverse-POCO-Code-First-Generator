@@ -43,28 +43,12 @@ namespace Efrpg.Gui.Tests
         ///     this class exists to prevent.
         /// </summary>
         [TestCase("Ef6",             "Ef6")]
-        [TestCase("FileBasedEf6",    "Ef6")]
         [TestCase("EfCore8",         "EfCore")]
         [TestCase("EfCore9",         "EfCore")]
         [TestCase("EfCore10",        "EfCore")]
-        [TestCase("FileBasedCore8",  "EfCore")]
-        [TestCase("FileBasedCore9",  "EfCore")]
-        [TestCase("FileBasedCore10", "EfCore")]
         public void TheGeneratorTypeMatchesTheTemplate(string templateType, string expectedGeneratorType)
         {
             Assert.That(TemplateTarget.Find(templateType)!.GeneratorTypeName, Is.EqualTo(expectedGeneratorType));
-        }
-
-        /// <summary>
-        ///     Only the file based templates need Settings.TemplateFolder, and the dialog shows a note for exactly
-        ///     those - so the flag has to follow the name.
-        /// </summary>
-        [Test]
-        public void OnlyTheFileBasedTemplatesNeedATemplateFolder()
-        {
-            foreach (var target in TemplateTarget.All)
-                Assert.That(target.RequiresTemplateFolder, Is.EqualTo(target.Name.StartsWith("FileBased")),
-                    target.Name + " has the wrong RequiresTemplateFolder flag.");
         }
 
         [Test]

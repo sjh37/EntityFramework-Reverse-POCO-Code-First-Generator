@@ -20,7 +20,6 @@ The generator is distributed as a VSIX (Visual Studio Extension) containing a T4
 - **`Generator.Tests.Common/`** — Shared test constants and helpers (`netstandard2.0`).
 - **`Tester.Integration.EFCore8/`, `EFCore9/`, `Ef6/`** — Projects that consume the generated output and verify it compiles/runs correctly.
 - **`Tester.Repository/`**, **`Tester.BusinessLogic.EfCore/`** — Support projects for integration testing.
-- **`_File based templates/`** — Mustache template files for the `FileBased` template mode.
 
 ## Key Architecture
 
@@ -28,9 +27,9 @@ The generator is distributed as a VSIX (Visual Studio Extension) containing a T4
 
 1. **Settings** (`Generator/Settings.cs`) — static class holding all configuration. The `.tt` file sets these before running.
 2. **DatabaseReader** (`Generator/Readers/`) — reads schema from the database. `DatabaseReaderFactory` selects the reader based on `Settings.DatabaseType` (SqlServer, PostgreSQL, SQLite, MySql or Oracle).
-3. **Generator** (`Generator/Generators/`) — abstract base class with `GeneratorEf6`, `GeneratorEfCore`, and `GeneratorCustom` implementations. Selected by `GeneratorFactory` based on `Settings.GeneratorType`.
-4. **Template** (`Generator/Templates/`) — abstract base class with `TemplateEf6`, `TemplateEfCore8`, and `TemplateFileBased` implementations. Mustache-based string templates. Selected by `TemplateFactory` based on `Settings.TemplateType`.
-5. **Filtering** (`Generator/Filtering/`) — `FilterSettings` and `SingleContextFilter`/`MultiContextFilter` control which schemas/tables/columns/stored procs are included.
+3. **Generator** (`Generator/Generators/`) — abstract base class with `GeneratorEf6` and `GeneratorEfCore` implementations. Selected by `GeneratorFactory` based on `Settings.GeneratorType`.
+4. **Template** (`Generator/Templates/`) — abstract base class with `TemplateEf6` and `TemplateEfCore8` implementations. Mustache-based string templates. Selected by `TemplateFactory` based on `Settings.TemplateType`.
+5. **Filtering** (`Generator/Filtering/`) — `FilterSettings` and `SingleContextFilter` control which schemas/tables/columns/stored procs are included.
 6. **FileManagement** (`Generator/FileManagement/`) — handles writing output files; different implementations for EF Core projects, VS4.x projects, and null (test mode).
 
 ### The `.ttinclude` Build Process
@@ -69,6 +68,12 @@ That is why the check is a floor, not a match:
 
 Worked example of rule 2: `StoredProcedureParameter.DefaultValue` distinguishes null (the DB default is `NULL`) from empty string, because null is what makes an `AllowNullStrings` parameter generate as `string?`. The writer therefore *omits* the attribute for null rather than writing `defaultValue=""`. Changing that encoding now would silently break every template already in the field.
 
+**One removal happened, before v4 shipped.** Multi-context generation was taken out of both halves in one go:
+the template stopped sending `--multi-context` and reading `<MultiContextSettings>`, and the tool stopped
+offering the flag and writing the element. `SchemaVersion` stayed at 1, because a newer template with an older
+tool works (the template no longer asks) and the only templates that ever read the element were the
+pre-release v4 ones in this repository. That is the one moment rule 1 does not bind; after release it does.
+
 The enum exchange (`--enums-base64`, `<EnumData>`) carries no version stamp by design: it is a second invocation of the same binary within one run, and the first call has already passed the floor check.
 
 `SchemaVersion` governs the **whole protocol, in both directions**, not just the XML the tool returns. If the template ever starts *requiring* a tool capability on the request side, bump `SchemaVersion` too - the floor check is the only thing that can reject a tool too old to understand the request, and it fires before a confusing downstream failure.
@@ -95,11 +100,6 @@ Note the connection string is also sitting in plaintext in the user's `Database.
 
 - `TemplateType.EfCore9` / `EfCore8` → uses `TemplateEfCore8` class with Mustache templates inline in C#
 - `TemplateType.Ef6` → uses `TemplateEf6` class
-- `TemplateType.FileBasedCore8/9` / `FileBasedEf6` → uses `TemplateFileBased` which reads from `Settings.TemplateFolder` (Mustache `.mustache` files)
-
-### Multi-Context Support
-
-When `Settings.GenerateSingleDbContext = false`, a plugin class implementing `IMultiDbContextSettingsPlugin` drives generation of multiple `DbContext` classes from one database.
 
 ## Build Commands
 
@@ -164,7 +164,7 @@ Order matters at three points; the rest is ordinary.
 4. **Build BuildTT.** Not optional: `version.txt` is `CopyToOutputDirectory=Always`, so `BuildTT.exe` reads the
    copy beside itself. Skip this and it stamps everything with the *previous* version and nothing complains.
 5. **Run `BuildTT/bin/Debug/BuildTT.exe`.** Regenerates `EF.Reverse.POCO.v4.ttinclude`, `Database.tt`,
-   `_File based templates`, `settings-metadata.v4.json` and `EfrpgVersion.cs`; stamps
+   `settings-metadata.v4.json` and `EfrpgVersion.cs`; stamps
    `source.extension.vsixmanifest` and `MyTemplate.vstemplate`; rebuilds all four `efrpoco.zip` copies.
 6. **Re-comment `SetVersions()`** so day-to-day builds stop churning the zips.
 7. **Rebuild the solution.** Step 5 rewrote `EfrpgVersion.cs`, so until now `EF.Reverse.POCO.Generator.dll`

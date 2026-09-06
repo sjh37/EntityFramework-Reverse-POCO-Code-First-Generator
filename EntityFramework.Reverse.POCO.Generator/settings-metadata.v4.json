@@ -1,6 +1,6 @@
 {
   "metadataVersion": 1,
-  "generatorVersion": "4.0.24",
+  "generatorVersion": "4.0.25",
   "templateVersion": "v4",
   "include": "EF.Reverse.POCO.v4.ttinclude",
   "settings": [
@@ -44,7 +44,7 @@
       "type": "TemplateType",
       "kind": "enum",
       "section": "Settings",
-      "help": "Ef6, EfCore8-10, FileBasedEf6, FileBasedCore8-10. FileBased specify folder using Settings.TemplateFolder",
+      "help": "Ef6, EfCore8-10",
       "defaultValue": "TemplateType.EfCore10",
       "inDatabaseTt": true,
       "commentedOut": false,
@@ -67,22 +67,6 @@
         {
           "name": "EfCore10",
           "value": 3
-        },
-        {
-          "name": "FileBasedEf6",
-          "value": 4
-        },
-        {
-          "name": "FileBasedCore8",
-          "value": 5
-        },
-        {
-          "name": "FileBasedCore9",
-          "value": 6
-        },
-        {
-          "name": "FileBasedCore10",
-          "value": 7
         }
       ]
     },
@@ -91,7 +75,7 @@
       "type": "GeneratorType",
       "kind": "enum",
       "section": "Settings",
-      "help": "EfCore, Ef6, Custom. Custom edit GeneratorCustom class to provide your own implementation",
+      "help": "EfCore, Ef6",
       "defaultValue": "GeneratorType.EfCore",
       "inDatabaseTt": true,
       "commentedOut": false,
@@ -106,10 +90,6 @@
         {
           "name": "EfCore",
           "value": 1
-        },
-        {
-          "name": "Custom",
-          "value": 2
         }
       ]
     },
@@ -204,18 +184,6 @@
       "section": "Settings",
       "help": "If true, uses C# 10 file-scoped namespace syntax (namespace X;) instead of block-scoped (namespace X { })",
       "defaultValue": "false",
-      "inDatabaseTt": true,
-      "commentedOut": false,
-      "multiLine": false,
-      "runtimeOnly": false
-    },
-    {
-      "name": "TemplateFolder",
-      "type": "string",
-      "kind": "string",
-      "section": "Settings",
-      "help": "Only used if Settings.TemplateType = TemplateType.FileBased. Specify folder name where the mustache folders can be found. Please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Custom-file-based-templates",
-      "defaultValue": "Path.Combine(Settings.Root, \"Templates\")",
       "inDatabaseTt": true,
       "commentedOut": false,
       "multiLine": false,
@@ -1305,102 +1273,6 @@
       "type": "Func<Table, Table, string, string, string[]>",
       "kind": "callback",
       "section": "Mapping Table renaming",
-      "help": null,
-      "defaultValue": null,
-      "inDatabaseTt": true,
-      "commentedOut": false,
-      "multiLine": true,
-      "runtimeOnly": false
-    },
-    {
-      "name": "GenerateSingleDbContext",
-      "type": "bool",
-      "kind": "bool",
-      "section": "Generate multiple db contexts in a single go",
-      "help": "Set this to false to generate multiple db contexts.",
-      "defaultValue": "true",
-      "inDatabaseTt": true,
-      "commentedOut": false,
-      "multiLine": false,
-      "runtimeOnly": false
-    },
-    {
-      "name": "MultiContextSettingsConnectionString",
-      "type": "string",
-      "kind": "string",
-      "section": "Generate multiple db contexts in a single go",
-      "help": "Leave empty to read data from same database in ConnectionString above. If settings are in another database, specify the connection string here.",
-      "defaultValue": "\"\"",
-      "inDatabaseTt": true,
-      "commentedOut": false,
-      "multiLine": false,
-      "runtimeOnly": false
-    },
-    {
-      "name": "MultiContextSettingsPlugin",
-      "type": "string",
-      "kind": "string",
-      "section": "Generate multiple db contexts in a single go",
-      "help": "Only used for unit testing Generator project as you can't (yet) inherit from IMultiContextSettingsPlugin. \"c:\\\\Path\\\\YourMultiDbSettingsReader.dll,Full.Name.Of.Class.Including.Namespace\". This will allow you to specify a pluggable provider for reading your MultiContext settings.",
-      "defaultValue": "\"\"",
-      "inDatabaseTt": true,
-      "commentedOut": false,
-      "multiLine": false,
-      "runtimeOnly": false
-    },
-    {
-      "name": "MultiContextAttributeDelimiter",
-      "type": "char",
-      "kind": "char",
-      "section": "Generate multiple db contexts in a single go",
-      "help": "The delimiter used for splitting MultiContext attributes",
-      "defaultValue": "'~'",
-      "inDatabaseTt": true,
-      "commentedOut": false,
-      "multiLine": false,
-      "runtimeOnly": false
-    },
-    {
-      "name": "MultiContextAllFieldsColumnProcessing",
-      "type": "Action<Column, Table, Dictionary<string, object>>",
-      "kind": "callback",
-      "section": "Generate multiple db contexts in a single go",
-      "help": null,
-      "defaultValue": null,
-      "inDatabaseTt": true,
-      "commentedOut": false,
-      "multiLine": true,
-      "runtimeOnly": false
-    },
-    {
-      "name": "MultiContextAllFieldsTableProcessing",
-      "type": "Action<Table, Dictionary<string, object>>",
-      "kind": "callback",
-      "section": "Generate multiple db contexts in a single go",
-      "help": null,
-      "defaultValue": null,
-      "inDatabaseTt": true,
-      "commentedOut": false,
-      "multiLine": true,
-      "runtimeOnly": false
-    },
-    {
-      "name": "MultiContextAllFieldsStoredProcedureProcessing",
-      "type": "Action<StoredProcedure, Dictionary<string, object>>",
-      "kind": "callback",
-      "section": "Generate multiple db contexts in a single go",
-      "help": null,
-      "defaultValue": null,
-      "inDatabaseTt": true,
-      "commentedOut": false,
-      "multiLine": true,
-      "runtimeOnly": false
-    },
-    {
-      "name": "MultiContextAllFieldsFunctionProcessing",
-      "type": "Action<StoredProcedure, Dictionary<string, object>>",
-      "kind": "callback",
-      "section": "Generate multiple db contexts in a single go",
       "help": null,
       "defaultValue": null,
       "inDatabaseTt": true,

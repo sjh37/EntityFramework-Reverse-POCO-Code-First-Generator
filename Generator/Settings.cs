@@ -16,8 +16,8 @@ namespace Efrpg
         // Main settings **********************************************************************************************************************
         // The following entries are the only required settings.
         public static DatabaseType DatabaseType = DatabaseType.SqlServer; // SqlServer, SQLite, PostgreSQL, MySql, Oracle
-        public static TemplateType TemplateType = TemplateType.EfCore10; // Ef6, EfCore8-10, FileBasedEf6, FileBasedCore8-10. FileBased specify folder using Settings.TemplateFolder
-        public static GeneratorType GeneratorType = GeneratorType.EfCore; // EfCore, Ef6, Custom. Custom edit GeneratorCustom class to provide your own implementation
+        public static TemplateType TemplateType = TemplateType.EfCore10; // Ef6, EfCore8-10
+        public static GeneratorType GeneratorType = GeneratorType.EfCore; // EfCore, Ef6
         public static bool UseMappingTables = false; // Can only be set to true for EF6. If true, mapping will be used and no mapping tables will be generated. If false, all tables will be generated.
         public static string ConnectionString = ""; // This is used by the generator to reverse engineer your database
         public static string ConnectionStringActions = ""; // EFCore only. Additional method chain to append to the database provider setup in OnConfiguring. e.g. ".EnableRetryOnFailure(maxRetryCount: 10, maxRetryDelay: TimeSpan.FromSeconds(30), errorNumbersToAdd: null)"
@@ -25,7 +25,6 @@ namespace Efrpg
         public static string DbContextName = "MyDbContext"; // Class name for the DbContext to be generated.
         public static bool GenerateSeparateFiles = false;
         public static string Namespace = typeof(Settings).Namespace; // Override the default namespace here. Example: Namespace = "CustomNamespace";
-        public static string TemplateFolder = ""; // Only used if Settings.TemplateType = TemplateType.FileBased. Specify folder name where the mustache folders can be found. Please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Custom-file-based-templates
         public static bool AddUnitTestingDbContext = true; // Will add a FakeDbContext and FakeDbSet for easy unit testing
         public static bool FakeDbContextInDebugOnlyMode = false; // If true, wraps Fake* classes in #if DEBUG / #endif so they are excluded from Release builds
 
@@ -930,78 +929,6 @@ namespace Efrpg
             //});
         };
 
-        // Generate multiple db contexts in a single go ***************************************************************************************
-        // Generating multiple contexts at a time requires you specifying which tables, and columns to generate for each context.
-        // As this generator can now generate multiple db contexts in a single go, filtering is done a per db context, and no longer global.
-        // If GenerateSingleDbContext = true (default), please modify SingleContextFilter, this is where your previous global settings should go.
-        // If GenerateSingleDbContext = false, this will generate multiple db contexts. Please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Generating-multiple-database-contexts-in-a-single-go
-        public static bool GenerateSingleDbContext = true;
-        public static string MultiContextSettingsConnectionString = ""; // Leave empty to read data from same database in ConnectionString above. If settings are in another database, specify the connection string here.
-        public static string MultiContextSettingsPlugin = ""; // Only used for unit testing Generator project as you can't (yet) inherit from IMultiContextSettingsPlugin. "c:\\Path\\YourMultiDbSettingsReader.dll,Full.Name.Of.Class.Including.Namespace". This will allow you to specify a pluggable provider for reading your MultiContext settings.
-        public static char MultiContextAttributeDelimiter = '~'; // The delimiter used for splitting MultiContext attributes
-
-        public static Action<Column, Table, Dictionary<string, object>> MultiContextAllFieldsColumnProcessing = delegate (Column column, Table table, Dictionary<string, object> allFields)
-        {
-            // Examples of how to use additional custom fields from the MultiContext.[Column] table
-            // INT example
-            /*if (allFields.ContainsKey("DummyInt"))
-            {
-                var o = allFields["DummyInt"];
-                column.ExtendedProperty += string.Format(" DummyInt = {0}", (int) o);
-            }*/
-
-            // VARCHAR example
-            /*if (allFields.ContainsKey("Test"))
-            {
-                var o = allFields["Test"];
-                column.ExtendedProperty += string.Format(" Test = {0}", o.ToString());
-            }*/
-
-            // DATETIME example
-            /*if (allFields.ContainsKey("date_of_birth"))
-            {
-                var o = allFields["date_of_birth"];
-                var date = Convert.ToDateTime(o);
-                column.ExtendedProperty += string.Format(" date_of_birth = {0}", date.ToLongDateString());
-            }*/
-        };
-
-        public static Action<Table, Dictionary<string, object>> MultiContextAllFieldsTableProcessing = delegate (Table table, Dictionary<string, object> allFields)
-        {
-            // Examples of how to use additional custom fields from the MultiContext.[Table] table
-            // VARCHAR example
-            /*if (allFields.ContainsKey("Notes"))
-            {
-                var o = allFields["Notes"];
-                if (string.IsNullOrEmpty(table.AdditionalComment))
-                    table.AdditionalComment = string.Empty;
-
-                table.AdditionalComment += string.Format(" Test = {0}", o.ToString());
-            }*/
-        };
-
-        public static Action<StoredProcedure, Dictionary<string, object>> MultiContextAllFieldsStoredProcedureProcessing = delegate (StoredProcedure sp, Dictionary<string, object> allFields)
-        {
-            // Examples of how to use additional custom fields from the MultiContext.[Table] table
-            // VARCHAR example
-            /*if (allFields.ContainsKey("CustomRename"))
-            {
-                var o = allFields["CustomRename"];
-                sp.NameHumanCase = o.ToString();
-            }*/
-        };
-
-        public static Action<StoredProcedure, Dictionary<string, object>> MultiContextAllFieldsFunctionProcessing = delegate (StoredProcedure sp, Dictionary<string, object> allFields)
-        {
-            // Examples of how to use additional custom fields from the MultiContext.[Table] table
-            // VARCHAR example
-            /*if (allFields.ContainsKey("CustomRename"))
-            {
-                var o = allFields["CustomRename"];
-                sp.NameHumanCase = o.ToString();
-            }*/
-        };
-
         // Helper functions ***************************************************************************************************************
         public static bool DbContextClassIsPartial()
         {
@@ -1037,7 +964,7 @@ namespace Efrpg
         // Don't forget to take a look at SingleContextFilter and FilterSettings classes!
         // That's it, nothing else to configure ***********************************************************************************************
 
-        public static bool IsEf6() => TemplateType == TemplateType.Ef6 || TemplateType == TemplateType.FileBasedEf6;
+        public static bool IsEf6() => TemplateType == TemplateType.Ef6;
         public static bool IsEfCore8Plus() => EfCoreVersion() >= 8;
         public static bool IsEfCore9Plus() => EfCoreVersion() >= 9;
         public static bool IsEfCore10Plus() => EfCoreVersion() >= 10;
@@ -1046,19 +973,15 @@ namespace Efrpg
             switch (TemplateType)
             {
                 case TemplateType.EfCore8:
-                case TemplateType.FileBasedCore8:
                     return 8;
 
                 case TemplateType.EfCore9:
-                case TemplateType.FileBasedCore9:
                     return 9;
 
                 case TemplateType.EfCore10:
-                case TemplateType.FileBasedCore10:
                     return 10;
 
                 case TemplateType.Ef6:
-                case TemplateType.FileBasedEf6:
                 default:
                     return 0;
             }
@@ -1167,8 +1090,7 @@ namespace Efrpg
 
         public static void CheckSettings()
         {
-            if (TemplateType == TemplateType.Ef6 ||
-                TemplateType == TemplateType.FileBasedEf6)
+            if (TemplateType == TemplateType.Ef6)
             {
                 // Nullable reference types are only supported in language version 8.0 or greater
                 AllowNullStrings = false;

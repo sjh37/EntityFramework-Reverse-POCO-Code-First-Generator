@@ -39,9 +39,8 @@ M = {
  "PocoConfigurationFolder":("Settings.PocoFolder","Sub-folder for the configuration classes"),
  "OwnedEntityFolder":("Settings.PocoFolder","Sub-folder for owned entity classes"),
  "ElementsToGenerate":("Settings.ElementsToGenerate","Which kinds of class to generate at all"),
- "FileExtension":("Settings.TemplateFolder","The extension on generated files"),
- "GenerationLanguage":("Settings.TemplateFolder","C# or the experimental Javascript type map"),
- "TemplateFolder":("Settings.TemplateFolder","Where the Mustache templates are, for FileBased templates"),
+ "FileExtension":("Settings.FileExtension","The extension on generated files"),
+ "GenerationLanguage":("Settings.FileExtension","C# or the experimental Javascript type map"),
 
  # DbContext
  "DbContextName":("Settings.DbContextName","The generated context class name"),
@@ -55,10 +54,6 @@ M = {
  "AddUnitTestingDbContext":("Settings.AddUnitTestingDbContext","Generates FakeDbContext and FakeDbSet"),
  "FakeDbContextInDebugOnlyMode":("Settings.AddUnitTestingDbContext","Wraps the fakes in `#if DEBUG`"),
  "AdditionalContextInterfaceItems":("Settings.AdditionalNamespaces","Extra members on the context interface"),
- "GenerateSingleDbContext":("Settings.GenerateSingleDbContext","One context, or many driven by database settings tables"),
- "MultiContextSettingsConnectionString":("Settings.GenerateSingleDbContext","Where the MultiContext.* tables live"),
- "MultiContextSettingsPlugin":("Settings.GenerateSingleDbContext","Your own multi-context settings reader"),
- "MultiContextAttributeDelimiter":("Settings.GenerateSingleDbContext","Separator for several attributes in one settings column"),
 
  # Class modifiers
  "EntityClassesModifiers":("Settings.EntityClassesModifiers","Modifiers on entity classes - usually `public partial`"),
@@ -144,10 +139,6 @@ M = {
  "MappingTableRename":("Settings.MappingTableRename","Name collections from a many-to-many table"),
  "AddJsonColumnMappings":("Settings.AddJsonColumnMappings","Map a JSON column to a real class"),
  "AddOwnedEntityMappings":("Settings.AddOwnedEntityMappings","Group prefixed columns into an owned entity"),
- "MultiContextAllFieldsColumnProcessing":("Settings.MultiContextAllFieldsProcessing","Read your own columns from the settings tables"),
- "MultiContextAllFieldsTableProcessing":("Settings.MultiContextAllFieldsProcessing","The same, per table"),
- "MultiContextAllFieldsStoredProcedureProcessing":("Settings.MultiContextAllFieldsProcessing","The same, per stored procedure"),
- "MultiContextAllFieldsFunctionProcessing":("Settings.MultiContextAllFieldsProcessing","The same, per function"),
 
  # Runtime values
  "Root":("Settings.Runtime-Values","The folder holding your .tt file. Read-only"),

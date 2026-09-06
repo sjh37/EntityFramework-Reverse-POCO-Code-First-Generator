@@ -126,11 +126,6 @@
     <Compile Include="FilterSettingsTests.cs" />
     <Compile Include="ForeignKeyTests.cs" />
     <Compile Include="MinMaxValueCacheTests.cs" />
-    <Compile Include="MultiContextFilterTests.cs" />
-    <Compile Include="MultiContextSettingsTests.cs" />
-    <Compile Include="MultiContextNameNormalisationTests.cs" />
-    <Compile Include="MultiContextSettingsPluginNorthwind.cs" />
-    <Compile Include="NullMultiDbContextSettingsPlugin.cs" />
     <Compile Include="NullableReverseNavigationTests.cs" />
     <Compile Include="NullableContextTests.cs" />
     <None Include="DocSamples\README.md" />
@@ -170,7 +165,6 @@
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="MultiTables.sql" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

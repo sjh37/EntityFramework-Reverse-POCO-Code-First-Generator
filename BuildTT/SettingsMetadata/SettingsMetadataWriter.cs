@@ -18,9 +18,9 @@ namespace BuildTT.SettingsMetadata
     ///     the value a newly added template starts with, neither of which survives compilation.
     ///
     ///     Values are emitted as the source text that produced them, never as reflected runtime values. The runtime
-    ///     value is frequently not what a template should contain: Settings.Namespace evaluates to "Efrpg", and
-    ///     Settings.TemplateFolder is "" in code but Path.Combine(Settings.Root, "Templates") in the template. The
-    ///     GUI writes C# into a .tt file, so the source text is the thing it actually needs.
+    ///     value is frequently not what a template should contain: Settings.Namespace evaluates to "Efrpg" where the
+    ///     template says DefaultNamespace. The GUI writes C# into a .tt file, so the source text is the thing it
+    ///     actually needs.
     ///
     ///     Nothing here reads a field's value, so the Settings static constructor never runs.
     /// </remarks>

@@ -332,7 +332,8 @@ version*, not product version: VS 2026 supports API 17.x, reads only the lower b
 **ignores the upper bound entirely** - which is why the old range installed into 18.9 perfectly happily. The
 open range is what VS 2026 emits for new extensions, VS 2022 still uses the old product-range model and is
 satisfied by it too, and it means this never needs touching again for a new major release. The `[15.0,17.0)`
-entries for VS 2017/2019 predate all of this and are untouched, as is `<ProductArchitecture>amd64</...>`.
+entries for VS 2017/2019 were removed when v4's deprecations were done - the package depends on the VS 2022
+toolkit, so it could never have loaded there - and `<ProductArchitecture>amd64</...>` is untouched.
 
 Worth being clear about what this does *not* buy: the manifest range is no longer the gate for a future VS 19,
 API version support is. Nothing written here can make a future release load an extension whose APIs it has

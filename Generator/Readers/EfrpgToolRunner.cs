@@ -13,20 +13,15 @@ namespace Efrpg.Readers
     public static class EfrpgToolRunner
     {
         // Full schema read. This is the first tool invocation of a run.
-        public static EfrpgResult ReadDatabase(bool includeStoredProcedures, bool includeSynonyms, bool multiContext)
+        public static EfrpgResult ReadDatabase(bool includeStoredProcedures, bool includeSynonyms)
         {
-            var args = string.Format("--database {0} --timeout {1} --secrets-stdin{2}{3}{4}",
+            var args = string.Format("--database {0} --timeout {1} --secrets-stdin{2}{3}",
                 Settings.DatabaseType,
                 Settings.CommandTimeout,
                 includeStoredProcedures ? " --stored-procedures" : string.Empty,
-                includeSynonyms ? " --synonyms" : string.Empty,
-                multiContext ? " --multi-context" : string.Empty);
+                includeSynonyms ? " --synonyms" : string.Empty);
 
-            var secrets = SecretsXml.Write(
-                Settings.ConnectionString,
-                multiContext ? Settings.MultiContextSettingsConnectionString : null);
-
-            return EfrpgResultXmlReader.Read(Execute(args, secrets));
+            return EfrpgResultXmlReader.Read(Execute(args, SecretsXml.Write(Settings.ConnectionString)));
         }
 
         // Second invocation, once the Generator's AddEnum callbacks have resolved the enumeration specs. The specs
@@ -36,7 +31,7 @@ namespace Efrpg.Readers
             var args = string.Format("--database {0} --timeout {1} --secrets-stdin {2}",
                 Settings.DatabaseType, Settings.CommandTimeout, extraArgs);
 
-            return Execute(args, SecretsXml.Write(Settings.ConnectionString, null));
+            return Execute(args, SecretsXml.Write(Settings.ConnectionString));
         }
 
         public static string Execute(string args, string secretsXml)

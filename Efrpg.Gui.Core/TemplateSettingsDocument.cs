@@ -138,6 +138,32 @@ namespace Efrpg.Gui
         }
 
         /// <summary>
+        ///     Removes an assignment outright - every line from its first to the one holding its semicolon, line
+        ///     endings included - so a multi-line delegate goes as cleanly as a one-liner and nothing around it moves.
+        /// </summary>
+        public TemplateSettingsDocument WithoutAssignment(SettingAssignment assignment)
+        {
+            if (assignment == null)
+                throw new ArgumentNullException(nameof(assignment));
+
+            var lines = SplitKeepingOffsets(_text);
+            lines.RemoveRange(assignment.LineNumber - 1, assignment.EndLineNumber - assignment.LineNumber + 1);
+
+            return Build(Join(lines));
+        }
+
+        /// <summary>The text of an assignment's lines, as they stand in the file, for showing what a removal takes out.</summary>
+        public string StatementText(SettingAssignment assignment)
+        {
+            if (assignment == null)
+                throw new ArgumentNullException(nameof(assignment));
+
+            var lines = SplitKeepingOffsets(_text);
+
+            return Join(lines.GetRange(assignment.LineNumber - 1, assignment.EndLineNumber - assignment.LineNumber + 1)).TrimEnd('\r', '\n');
+        }
+
+        /// <summary>
         ///     Adds an assignment the template does not have, as one new line beside an existing one. The new
         ///     line copies the anchor's indentation, puts its equals sign in the same column when the name fits,
         ///     and carries the help text as a trailing comment - the shape every line in Database.tt has.

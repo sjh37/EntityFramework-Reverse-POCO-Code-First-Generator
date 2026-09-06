@@ -11,13 +11,10 @@ namespace Efrpg.Readers
     // line in the first place. Keeping the value off the command line is the actual fix.
     public static class SecretsXml
     {
-        public static string Write(string connection, string multiContextConnection)
+        public static string Write(string connection)
         {
             var root = new XElement("Secrets",
                 new XElement("Connection", connection ?? string.Empty));
-
-            if (!string.IsNullOrWhiteSpace(multiContextConnection))
-                root.Add(new XElement("MultiContextConnection", multiContextConnection));
 
             return root.ToString(SaveOptions.DisableFormatting);
         }

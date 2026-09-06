@@ -12,8 +12,7 @@ namespace Efrpg.Gui
     /// <remarks>
     ///     **It mirrors the generator's filter, it does not replace it.** The starting state is what the template
     ///     generates right now, worked out by running the same tests SingleContextFilter runs: every exclude regex
-    ///     against the raw name, every include regex or-ed together, the schema filters, the period rule, the
-    ///     reserved MultiContext schema, and the five on/off flags. A filter the user wrote is shown as the reason
+    ///     against the raw name, every include regex or-ed together, the schema filters, the period rule, and the five on/off flags. A filter the user wrote is shown as the reason
     ///     an object is locked, never overridden - the picker adds to the file, it does not fight it.
     ///
     ///     **A choice is saved as whichever list is shorter**, the way a person would write it: the ticked names as
@@ -436,9 +435,6 @@ namespace Efrpg.Gui
 
             if (databaseObject.Schema.IndexOf('.') >= 0)
                 return new Entry(databaseObject, Standing.LockedOut, "Schemas containing a period are always excluded, because Entity Framework cannot map them.");
-
-            if (string.Equals(databaseObject.Schema, "MultiContext", StringComparison.OrdinalIgnoreCase))
-                return new Entry(databaseObject, Standing.LockedOut, "The MultiContext schema is reserved by the generator.");
 
             if (list == FilterList.StoredProcedure && databaseObject.Name.IndexOf('.') >= 0)
                 return new Entry(databaseObject, Standing.LockedOut, "Names containing a period are always excluded, because Entity Framework cannot map them.");

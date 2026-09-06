@@ -47,9 +47,6 @@ namespace Efrpg.Gui
         private static readonly Regex CallLine =
             new Regex(@"^[ \t]*FilterSettings\.(?<call>Reset|AddDefaults)\(\)[ \t]*;");
 
-        private static readonly Regex SingleContextLine =
-            new Regex(@"^[ \t]*Settings\.GenerateSingleDbContext[ \t]*=[ \t]*(?<value>true|false)[ \t]*;");
-
         private readonly List<Line> _lines;
         private readonly List<FlagAssignment> _flagLines = new List<FlagAssignment>();
         private readonly List<AddAnchor> _addLines = new List<AddAnchor>();
@@ -69,23 +66,12 @@ namespace Efrpg.Gui
         public IReadOnlyList<FilterLine> Filters => _filters;
 
         /// <summary>
-        ///     False when <c>Settings.GenerateSingleDbContext = false</c>: the multi-context filter ignores
-        ///     FilterSettings entirely, so nothing the picker wrote would have any effect.
-        /// </summary>
-        public bool GeneratesSingleContext { get; private set; } = true;
-
-        /// <summary>
         ///     Why the picker cannot work on this template, or null when it can.
         /// </summary>
         public string RefusalReason
         {
             get
             {
-                if (!GeneratesSingleContext)
-                    return "This template generates more than one DbContext (Settings.GenerateSingleDbContext = false). " +
-                           "Those are filtered by the MultiContext tables in the database rather than by FilterSettings, " +
-                           "so there is nothing here for the picker to write.";
-
                 if (_resetIndex < 0 && _addDefaultsIndex < 0 && _flagLines.Count == 0 && _addLines.Count == 0)
                     return "This template has no FilterSettings block, so there is nowhere to write the choice.";
 
@@ -242,13 +228,7 @@ namespace Efrpg.Gui
                         _resetIndex = i;
                     else
                         _addDefaultsIndex = i;
-
-                    continue;
                 }
-
-                var context = SingleContextLine.Match(text);
-                if (context.Success)
-                    GeneratesSingleContext = context.Groups["value"].Value == "true";
             }
         }
 

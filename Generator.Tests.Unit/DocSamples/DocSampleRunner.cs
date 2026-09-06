@@ -284,11 +284,6 @@ namespace Generator.Tests.Unit.DocSamples
             Settings.PrependSchemaName = true;
             Settings.TableSuffix       = null;
 
-            Settings.GenerateSingleDbContext            = true;
-            Settings.MultiContextSettingsConnectionString = "";
-            Settings.MultiContextSettingsPlugin           = null;
-            Settings.MultiContextAttributeDelimiter       = '~';
-
             Settings.StoredProcedureReturnTypes = new Dictionary<string, string>();
 
             Settings.Root = TempRoot();

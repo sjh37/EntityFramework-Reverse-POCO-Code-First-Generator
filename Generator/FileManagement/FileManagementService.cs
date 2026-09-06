@@ -41,14 +41,13 @@ namespace Efrpg.FileManagement
         {
             Settings.FilterCount = filters.Count;
 
-            _writeToOuter = Settings.GenerateSingleDbContext && !Settings.GenerateSeparateFiles;
+            _writeToOuter = !Settings.GenerateSeparateFiles;
 
             // For debug
             /*var a = _writeToOuter;
             var b = Settings.FilterCount;
             var c = Settings.GenerateSeparateFiles;
             var d = Settings.TemplateType;
-            var e = Settings.GenerateSingleDbContext;
             var f = filters.First().Key;*/
 
             foreach (var filter in filters)

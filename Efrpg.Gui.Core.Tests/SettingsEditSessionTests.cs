@@ -145,9 +145,9 @@ namespace Efrpg.Gui.Tests
         [Test]
         public void ASettingBuiltWithAMethodCallIsReadOnly()
         {
-            var item = Shipped().Find("TemplateFolder");
+            var item = SettingsEditSession.Load(RepositoryFiles.AzureTemplate(), V4).Find("ConnectionString");
 
-            Assert.That(item.CurrentValueText, Does.Contain("Path.Combine"));
+            Assert.That(item.CurrentValueText, Does.Contain("GetEnvironmentVariable"));
             Assert.That(item.IsEditable, Is.False);
         }
 

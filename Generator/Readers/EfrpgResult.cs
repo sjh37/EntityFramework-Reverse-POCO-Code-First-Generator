@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using Efrpg.Filtering;
 
 namespace Efrpg.Readers
 {
@@ -22,7 +21,6 @@ namespace Efrpg.Readers
         public List<RawTrigger>              Triggers              { get; set; } = new List<RawTrigger>();
         public List<RawMemoryOptimisedTable> MemoryOptimisedTables { get; set; } = new List<RawMemoryOptimisedTable>();
         public List<RawExtendedProperty>     ExtendedProperties    { get; set; } = new List<RawExtendedProperty>();
-        public List<MultiContextSettings>    MultiContextSettings  { get; set; } = new List<MultiContextSettings>();
 
         public bool HasErrors => Errors.Any();
     }

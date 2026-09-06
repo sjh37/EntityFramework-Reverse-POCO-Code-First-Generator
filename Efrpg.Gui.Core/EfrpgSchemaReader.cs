@@ -61,7 +61,7 @@ namespace Efrpg.Gui
                     ", so there is nothing to connect to yet.");
 
             var result = await _runner.RunAsync(_executablePath, Arguments(databaseTypeName),
-                SecretsXml.Write(connectionString, null), cancellationToken).ConfigureAwait(false);
+                SecretsXml.Write(connectionString), cancellationToken).ConfigureAwait(false);
 
             if (!result.Started)
                 return SchemaReadResult.Failure("The efrpg tool could not be started. " + result.StandardError);

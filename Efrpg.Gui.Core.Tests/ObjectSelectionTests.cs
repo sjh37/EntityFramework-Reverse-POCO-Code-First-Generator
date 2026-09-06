@@ -8,8 +8,7 @@ namespace Efrpg.Gui.Tests
 {
     /// <summary>
     ///     The picker's model, run against the shipped Database.tt and a small database that has one of everything:
-    ///     a table the template's own filter excludes, a view, a stored procedure, both kinds of function, and a
-    ///     table in the reserved MultiContext schema.
+    ///     a table the template's own filter excludes, a view, a stored procedure, both kinds of function.
     /// </summary>
     [TestFixture]
     public class ObjectSelectionTests
@@ -24,7 +23,6 @@ namespace Efrpg.Gui.Tests
             "<Row schemaName=\"dbo\" tableName=\"AspNetUsers\" isView=\"false\" columnName=\"Id\" />" +
             "<Row schemaName=\"dbo\" tableName=\"__EFMigrationsHistory\" isView=\"false\" columnName=\"Id\" />" +
             "<Row schemaName=\"dbo\" tableName=\"vOrders\" isView=\"true\" columnName=\"Id\" />" +
-            "<Row schemaName=\"MultiContext\" tableName=\"Context\" isView=\"false\" columnName=\"Id\" />" +
             "</Tables>" +
             "<StoredProcedures>" +
             "<Row schema=\"dbo\" name=\"GetCustomer\" isStoredProcedure=\"true\" />" +
@@ -227,10 +225,6 @@ namespace Efrpg.Gui.Tests
             Assert.That(aspNet.Reason, Does.Contain("AspNet.*"));
 
             Assert.That(Choice(selection, "__EFMigrationsHistory").CanChange, Is.False);
-
-            var reserved = Choice(selection, "Context");
-            Assert.That(reserved.IsSelected, Is.False);
-            Assert.That(reserved.Reason, Does.Contain("MultiContext"));
 
             Assert.That(() => selection.Select(Object(Schema(), "AspNetUsers"), true), Throws.InvalidOperationException);
         }
@@ -470,17 +464,6 @@ namespace Efrpg.Gui.Tests
             selection.Select(Object(schema, "GetOrders"), false);
 
             Assert.That(AddedLines(template, selection.Apply()).Single(), Does.Contain("StoredProcedureFilters"));
-        }
-
-        [Test]
-        public void Create_RefusesAMultiContextTemplate()
-        {
-            var template = RepositoryFiles.DatabaseTemplate().Replace(
-                "Settings.GenerateSingleDbContext              = true;",
-                "Settings.GenerateSingleDbContext              = false;");
-
-            Assert.That(() => ObjectSelection.Create(Schema(), TemplateFilterDocument.Parse(template)),
-                Throws.InvalidOperationException.With.Message.Contains("GenerateSingleDbContext"));
         }
 
         [Test]

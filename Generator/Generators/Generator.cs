@@ -320,28 +320,12 @@ namespace Efrpg.Generators
                 // Read enumeration values from the database. The AddEnum callbacks above may have
                 // added entries to the enumeration lists, so this must happen after them. The efrpg
                 // tool is re-invoked here with the now-resolved enumeration specs (see ReadEnumsViaTool).
-                if (Settings.GenerateSingleDbContext)
+                if (Settings.Enumerations != null && Settings.Enumerations.Count > 0)
                 {
-                    if (Settings.Enumerations != null && Settings.Enumerations.Count > 0)
+                    var enumerations = ReadEnumsViaTool(Settings.Enumerations);
+                    if (enumerations.Count > 0)
                     {
-                        var enumerations = ReadEnumsViaTool(Settings.Enumerations);
-                        if (enumerations.Count > 0)
-                        {
-                            foreach (var filterKeyValuePair in FilterList.GetFilters())
-                                filterKeyValuePair.Value.Enums.AddRange(enumerations);
-                        }
-                    }
-                }
-                else
-                {
-                    foreach (var filterKeyValuePair in FilterList.GetFilters())
-                    {
-                        var multiContextSetting = ((MultiContextFilter) filterKeyValuePair.Value).GetSettings();
-                        if (multiContextSetting?.Enumerations == null || multiContextSetting.Enumerations.Count == 0)
-                            continue;
-
-                        var enumerations = ReadEnumsViaTool(multiContextSetting.Enumerations);
-                        if (enumerations.Count > 0)
+                        foreach (var filterKeyValuePair in FilterList.GetFilters())
                             filterKeyValuePair.Value.Enums.AddRange(enumerations);
                     }
                 }
@@ -722,32 +706,14 @@ namespace Efrpg.Generators
 
         private void AddForeignKeysToFilters(List<RawForeignKey> rawForeignKeys)
         {
-            if (Settings.GenerateSingleDbContext && (rawForeignKeys == null || !rawForeignKeys.Any()))
+            if (rawForeignKeys == null || !rawForeignKeys.Any())
                 return;
-
-            if (rawForeignKeys == null)
-                rawForeignKeys = new List<RawForeignKey>();
-            //else
-            //SortForeignKeys(rawForeignKeys);
 
             foreach (var filterKeyValuePair in FilterList.GetFilters())
             {
                 var filter = filterKeyValuePair.Value;
                 var fks = new List<RawForeignKey>();
                 fks.AddRange(rawForeignKeys/*.OrderBy(x => x.SortOrder).ThenBy(x => x.FkTableName).ThenBy(x => x.PkTableName)*/);
-
-                if (!Settings.GenerateSingleDbContext)
-                {
-                    var multiContextSetting = ((MultiContextFilter) filter).GetSettings();
-                    if (multiContextSetting?.ForeignKeys != null)
-                    {
-                        fks.AddRange(multiContextSetting.ForeignKeys.Select(x =>
-                            new RawForeignKey(x.ConstraintName, x.ParentName, x.ChildName,
-                                x.PkColumn, x.FkColumn, x.PkSchema, x.PkTableName,
-                                x.FkSchema, x.FkTableName, x.Ordinal, x.CascadeOnDelete,
-                                x.IsNotEnforced, x.HasUniqueConstraint)));
-                    }
-                }
 
                 if (!fks.Any())
                     continue;
@@ -1630,28 +1596,10 @@ namespace Efrpg.Generators
             try
             {
                 CreateOutputFolders();
-                var fallback = Settings.TemplateFolder;
                 foreach (var filter in FilterList.GetFilters())
                 {
                     _fileManagementService.UseFileManager(filter.Key);
-                    if (!Settings.GenerateSingleDbContext)
-                    {
-                        // Multi-context
-                        Settings.DbContextInterfaceName = null;
-                        Settings.DbContextName = ((MultiContextFilter) filter.Value).GetSettings().Name ?? filter.Key;
-
-                        if (Settings.TemplateType == TemplateType.FileBasedCore8 ||
-                            Settings.TemplateType == TemplateType.FileBasedCore9)
-                        {
-                            // Use file based templates, set the path
-                            var multiContextSetting = ((MultiContextFilter) filter.Value).GetSettings();
-                            if (multiContextSetting != null && !string.IsNullOrEmpty(multiContextSetting.TemplatePath))
-                                Settings.TemplateFolder = multiContextSetting.TemplatePath;
-                        }
-                    }
-
                     GenerateCode(filter.Value);
-                    Settings.TemplateFolder = fallback; // Reset back
                 }
             }
             catch (Exception x)
@@ -2013,11 +1961,6 @@ namespace Efrpg.Generators
 
                 _preHeaderInfo.AppendLine(string.Format("//     Connection String:      \"{0}\"", ZapPassword(Settings.ConnectionString)));
 
-                if (!Settings.GenerateSingleDbContext)
-                {
-                    var conn = string.IsNullOrWhiteSpace(Settings.MultiContextSettingsConnectionString) ? Settings.ConnectionString : Settings.MultiContextSettingsConnectionString;
-                    _preHeaderInfo.AppendLine(string.Format("//     Multi-context settings: \"{0}\"", ZapPassword(conn)));
-                }
                 _preHeaderInfo.AppendLine("//");
             }
         }

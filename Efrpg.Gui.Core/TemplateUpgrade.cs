@@ -44,11 +44,9 @@ namespace Efrpg.Gui
             "    {\r\n" +
             "        // Connection strings are passed to the tool over stdin, never on the command line, so they stay out of\r\n" +
             "        // process listings and command-line audit logs. See SecretsXml and EfrpgToolRunner.\r\n" +
-            "        var efrpgMultiContext = !Settings.GenerateSingleDbContext && string.IsNullOrWhiteSpace(Settings.MultiContextSettingsPlugin);\r\n" +
             "        toolResult = EfrpgToolRunner.ReadDatabase(\r\n" +
             "            FilterSettings.IncludeStoredProcedures || FilterSettings.IncludeTableValuedFunctions || FilterSettings.IncludeScalarValuedFunctions,\r\n" +
-            "            FilterSettings.IncludeSynonyms,\r\n" +
-            "            efrpgMultiContext);\r\n" +
+            "            FilterSettings.IncludeSynonyms);\r\n" +
             "    }\r\n" +
             "    catch (Exception efrpgEx)\r\n" +
             "    {\r\n" +
@@ -90,6 +88,31 @@ namespace Efrpg.Gui
             "}",
             "fileManagement.Process(true);#>"
         };
+
+        /// <summary>
+        ///     Settings v3 had and v4 does not, because multi-context generation was removed before v4 shipped.
+        ///     Each is deleted as a whole statement; the last four are multi-line delegates in a stock v3 file.
+        /// </summary>
+        private static readonly string[] MultiContextSettings =
+        {
+            "GenerateSingleDbContext",
+            "MultiContextSettingsConnectionString",
+            "MultiContextSettingsPlugin",
+            "MultiContextAttributeDelimiter",
+            "MultiContextAllFieldsColumnProcessing",
+            "MultiContextAllFieldsTableProcessing",
+            "MultiContextAllFieldsStoredProcedureProcessing",
+            "MultiContextAllFieldsFunctionProcessing"
+        };
+
+        private static readonly Regex MultiContextInUse =
+            new Regex(@"^[ \t]*Settings\.GenerateSingleDbContext[ \t]*=[ \t]*false\b", RegexOptions.Multiline);
+
+        private static readonly Regex FileBasedInUse =
+            new Regex(@"^[ \t]*Settings\.TemplateType[ \t]*=[ \t]*TemplateType\.FileBased", RegexOptions.Multiline);
+
+        private static readonly Regex CustomGeneratorInUse =
+            new Regex(@"^[ \t]*Settings\.GeneratorType[ \t]*=[ \t]*GeneratorType\.Custom\b", RegexOptions.Multiline);
 
         private static readonly Regex IncludeDirective =
             new Regex(@"^<#@\s*include\s+file\s*=\s*""(?<include>[^""]+)""\s*#>", RegexOptions.Multiline);
@@ -134,6 +157,29 @@ namespace Efrpg.Gui
                     "This template does not include " + V3Include + ", so there is nothing to upgrade."
                 });
 
+            // A template that generates several contexts has nowhere to go: v4 removed the feature, and v3 keeps
+            // working. Said before any edit, so the user is not shown a list of changes that cannot be applied.
+            if (MultiContextInUse.IsMatch(_text))
+                return TemplateUpgradeResult.Refused(new[]
+                {
+                    "This template generates multiple DbContexts (Settings.GenerateSingleDbContext = false), which " +
+                    "v4 removed. Stay on v3 for this project; v3 remains downloadable and continues to work."
+                });
+
+            if (FileBasedInUse.IsMatch(_text))
+                return TemplateUpgradeResult.Refused(new[]
+                {
+                    "This template uses a file-based template type, which v4 removed along with Settings.TemplateFolder. " +
+                    "Stay on v3 for this project, or switch to the built-in EfCore or Ef6 template type first."
+                });
+
+            if (CustomGeneratorInUse.IsMatch(_text))
+                return TemplateUpgradeResult.Refused(new[]
+                {
+                    "This template uses GeneratorType.Custom, which v4 removed. Stay on v3 for this project, or switch " +
+                    "to GeneratorType.EfCore or GeneratorType.Ef6 first."
+                });
+
             var text = _text;
 
             text = SwapInclude(text);
@@ -141,6 +187,13 @@ namespace Efrpg.Gui
                 "Settings.FileManagerType no longer exists in v4 - the file manager is chosen automatically.");
             text = DeleteSetting(text, "DatabaseReaderPlugin",
                 "Settings.DatabaseReaderPlugin no longer exists in v4 - database reading moved into the efrpg tool.");
+
+            foreach (var setting in MultiContextSettings)
+                text = DeleteStatement(text, setting,
+                    "Settings." + setting + " no longer exists in v4 - multi-context generation was removed.");
+
+            text = DeleteSetting(text, "TemplateFolder",
+                "Settings.TemplateFolder no longer exists in v4 - file-based templates were removed.");
             text = SimplifySeparateFilesCondition(text);
             text = RenameCleanUp(text);
             text = ReplaceEntryPoint(text);
@@ -156,6 +209,11 @@ namespace Efrpg.Gui
                 LeftoverCheck(text, "FileManagerType");
                 LeftoverCheck(text, "DatabaseReaderPlugin");
                 LeftoverCheck(text, "DatabaseReader.");
+                LeftoverCheckInCode(text, "Settings.MultiContext");
+                LeftoverCheckInCode(text, "Settings.GenerateSingleDbContext");
+                LeftoverCheckInCode(text, "Settings.TemplateFolder");
+                LeftoverCheckInCode(text, "TemplateType.FileBased");
+                LeftoverCheckInCode(text, "GeneratorType.Custom");
             }
 
             return _blockers.Count > 0
@@ -191,6 +249,44 @@ namespace Efrpg.Gui
             Record(why, match.Value.TrimEnd('\r', '\n'), string.Empty);
 
             return text.Substring(0, match.Index) + text.Substring(match.Index + match.Length);
+        }
+
+        /// <summary>
+        ///     Removes a whole statement, however many lines it spans, through the same scanner the settings editor
+        ///     uses. The one-line <see cref="DeleteSetting"/> would leave the body of a delegate behind.
+        /// </summary>
+        private string DeleteStatement(string text, string settingName, string why)
+        {
+            var document   = TemplateSettingsDocument.Parse(text);
+            var assignment = document.Assignments.FirstOrDefault(a => a.Name == settingName && !a.IsCommentedOut);
+
+            if (assignment == null)
+                return text;
+
+            Record(why, document.StatementText(assignment), string.Empty);
+
+            return document.WithoutAssignment(assignment).Text;
+        }
+
+        /// <summary>
+        ///     As <see cref="LeftoverCheck"/>, ignoring line comments. A stock v3 file mentions the removed settings
+        ///     in prose above their block, and prose is not a compile error.
+        /// </summary>
+        private void LeftoverCheckInCode(string text, string fragment)
+        {
+            foreach (var line in text.Replace("\r\n", "\n").Split('\n'))
+            {
+                var scanner = new StatementScanner();
+                scanner.Feed(line);
+
+                var code = scanner.LineCommentIndex >= 0 ? line.Substring(0, scanner.LineCommentIndex) : line;
+                if (code.IndexOf(fragment, StringComparison.Ordinal) < 0)
+                    continue;
+
+                _blockers.Add("This template still refers to '" + fragment +
+                              "', which v4 removed, in a place this upgrade does not know how to change: " + line.Trim());
+                return;
+            }
         }
 
         private string SimplifySeparateFilesCondition(string text)

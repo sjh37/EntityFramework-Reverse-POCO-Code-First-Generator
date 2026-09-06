@@ -50,7 +50,6 @@ namespace Generator.Tests.Unit
             { "RawSequence.hasMinValue",                     "Computed from MinMaxValueCache and the sent minValue." },
             { "RawSequence.hasMaxValue",                     "Computed from MinMaxValueCache and the sent maxValue." },
             { "RawEnumRow.AllValues",                        "Carried as repeated Field elements, not an attribute of the same name." },
-            { "MultiContextStoredProcedureSettings.ReturnModel", "No context in EfrpgTest_Settings defines a stored procedure, so the tool has nothing to emit it from. Unchecked until that database grows one." }
         };
 
         private static string FixturePath(string filename)
@@ -108,7 +107,6 @@ namespace Generator.Tests.Unit
                 Assert.That(result.Triggers,              Is.Not.Empty, "Triggers");
                 Assert.That(result.MemoryOptimisedTables, Is.Not.Empty, "MemoryOptimisedTables");
                 Assert.That(result.ExtendedProperties,    Is.Not.Empty, "ExtendedProperties");
-                Assert.That(result.MultiContextSettings,  Is.Not.Empty, "MultiContextSettings");
                 Assert.That(result.Errors,                Is.Not.Empty, "Errors");
             });
         }
