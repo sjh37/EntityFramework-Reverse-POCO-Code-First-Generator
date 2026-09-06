@@ -73,6 +73,78 @@ namespace Efrpg.Gui.Tests
             Assert.That(settings.GetString("DbContextName"), Is.EqualTo("Renamed"));
         }
 
+        private const string DifferentNames =
+            "<#\r\n" +
+            "    Settings.ConnectionString = Environment.GetEnvironmentVariable(\"ReversePoco\", EnvironmentVariableTarget.User);\r\n" +
+            "    Settings.ConnectionStringName = \"MyDbContext\"; // key in appsettings.json\r\n" +
+            "    Settings.DbContextName = \"V10ReversePocoTestDbContext\"; // Class name\r\n" +
+            "#>\r\n";
+
+        /// <summary>
+        ///     The bug: OK with nothing changed rewrote ConnectionStringName to the context name, because every
+        ///     fixture happened to keep the two equal.
+        /// </summary>
+        [Test]
+        public void ApplyTo_LeavesAConnectionStringNameThatDiffersFromTheContextNameAlone()
+        {
+            var settings = new TemplateSettingsFile(DifferentNames);
+
+            var text = TemplateConfiguration.ReadFrom(settings, "Fallback").ApplyTo(settings);
+
+            Assert.That(text, Is.EqualTo(DifferentNames));
+        }
+
+        [Test]
+        public void ReadFrom_ReadsTheConnectionStringNameAsItsOwnField()
+        {
+            var current = TemplateConfiguration.ReadFrom(new TemplateSettingsFile(DifferentNames), "Fallback");
+
+            Assert.That(current.DbContextName, Is.EqualTo("V10ReversePocoTestDbContext"));
+            Assert.That(current.ConnectionStringName, Is.EqualTo("MyDbContext"));
+        }
+
+        /// <summary>What the dialog does: the name box holds the file's value, and only the context is renamed.</summary>
+        [Test]
+        public void ApplyTo_RenamingTheContextDoesNotDragADifferentConnectionStringNameAlong()
+        {
+            var settings = new TemplateSettingsFile(DifferentNames);
+            var current  = TemplateConfiguration.ReadFrom(settings, "Fallback");
+
+            new TemplateConfiguration(current.Database, current.Template, current.ConnectionString, "Renamed",
+                current.ConnectionStringName, string.Empty, current.Source).ApplyTo(settings);
+
+            Assert.That(settings.GetString("DbContextName"), Is.EqualTo("Renamed"));
+            Assert.That(settings.GetString("ConnectionStringName"), Is.EqualTo("MyDbContext"));
+        }
+
+        [Test]
+        public void ApplyTo_WritesAConnectionStringNameOfItsOwn()
+        {
+            var settings = Shipped();
+
+            new TemplateConfiguration(DatabaseTarget.Default, TemplateTarget.Default,
+                "Data Source=(local);Initial Catalog=Northwind", "NorthwindDbContext", "Northwind", string.Empty, null).ApplyTo(settings);
+
+            Assert.That(settings.GetString("DbContextName"), Is.EqualTo("NorthwindDbContext"));
+            Assert.That(settings.GetString("ConnectionStringName"), Is.EqualTo("Northwind"));
+        }
+
+        /// <summary>
+        ///     The shorter constructor gives the connection string the context's name, which is what a new template
+        ///     gets and what the dialog's name box does while the two boxes still match.
+        /// </summary>
+        [Test]
+        public void ApplyTo_TheShorterConstructorKeepsTheConnectionStringNameInStep()
+        {
+            var settings = Shipped();
+
+            new TemplateConfiguration(DatabaseTarget.Default, TemplateTarget.Default,
+                "Data Source=(local);Initial Catalog=Northwind", "NorthwindDbContext", string.Empty).ApplyTo(settings);
+
+            Assert.That(settings.GetString("DbContextName"), Is.EqualTo("NorthwindDbContext"));
+            Assert.That(settings.GetString("ConnectionStringName"), Is.EqualTo("NorthwindDbContext"));
+        }
+
         [Test]
         public void ResolveConnectionString_RefusesThePlaceholderWithAPointerToTheConnectionDialog()
         {

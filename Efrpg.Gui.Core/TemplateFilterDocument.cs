@@ -154,6 +154,15 @@ namespace Efrpg.Gui
         /// </summary>
         public TemplateFilterDocument WithPickerPatterns(FilterList list, IReadOnlyList<string> patterns)
         {
+            return WithPickerPatterns(list, patterns, true);
+        }
+
+        /// <summary>
+        ///     As above, writing include lines or exclude lines. Either way they carry the marker and are the
+        ///     picker's to replace next time.
+        /// </summary>
+        public TemplateFilterDocument WithPickerPatterns(FilterList list, IReadOnlyList<string> patterns, bool include)
+        {
             if (patterns == null)
                 throw new ArgumentNullException(nameof(patterns));
 
@@ -190,7 +199,8 @@ namespace Efrpg.Gui
 
             var indent = Indent(lines[anchor].Text);
             var text   = patterns.Select(p =>
-                indent + "FilterSettings." + list + "Filters.Add(new RegexIncludeFilter(@\"" + p.Replace("\"", "\"\"") + "\")); " + PickerComment);
+                indent + "FilterSettings." + list + "Filters.Add(new " + (include ? "RegexIncludeFilter" : "RegexExcludeFilter") +
+                "(@\"" + p.Replace("\"", "\"\"") + "\")); " + PickerComment);
 
             return Rebuild(InsertAfter(lines, anchor, text));
         }

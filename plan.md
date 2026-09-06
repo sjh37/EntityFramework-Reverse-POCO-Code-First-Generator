@@ -539,7 +539,8 @@ does, the schema filters, the period rule, the reserved `MultiContext` schema, a
 so the ticks are the truth rather than a guess. An object a hand-written filter decides is shown disabled with
 that filter as its tooltip. The picker never overrides a user's filter; it adds beside it.
 
-**A choice is saved as one include list per filter list**, as ordinary code the user can read:
+**A choice is saved as whichever list is shorter, per filter list**, as ordinary code the user can read - the
+ticked names as an include filter, or the unticked names as an exclude filter:
 
 ```
 FilterSettings.TableFilters.Add(new RegexIncludeFilter(@"^(?:Customers|Order\ Details|Orders)$")); // Reverse POCO object picker: right-click the .tt to change this
@@ -550,10 +551,15 @@ and is never rewritten. Names are `Regex.Escape`d, sorted, and wrapped at about 
 so a one-table change is a one-line diff. Ticking everything writes nothing at all, and ticking everything back
 removes the lines, so a template nobody has narrowed stays byte for byte as shipped.
 
-Include rather than exclude was a decision: ticking a subset means *these and only these*, so a table added to
-the database later stays out of the generated code until somebody ticks it - which for code in source control
-is the predictable behaviour, and is what EF Core Power Tools does. Whole categories switch off through the
-flags instead - unticking every view writes `FilterSettings.IncludeViews = false`, uncommenting the template's
+The first version wrote an include list only, on the argument that ticking a subset means *these and only
+these*. It lasted one day: tables and views share one filter list, so leaving three views unticked produced
+hundreds of lines naming every table. Now the shorter list wins, which is what a person would write, and the
+dialog says how the two differ - an exclude list lets a table added later through, an include list keeps it out
+until ticked. Ticking nothing in a list writes an include filter that matches nothing. A schema with nothing
+ticked in it becomes a `SchemaFilters` line by the same shorter-of rule, which is both what a person would write
+and more precise, since the name lists match on the bare name and cannot tell `Audit.Log` from `dbo.Log`; a
+schema holding anything the user's own include filter wants is never shut out. Whole categories switch off
+through the flags instead - unticking every view writes `FilterSettings.IncludeViews = false`, uncommenting the template's
 own line - because that is what the template's comments tell a user to do. Stored procedures are read whenever
 either function flag is on, because the generator couples them, so wanting one function alone writes the flag
 *and* an include list naming it.

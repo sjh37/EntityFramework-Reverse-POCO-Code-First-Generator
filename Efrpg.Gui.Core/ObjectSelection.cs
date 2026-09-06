@@ -16,10 +16,13 @@ namespace Efrpg.Gui
     ///     reserved MultiContext schema, and the five on/off flags. A filter the user wrote is shown as the reason
     ///     an object is locked, never overridden - the picker adds to the file, it does not fight it.
     ///
-    ///     **A choice is saved as an include list, never an exclude list.** Ticking a subset means "these, and only
-    ///     these": a table added to the database later does not appear in the generated code until somebody ticks
-    ///     it, which for code in source control is the predictable behaviour. Ticking everything writes nothing at
-    ///     all, so a template nobody has narrowed keeps generating whatever the database grows to hold.
+    ///     **A choice is saved as whichever list is shorter**, the way a person would write it: the ticked names as
+    ///     an include filter, or the unticked names as an exclude filter. Tables and views share one list, so
+    ///     leaving out three views must not cost a line naming a thousand tables. The two forms differ for a table
+    ///     added to the database later - an exclude list lets it through, an include list keeps it out until it is
+    ///     ticked - and the dialog says so. Ticking everything writes nothing at all, so a template nobody has
+    ///     narrowed keeps generating whatever the database grows to hold; ticking nothing writes an include filter
+    ///     that matches nothing.
     ///
     ///     Whole categories switch off through the flags rather than through a regex - unticking every view writes
     ///     <c>FilterSettings.IncludeViews = false</c> - because that is what the template's own comments tell a user
@@ -32,6 +35,11 @@ namespace Efrpg.Gui
         ///     generator, so splitting is purely for a file somebody can read and diff.
         /// </summary>
         private const int PatternLineLength = 100;
+
+        /// <summary>An include filter nothing can match: what "no tables at all" is written as.</summary>
+        public const string NothingPattern = "^$";
+
+        private static readonly string[] NoPatterns = new string[0];
 
         private readonly TemplateFilterDocument _document;
         private readonly List<Entry> _entries;
@@ -129,12 +137,67 @@ namespace Efrpg.Gui
         /// </summary>
         public string Apply()
         {
-            var document = WriteFlags(_document);
+            var document   = WriteFlags(_document);
+            var schemasOff = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
-            document = WritePatterns(document, FilterList.Table);
-            document = WritePatterns(document, FilterList.StoredProcedure);
+            document = WriteSchemaPatterns(document, schemasOff);
+            document = WritePatterns(document, FilterList.Table, schemasOff);
+            document = WritePatterns(document, FilterList.StoredProcedure, schemasOff);
 
             return document.Text;
+        }
+
+        /// <summary>
+        ///     A schema with nothing ticked in it becomes a schema filter rather than a run of names, which is what
+        ///     a person would write and is more precise: the name lists match on the bare name and cannot tell
+        ///     Audit.Log from dbo.Log. Whole schemas off go into an exclude, or the schemas still on into an
+        ///     include when that is the shorter list. Fills <paramref name="schemasOff"/> with the schemas the line
+        ///     shuts out, so the name lists do not repeat them.
+        /// </summary>
+        private TemplateFilterDocument WriteSchemaPatterns(TemplateFilterDocument document, HashSet<string> schemasOff)
+        {
+            var filters = document.In(FilterList.Schema).ToList();
+
+            // Left alone when a filter cannot be evaluated, or when the database has no schemas to speak of.
+            if (filters.Any(f => !f.CanEvaluate) || _entries.Any(e => e.Standing == Standing.Unknown) || _entries.All(e => e.Object.Schema.Length == 0))
+                return document;
+
+            // A schema include of the user's already says which schemas exist for the picker; it adds names within
+            // those and nothing at schema level.
+            if (filters.Any(f => f.IsInclude && !f.IsPickerOwned))
+                return document.WithPickerPatterns(FilterList.Schema, NoPatterns, true);
+
+            var on  = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            var off = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+            // Only objects the generator would read count. A schema holding nothing but functions is not "unticked"
+            // because functions are off; it is simply not in play, and switching functions on later must not find
+            // the schema shut out.
+            foreach (var schema in _entries.Where(e => e.Standing == Standing.LockedIn || e.Standing == Standing.Free && WillBeRead(e.Object.Kind)).GroupBy(e => e.Object.Schema, StringComparer.OrdinalIgnoreCase))
+            {
+                // A schema holding something the user's own filter includes is never shut out.
+                if (schema.Any(e => e.Standing == Standing.LockedIn || e.Ticked))
+                    on.Add(schema.Key);
+                else
+                    off.Add(schema.Key);
+            }
+
+            if (off.Count == 0 || on.Count == 0)
+                return document.WithPickerPatterns(FilterList.Schema, NoPatterns, true);
+
+            // A tie goes to the exclude: unticking one schema of two reads as "not that one".
+            if (on.Count < off.Count)
+            {
+                foreach (var schema in _entries.Select(e => e.Object.Schema).Where(s => !on.Contains(s)))
+                    schemasOff.Add(schema);
+
+                return document.WithPickerPatterns(FilterList.Schema, Patterns(on), true);
+            }
+
+            foreach (var schema in off)
+                schemasOff.Add(schema);
+
+            return document.WithPickerPatterns(FilterList.Schema, Patterns(off), false);
         }
 
         private TemplateFilterDocument WriteFlags(TemplateFilterDocument document)
@@ -171,23 +234,32 @@ namespace Efrpg.Gui
             return document.WithFlag(flag, _kindEnabled[kind]);
         }
 
-        private TemplateFilterDocument WritePatterns(TemplateFilterDocument document, FilterList list)
+        private TemplateFilterDocument WritePatterns(TemplateFilterDocument document, FilterList list, HashSet<string> schemasOff)
         {
             // Nothing is written for a list this dialog could not fully evaluate: no choice was offered there, so
             // there is no choice to save.
             if (document.In(list).Any(f => !f.CanEvaluate) || document.In(FilterList.Schema).Any(f => !f.CanEvaluate))
                 return document;
 
-            var free   = _entries.Where(e => ListFor(e.Object.Kind) == list && e.Standing == Standing.Free && WillBeRead(e.Object.Kind)).ToList();
-            var ticked = free.Where(e => e.Ticked).ToList();
+            var free     = _entries.Where(e => ListFor(e.Object.Kind) == list && e.Standing == Standing.Free && WillBeRead(e.Object.Kind) && !schemasOff.Contains(e.Object.Schema)).ToList();
+            var ticked   = free.Where(e => e.Ticked).Select(e => e.Object.Name).ToList();
+            var unticked = free.Where(e => !e.Ticked).Select(e => e.Object.Name).ToList();
 
-            // With no include filter of the user's, everything free is generated unless narrowed, so a line is
-            // needed only when something is unticked. With one, nothing free is generated unless added, so a line
-            // is needed only when something is ticked. Either way, the include lines merge with the user's.
-            var hasUserIncludes = document.In(list).Any(f => f.IsInclude && !f.IsPickerOwned);
-            var needsLine       = hasUserIncludes ? ticked.Count > 0 : ticked.Count != free.Count;
+            // With an include filter of the user's, nothing free is generated unless added, so the ticked names
+            // are the only thing to write, and only when there are any. The include lines merge with the user's.
+            if (document.In(list).Any(f => f.IsInclude && !f.IsPickerOwned))
+                return document.WithPickerPatterns(list, ticked.Count > 0 ? Patterns(ticked) : NoPatterns, true);
 
-            return document.WithPickerPatterns(list, needsLine ? Patterns(ticked.Select(e => e.Object.Name)) : new string[0]);
+            if (unticked.Count == 0)
+                return document.WithPickerPatterns(list, NoPatterns, true);
+
+            if (ticked.Count == 0)
+                return document.WithPickerPatterns(list, new[] { NothingPattern }, true);
+
+            // Whichever list is shorter, as a person would write it: the few to include, or the few to leave out.
+            return ticked.Count <= unticked.Count
+                ? document.WithPickerPatterns(list, Patterns(ticked), true)
+                : document.WithPickerPatterns(list, Patterns(unticked), false);
         }
 
         /// <summary>
@@ -371,15 +443,15 @@ namespace Efrpg.Gui
             if (list == FilterList.StoredProcedure && databaseObject.Name.IndexOf('.') >= 0)
                 return new Entry(databaseObject, Standing.LockedOut, "Names containing a period are always excluded, because Entity Framework cannot map them.");
 
-            var schemaExclude = schemas.FirstOrDefault(f => !f.IsInclude && f.Matches(databaseObject.Schema));
+            var schemaExclude = schemas.FirstOrDefault(f => !f.IsInclude && !f.IsPickerOwned && f.Matches(databaseObject.Schema));
             if (schemaExclude != null)
                 return new Entry(databaseObject, Standing.LockedOut, "Its schema is excluded by a filter in the .tt: " + schemaExclude.Text);
 
-            var schemaIncludes = schemas.Where(f => f.IsInclude).ToList();
+            var schemaIncludes = schemas.Where(f => f.IsInclude && !f.IsPickerOwned).ToList();
             if (schemaIncludes.Count > 0 && !schemaIncludes.Any(f => f.Matches(databaseObject.Schema)))
                 return new Entry(databaseObject, Standing.LockedOut, "Its schema is not matched by the include filter in the .tt: " + schemaIncludes[0].Text);
 
-            var exclude = filters.FirstOrDefault(f => !f.IsInclude && f.Matches(databaseObject.Name));
+            var exclude = filters.FirstOrDefault(f => !f.IsInclude && !f.IsPickerOwned && f.Matches(databaseObject.Name));
             if (exclude != null)
                 return new Entry(databaseObject, Standing.LockedOut, "Excluded by a filter in the .tt: " + exclude.Text);
 
@@ -387,11 +459,16 @@ namespace Efrpg.Gui
             if (userInclude != null)
                 return new Entry(databaseObject, Standing.LockedIn, "Included by a filter in the .tt: " + userInclude.Text);
 
-            // Free. Ticked if the generator currently produces it: the category is on, and either nobody has
-            // narrowed the list or the picker's own line names it.
+            // Free. Ticked if the generator currently produces it: the category is on, the picker's own exclude
+            // line does not name it, and either nobody has narrowed the list or the picker's include line names it.
             var includes       = filters.Where(f => f.IsInclude).ToList();
             var pickerIncludes = includes.Where(f => f.IsPickerOwned).ToList();
+            var pickerExcludes = filters.Where(f => !f.IsInclude && f.IsPickerOwned).ToList();
+            var pickerSchemaIn = schemas.Where(f => f.IsInclude && f.IsPickerOwned).ToList();
             var ticked         = FlagOn(document, databaseObject.Kind)
+                                 && !schemas.Any(f => !f.IsInclude && f.IsPickerOwned && f.Matches(databaseObject.Schema))
+                                 && (pickerSchemaIn.Count == 0 || pickerSchemaIn.Any(f => f.Matches(databaseObject.Schema)))
+                                 && !pickerExcludes.Any(f => f.Matches(databaseObject.Name))
                                  && (includes.Count == 0 || pickerIncludes.Any(f => f.Matches(databaseObject.Name)));
 
             return new Entry(databaseObject, Standing.Free, string.Empty) { Ticked = ticked };

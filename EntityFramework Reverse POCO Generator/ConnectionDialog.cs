@@ -36,7 +36,14 @@ namespace EntityFramework_Reverse_POCO_Generator
         private readonly ComboBox _template;
         private readonly TextBox _connectionString;
         private readonly TextBox _dbContextName;
+        private readonly TextBox _connectionStringName;
         private readonly TextBox _namespace;
+
+        /// <summary>
+        ///     What the DbContext name box last held, so the connection string name can follow it while the two are
+        ///     the same and stop following the moment the user makes them differ.
+        /// </summary>
+        private string _lastDbContextName;
         private readonly TextBlock _connectionHint;
         private readonly TextBlock _templateHint;
         private readonly TextBlock _validation;
@@ -74,8 +81,8 @@ namespace EntityFramework_Reverse_POCO_Generator
         {
             get
             {
-                return new TemplateConfiguration(SelectedDatabase, SelectedTemplate,
-                    _connectionString.Text.Trim(), _dbContextName.Text.Trim(), _namespace.Text.Trim(), _source);
+                return new TemplateConfiguration(SelectedDatabase, SelectedTemplate, _connectionString.Text.Trim(),
+                    _dbContextName.Text.Trim(), _connectionStringName.Text.Trim(), _namespace.Text.Trim(), _source);
             }
         }
 
@@ -121,6 +128,8 @@ namespace EntityFramework_Reverse_POCO_Generator
             _template         = new ComboBox { ItemsSource = TemplateTarget.All, SelectedItem = current.Template, Padding = new Thickness(6, 4, 6, 4) };
             _connectionString = new TextBox { Text = current.ConnectionString, FontFamily = new FontFamily("Consolas"), Padding = new Thickness(6, 4, 6, 4), TextWrapping = TextWrapping.Wrap, IsReadOnly = !_source.IsEditable, Opacity = _source.IsEditable ? 1.0 : 0.75 };
             _dbContextName    = new TextBox { Text = current.DbContextName, Padding = new Thickness(6, 4, 6, 4) };
+            _connectionStringName = new TextBox { Text = current.ConnectionStringName, Padding = new Thickness(6, 4, 6, 4) };
+            _lastDbContextName    = current.DbContextName;
             _namespace        = new TextBox { Text = current.Namespace, Padding = new Thickness(6, 4, 6, 4) };
             _connectionHint   = Hint(current.Database.Hint);
             _templateHint     = Hint(string.Empty);
@@ -132,6 +141,7 @@ namespace EntityFramework_Reverse_POCO_Generator
             _template.SelectionChanged    += (s, e) => TemplateChanged();
             _connectionString.TextChanged += (s, e) => { TestedSchema = null; Validate(); };
             _namespace.TextChanged        += (s, e) => Validate();
+            _dbContextName.TextChanged    += (s, e) => FollowDbContextName();
             _ok.Click                     += (s, e) => { Confirmed = true; DialogResult = true; Close(); };
             _test.Click                   += (s, e) => Test();
 
@@ -312,6 +322,18 @@ namespace EntityFramework_Reverse_POCO_Generator
         }
 
         /// <summary>
+        ///     The shipped template gives the connection string the context's name, so while the two boxes match,
+        ///     renaming the context renames both. Once they differ the user has made a choice, and it sticks.
+        /// </summary>
+        private void FollowDbContextName()
+        {
+            if (_connectionStringName.Text == _lastDbContextName)
+                _connectionStringName.Text = _dbContextName.Text;
+
+            _lastDbContextName = _dbContextName.Text;
+        }
+
+        /// <summary>
         ///     The file based templates read mustache files from Settings.TemplateFolder, which this dialog does not
         ///     set, so say so here rather than letting the next save fail.
         /// </summary>
@@ -377,7 +399,16 @@ namespace EntityFramework_Reverse_POCO_Generator
             });
             body.Children.Add(TwoColumns(
                 Label("DbContext name"), _dbContextName,
-                Label("Namespace"), _namespace));
+                Label("Connection string name"), _connectionStringName));
+            body.Children.Add(new TextBlock
+            {
+                Text = "The connection string name is the key in appsettings.json or app.config that the generated DbContext reads. It follows the DbContext name until you change it.",
+                TextWrapping = TextWrapping.Wrap,
+                Opacity = 0.75,
+                Margin = new Thickness(0, 4, 0, 12)
+            });
+            body.Children.Add(Label("Namespace"));
+            body.Children.Add(_namespace);
             body.Children.Add(new TextBlock
             {
                 Text = "Leave the namespace blank to use the namespace of the project the .tt sits in.",

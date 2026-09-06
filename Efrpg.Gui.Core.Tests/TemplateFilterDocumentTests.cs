@@ -139,6 +139,17 @@ namespace Efrpg.Gui.Tests
         }
 
         [Test]
+        public void WithPickerPatterns_CanWriteExcludeLinesThatItStillOwns()
+        {
+            var after = Shipped().WithPickerPatterns(FilterList.Table, new[] { "^(?:A)$" }, false);
+
+            var owned = after.In(FilterList.Table).Single(f => f.IsPickerOwned);
+            Assert.That(owned.IsInclude, Is.False);
+            Assert.That(after.Text, Does.Contain("Add(new RegexExcludeFilter(@\"^(?:A)$\")); // " + TemplateFilterDocument.PickerMarker));
+            Assert.That(after.WithPickerPatterns(FilterList.Table, new string[0]).Text, Is.EqualTo(Shipped().Text));
+        }
+
+        [Test]
         public void WithPickerPatterns_RemovingEverythingRestoresTheOriginalBytes()
         {
             var original = Shipped();

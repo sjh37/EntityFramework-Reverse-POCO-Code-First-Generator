@@ -155,8 +155,10 @@ namespace EntityFramework_Reverse_POCO_Generator
             });
             header.Children.Add(new TextBlock
             {
-                Text = "Ticking everything keeps the template generating whatever the database holds. Ticking only some writes an " +
-                       "include list into the .tt, so anything added to the database later stays out until you tick it here.",
+                Text = "Ticking everything keeps the template generating whatever the database holds. Ticking only some writes the " +
+                       "shorter list into the .tt as a filter you can read: the ticked names to include, or the unticked names to " +
+                       "exclude, and a schema with nothing ticked becomes a schema filter. With an exclude list, anything added to " +
+                       "the database later is generated; with an include list it stays out until you tick it here.",
                 TextWrapping = TextWrapping.Wrap,
                 Opacity = 0.75,
                 Margin = new Thickness(0, 0, 0, 10)

@@ -27,13 +27,24 @@ namespace Efrpg.Gui
         /// </param>
         public TemplateConfiguration(DatabaseTarget database, TemplateTarget template, string connectionString,
             string dbContextName, string namespaceName, ConnectionStringSource source)
+            : this(database, template, connectionString, dbContextName, dbContextName, namespaceName, source)
         {
-            Database         = database ?? throw new ArgumentNullException(nameof(database));
-            Template         = template ?? throw new ArgumentNullException(nameof(template));
-            ConnectionString = connectionString ?? string.Empty;
-            DbContextName    = dbContextName ?? string.Empty;
-            Namespace        = (namespaceName ?? string.Empty).Trim();
-            Source           = source ?? ConnectionStringSource.ForLiteral(ConnectionString);
+        }
+
+        /// <param name="connectionStringName">
+        ///     The key in appsettings.json or app.config the generated context reads. The shorter constructors
+        ///     give it the context's name, which is what the shipped template does.
+        /// </param>
+        public TemplateConfiguration(DatabaseTarget database, TemplateTarget template, string connectionString,
+            string dbContextName, string connectionStringName, string namespaceName, ConnectionStringSource source)
+        {
+            Database             = database ?? throw new ArgumentNullException(nameof(database));
+            Template             = template ?? throw new ArgumentNullException(nameof(template));
+            ConnectionString     = connectionString ?? string.Empty;
+            DbContextName        = (dbContextName ?? string.Empty).Trim();
+            ConnectionStringName = (connectionStringName ?? string.Empty).Trim();
+            Namespace            = (namespaceName ?? string.Empty).Trim();
+            Source               = source ?? ConnectionStringSource.ForLiteral(ConnectionString);
         }
 
         public DatabaseTarget Database { get; }
@@ -52,6 +63,12 @@ namespace Efrpg.Gui
         public bool IsConnectionStringEditable => Source.IsEditable;
 
         public string DbContextName { get; }
+
+        /// <summary>
+        ///     The key in appsettings.json or app.config that the generated DbContext constructor reads. Not used
+        ///     by the generator itself, which is why it is easy to forget and worth showing.
+        /// </summary>
+        public string ConnectionStringName { get; }
 
         /// <summary>
         ///     The namespace for the generated code, or empty to keep the template's <c>DefaultNamespace</c>, which
@@ -113,13 +130,16 @@ namespace Efrpg.Gui
                     break;
             }
 
+            var dbContextName = settings.GetString("DbContextName") ?? fallbackDbContextName;
+
             return new TemplateConfiguration(
-                database,
-                template,
-                connectionString,
-                settings.GetString("DbContextName") ?? fallbackDbContextName,
-                ReadNamespace(settings),
-                source);
+                    database,
+                    template,
+                    connectionString,
+                    dbContextName,
+                    settings.GetString("ConnectionStringName") ?? dbContextName,
+                    ReadNamespace(settings),
+                    source);
         }
 
         /// <summary>
@@ -185,10 +205,10 @@ namespace Efrpg.Gui
             settings.TrySetEnum("GeneratorType", Template.GeneratorTypeName);
 
             if (DbContextName.Length > 0)
-            {
                 settings.TrySetString("DbContextName", DbContextName);
-                settings.TrySetString("ConnectionStringName", DbContextName);
-            }
+
+            if (ConnectionStringName.Length > 0)
+                settings.TrySetString("ConnectionStringName", ConnectionStringName);
 
             WriteNamespace(settings);
 

@@ -39,6 +39,147 @@ namespace Efrpg.Gui.Tests
             return DatabaseSchema.Parse(Payload);
         }
 
+        /// <summary>
+        ///     The same database with an Audit schema holding two tables and a procedure, and an Archive schema
+        ///     holding one table.
+        /// </summary>
+        private static DatabaseSchema SchemaWithAudit()
+        {
+            return DatabaseSchema.Parse(Payload
+                .Replace("</Tables>",
+                    "<Row schemaName=\"Audit\" tableName=\"Log\" isView=\"false\" columnName=\"Id\" />" +
+                    "<Row schemaName=\"Audit\" tableName=\"Trail\" isView=\"false\" columnName=\"Id\" />" +
+                    "<Row schemaName=\"Archive\" tableName=\"Old\" isView=\"false\" columnName=\"Id\" />" +
+                    "</Tables>")
+                .Replace("</StoredProcedures>",
+                    "<Row schema=\"Audit\" name=\"Purge\" isStoredProcedure=\"true\" />" +
+                    "</StoredProcedures>"));
+        }
+
+        private static ObjectSelection Fresh(DatabaseSchema schema)
+        {
+            return ObjectSelection.Create(schema, TemplateFilterDocument.Parse(RepositoryFiles.DatabaseTemplate()));
+        }
+
+        private static void Untick(ObjectSelection selection, DatabaseSchema schema, string schemaName)
+        {
+            selection.SelectAll(schema.Objects.Where(o => o.Schema == schemaName).ToList(), false);
+        }
+
+        /// <summary>The picker's own live lines for one list; the template's commented-out examples do not count.</summary>
+        private static string[] PickerLines(string text, string list)
+        {
+            return text.Split('\n')
+                .Where(l => l.Contains("FilterSettings." + list + ".Add(") && l.Contains(TemplateFilterDocument.PickerMarker))
+                .ToArray();
+        }
+
+        [Test]
+        public void Apply_UntickingAWholeSchemaWritesASchemaExcludeAndNoNames()
+        {
+            var schema    = SchemaWithAudit();
+            var before    = RepositoryFiles.DatabaseTemplate();
+            var selection = Fresh(schema);
+
+            Untick(selection, schema, "Audit");
+            var after = selection.Apply();
+
+            Assert.That(AddedLines(before, after), Is.EqualTo(new[]
+            {
+                "    FilterSettings.SchemaFilters.Add(new RegexExcludeFilter(@\"^(?:Audit)$\")); // " +
+                TemplateFilterDocument.PickerMarker + ": right-click the .tt to change this"
+            }));
+
+            var reopened = ObjectSelection.Create(schema, TemplateFilterDocument.Parse(after));
+            Assert.That(reopened.Choices.Where(c => c.Object.Schema == "Audit").All(c => c.IsSelected == false && c.CanChange), Is.True);
+            Assert.That(Choice(reopened, "Customers").IsSelected, Is.True);
+            Assert.That(reopened.Apply(), Is.EqualTo(after));
+        }
+
+        [Test]
+        public void Apply_KeepsASchemaWhileAnythingInItIsTicked()
+        {
+            var schema    = SchemaWithAudit();
+            var selection = Fresh(schema);
+
+            Untick(selection, schema, "Audit");
+            selection.Select(schema.Objects.Single(o => o.Name == "Purge"), true);
+            var after = selection.Apply();
+
+            Assert.That(PickerLines(after, "SchemaFilters"), Is.Empty);
+            Assert.That(after, Does.Contain("TableFilters.Add(new RegexExcludeFilter(@\"^(?:Log|Trail)$\")"));
+        }
+
+        [Test]
+        public void Apply_WritesASchemaIncludeWhenFewerSchemasAreOn()
+        {
+            var schema    = SchemaWithAudit();
+            var before    = RepositoryFiles.DatabaseTemplate();
+            var selection = Fresh(schema);
+
+            Untick(selection, schema, "dbo");
+            Untick(selection, schema, "Archive");
+            var after = selection.Apply();
+
+            var added = AddedLines(before, after);
+            Assert.That(added, Has.Some.Contains("SchemaFilters.Add(new RegexIncludeFilter(@\"^(?:Audit)$\")"));
+            Assert.That(added.Where(l => l.Contains("TableFilters") || l.Contains("StoredProcedureFilters")), Is.Empty, "the dbo and Archive names are covered by the schema line");
+
+            var reopened = ObjectSelection.Create(schema, TemplateFilterDocument.Parse(after));
+            Assert.That(Choice(reopened, "Customers").IsSelected, Is.False);
+            Assert.That(Choice(reopened, "Log").IsSelected, Is.True);
+            Assert.That(reopened.Apply(), Is.EqualTo(after));
+        }
+
+        [Test]
+        public void Apply_TickingSomethingBackInASchemaRemovesTheSchemaLine()
+        {
+            var schema = SchemaWithAudit();
+            var first  = Fresh(schema);
+
+            Untick(first, schema, "Audit");
+            var narrowed = first.Apply();
+
+            var second = ObjectSelection.Create(schema, TemplateFilterDocument.Parse(narrowed));
+            second.Select(schema.Objects.Single(o => o.Name == "Log"), true);
+            var after = second.Apply();
+
+            Assert.That(PickerLines(after, "SchemaFilters"), Is.Empty);
+            Assert.That(after, Does.Contain("TableFilters.Add(new RegexExcludeFilter(@\"^(?:Trail)$\")"));
+            Assert.That(after, Does.Contain("StoredProcedureFilters.Add(new RegexExcludeFilter(@\"^(?:Purge)$\")"));
+        }
+
+        /// <summary>When the user narrows schemas themselves, the picker only ever adds names within those.</summary>
+        [Test]
+        public void Apply_NeverWritesASchemaLineBesideTheUsersOwnSchemaInclude()
+        {
+            var schema   = SchemaWithAudit();
+            var template = RepositoryFiles.DatabaseTemplate().Replace(
+                "    //FilterSettings.SchemaFilters.Add(new RegexIncludeFilter(\"dbo.*\"));",
+                "    FilterSettings.SchemaFilters.Add(new RegexIncludeFilter(\"dbo.*\"));");
+            var selection = ObjectSelection.Create(schema, TemplateFilterDocument.Parse(template));
+
+            Assert.That(Choice(selection, "Log").CanChange, Is.False);
+
+            Untick(selection, schema, "dbo");
+            var after = selection.Apply();
+
+            Assert.That(PickerLines(after, "SchemaFilters"), Is.Empty);
+        }
+
+        [Test]
+        public void Apply_UntickingOneSchemaOfTwoExcludesItRatherThanIncludingTheOther()
+        {
+            var schema    = SchemaWithAudit();
+            var selection = Fresh(schema);
+
+            Untick(selection, schema, "Audit");
+            Untick(selection, schema, "Archive");
+            selection.Select(schema.Objects.Single(o => o.Name == "Old"), true);
+
+            Assert.That(PickerLines(selection.Apply(), "SchemaFilters").Single(), Does.Contain("RegexExcludeFilter(@\"^(?:Audit)$\")"));
+        }
+
         private static ObjectSelection Shipped()
         {
             return ObjectSelection.Create(Schema(), TemplateFilterDocument.Parse(RepositoryFiles.DatabaseTemplate()));
@@ -94,9 +235,12 @@ namespace Efrpg.Gui.Tests
             Assert.That(() => selection.Select(Object(Schema(), "AspNetUsers"), true), Throws.InvalidOperationException);
         }
 
-        /// <summary>The whole persistence decision in one test: ticks become one include line, nothing else moves.</summary>
+        /// <summary>
+        ///     The persistence decision in one test: one table unticked out of four free objects is written as the
+        ///     one name to exclude, not the three to include, and nothing else moves.
+        /// </summary>
         [Test]
-        public void Apply_WritesOneIncludeLineWhenATableIsUnticked()
+        public void Apply_WritesTheShorterListAsAnExcludeWhenOneTableIsUnticked()
         {
             var schema    = Schema();
             var before    = RepositoryFiles.DatabaseTemplate();
@@ -108,10 +252,63 @@ namespace Efrpg.Gui.Tests
             Assert.That(selection.HasChanges, Is.True);
             Assert.That(AddedLines(before, after), Is.EqualTo(new[]
             {
-                "    FilterSettings.TableFilters.Add(new RegexIncludeFilter(@\"^(?:Customers|Order\\ Details|vOrders)$\")); // " +
+                "    FilterSettings.TableFilters.Add(new RegexExcludeFilter(@\"^(?:Orders)$\")); // " +
                 TemplateFilterDocument.PickerMarker + ": right-click the .tt to change this"
             }));
             Assert.That(after.Split('\n').Length, Is.EqualTo(before.Split('\n').Length + 1));
+        }
+
+        /// <summary>Two ticked and two unticked: the tie goes to the include list, which is the safer of the two.</summary>
+        [Test]
+        public void Apply_WritesAnIncludeListWhenNoMoreAreTickedThanUnticked()
+        {
+            var schema    = Schema();
+            var before    = RepositoryFiles.DatabaseTemplate();
+            var selection = ObjectSelection.Create(schema, TemplateFilterDocument.Parse(before));
+
+            selection.Select(Object(schema, "Customers"), false);
+            selection.Select(Object(schema, "Orders"), false);
+            var after = selection.Apply();
+
+            Assert.That(AddedLines(before, after).Single(), Does.Contain("RegexIncludeFilter(@\"^(?:Order\\ Details|vOrders)$\")"));
+        }
+
+        /// <summary>
+        ///     A user's own exclude, a picker exclude and a picker include all read back correctly: the user's
+        ///     locks, the picker's are just unticked, and re-saving reproduces the same text.
+        /// </summary>
+        [Test]
+        public void Apply_ReadsItsOwnExcludeListBackAsUnticked()
+        {
+            var schema = Schema();
+            var first  = ObjectSelection.Create(schema, TemplateFilterDocument.Parse(RepositoryFiles.DatabaseTemplate()));
+
+            first.Select(Object(schema, "Orders"), false);
+            var saved = first.Apply();
+
+            var second = ObjectSelection.Create(schema, TemplateFilterDocument.Parse(saved));
+
+            Assert.That(Choice(second, "Orders").IsSelected, Is.False);
+            Assert.That(Choice(second, "Orders").CanChange, Is.True);
+            Assert.That(Choice(second, "AspNetUsers").CanChange, Is.False, "the user's own exclude still locks");
+            Assert.That(second.Apply(), Is.EqualTo(saved));
+        }
+
+        [Test]
+        public void Apply_TickingNothingWritesAnIncludeThatMatchesNothing()
+        {
+            var schema    = Schema();
+            var before    = RepositoryFiles.DatabaseTemplate();
+            var selection = ObjectSelection.Create(schema, TemplateFilterDocument.Parse(before));
+
+            selection.SelectAll(DatabaseObjectKind.Table, false);
+            selection.SelectAll(DatabaseObjectKind.View, false);
+            var after = selection.Apply();
+
+            Assert.That(AddedLines(before, after), Has.Some.Contains("RegexIncludeFilter(@\"" + ObjectSelection.NothingPattern + "\")"));
+
+            var reopened = ObjectSelection.Create(schema, TemplateFilterDocument.Parse(after));
+            Assert.That(reopened.Choices.Where(c => c.Object.Kind == DatabaseObjectKind.Table && c.CanChange).All(c => c.IsSelected == false), Is.True);
         }
 
         [Test]
