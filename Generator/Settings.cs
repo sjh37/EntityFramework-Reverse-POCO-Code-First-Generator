@@ -796,7 +796,7 @@ namespace Efrpg
             return fkName;
         };
 
-        // This foreign key filter used in addition to SingleContextFilter.ForeignKeyFilter()
+        // This foreign key filter used in addition to DbContextFilter.ForeignKeyFilter()
         // Return null to exclude this foreign key
         public static Func<ForeignKey, ForeignKey> ForeignKeyFilterFunc = delegate (ForeignKey fk)
         {
@@ -961,7 +961,7 @@ namespace Efrpg
             set { _explicitDefaultConstructorArgument = true; _defaultConstructorArgument = value; }
         }
 
-        // Don't forget to take a look at SingleContextFilter and FilterSettings classes!
+        // Don't forget to take a look at DbContextFilter and FilterSettings classes!
         // That's it, nothing else to configure ***********************************************************************************************
 
         public static bool IsEf6() => TemplateType == TemplateType.Ef6;

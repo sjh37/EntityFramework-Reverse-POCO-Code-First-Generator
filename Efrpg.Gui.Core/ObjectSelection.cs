@@ -11,7 +11,7 @@ namespace Efrpg.Gui
     /// </summary>
     /// <remarks>
     ///     **It mirrors the generator's filter, it does not replace it.** The starting state is what the template
-    ///     generates right now, worked out by running the same tests SingleContextFilter runs: every exclude regex
+    ///     generates right now, worked out by running the same tests DbContextFilter runs: every exclude regex
     ///     against the raw name, every include regex or-ed together, the schema filters, the period rule, and the five on/off flags. A filter the user wrote is shown as the reason
     ///     an object is locked, never overridden - the picker adds to the file, it does not fight it.
     ///
@@ -382,7 +382,7 @@ namespace Efrpg.Gui
 
         /// <summary>
         ///     The flag as the generator applies it. Stored procedures count as on whenever a function flag is on,
-        ///     because SingleContextFilter forces exactly that.
+        ///     because DbContextFilter forces exactly that.
         /// </summary>
         private static bool FlagOn(TemplateFilterDocument document, DatabaseObjectKind kind)
         {
@@ -420,7 +420,7 @@ namespace Efrpg.Gui
         }
 
         /// <summary>
-        ///     The same decisions SingleContextFilter.IsExcluded makes, in the same order, with the reason kept.
+        ///     The same decisions DbContextFilter.IsExcluded makes, in the same order, with the reason kept.
         /// </summary>
         private static Entry Classify(DatabaseObject databaseObject, TemplateFilterDocument document)
         {

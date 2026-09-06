@@ -72,7 +72,7 @@ namespace Generator.Tests.Unit
             });
             table.SetPrimaryKeys();
 
-            var filter = new SingleContextFilter();
+            var filter = new DbContextFilter();
             filter.Tables.Add(table);
 
             return new CodeGenerator(generator, filter);

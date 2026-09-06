@@ -29,7 +29,7 @@ The generator is distributed as a VSIX (Visual Studio Extension) containing a T4
 2. **DatabaseReader** (`Generator/Readers/`) — reads schema from the database. `DatabaseReaderFactory` selects the reader based on `Settings.DatabaseType` (SqlServer, PostgreSQL, SQLite, MySql or Oracle).
 3. **Generator** (`Generator/Generators/`) — abstract base class with `GeneratorEf6` and `GeneratorEfCore` implementations. Selected by `GeneratorFactory` based on `Settings.GeneratorType`.
 4. **Template** (`Generator/Templates/`) — abstract base class with `TemplateEf6` and `TemplateEfCore8` implementations. Mustache-based string templates. Selected by `TemplateFactory` based on `Settings.TemplateType`.
-5. **Filtering** (`Generator/Filtering/`) — `FilterSettings` and `SingleContextFilter` control which schemas/tables/columns/stored procs are included.
+5. **Filtering** (`Generator/Filtering/`) — `FilterSettings` and `DbContextFilter` control which schemas/tables/columns/stored procs are included.
 6. **FileManagement** (`Generator/FileManagement/`) — handles writing output files; different implementations for EF Core projects, VS4.x projects, and null (test mode).
 
 ### The `.ttinclude` Build Process

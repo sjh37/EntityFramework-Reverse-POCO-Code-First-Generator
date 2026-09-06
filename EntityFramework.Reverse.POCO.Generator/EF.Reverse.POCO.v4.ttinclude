@@ -1,6 +1,6 @@
 <#
 // Copyright (C) Simon Hughes 2012
-// v4.0.25
+// v4.0.26
 // If you want to submit a pull request, please modify the Generator C# project as this file
 // is automatically constructed from the C# Generator project during the build process.
 #>
@@ -824,7 +824,7 @@
             return fkName;
         };
 
-        // This foreign key filter used in addition to SingleContextFilter.ForeignKeyFilter()
+        // This foreign key filter used in addition to DbContextFilter.ForeignKeyFilter()
         // Return null to exclude this foreign key
         public static Func<ForeignKey, ForeignKey> ForeignKeyFilterFunc = delegate (ForeignKey fk)
         {
@@ -989,7 +989,7 @@
             set { _explicitDefaultConstructorArgument = true; _defaultConstructorArgument = value; }
         }
 
-        // Don't forget to take a look at SingleContextFilter and FilterSettings classes!
+        // Don't forget to take a look at DbContextFilter and FilterSettings classes!
         // That's it, nothing else to configure ***********************************************************************************************
 
         public static bool IsEf6() => TemplateType == TemplateType.Ef6;
@@ -1128,7 +1128,7 @@
     }
 
     // Filtering **************************************************************************************************************************
-    // These settings are used by the SingleContextFilter class.
+    // These settings are used by the DbContextFilter class.
     // Please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Filtering
     // Use the following filters to exclude or include schemas/tables/views/columns/stored procedures.
     // You can have as many as you like, and mix and match them.
@@ -1248,12 +1248,23 @@
     }
 
     /// <summary>
-    /// Filtering can now be done via one or more Regex's and one or more functions.
+    /// Filtering is done via one or more Regex's and one or more functions, held in FilterSettings.
     /// Gone are the days of a single do-it-all regex, you can now split them up into many smaller Regex's.
     /// It's now up to you how to want to mix and match them.
     /// </summary>
-    public class SingleContextFilter : DbContextFilter
+    public class DbContextFilter : IDbContextFilter
     {
+        public string SubNamespace { get; set; }
+        public Tables Tables { get; set; }
+        public List<StoredProcedure> StoredProcs { get; set; }
+        public List<Enumeration> Enums { get; set; }
+        public List<RawSequence> Sequences { get; set; }
+        public bool IncludeViews { get; set; }
+        public bool IncludeSynonyms { get; set; }
+        public bool IncludeStoredProcedures { get; set; }
+        public bool IncludeTableValuedFunctions { get; set; }
+        public bool IncludeScalarValuedFunctions { get; set; }
+
         public List<EnumDefinition> EnumDefinitions;
         public List<JsonColumnMapping> JsonColumnMappings;
         public List<OwnedEntityMapping> OwnedEntityMappings;
@@ -1265,8 +1276,14 @@
 
         private bool _hasMergedIncludeFilters;
 
-        public SingleContextFilter()
+        public DbContextFilter()
         {
+            Tables = new Tables();
+            StoredProcs = new List<StoredProcedure>();
+            Enums = new List<Enumeration>();
+            Sequences = new List<RawSequence>();
+            SubNamespace = string.Empty;
+
             IncludeViews = FilterSettings.IncludeViews;
             IncludeSynonyms = FilterSettings.IncludeSynonyms;
             IncludeTableValuedFunctions = FilterSettings.IncludeTableValuedFunctions;
@@ -1290,7 +1307,7 @@
             Settings.AddOwnedEntityMappings?.Invoke(OwnedEntityMappings);
         }
 
-        public override bool IsExcluded(EntityName item)
+        public virtual bool IsExcluded(EntityName item)
         {
             if (!_hasMergedIncludeFilters)
             {
@@ -1317,7 +1334,7 @@
             return false;
         }
 
-        public override string TableRename(string name, string schema, bool isView)
+        public virtual string TableRename(string name, string schema, bool isView)
         {
             // Callback to Settings, which can be set within <database>.tt
             if (Settings.TableRename != null)
@@ -1326,7 +1343,7 @@
             return name;
         }
 
-        public override string MappingTableRename(string mappingTable, string tableName, string entityName)
+        public virtual string MappingTableRename(string mappingTable, string tableName, string entityName)
         {
             // Callback to Settings, which can be set within <database>.tt
             if (Settings.MappingTableRename != null)
@@ -1335,7 +1352,7 @@
             return entityName;
         }
 
-        public override void UpdateTable(Table table)
+        public virtual void UpdateTable(Table table)
         {
             // Callback to Settings, which can be set within <database>.tt
             Settings.UpdateTable?.Invoke(table);
@@ -1344,34 +1361,34 @@
             Settings.ApplyOwnedEntityMappings(table, OwnedEntityMappings);
         }
 
-        public override void UpdateColumn(Column column, Table table)
+        public virtual void UpdateColumn(Column column, Table table)
         {
             // Callback to Settings, which can be set within <database>.tt
             Settings.UpdateColumn?.Invoke(column, table, EnumDefinitions, JsonColumnMappings);
         }
 
-        public override void AddEnum(Table table)
+        public virtual void AddEnum(Table table)
         {
             Settings.AddEnum?.Invoke(table);
         }
 
-        public override void UpdateEnum(Enumeration enumeration)
+        public virtual void UpdateEnum(Enumeration enumeration)
         {
             Settings.UpdateEnum?.Invoke(enumeration);
         }
 
-        public override void UpdateEnumMember(EnumerationMember enumerationMember)
+        public virtual void UpdateEnumMember(EnumerationMember enumerationMember)
         {
             Settings.UpdateEnumMember?.Invoke(enumerationMember);
         }
 
-        public override void ViewProcessing(Table view)
+        public virtual void ViewProcessing(Table view)
         {
             // Callback to Settings, which can be set within <database>.tt
             Settings.ViewProcessing?.Invoke(view);
         }
 
-        public override string StoredProcedureRename(StoredProcedure sp)
+        public virtual string StoredProcedureRename(StoredProcedure sp)
         {
             // Callback to Settings, which can be set within <database>.tt
             if (Settings.StoredProcedureRename != null)
@@ -1380,7 +1397,7 @@
             return sp.NameHumanCase; // Do nothing by default
         }
 
-        public override string StoredProcedureReturnModelRename(string name, StoredProcedure sp)
+        public virtual string StoredProcedureReturnModelRename(string name, StoredProcedure sp)
         {
             // Callback to Settings, which can be set within <database>.tt
             if (Settings.StoredProcedureReturnModelRename != null)
@@ -1389,7 +1406,7 @@
             return name; // Do nothing by default
         }
 
-        public override ForeignKey ForeignKeyFilter(ForeignKey fk)
+        public virtual ForeignKey ForeignKeyFilter(ForeignKey fk)
         {
             // Return null to exclude this foreign key, or set IncludeReverseNavigation = false
             // to include the foreign key but not generate reverse navigation properties.
@@ -1408,7 +1425,7 @@
             return fk;
         }
 
-        public override string[] ForeignKeyAnnotationsProcessing(Table fkTable, Table pkTable, string propName, string fkPropName)
+        public virtual string[] ForeignKeyAnnotationsProcessing(Table fkTable, Table pkTable, string propName, string fkPropName)
         {
             // Callback to Settings, which can be set within <database>.tt
             if (Settings.ForeignKeyAnnotationsProcessing != null)
@@ -1905,7 +1922,7 @@
     {
         public static string Version()
         {
-            return "v4.0.25";
+            return "v4.0.26";
         }
     }
 
@@ -2300,43 +2317,6 @@
         }
     }
 
-    public abstract class DbContextFilter : IDbContextFilter
-    {
-        public string SubNamespace { get; set; }
-        public Tables Tables { get; set; }
-        public List<StoredProcedure> StoredProcs { get; set; }
-        public List<Enumeration> Enums { get; set; }
-        public List<RawSequence> Sequences { get; set; }
-        public bool IncludeViews { get; set; }
-        public bool IncludeSynonyms { get; set; }
-        public bool IncludeStoredProcedures { get; set; }
-        public bool IncludeTableValuedFunctions { get; set; }
-        public bool IncludeScalarValuedFunctions { get; set; }
-
-        protected DbContextFilter()
-        {
-            Tables = new Tables();
-            StoredProcs = new List<StoredProcedure>();
-            Enums = new List<Enumeration>();
-            Sequences = new List<RawSequence>();
-            SubNamespace = string.Empty;
-        }
-
-        public abstract bool IsExcluded(EntityName item);
-        public abstract string TableRename(string name, string schema, bool isView);
-        public abstract string MappingTableRename(string mappingTable, string tableName, string entityName);
-        public abstract void UpdateTable(Table table);
-        public abstract void UpdateColumn(Column column, Table table);
-        public abstract void AddEnum(Table table);
-        public abstract void UpdateEnum(Enumeration enumeration);
-        public abstract void UpdateEnumMember(EnumerationMember enumerationMember);
-        public abstract void ViewProcessing(Table view);
-        public abstract string StoredProcedureRename(StoredProcedure sp);
-        public abstract string StoredProcedureReturnModelRename(string name, StoredProcedure sp);
-        public abstract ForeignKey ForeignKeyFilter(ForeignKey fk);
-        public abstract string[] ForeignKeyAnnotationsProcessing(Table fkTable, Table pkTable, string propName, string fkPropName);
-    }
-
     public class DbContextFilterList : IDbContextFilterList
     {
         private Dictionary<string, IDbContextFilter> _filters;  // Key = database context name, which also becomes the sub-namespace used to encapsulate the classes
@@ -2345,8 +2325,8 @@
         {
             _filters = new Dictionary<string, IDbContextFilter>();
 
-            // No need to read the database for settings, as they are provided by the user customisable class SingleContextFilter
-            var filter = new SingleContextFilter { SubNamespace = singleDbContextSubNamespace };
+            // No need to read the database for settings, as they are provided by the user customisable class DbContextFilter
+            var filter = new DbContextFilter { SubNamespace = singleDbContextSubNamespace };
             _filters.Add(string.IsNullOrWhiteSpace(singleDbContextSubNamespace) ? string.Empty : singleDbContextSubNamespace, filter);
 
             return true;

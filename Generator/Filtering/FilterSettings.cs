@@ -3,7 +3,7 @@
 namespace Efrpg.Filtering
 {
     // Filtering **************************************************************************************************************************
-    // These settings are used by the SingleContextFilter class.
+    // These settings are used by the DbContextFilter class.
     // Please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Filtering
     // Use the following filters to exclude or include schemas/tables/views/columns/stored procedures.
     // You can have as many as you like, and mix and match them.

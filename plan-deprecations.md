@@ -53,14 +53,14 @@ major-version event. Order the work so the wire change lands first.
       delegates (lines 936-1000 region)
 - [x] `Generator/Filtering/` - delete `MultiContextFilter.cs`, `MultiContextSettings.cs`,
       `MultiContextNameNormalisation.cs`; collapse `DbContextFilterList.cs` and `IDbContextFilterList.cs` to a
-      single `SingleContextFilter` rather than deleting them, because `Generator.cs` iterates the filter
+      single `DbContextFilter` rather than deleting them, because `Generator.cs` iterates the filter
       dictionary in a dozen places and keeping the shape kept those diffs to zero; remove the multi-context
       prose from `FilterSettings.cs`; remove the reserved-`MultiContext`-schema rule from `SchemaFilter.cs`.
       `EnumerationSettings` moved out of the deleted `MultiContextSettings.cs` into its own file, in both
       repositories, because the enum pass still uses it
 - [x] `Generator/Util/MultiContextSettingsCopy.cs` - delete
 - [x] `Generator/Generators/Generator.cs` - the `GenerateSingleDbContext` branches at ~323, ~725, ~739, ~1637 and
-      ~2016 collapse to the single-context path; the filter dictionary becomes one `SingleContextFilter`
+      ~2016 collapse to the single-context path; the filter dictionary becomes one `DbContextFilter`
 - [x] `Generator/FileManagement/FileManagementService.cs` - lines 44 and 51 lose the `GenerateSingleDbContext` term
 - [x] `Generator/AssemblyHelper.cs` - plugin loading existed for `IMultiDbContextSettingsPlugin`; delete it if
       nothing else uses it, and the `IMultiDbContextSettingsPlugin` interface with it

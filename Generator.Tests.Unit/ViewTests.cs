@@ -90,7 +90,7 @@
             view.Columns.Add(pkCol);
             view.SetPrimaryKeys();
 
-            var filter = new SingleContextFilter();
+            var filter = new DbContextFilter();
             filter.Tables.Add(view);
 
             var codeGen = new CodeGenerator(generator, filter);

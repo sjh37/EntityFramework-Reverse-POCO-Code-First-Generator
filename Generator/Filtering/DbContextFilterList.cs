@@ -12,8 +12,8 @@ namespace Efrpg.Filtering
         {
             _filters = new Dictionary<string, IDbContextFilter>();
 
-            // No need to read the database for settings, as they are provided by the user customisable class SingleContextFilter
-            var filter = new SingleContextFilter { SubNamespace = singleDbContextSubNamespace };
+            // No need to read the database for settings, as they are provided by the user customisable class DbContextFilter
+            var filter = new DbContextFilter { SubNamespace = singleDbContextSubNamespace };
             _filters.Add(string.IsNullOrWhiteSpace(singleDbContextSubNamespace) ? string.Empty : singleDbContextSubNamespace, filter);
 
             return true;

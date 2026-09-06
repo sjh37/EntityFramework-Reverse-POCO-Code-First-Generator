@@ -118,7 +118,7 @@ namespace Generator.Tests.Integration
                 filter.Value.IncludeTableValuedFunctions = true;
                 filter.Value.IncludeScalarValuedFunctions = true;
 
-                if (filter.Value is SingleContextFilter singleContextFilter)
+                if (filter.Value is DbContextFilter singleContextFilter)
                     singleContextFilter.EnumDefinitions = enumDefinitions;
             }
 
