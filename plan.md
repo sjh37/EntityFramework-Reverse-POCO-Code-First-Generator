@@ -459,9 +459,11 @@ connection string is no better off than one handed the placeholder, so the datab
 connection box and fills it with the right skeleton. Every default carries `**TODO**` wherever the user has to
 supply something, and OK stays disabled until all of them are gone.
 
-Switching database swaps the connection string only while the box still holds an untouched default. Picking the
-database is almost always the first thing a non-SQL-Server user does, so the swap happens exactly when it is
-wanted; someone who has typed a connection string and then switches keeps their text rather than losing it.
+Switching database always shows a connection string for the database now chosen: the default, or whatever was
+last typed for that database in this dialog. The text typed for the previous database is kept and comes back
+when it is selected again. This replaced an earlier rule that swapped only while the box held an untouched
+default, which left a SQLite string sitting under an Oracle selection - the providers share no keywords, so the
+"preserved" text could not connect to anything and had to be deleted by hand to get the skeleton back.
 
 **`TemplateType` and `GeneratorType` are written together, never separately.** The generator keeps the two
 settings independent - nothing derives one from the other - so an `Ef6` template left with the default `EfCore`

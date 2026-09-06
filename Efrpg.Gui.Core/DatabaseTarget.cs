@@ -85,15 +85,6 @@ namespace Efrpg.Gui
             return All.FirstOrDefault(t => string.Equals(t.Name, name, StringComparison.Ordinal));
         }
 
-        /// <summary>
-        ///     True when the text is still one of the untouched defaults, so replacing it loses nothing the user
-        ///     typed. Switching database type swaps the connection string only while this holds.
-        /// </summary>
-        public static bool IsUntouchedDefault(string connectionString)
-        {
-            return All.Any(t => string.Equals(t.ConnectionString, connectionString, StringComparison.Ordinal));
-        }
-
         public override string ToString()
         {
             return DisplayName;

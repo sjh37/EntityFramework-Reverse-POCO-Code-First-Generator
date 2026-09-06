@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -48,6 +49,15 @@ namespace EntityFramework_Reverse_POCO_Generator
         private JoinableTask _testRun;
 
         /// <summary>
+        ///     What was in the connection string box for each database the user has visited, so switching away and
+        ///     back restores their text rather than the default.
+        /// </summary>
+        private readonly Dictionary<DatabaseTarget, string> _typed = new Dictionary<DatabaseTarget, string>();
+
+        /// <summary>The database whose connection string the box currently shows.</summary>
+        private DatabaseTarget _shownDatabase;
+
+        /// <summary>
         ///     The schema from the last successful Test, when the connection string has not changed since, so the
         ///     object picker that follows can open on it instead of reading the database a second time.
         /// </summary>
@@ -86,6 +96,7 @@ namespace EntityFramework_Reverse_POCO_Generator
                 throw new ArgumentNullException(nameof(current));
 
             _isNewTemplate = isNewTemplate;
+            _shownDatabase = current.Database;
 
             Title                 = "EntityFramework Reverse POCO Generator";
             Width                 = 680;
@@ -247,24 +258,28 @@ namespace EntityFramework_Reverse_POCO_Generator
         }
 
         /// <summary>
-        ///     Swaps in the connection string for the newly chosen database, but only while the box still holds one
-        ///     of the untouched defaults.
+        ///     Shows a connection string for the database just chosen: whatever was last typed for it in this
+        ///     dialog, or its default. What was typed for the previous database is kept for when it is chosen again.
         /// </summary>
         /// <remarks>
-        ///     Overwriting what someone has typed is the worse failure of the two, and picking the database is
-        ///     almost always the first thing a non-SQL-Server user does - the box is still pristine at that point,
-        ///     so the swap happens exactly when it is wanted. Someone who fills in a SQL Server connection string
-        ///     and then switches to Oracle keeps their text and has to rewrite it, which at least loses no work.
-        ///     Reopening the dialog on a configured template never swaps at all, for the same reason.
+        ///     The first version swapped only while the box held an untouched default, to avoid overwriting typed
+        ///     text. That left a SQLite string sitting under an Oracle selection: the providers share no keywords,
+        ///     so the "preserved" text could not connect to anything and had to be deleted by hand to get the Oracle
+        ///     skeleton back. Keeping the text per database loses nothing and never shows a string for the wrong
+        ///     provider; a mis-click on the dropdown is undone by clicking back.
         /// </remarks>
         private void DatabaseChanged()
         {
             var target = SelectedDatabase;
-            if (target == null)
+            if (target == null || ReferenceEquals(target, _shownDatabase))
                 return;
 
-            if (DatabaseTarget.IsUntouchedDefault(_connectionString.Text))
-                _connectionString.Text = target.ConnectionString;
+            if (_shownDatabase != null)
+                _typed[_shownDatabase] = _connectionString.Text;
+
+            string remembered;
+            _connectionString.Text = _typed.TryGetValue(target, out remembered) ? remembered : target.ConnectionString;
+            _shownDatabase         = target;
 
             TestedSchema         = null;
             _connectionHint.Text = target.Hint;

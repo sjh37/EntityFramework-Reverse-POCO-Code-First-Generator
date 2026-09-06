@@ -61,20 +61,6 @@ namespace Efrpg.Gui.Tests
         }
 
         [Test]
-        public void IsUntouchedDefault_RecognisesEveryDefault()
-        {
-            Assert.That(DatabaseTarget.All.All(t => DatabaseTarget.IsUntouchedDefault(t.ConnectionString)), Is.True);
-        }
-
-        [Test]
-        public void IsUntouchedDefault_IsFalseOnceTheUserHasFilledThePlaceholderIn()
-        {
-            var edited = DatabaseTarget.Default.ConnectionString.Replace(TemplateSettingsFile.Placeholder, "Northwind");
-
-            Assert.That(DatabaseTarget.IsUntouchedDefault(edited), Is.False);
-        }
-
-        [Test]
         public void Find_IsCaseSensitiveBecauseTheEnumMemberNameIsWrittenIntoTheTemplate()
         {
             Assert.That(DatabaseTarget.Find("PostgreSQL"), Is.Not.Null);
