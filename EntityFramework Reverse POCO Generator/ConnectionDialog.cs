@@ -47,6 +47,12 @@ namespace EntityFramework_Reverse_POCO_Generator
         private readonly CancellationTokenSource _closing = new CancellationTokenSource();
         private JoinableTask _testRun;
 
+        /// <summary>
+        ///     The schema from the last successful Test, when the connection string has not changed since, so the
+        ///     object picker that follows can open on it instead of reading the database a second time.
+        /// </summary>
+        public DatabaseSchema TestedSchema { get; private set; }
+
         /// <summary>The answers, valid once <see cref="Confirmed"/> is true.</summary>
         public TemplateConfiguration Result
         {
@@ -106,7 +112,7 @@ namespace EntityFramework_Reverse_POCO_Generator
 
             _database.SelectionChanged    += (s, e) => DatabaseChanged();
             _template.SelectionChanged    += (s, e) => TemplateChanged();
-            _connectionString.TextChanged += (s, e) => Validate();
+            _connectionString.TextChanged += (s, e) => { TestedSchema = null; Validate(); };
             _namespace.TextChanged        += (s, e) => Validate();
             _ok.Click                     += (s, e) => { Confirmed = true; DialogResult = true; Close(); };
             _test.Click                   += (s, e) => Test();
@@ -165,12 +171,14 @@ namespace EntityFramework_Reverse_POCO_Generator
             {
                 await TaskScheduler.Default;
 
-                var runner = new ProcessRunner();
-                var status = await new EfrpgToolGate(runner).CheckAsync(_closing.Token);
-                var result = await new EfrpgSchemaReader(runner, status.ExecutablePath)
-                    .ReadAsync(databaseType, connectionString, _closing.Token);
+                var result = await SchemaReading.ReadAsync(databaseType, connectionString, _closing.Token);
 
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(_closing.Token);
+
+                // Only kept while it still describes what is in the box. A read that finished after the user
+                // edited the connection string is about a different database.
+                if (result.Succeeded && _connectionString.Text.Trim() == connectionString && SelectedDatabase != null && SelectedDatabase.Name == databaseType)
+                    TestedSchema = result.Schema;
 
                 Report(Describe(result), !result.Succeeded);
             }
@@ -203,7 +211,7 @@ namespace EntityFramework_Reverse_POCO_Generator
                           Plural(schema.Count(DatabaseObjectKind.Table), "table") + ", " +
                           Plural(schema.Count(DatabaseObjectKind.View), "view") + ", " +
                           Plural(schema.Count(DatabaseObjectKind.StoredProcedure), "stored procedure") + ", " +
-                          Plural(schema.Count(DatabaseObjectKind.Function), "function") + ".";
+                          Plural(schema.Count(DatabaseObjectKind.TableValuedFunction) + schema.Count(DatabaseObjectKind.ScalarValuedFunction), "function") + ".";
 
             if (!schema.CanReadStoredProcedures)
                 summary += " This login cannot read stored procedure definitions.";
@@ -258,6 +266,7 @@ namespace EntityFramework_Reverse_POCO_Generator
             if (DatabaseTarget.IsUntouchedDefault(_connectionString.Text))
                 _connectionString.Text = target.ConnectionString;
 
+            TestedSchema         = null;
             _connectionHint.Text = target.Hint;
             Validate();
         }
@@ -304,7 +313,7 @@ namespace EntityFramework_Reverse_POCO_Generator
             body.Children.Add(new TextBlock
             {
                 Text = _isNewTemplate
-                    ? "Point the template at your database. You can change any of this later by editing the .tt file, or by right-clicking it."
+                    ? "Point the template at your database. Next you choose which tables and procedures to generate. You can change any of this later by right-clicking the .tt file."
                     : "Changing any of these rewrites that one line of the .tt and regenerates the output. Everything else in the file is left alone.",
                 TextWrapping = TextWrapping.Wrap,
                 Margin = new Thickness(0, 0, 0, 14)

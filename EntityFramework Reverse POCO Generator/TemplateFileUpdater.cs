@@ -38,27 +38,62 @@ namespace EntityFramework_Reverse_POCO_Generator
 
             error = null;
 
-            var document = OpenDocument(item);
+            var document = OpenDocument(item, path);
             if (document != null)
                 return SaveThroughEditor(document, newText, out error);
 
             File.WriteAllText(path, newText);
+
+            if (item == null)
+            {
+                error = "The file is not part of a project, so nothing regenerates it.";
+                return false;
+            }
+
             return RunCustomTool(item, out error);
         }
 
-        private static Document OpenDocument(ProjectItem item)
+        private static Document OpenDocument(ProjectItem item, string path)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
 
             try
             {
-                return item.Document;
+                if (item != null)
+                    return item.Document;
             }
             catch (Exception)
             {
                 // Some item kinds have no document at all and throw rather than returning null.
-                return null;
             }
+
+            return FindOpenDocument(path);
+        }
+
+        /// <summary>
+        ///     For a file that is open but belongs to no project item this code was handed - the v3 offer reaches a
+        ///     document by path alone. Writing to disk behind that editor would regenerate from its stale buffer.
+        /// </summary>
+        private static Document FindOpenDocument(string path)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
+            try
+            {
+                var dte = Package.GetGlobalService(typeof(DTE)) as DTE;
+                if (dte == null)
+                    return null;
+
+                foreach (Document document in dte.Documents)
+                    if (string.Equals(document.FullName, path, StringComparison.OrdinalIgnoreCase))
+                        return document;
+            }
+            catch (Exception)
+            {
+                // The document table is not available, or a document threw on FullName. Fall through to disk.
+            }
+
+            return null;
         }
 
         /// <summary>

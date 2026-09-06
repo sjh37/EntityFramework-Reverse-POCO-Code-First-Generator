@@ -35,6 +35,15 @@
         </Strings>
       </Button>
 
+      <Button guid="EfrpgCommandSet" id="ChooseObjectsCommand" priority="0x0105" type="Button">
+        <Parent guid="EfrpgCommandSet" id="ItemNodeGroup" />
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <Strings>
+          <ButtonText>Reverse POCO: Choose tables and procedures...</ButtonText>
+          <LocCanonicalName>.ReversePoco.ChooseObjects</LocCanonicalName>
+        </Strings>
+      </Button>
+
       <Button guid="EfrpgCommandSet" id="SettingsEditorCommand" priority="0x0110" type="Button">
         <Parent guid="EfrpgCommandSet" id="ItemNodeGroup" />
         <CommandFlag>DynamicVisibility</CommandFlag>
@@ -71,6 +80,7 @@
       <IDSymbol name="ItemNodeGroup" value="0x0001" />
       <IDSymbol name="ConfigureTemplateCommand" value="0x0100" />
       <IDSymbol name="SettingsEditorCommand" value="0x0103" />
+      <IDSymbol name="ChooseObjectsCommand" value="0x0104" />
       <IDSymbol name="UpgradeToV4Command" value="0x0102" />
       <IDSymbol name="CheckEfrpgToolCommand" value="0x0101" />
     </GuidSymbol>

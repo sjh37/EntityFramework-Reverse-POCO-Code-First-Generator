@@ -260,6 +260,10 @@ namespace EntityFramework_Reverse_POCO_Generator
 
         private void Commit()
         {
+            // Enter reaches this through the default button without moving focus, so the text box being typed in
+            // has not yet committed through LostFocus. Taking focus here fires it before anything is applied.
+            _save.Focus();
+
             Text      = _session.Apply();
             Confirmed = true;
 

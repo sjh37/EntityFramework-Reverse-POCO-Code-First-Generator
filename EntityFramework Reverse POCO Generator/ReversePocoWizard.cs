@@ -62,6 +62,7 @@ namespace EntityFramework_Reverse_POCO_Generator
         private ProjectItem _templateItem;
         private string _templatePath;
         private TemplateConfiguration _answers;
+        private DatabaseSchema _testedSchema;
 
         /// <summary>
         ///     Asks which database and template to target, for a connection string and for a DbContext name.
@@ -73,8 +74,11 @@ namespace EntityFramework_Reverse_POCO_Generator
             var dialog = new ConnectionDialog(TemplateConfiguration.ForNewTemplate(suggestedDbContextName), true);
             dialog.ShowModal();
 
-            if (dialog.Confirmed)
-                _answers = dialog.Result;
+            if (!dialog.Confirmed)
+                return;
+
+            _answers      = dialog.Result;
+            _testedSchema = dialog.TestedSchema;
         }
 
         /// <summary>
@@ -100,15 +104,37 @@ namespace EntityFramework_Reverse_POCO_Generator
             try
             {
                 var settings = new TemplateSettingsFile(File.ReadAllText(_templatePath));
+                var text     = ChooseObjects(_answers.ApplyTo(settings));
                 string error;
 
-                TemplateFileUpdater.Apply(_templateItem, _templatePath, _answers.ApplyTo(settings), out error);
+                TemplateFileUpdater.Apply(_templateItem, _templatePath, text, out error);
             }
             catch (Exception)
             {
                 // A read-only file, a virus scanner holding a lock, anything. The template is already added and
                 // usable; interrupting the user now would be worse than leaving them to edit one line.
             }
+        }
+
+        /// <summary>
+        ///     The second question: which tables and procedures. Asked only now because the picker needs a real
+        ///     connection string, which the first dialog has just supplied, and writes into the same file.
+        ///     Skipping leaves the template generating everything, which is a fine answer.
+        /// </summary>
+        private string ChooseObjects(string templateText)
+        {
+            var document = TemplateFilterDocument.Parse(templateText);
+            if (document.RefusalReason != null)
+                return templateText;
+
+            var answers = _answers;
+            var dialog  = new ObjectPickerDialog(Path.GetFileName(_templatePath), document, _testedSchema,
+                token => SchemaReading.ReadAsync(answers.Database.Name, answers.ConnectionString, token),
+                true);
+
+            dialog.ShowModal();
+
+            return dialog.Confirmed ? dialog.Text : templateText;
         }
 
         private static EfrpgToolGate Gate()

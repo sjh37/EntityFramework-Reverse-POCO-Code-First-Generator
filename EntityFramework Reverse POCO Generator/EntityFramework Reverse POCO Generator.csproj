@@ -127,6 +127,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CheckEfrpgToolCommand.cs" />
+    <Compile Include="ChooseObjectsCommand.cs" />
+    <Compile Include="ObjectPickerDialog.cs" />
+    <Compile Include="SchemaReading.cs" />
+    <Compile Include="TemplateUpgradeFlow.cs" />
+    <Compile Include="UpgradeOptions.cs" />
+    <Compile Include="V3UpgradeOffer.cs" />
     <Compile Include="ConfigureTemplateCommand.cs" />
     <Compile Include="ConnectionDialog.cs" />
     <Compile Include="SettingsEditorCommand.cs" />

@@ -94,19 +94,32 @@ namespace Efrpg.Gui.Tests
             Assert.That(schema.Of(DatabaseObjectKind.View).Single().Name, Is.EqualTo("V"));
         }
 
+        /// <summary>
+        ///     The two function kinds are told apart because the generator switches them on with separate flags,
+        ///     and the picker has to know which one to write.
+        /// </summary>
         [Test]
-        public void Parse_TellsFunctionsFromStoredProcedures()
+        public void Parse_TellsBothKindsOfFunctionFromStoredProcedures()
         {
             var payload =
                 "<EfrpgResult><StoredProcedures>" +
                 "<Row schema=\"dbo\" name=\"P\" isStoredProcedure=\"true\" />" +
-                "<Row schema=\"dbo\" name=\"F\" isStoredProcedure=\"false\" isTableValuedFunction=\"true\" />" +
+                "<Row schema=\"dbo\" name=\"T\" isStoredProcedure=\"false\" isTableValuedFunction=\"true\" />" +
+                "<Row schema=\"dbo\" name=\"S\" isStoredProcedure=\"false\" isScalarValuedFunction=\"true\" />" +
                 "</StoredProcedures></EfrpgResult>";
 
             var schema = DatabaseSchema.Parse(payload);
 
             Assert.That(schema.Of(DatabaseObjectKind.StoredProcedure).Single().Name, Is.EqualTo("P"));
-            Assert.That(schema.Of(DatabaseObjectKind.Function).Single().Name, Is.EqualTo("F"));
+            Assert.That(schema.Of(DatabaseObjectKind.TableValuedFunction).Single().Name, Is.EqualTo("T"));
+            Assert.That(schema.Of(DatabaseObjectKind.ScalarValuedFunction).Single().Name, Is.EqualTo("S"));
+        }
+
+        /// <summary>The captured payload carries table-valued functions, so the split is exercised on real bytes.</summary>
+        [Test]
+        public void Parse_FindsTableValuedFunctionsInTheRealPayload()
+        {
+            Assert.That(Real().Count(DatabaseObjectKind.TableValuedFunction), Is.GreaterThan(0));
         }
 
         [Test]

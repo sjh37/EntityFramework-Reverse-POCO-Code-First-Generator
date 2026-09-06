@@ -117,13 +117,19 @@ namespace Efrpg.Gui
         private static IEnumerable<DatabaseObject> Routines(XElement root)
         {
             return root.Elements("StoredProcedures").Elements("Row")
-                .Select(r => new DatabaseObject(
-                    Attribute(r, "schema"),
-                    Attribute(r, "name"),
-                    Attribute(r, "isStoredProcedure") == "true"
-                        ? DatabaseObjectKind.StoredProcedure
-                        : DatabaseObjectKind.Function))
+                .Select(r => new DatabaseObject(Attribute(r, "schema"), Attribute(r, "name"), RoutineKind(r)))
                 .Where(o => o.Name.Length > 0);
+        }
+
+        private static DatabaseObjectKind RoutineKind(XElement row)
+        {
+            if (Attribute(row, "isTableValuedFunction") == "true")
+                return DatabaseObjectKind.TableValuedFunction;
+
+            if (Attribute(row, "isScalarValuedFunction") == "true")
+                return DatabaseObjectKind.ScalarValuedFunction;
+
+            return DatabaseObjectKind.StoredProcedure;
         }
 
         private static string Attribute(XElement element, string name)

@@ -23,6 +23,8 @@ namespace EntityFramework_Reverse_POCO_Generator
     ///     autoload it only loads when a command is first invoked - and a command nobody can see is never invoked.
     ///     SolutionExists is the right trigger because everything here acts on a file in a solution.
     ///
+    ///     It also hooks document opening, so a v3 template gets the offer to upgrade the first time it is opened.
+    ///
     ///     The wizard is separate and needs none of this: IWizard is instantiated straight from the .vstemplate,
     ///     with no package, no pkgdef and no command table. See ReversePocoWizard.
     /// </remarks>
@@ -48,6 +50,9 @@ namespace EntityFramework_Reverse_POCO_Generator
         {
             await base.InitializeAsync(cancellationToken, progress);
             await this.RegisterCommandsAsync();
+
+            await JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
+            V3UpgradeOffer.Start();
         }
     }
 }

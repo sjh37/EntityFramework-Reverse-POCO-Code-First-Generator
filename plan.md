@@ -198,8 +198,6 @@ De-risks the plumbing before any UI depends on it.
   - [x] Surface stderr verbatim on failure - do not swallow it
 - [x] Unit test `EfrpgToolGate` against a fake process runner: missing, too old, current, no SDK, no network
 - [x] Gate dialog with three choices: **Install/Update**, **Copy command**, **Continue anyway**
-      (partly done: the wizard shows the problem and offers Continue anyway; Install/Update and Copy
-      are still buttons to add)
 - [x] Always display the exact command next to the button
 
 ### Chunk A as built - the gate
@@ -230,8 +228,8 @@ attribute.
 on disk but not on the PATH this VS process inherited, so the bare-name resolution in `EfrpgToolRunner` will
 still fail. Phase 2 reads that flag to decide whether to invoke by full path and ask for a restart.
 
-**Still to do in Phase 1:** everything touching the VSIX - the two packages, the `ToolkitPackage`, the
-`VsPackage` asset via `VersionSetter`, and the gate dialog.
+**The rest of Phase 1** - the packages, the `ToolkitPackage`, the `VsPackage` asset via `VersionSetter` and the
+gate dialog - is Chunk B below.
 
 ### Menus need `RegisterWithCodebase`, and this cost seven attempts
 
@@ -340,13 +338,12 @@ Worth being clear about what this does *not* buy: the manifest range is no longe
 API version support is. Nothing written here can make a future release load an extension whose APIs it has
 dropped.
 
-**What is verified and what is not.** The VSIX builds, and the packaged manifest carries
-`<Asset Type="Microsoft.VisualStudio.VsPackage" Path="...pkgdef" />` with a pkgdef that registers the package
-class and `Menus.ctmenu`. **Nothing here proves the package loads in VS 2026.** An item-template-only VSIX
-installs into 18.x under the existing `[17.0,18.0)` target - that is known - but a package-carrying VSIX binds
-to the VS 17 shell assemblies, and that is tested at load, not at install. Installing the built VSIX and
-running the Tools command is the outstanding manual step, and it should happen before any more UI is built on
-top.
+**Since verified by installing it.** The package loads in Visual Studio 2026 and the right-click commands
+appear and run. They vanished once, in 4.0.11: the commands had been marked `DefaultInvisible`, which keeps a
+command hidden until QueryStatus runs, which needs the package loaded, which never happens for a command nobody
+can see. 4.0.12 removed the flag and added `ProvideAutoLoad` on SolutionExists so `BeforeQueryStatus` runs
+before the first right-click. Nothing in the VSIX is reachable from a test, so every version still needs a
+manual install before it is believed.
 
 ---
 
@@ -391,7 +388,8 @@ route the unit tests use.
 - [x] `RunStarted`: tool gate → connection dialog, then re-run the T4
 - [x] Shell out to `efrpg --secrets-stdin` for the schema (same binary and wire format the template uses)
 - [x] **Test connection** button, reporting what was found rather than a bare OK
-- [ ] Checkbox tree: tables, views, stored procedures
+- [x] Checkbox tree: tables, views, stored procedures and both kinds of function - see
+      [the object picker](#the-object-picker-writes-generator-code-not-a-side-car)
 - [x] Fields: database type, template type, connection string, DbContext name - see below
 - [x] Fields: namespace
 - [x] Write the answers into the generated `.tt` - see below, this is *not* `replacementsDictionary`
@@ -399,7 +397,7 @@ route the unit tests use.
 - [x] `Database.tt` confirmed to contain **zero `$` characters**, so it stays token-safe if this is ever
       revisited
 - [x] `throw new WizardBackoutException()` on cancel so VS cleans up the half-created item
-- [x] Reopen the dialog afterwards from the `.tt` file's right-click menu - **Reverse POCO: Settings...**
+- [x] Reopen the dialog afterwards from the `.tt` file's right-click menu - **Reverse POCO: Connection...**
 - [x] After a successful install, invoke the tool **by full path** for the wizard's own schema read, and
       tell the user to restart Visual Studio before saving the `.tt`
 
@@ -420,6 +418,9 @@ are discarded: no email, no follow-up, no idea they existed.
   - [ ] tool gate outcome - already present, installed by us, declined
   - [ ] wizard completed and a `.tt` written
 - [ ] Publish what is collected, and honour a decline permanently
+
+Not started. Both need an endpoint on the ReversePOCO site to post to, and what is collected is a product
+decision; the client side is an afternoon once those exist.
 
 **Without this the wizard improves the experience but tells you nothing about whether it worked.** Installs,
 first-run completions and connection successes are the three numbers that would say whether the acquisition
@@ -522,6 +523,49 @@ Every row under `Tables` in the payload is a *column*, so the same table appears
 synonyms are skipped, being aliases for something already listed. That is the data the object picker needs, so the
 picker is now a UI job rather than a plumbing one.
 
+### The object picker writes generator code, not a side-car
+
+**Reverse POCO: Choose tables and procedures...** on the `.tt` menu, and the wizard's second page. A checkbox
+tree - tables, views, stored procedures, table-valued functions, scalar functions - grouped by schema when there
+is more than one, with a search box and a count on every node. It opens at once and reads the database while
+open, so a slow server shows progress rather than a frozen Visual Studio; the wizard hands it the schema the
+Test button already read, so the common path reads the database once.
+
+**It opens on what the template generates today.** `ObjectSelection` runs the same tests `SingleContextFilter`
+runs - every exclude regex against the raw name, the include regexes or-ed together as `MergeIncludeFilters`
+does, the schema filters, the period rule, the reserved `MultiContext` schema, and the five `Include*` flags -
+so the ticks are the truth rather than a guess. An object a hand-written filter decides is shown disabled with
+that filter as its tooltip. The picker never overrides a user's filter; it adds beside it.
+
+**A choice is saved as one include list per filter list**, as ordinary code the user can read:
+
+```
+FilterSettings.TableFilters.Add(new RegexIncludeFilter(@"^(?:Customers|Order\ Details|Orders)$")); // Reverse POCO object picker: right-click the .tt to change this
+```
+
+The trailing marker is how the picker finds its own lines next time; everything without it belongs to the user
+and is never rewritten. Names are `Regex.Escape`d, sorted, and wrapped at about a hundred characters per line
+so a one-table change is a one-line diff. Ticking everything writes nothing at all, and ticking everything back
+removes the lines, so a template nobody has narrowed stays byte for byte as shipped.
+
+Include rather than exclude was a decision: ticking a subset means *these and only these*, so a table added to
+the database later stays out of the generated code until somebody ticks it - which for code in source control
+is the predictable behaviour, and is what EF Core Power Tools does. Whole categories switch off through the
+flags instead - unticking every view writes `FilterSettings.IncludeViews = false`, uncommenting the template's
+own line - because that is what the template's comments tell a user to do. Stored procedures are read whenever
+either function flag is on, because the generator couples them, so wanting one function alone writes the flag
+*and* an include list naming it.
+
+Refused, with the reason shown: a multi-context template (`Settings.GenerateSingleDbContext = false`, where
+FilterSettings does nothing), and a template with no FilterSettings block. A filter the dialog cannot evaluate -
+`new Regex(..., RegexOptions.IgnoreCase)`, a custom filter class - locks every object in that list with the line
+as the reason rather than guessing.
+
+`TemplateFilterDocumentTests` and `ObjectSelectionTests` cover it, including the round trip through the file,
+the user's own include filter, the unevaluable case, and the property that opening the picker and saving
+without touching anything leaves every real template in the repository byte for byte unchanged. The dialog
+itself is WPF inside Visual Studio and is not reachable from a test.
+
 ### Namespace is not a string setting
 
 `Settings.Namespace` ships as the bare identifier `DefaultNamespace` and becomes a quoted string only once
@@ -534,7 +578,7 @@ written and broken. Clearing the field puts `DefaultNamespace` back.
 
 The wizard runs once. Somebody who pressed Skip, mistyped a database name, or wants to point the same template
 at a different server had no route back to it at all - the only option was to find the right line in the `.tt`
-by hand, which is the thing the GUI exists to avoid. **Reverse POCO: Settings...** on the `.tt` file's
+by hand, which is the thing the GUI exists to avoid. **Reverse POCO: Connection...** on the `.tt` file's
 right-click menu opens the same dialog on what the file already says.
 
 That is why `TemplateSettingsFile` reads as well as writes, and why `TemplateConfiguration` lives in
@@ -542,9 +586,12 @@ That is why `TemplateSettingsFile` reads as well as writes, and why `TemplateCon
 user's own connection string with the SQL Server default. `TemplateConfigurationTests` asserts that reading a
 template and writing it straight back leaves it **byte for byte identical**.
 
-Both commands are `DynamicVisibility` + `DefaultInvisible` and their `BeforeQueryStatus` shows them only for a
-`.tt`. The group is parented to `IDM_VS_CTXT_ITEMNODE`, which Visual Studio draws for *every* file in the
-solution, so without that they would clutter the right-click menu of every file in every project.
+Every command is `DynamicVisibility` and its `BeforeQueryStatus` shows it only for a `.tt`. The group is
+parented to `IDM_VS_CTXT_ITEMNODE`, which Visual Studio draws for *every* file in the solution, so without that
+they would clutter the right-click menu of every file in every project. **Not `DefaultInvisible`** - that flag
+keeps a command hidden until QueryStatus runs, which needs the package loaded, which never happens for a
+command nobody can see; 4.0.11 shipped that way and had no menu at all. The package autoloads on SolutionExists
+instead.
 
 **The PATH trap.** VS caches its environment at launch, so a tool installed by the wizard is not on the PATH
 that `EfrpgToolRunner` uses - it calls `new ProcessStartInfo("efrpg", …)` and relies on PATH resolution.
@@ -566,7 +613,8 @@ the anchored span edits this GUI already does. **Getting the v3 base onto v4 is 
 ubiquitous**, which matters given the licence check lives there.
 
 - [x] Its own `.vsct` command, offered only when a v3 file is selected
-- [ ] Prompt unprompted the first time a v3 template is opened after the extension updates
+- [x] Offer it unprompted the first time a v3 template is opened - an information bar on that document, with
+      *Don't ask again*
 - [x] Change the include directive to `EF.Reverse.POCO.v4.ttinclude`
 - [x] Delete the `Settings.FileManagerType` assignment
 - [x] Delete the `Settings.DatabaseReaderPlugin` assignment - same class of breakage, and it was missing from
@@ -628,6 +676,13 @@ has to go, which is the part most likely to vary between customer files and the 
 took two passes - some carried an extra commented-out line inside the block the first pattern expected.
 Customer files will vary more than in-repo ones. A half-applied migration leaves a template that neither
 compiles nor matches the guide, which is worse than not offering the button.
+
+**The unprompted offer is an information bar, not a dialog.** `V3UpgradeOffer` hooks document opening; the
+first time a v3 `.tt` is opened in a session it shows the yellow bar across the top of that document with
+*Upgrade to v4...* and *Don't ask again*, the latter persisted per user through the toolkit's option store. It
+does not steal focus or block the editor, and the right-click command stays either way. The upgrade itself is
+`TemplateUpgradeFlow`, shared with the command, and `TemplateFileUpdater` now finds an open document by path
+when there is no project item to ask.
 
 **Independent of Phase 3.** Needs the Phase 1 plumbing and version detection, and nothing else - no Roslyn,
 no metadata files, no settings form, no round-trip property tests. It is anchored find-and-replace plus a
