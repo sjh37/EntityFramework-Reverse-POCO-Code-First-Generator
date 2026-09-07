@@ -43,7 +43,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SQLServer", "SQLServer", "{
 	ProjectSection(SolutionItems) = preProject
 		TestDatabases\SQLServer\EfrpgTest (manually created).sql = TestDatabases\SQLServer\EfrpgTest (manually created).sql
 		TestDatabases\SQLServer\EfrpgTest.sql = TestDatabases\SQLServer\EfrpgTest.sql
-		TestDatabases\SQLServer\EfrpgTest_Settings.sql = TestDatabases\SQLServer\EfrpgTest_Settings.sql
 		TestDatabases\SQLServer\EfrpgTest_Synonyms.sql = TestDatabases\SQLServer\EfrpgTest_Synonyms.sql
 		TestDatabases\SQLServer\Northwind.sql = TestDatabases\SQLServer\Northwind.sql
 		ReversePoco.sql = ReversePoco.sql

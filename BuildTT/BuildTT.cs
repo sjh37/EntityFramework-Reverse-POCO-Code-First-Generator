@@ -834,8 +834,6 @@ namespace BuildTT
 <#@ assembly name=""System"" #>
 <#@ assembly name=""System.Core"" #>
 <#@ assembly name=""System.Data"" #>
-<#@ assembly name=""System.Configuration"" #>
-<#@ assembly name=""System.Windows.Forms"" #>
 <#@ assembly name=""System.Xml"" #>
 <#@ assembly name=""System.Xml.Linq"" #>";
 
