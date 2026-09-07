@@ -212,27 +212,10 @@ namespace Efrpg.Gui.Tests
 
             Assert.That(settings.GetEnum("DatabaseType"), Is.EqualTo("Oracle"));
             Assert.That(settings.GetEnum("TemplateType"), Is.EqualTo("Ef6"));
-            Assert.That(settings.GetEnum("GeneratorType"), Is.EqualTo("Ef6"));
             Assert.That(settings.GetString("ConnectionString"), Is.EqualTo("Data Source=localhost:1521/pdb1;User Id=hr;Password=secret;"));
             Assert.That(settings.GetString("DbContextName"), Is.EqualTo("HrDbContext"));
             Assert.That(settings.GetString("ConnectionStringName"), Is.EqualTo("HrDbContext"));
             Assert.That(settings.GetString("Namespace"), Is.EqualTo("Hr.Data"));
-        }
-
-        /// <summary>
-        ///     The pairing that produces code which does not compile when it is got wrong, checked here on the file
-        ///     rather than only on the lookup table.
-        /// </summary>
-        [Test]
-        public void ApplyTo_WritesTheGeneratorTypeThatGoesWithTheTemplate()
-        {
-            var settings = Shipped();
-
-            new TemplateConfiguration(DatabaseTarget.Default, TemplateTarget.Find("Ef6"),
-                "Data Source=(local);Initial Catalog=Northwind", "MyDbContext", string.Empty).ApplyTo(settings);
-
-            Assert.That(settings.GetEnum("TemplateType"), Is.EqualTo("Ef6"));
-            Assert.That(settings.GetEnum("GeneratorType"), Is.EqualTo("Ef6"));
         }
 
         /// <summary>

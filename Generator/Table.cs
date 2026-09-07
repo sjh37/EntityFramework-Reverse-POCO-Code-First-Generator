@@ -311,7 +311,7 @@ namespace Efrpg
                 sb.AppendLine($"[Table(\"{DbName}\", Schema = \"{Schema.DbName}\")]");
 
             if (Settings.UseDataAnnotations &&
-                Settings.GeneratorType == GeneratorType.EfCore &&
+                !Settings.IsEf6() &&
                 Settings.IncludeExtendedPropertyComments != CommentsStyle.None &&
                 !string.IsNullOrEmpty(Description))
             {

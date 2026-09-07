@@ -22,10 +22,9 @@ namespace Generator.Tests.Integration
     [Category(Constants.DbType.MySql)]
     public class SingleDatabaseTestMySql : SingleDatabaseTestBase
     {
-        public void SetupMySql(string database, string connectionStringName, string dbContextName, TemplateType templateType,
-            GeneratorType generatorType)
+        public void SetupMySql(string database, string connectionStringName, string dbContextName, TemplateType templateType)
         {
-            SetupDatabase(connectionStringName, dbContextName, templateType, generatorType);
+            SetupDatabase(connectionStringName, dbContextName, templateType);
 
             Settings.ConnectionString = $"Server=localhost;Port=3306;Database={database};User Id=root;Password=efrpgTest123;";
             Settings.DatabaseType = DatabaseType.MySql;
@@ -53,7 +52,7 @@ namespace Generator.Tests.Integration
             // Arrange
             // Per-case settings must come after SetupMySql: SetupDatabase resets the leak-prone settings
             // (AllowNullStrings et al.) to defaults, so anything assigned before it is clobbered.
-            SetupMySql("EfrpgTest", "MyDbContext", "MyDbContext", TemplateType.EfCore8, GeneratorType.EfCore);
+            SetupMySql("EfrpgTest", "MyDbContext", "MyDbContext", TemplateType.EfCore8);
             Settings.GenerateSeparateFiles = false;
             Settings.UseMappingTables = false;
             Settings.UseDataAnnotations = useDataAnnotations;
@@ -75,7 +74,7 @@ namespace Generator.Tests.Integration
         {
             // Arrange - MySQL identifiers are commonly lower_snake_case, so leaving them alone is a realistic
             // choice here in a way it is not on SQL Server.
-            SetupMySql("EfrpgTest", "My_db_context", "Efrpg_db_context", TemplateType.EfCore8, GeneratorType.EfCore);
+            SetupMySql("EfrpgTest", "My_db_context", "Efrpg_db_context", TemplateType.EfCore8);
             Settings.GenerateSeparateFiles = false;
             Settings.UsePascalCase = false;
             Settings.UseMappingTables = false;

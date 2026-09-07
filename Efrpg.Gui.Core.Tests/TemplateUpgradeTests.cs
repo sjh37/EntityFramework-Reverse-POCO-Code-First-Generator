@@ -78,6 +78,16 @@ namespace Efrpg.Gui.Tests
             Assert.That(code, Has.None.Contains("Settings.TemplateFolder"));
         }
 
+        [Test]
+        public void TheGeneratorTypeSettingIsDeleted()
+        {
+            var code = Upgraded().Text.Replace("\r\n", "\n").Split('\n')
+                .Select(l => l.IndexOf("//", StringComparison.Ordinal) is var i && i >= 0 ? l.Substring(0, i) : l)
+                .ToList();
+
+            Assert.That(code, Has.None.Contains("Settings.GeneratorType"));
+        }
+
         [TestCase("Settings.TemplateType                 = TemplateType.EfCore10;", "Settings.TemplateType                 = TemplateType.FileBasedCore10;", "file-based")]
         [TestCase("Settings.GeneratorType                = GeneratorType.EfCore;", "Settings.GeneratorType                = GeneratorType.Custom;", "GeneratorType.Custom")]
         public void ATemplateUsingARemovedTemplateOrGeneratorTypeIsRefused(string stock, string replaced, string reason)
@@ -128,8 +138,9 @@ namespace Efrpg.Gui.Tests
         {
             var changes = Upgraded().Changes;
 
-            // The six v3-to-v4 edits, the eight multi-context settings v4 removed, and Settings.TemplateFolder.
-            Assert.That(changes.Count, Is.EqualTo(15));
+            // The six v3-to-v4 edits, the eight multi-context settings v4 removed, Settings.TemplateFolder and
+            // Settings.GeneratorType.
+            Assert.That(changes.Count, Is.EqualTo(16));
             Assert.That(changes.Select(c => c.Description), Has.All.Not.Empty);
         }
 
@@ -171,7 +182,8 @@ namespace Efrpg.Gui.Tests
                 .Sum(a => a.EndLineNumber - a.LineNumber + 1);
 
             Assert.That(multiContextLines, Is.GreaterThan(8), "the four delegates span several lines each");
-            Assert.That(Lines(afterHead), Is.EqualTo(Lines(beforeHead) - 3 - multiContextLines));
+            // FileManagerType, DatabaseReaderPlugin, TemplateFolder and GeneratorType are one line each
+            Assert.That(Lines(afterHead), Is.EqualTo(Lines(beforeHead) - 4 - multiContextLines));
         }
 
         [Test]
@@ -285,7 +297,7 @@ namespace Efrpg.Gui.Tests
             var result = TemplateUpgrade.Upgrade(string.Join("\r\n", lines));
 
             Assert.That(result.Succeeded, Is.True);
-            Assert.That(result.Changes.Count, Is.EqualTo(14));
+            Assert.That(result.Changes.Count, Is.EqualTo(15));
         }
 
         private static int Lines(string text)

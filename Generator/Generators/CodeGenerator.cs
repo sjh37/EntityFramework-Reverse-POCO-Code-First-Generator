@@ -30,7 +30,7 @@ namespace Efrpg.Generators
             if (filter == null) throw new ArgumentNullException(nameof(filter));
 #pragma warning restore IDE0016 // Use 'throw' expression
 
-            var isEfCore = Settings.GeneratorType == GeneratorType.EfCore;
+            var isEfCore = !Settings.IsEf6();
             var IsEfCore8Plus = Settings.IsEfCore8Plus();
 
             _generator = generator;
@@ -290,7 +290,7 @@ namespace Efrpg.Generators
 
         private bool CanWriteOwnedEntityClasses()
         {
-            return Settings.GeneratorType == GeneratorType.EfCore &&
+            return !Settings.IsEf6() &&
                    Settings.ElementsToGenerate.HasFlag(Elements.Poco);
         }
 
@@ -764,7 +764,7 @@ namespace Efrpg.Generators
                 Indexes = indexes,
                 HasIndexes = hasIndexes,
                 HasTableComment = !Settings.UseDataAnnotations &&
-                                  Settings.GeneratorType == GeneratorType.EfCore &&
+                                  !Settings.IsEf6() &&
                                   Settings.IncludeExtendedPropertyComments != CommentsStyle.None &&
                                   !string.IsNullOrEmpty(table.Description),
                 TableComment = table.Description?.Replace("\"", "\"\"")

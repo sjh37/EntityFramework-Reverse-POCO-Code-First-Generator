@@ -31,7 +31,6 @@ namespace BuildTT
     // The following entries are the only required settings.
     Settings.DatabaseType                 = DatabaseType.SqlServer; // SqlServer, SQLite, PostgreSQL, MySql, Oracle
     Settings.TemplateType                 = TemplateType.EfCore10; // Ef6, EfCore8-10
-    Settings.GeneratorType                = GeneratorType.EfCore; // EfCore, Ef6
     Settings.ConnectionString             = ""Data Source=(local);Initial Catalog=**TODO**;Integrated Security=True;MultipleActiveResultSets=True;Encrypt=false;TrustServerCertificate=true""; // This is used by the generator to reverse engineer your database
     Settings.ConnectionStringActions      = """"; // EFCore only. Additional method chain to append to the database provider setup in OnConfiguring. e.g. "".EnableRetryOnFailure(maxRetryCount: 10, maxRetryDelay: TimeSpan.FromSeconds(30), errorNumbersToAdd: null)""
     Settings.ConnectionStringName         = ""MyDbContext""; // ConnectionString key as specified in your app.config/web.config/appsettings.json. Not used by the generator, but is placed into the generated DbContext constructor.

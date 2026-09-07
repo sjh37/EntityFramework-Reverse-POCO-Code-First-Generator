@@ -192,7 +192,6 @@ namespace Generator.Tests.Unit.DocSamples
 
             Settings.DatabaseType                 = DatabaseType.SqlServer;
             Settings.TemplateType                 = TemplateType.EfCore10;
-            Settings.GeneratorType                = GeneratorType.EfCore;
             Settings.ConnectionString             = "Data Source=(local);Initial Catalog=DocSamples;Integrated Security=True";
             Settings.ConnectionStringActions      = "";
             Settings.ConnectionStringName         = "MyDbContext";

@@ -466,10 +466,9 @@ when it is selected again. This replaced an earlier rule that swapped only while
 default, which left a SQLite string sitting under an Oracle selection - the providers share no keywords, so the
 "preserved" text could not connect to anything and had to be deleted by hand to get the skeleton back.
 
-**`TemplateType` and `GeneratorType` are written together, never separately.** The generator keeps the two
-settings independent - nothing derives one from the other - so an `Ef6` template left with the default `EfCore`
-generator produces code that does not compile, a long way from the dialog that caused it. `TemplateTarget` holds
-the pairing and `TemplateTargetTests` checks every one of them.
+**`TemplateType` is the only template setting written.** `Settings.GeneratorType` used to have to be written
+alongside it as a matching pair, and a mismatch produced code that did not compile; it was removed before v4
+shipped, and the generator now derives EF6 or EF Core from `TemplateType` itself.
 
 `DatabaseTarget` and `TemplateTarget` identify their values by **enum member name**, not by `Efrpg.DatabaseType`
 and `Efrpg.Templates.TemplateType` themselves: those live in the net48 `Generator` project and `Efrpg.Gui.Core`

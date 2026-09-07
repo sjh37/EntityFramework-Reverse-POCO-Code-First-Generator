@@ -43,7 +43,6 @@ namespace Generator.Tests.Unit
         private static CodeGenerator BuildSingleTableEfCoreGenerator(TemplateType templateType, bool allowNullStrings)
         {
             Settings.TemplateType                        = templateType;
-            Settings.GeneratorType                       = GeneratorType.EfCore;
             Settings.UseDataAnnotations                  = false;
             Settings.AddIDbContextFactory                = true;                          // factory must be generated
             Settings.ElementsToGenerate                  = Elements.Context | Elements.Poco | Elements.PocoConfiguration;

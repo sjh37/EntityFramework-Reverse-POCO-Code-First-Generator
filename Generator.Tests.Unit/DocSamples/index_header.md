@@ -13,7 +13,7 @@ you to the right place either way.
 
 New to the generator, or working out why something is not happening:
 
-* [Settings.DatabaseType, TemplateType and GeneratorType](Settings.DatabaseType) - the three you must get right first
+* [Settings.DatabaseType and TemplateType](Settings.DatabaseType) - the two you must get right first
 * [Settings.ConnectionString and friends](Settings.ConnectionStringName) - and why there are three of them
 * [Settings.ElementsToGenerate](Settings.ElementsToGenerate) - which classes get generated at all
 * [Settings.GenerateSeparateFiles](Settings.GenerateSeparateFiles) - one file or many

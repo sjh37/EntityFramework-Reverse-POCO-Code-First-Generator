@@ -58,7 +58,6 @@
         {
             // Arrange
             Settings.TemplateType         = templateType;
-            Settings.GeneratorType        = templateType == TemplateType.Ef6 ? GeneratorType.Ef6 : GeneratorType.EfCore;
             Settings.UseDataAnnotations   = useDataAnnotations;
             Settings.ElementsToGenerate   = Elements.Poco | Elements.PocoConfiguration;
 

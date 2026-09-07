@@ -15,9 +15,9 @@ namespace Generator.Tests.Integration
     [Category(Constants.DbType.PostgreSql)]
     public class SingleDatabaseTestPostgreSql : SingleDatabaseTestBase
     {
-        public void SetupPostgreSQL(string database, string connectionStringName, string dbContextName, TemplateType templateType, GeneratorType generatorType)
+        public void SetupPostgreSQL(string database, string connectionStringName, string dbContextName, TemplateType templateType)
         {
-            SetupDatabase(connectionStringName, dbContextName, templateType, generatorType);
+            SetupDatabase(connectionStringName, dbContextName, templateType);
 
             Settings.ConnectionString = $"Server=127.0.0.1;Port=5432;Database={database};User Id=testuser;Password=testtesttest;";
             Settings.DatabaseType = DatabaseType.PostgreSQL;
@@ -70,7 +70,7 @@ namespace Generator.Tests.Integration
             // Arrange
             // Per-case settings must come after SetupPostgreSQL: SetupDatabase resets the leak-prone settings
             // (AllowNullStrings et al.) to defaults, so anything assigned before it is clobbered.
-            SetupPostgreSQL(database, "MyDbContext", "MyDbContext", TemplateType.EfCore8, GeneratorType.EfCore);
+            SetupPostgreSQL(database, "MyDbContext", "MyDbContext", TemplateType.EfCore8);
             Settings.GenerateSeparateFiles = false;
             Settings.UseMappingTables = false;
             Settings.AllowNullStrings = allowNullStrings;
@@ -94,7 +94,7 @@ namespace Generator.Tests.Integration
         public void ReverseEngineerPostgreSQL_Ef6()
         {
             // Arrange
-            SetupPostgreSQL("EfrpgTest", "MyEf6DbContext", "MyEf6DbContext", TemplateType.Ef6, GeneratorType.Ef6);
+            SetupPostgreSQL("EfrpgTest", "MyEf6DbContext", "MyEf6DbContext", TemplateType.Ef6);
             Settings.GenerateSeparateFiles = false;
             Settings.UseMappingTables = false;
 

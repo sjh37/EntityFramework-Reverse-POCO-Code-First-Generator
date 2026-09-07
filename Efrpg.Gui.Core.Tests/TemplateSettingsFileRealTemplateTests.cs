@@ -46,7 +46,6 @@ namespace Efrpg.Gui.Tests
 
         [TestCase("DatabaseType",  "Oracle")]
         [TestCase("TemplateType",  "Ef6")]
-        [TestCase("GeneratorType", "Ef6")]
         public void TheWizardCanWriteTheEnums(string settingName, string memberName)
         {
             var writer = new TemplateSettingsFile(ShippedTemplate());
@@ -69,7 +68,6 @@ namespace Efrpg.Gui.Tests
 
             Assert.That(template, Does.Contain("DatabaseType." + DatabaseTarget.Default.Name + ";"));
             Assert.That(template, Does.Contain("TemplateType." + TemplateTarget.Default.Name + ";"));
-            Assert.That(template, Does.Contain("GeneratorType." + TemplateTarget.Default.GeneratorTypeName + ";"));
             Assert.That(template, Does.Contain("= \"" + DatabaseTarget.Default.ConnectionString + "\";"));
         }
 
@@ -101,7 +99,6 @@ namespace Efrpg.Gui.Tests
             writer.TrySetString("ConnectionString", "Data Source=localhost:1521/pdb1;User Id=hr;Password=secret;");
             writer.TrySetEnum("DatabaseType", "Oracle");
             writer.TrySetEnum("TemplateType", "Ef6");
-            writer.TrySetEnum("GeneratorType", "Ef6");
             writer.TrySetString("DbContextName", "HrDbContext");
             writer.TrySetString("ConnectionStringName", "HrDbContext");
 
@@ -109,7 +106,7 @@ namespace Efrpg.Gui.Tests
             var after  = writer.Text.Split('\n');
 
             Assert.That(after.Length, Is.EqualTo(before.Length));
-            Assert.That(before.Where((l, i) => l != after[i]).Count(), Is.EqualTo(6));
+            Assert.That(before.Where((l, i) => l != after[i]).Count(), Is.EqualTo(5));
             Assert.That(writer.IsUnconfigured, Is.False);
         }
 

@@ -12,7 +12,6 @@
     // The following entries are the only required settings.
     Settings.DatabaseType                 = DatabaseType.SqlServer;
     Settings.TemplateType                 = TemplateType.EfCore10; 
-    Settings.GeneratorType                = GeneratorType.EfCore;
     Settings.UseMappingTables             = true; // If true, mapping will be used, and no mapping tables will be generated. If false, all tables will be generated.
     Settings.ConnectionString             = "Data Source=(local);Initial Catalog=EfrpgTest;Integrated Security=True;MultipleActiveResultSets=True;Encrypt=false;TrustServerCertificate=true";
     Settings.ConnectionStringActions      = ".EnableRetryOnFailure(maxRetryCount: 10, maxRetryDelay: TimeSpan.FromSeconds(30), errorNumbersToAdd: null)"; // EFCore only

@@ -12,7 +12,6 @@
     // The following entries are the only required settings.
     Settings.DatabaseType          = DatabaseType.SqlServer;
     Settings.TemplateType          = TemplateType.EfCore8;
-    Settings.GeneratorType         = GeneratorType.EfCore;
     Settings.ConnectionString      = "Data Source=(local);Initial Catalog=EfrpgTest_Synonyms;Integrated Security=True;Encrypt=false;TrustServerCertificate=true";
     Settings.ConnectionStringName  = "TestSynonymsDatabase"; // ConnectionString key as specified in your app.config/web.config/appsettings.json
     Settings.DbContextName         = "TestDbContext"; // Class name for the DbContext to be generated.

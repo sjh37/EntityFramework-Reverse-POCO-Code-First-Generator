@@ -9,8 +9,8 @@ namespace Efrpg.Gui
     /// </summary>
     /// <remarks>
     ///     Kept here rather than in the dialog so it can be unit tested. The dialog lives in the VSIX, which needs a
-    ///     running Visual Studio to exercise at all, and the rule that matters most - TemplateType and GeneratorType
-    ///     being written as a pair - is exactly the kind of thing that must not be discovered by a user.
+    ///     running Visual Studio to exercise at all, and rules such as which connection strings may be written back
+    ///     are exactly the kind of thing that must not be discovered by a user.
     /// </remarks>
     public sealed class TemplateConfiguration
     {
@@ -198,11 +198,7 @@ namespace Efrpg.Gui
 
             settings.TrySetEnum("DatabaseType", Database.Name);
 
-            // GeneratorType is written alongside TemplateType, never on its own. The generator keeps the two
-            // independent, so an Ef6 template left with the default EfCore generator produces code that does not
-            // compile - and the user would meet that as a build error a long way from the dialog that caused it.
             settings.TrySetEnum("TemplateType", Template.Name);
-            settings.TrySetEnum("GeneratorType", Template.GeneratorTypeName);
 
             if (DbContextName.Length > 0)
                 settings.TrySetString("DbContextName", DbContextName);

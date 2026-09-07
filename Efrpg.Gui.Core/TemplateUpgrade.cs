@@ -194,6 +194,8 @@ namespace Efrpg.Gui
 
             text = DeleteSetting(text, "TemplateFolder",
                 "Settings.TemplateFolder no longer exists in v4 - file-based templates were removed.");
+            text = DeleteSetting(text, "GeneratorType",
+                "Settings.GeneratorType no longer exists in v4 - TemplateType alone decides which generator runs.");
             text = SimplifySeparateFilesCondition(text);
             text = RenameCleanUp(text);
             text = ReplaceEntryPoint(text);

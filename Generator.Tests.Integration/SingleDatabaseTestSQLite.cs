@@ -122,7 +122,7 @@ VALUES (1, 1, 3),
             Settings.UseMappingTables = false;
             Settings.ConnectionString = ConnectionString;
             Settings.DatabaseType = DatabaseType.SQLite;
-            SetupDatabase("MyDbContext", "MyDbContext", TemplateType.EfCore8, GeneratorType.EfCore);
+            SetupDatabase("MyDbContext", "MyDbContext", TemplateType.EfCore8);
 
             // Act
             Run("EfrpgTest", ".SQLite", null);

@@ -5,27 +5,21 @@ using System.Linq;
 namespace Efrpg.Gui
 {
     /// <summary>
-    ///     One entry in the wizard's template dropdown: which TemplateType to write, and the GeneratorType that has
-    ///     to go with it.
+    ///     One entry in the wizard's template dropdown: which TemplateType to write, and what to call it.
     /// </summary>
     /// <remarks>
-    ///     The pairing is the reason this is a type rather than a list of strings. Settings.TemplateType and
-    ///     Settings.GeneratorType are independent in the generator - nothing derives one from the other - so a user
-    ///     who picks Ef6 in a dropdown that writes only TemplateType ends up with EF6 templates driven by the EF Core
-    ///     generator, which produces code that does not compile. The wizard therefore always writes both, and the
-    ///     mapping lives here where it can be tested.
-    ///
-    ///     Ordered by what a new user most likely wants rather than by the enum, and identified by member name for
-    ///     the same reason as <see cref="DatabaseTarget"/>: TemplateType is net48 and this assembly is
-    ///     netstandard2.0. <c>TemplateTargetTests</c> checks the list against settings-metadata.v4.json.
+    ///     TemplateType alone decides which generator runs - Ef6 is the only non-EF Core template - so this is the
+    ///     one setting the dropdown writes. Ordered by what a new user most likely wants rather than by the enum, and
+    ///     identified by member name for the same reason as <see cref="DatabaseTarget"/>: TemplateType is net48 and
+    ///     this assembly is netstandard2.0. <c>TemplateTargetTests</c> checks the list against
+    ///     settings-metadata.v4.json.
     /// </remarks>
     public sealed class TemplateTarget
     {
-        private TemplateTarget(string name, string displayName, string generatorTypeName)
+        private TemplateTarget(string name, string displayName)
         {
-            Name                   = name;
-            DisplayName            = displayName;
-            GeneratorTypeName      = generatorTypeName;
+            Name        = name;
+            DisplayName = displayName;
         }
 
         /// <summary>The TemplateType enum member name, written into the .tt verbatim.</summary>
@@ -34,19 +28,13 @@ namespace Efrpg.Gui
         /// <summary>What the dropdown shows.</summary>
         public string DisplayName { get; }
 
-        /// <summary>The GeneratorType enum member name that must accompany it.</summary>
-        public string GeneratorTypeName { get; }
-
-        private const string EfCore = "EfCore";
-        private const string Ef6    = "Ef6";
-
         /// <summary>Newest first, then EF6.</summary>
         public static IReadOnlyList<TemplateTarget> All { get; } = new[]
         {
-            new TemplateTarget("EfCore10", "EF Core 10",         EfCore),
-            new TemplateTarget("EfCore9",  "EF Core 9",          EfCore),
-            new TemplateTarget("EfCore8",  "EF Core 8",          EfCore),
-            new TemplateTarget("Ef6",      "Entity Framework 6", Ef6)
+            new TemplateTarget("EfCore10", "EF Core 10"),
+            new TemplateTarget("EfCore9",  "EF Core 9"),
+            new TemplateTarget("EfCore8",  "EF Core 8"),
+            new TemplateTarget("Ef6",      "Entity Framework 6")
         };
 
         /// <summary>What the dialog opens on, and what the shipped Database.tt already says.</summary>

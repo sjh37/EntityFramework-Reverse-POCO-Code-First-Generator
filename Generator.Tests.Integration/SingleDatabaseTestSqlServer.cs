@@ -18,10 +18,9 @@ namespace Generator.Tests.Integration
             string database,
             string connectionStringName,
             string dbContextName,
-            TemplateType templateType,
-            GeneratorType generatorType)
+            TemplateType templateType)
         {
-            SetupDatabase(connectionStringName, dbContextName, templateType, generatorType);
+            SetupDatabase(connectionStringName, dbContextName, templateType);
 
             Settings.ConnectionString =
                 $"Data Source=(local);Initial Catalog={database};Integrated Security=True;Encrypt=false;TrustServerCertificate=true;Application Name=Generator";
@@ -43,8 +42,7 @@ namespace Generator.Tests.Integration
             TemplateType templateType, bool useDataAnnotations, bool allowNullStrings, bool nullableReverseNavigationProperties)
         {
             // Arrange
-            SetupSqlServer(database, connectionStringName, dbContextName, templateType,
-                templateType == TemplateType.Ef6 ? GeneratorType.Ef6 : GeneratorType.EfCore);
+            SetupSqlServer(database, connectionStringName, dbContextName, templateType);
             Settings.GenerateSeparateFiles = false;
             Settings.UseMappingTables = true;
             Settings.TrimCharFields = false;
@@ -103,7 +101,7 @@ namespace Generator.Tests.Integration
         public void NonPascalCased(TemplateType templateType, string singleDbContextSubNamespace)
         {
             // Arrange
-            SetupSqlServer("EfrpgTest", "My_db_context", "Efrpg_db_context", templateType, GeneratorType.EfCore);
+            SetupSqlServer("EfrpgTest", "My_db_context", "Efrpg_db_context", templateType);
             Settings.GenerateSeparateFiles = false;
             Settings.UsePascalCase = false;
             Settings.UseMappingTables = true;
@@ -123,8 +121,7 @@ namespace Generator.Tests.Integration
         public void SpacedColumnStoredProcedure(TemplateType templateType, string singleDbContextSubNamespace, bool useDataAnnotations)
         {
             // Arrange - #721 SP that returns columns whose names contain spaces
-            SetupSqlServer("EfrpgTest", "MyDbContext", "EfrpgTestDbContext", templateType,
-                templateType == TemplateType.Ef6 ? GeneratorType.Ef6 : GeneratorType.EfCore);
+            SetupSqlServer("EfrpgTest", "MyDbContext", "EfrpgTestDbContext", templateType);
             Settings.GenerateSeparateFiles = false;
             Settings.UseMappingTables = false;
             Settings.AddUnitTestingDbContext = false;
@@ -149,8 +146,7 @@ namespace Generator.Tests.Integration
         public void SpacedColumnTableValuedFunction(TemplateType templateType, string singleDbContextSubNamespace, bool useDataAnnotations)
         {
             // Arrange - #721 TVF that returns columns whose names contain spaces
-            SetupSqlServer("EfrpgTest", "MyDbContext", "EfrpgTestDbContext", templateType,
-                templateType == TemplateType.Ef6 ? GeneratorType.Ef6 : GeneratorType.EfCore);
+            SetupSqlServer("EfrpgTest", "MyDbContext", "EfrpgTestDbContext", templateType);
             Settings.GenerateSeparateFiles = false;
             Settings.UseMappingTables = false;
             Settings.AddUnitTestingDbContext = false;
@@ -178,8 +174,7 @@ namespace Generator.Tests.Integration
             bool publicTestComparison, TemplateType templateType)
         {
             // Arrange
-            SetupSqlServer(database, connectionStringName, dbContextName, templateType,
-                templateType == TemplateType.Ef6 ? GeneratorType.Ef6 : GeneratorType.EfCore);
+            SetupSqlServer(database, connectionStringName, dbContextName, templateType);
             Settings.GenerateSeparateFiles = false;
             Settings.UseMappingTables = true;
             Settings.AddUnitTestingDbContext = false;

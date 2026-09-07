@@ -20,11 +20,9 @@ namespace Generator.Tests.Integration
         protected static void SetupDatabase(
             string connectionStringName,
             string dbContextName,
-            TemplateType templateType,
-            GeneratorType generatorType)
+            TemplateType templateType)
         {
             Settings.TemplateType = templateType;
-            Settings.GeneratorType = generatorType;
             Settings.ConnectionStringName = connectionStringName;
             Settings.DbContextName = dbContextName;
             Settings.Enumerations = null;

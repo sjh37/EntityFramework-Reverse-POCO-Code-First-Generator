@@ -16,7 +16,6 @@ namespace Efrpg
         // The following entries are the only required settings.
         public static DatabaseType DatabaseType = DatabaseType.SqlServer; // SqlServer, SQLite, PostgreSQL, MySql, Oracle
         public static TemplateType TemplateType = TemplateType.EfCore10; // Ef6, EfCore8-10
-        public static GeneratorType GeneratorType = GeneratorType.EfCore; // EfCore, Ef6
         public static bool UseMappingTables = false; // Can only be set to true for EF6. If true, mapping will be used and no mapping tables will be generated. If false, all tables will be generated.
         public static string ConnectionString = ""; // This is used by the generator to reverse engineer your database
         public static string ConnectionStringActions = ""; // EFCore only. Additional method chain to append to the database provider setup in OnConfiguring. e.g. ".EnableRetryOnFailure(maxRetryCount: 10, maxRetryDelay: TimeSpan.FromSeconds(30), errorNumbersToAdd: null)"

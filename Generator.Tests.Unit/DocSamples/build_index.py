@@ -14,7 +14,6 @@ M = {
  # Core
  "DatabaseType":("Settings.DatabaseType","Which database to read: SqlServer, PostgreSQL, MySql, Oracle, SQLite"),
  "TemplateType":("Settings.DatabaseType","Which code templates to use. Match your EF version, not your .NET version"),
- "GeneratorType":("Settings.DatabaseType","Which generation engine runs. Must be paired with TemplateType"),
  "ConnectionString":("Settings.ConnectionStringName","The connection string the **generator** uses at design time"),
  "ConnectionStringName":("Settings.ConnectionStringName","A key your **application** looks up at run time"),
  "ConnectionStringActions":("Settings.ConnectionStringName","Extra fluent calls appended to the provider setup"),

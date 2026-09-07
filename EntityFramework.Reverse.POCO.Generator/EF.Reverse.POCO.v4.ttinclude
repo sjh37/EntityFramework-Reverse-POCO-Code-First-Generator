@@ -1,6 +1,6 @@
 <#
 // Copyright (C) Simon Hughes 2012
-// v4.0.28
+// v4.0.29
 // If you want to submit a pull request, please modify the Generator C# project as this file
 // is automatically constructed from the C# Generator project during the build process.
 #>
@@ -43,7 +43,6 @@
         // The following entries are the only required settings.
         public static DatabaseType DatabaseType = DatabaseType.SqlServer; // SqlServer, SQLite, PostgreSQL, MySql, Oracle
         public static TemplateType TemplateType = TemplateType.EfCore10; // Ef6, EfCore8-10
-        public static GeneratorType GeneratorType = GeneratorType.EfCore; // EfCore, Ef6
         public static bool UseMappingTables = false; // Can only be set to true for EF6. If true, mapping will be used and no mapping tables will be generated. If false, all tables will be generated.
         public static string ConnectionString = ""; // This is used by the generator to reverse engineer your database
         public static string ConnectionStringActions = ""; // EFCore only. Additional method chain to append to the database provider setup in OnConfiguring. e.g. ".EnableRetryOnFailure(maxRetryCount: 10, maxRetryDelay: TimeSpan.FromSeconds(30), errorNumbersToAdd: null)"
@@ -1920,7 +1919,7 @@
     {
         public static string Version()
         {
-            return "v4.0.28";
+            return "v4.0.29";
         }
     }
 
@@ -2874,7 +2873,7 @@
             if (filter == null) throw new ArgumentNullException(nameof(filter));
 #pragma warning restore IDE0016 // Use 'throw' expression
 
-            var isEfCore = Settings.GeneratorType == GeneratorType.EfCore;
+            var isEfCore = !Settings.IsEf6();
             var IsEfCore8Plus = Settings.IsEfCore8Plus();
 
             _generator = generator;
@@ -3134,7 +3133,7 @@
 
         private bool CanWriteOwnedEntityClasses()
         {
-            return Settings.GeneratorType == GeneratorType.EfCore &&
+            return !Settings.IsEf6() &&
                    Settings.ElementsToGenerate.HasFlag(Elements.Poco);
         }
 
@@ -3608,7 +3607,7 @@
                 Indexes = indexes,
                 HasIndexes = hasIndexes,
                 HasTableComment = !Settings.UseDataAnnotations &&
-                                  Settings.GeneratorType == GeneratorType.EfCore &&
+                                  !Settings.IsEf6() &&
                                   Settings.IncludeExtendedPropertyComments != CommentsStyle.None &&
                                   !string.IsNullOrEmpty(table.Description),
                 TableComment = table.Description?.Replace("\"", "\"\"")
@@ -6580,23 +6579,10 @@
     {
         public static Generator Create(EfrpgResult result, FileManagementService fileManagementService, string singleDbContextSubNamespace = null)
         {
-            Generator generator;
-
-            switch (Settings.GeneratorType)
-            {
-                case GeneratorType.Ef6:
-                    generator = new GeneratorEf6(fileManagementService);
-                    break;
-
-                case GeneratorType.EfCore:
-                    generator = new GeneratorEfCore(fileManagementService);
-                    break;
-
-                    break;
-
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
+            // The template type already says which generator runs: Ef6 is the only non-EF Core template.
+            Generator generator = Settings.IsEf6()
+                ? new GeneratorEf6(fileManagementService)
+                : new GeneratorEfCore(fileManagementService);
 
             try
             {
@@ -15123,7 +15109,7 @@ and limitations under the License.
                 sb.AppendLine($"[Table(\"{DbName}\", Schema = \"{Schema.DbName}\")]");
 
             if (Settings.UseDataAnnotations &&
-                Settings.GeneratorType == GeneratorType.EfCore &&
+                !Settings.IsEf6() &&
                 Settings.IncludeExtendedPropertyComments != CommentsStyle.None &&
                 !string.IsNullOrEmpty(Description))
             {
@@ -15478,11 +15464,6 @@ and limitations under the License.
     {
         public string TableName { get; set; }
         public string TriggerName { get; set; }
-    }
-    public enum GeneratorType
-    {
-        Ef6,
-        EfCore
     }
 
     /// <summary>

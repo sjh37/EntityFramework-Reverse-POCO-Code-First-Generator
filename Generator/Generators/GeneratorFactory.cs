@@ -9,23 +9,10 @@ namespace Efrpg.Generators
     {
         public static Generator Create(EfrpgResult result, FileManagementService fileManagementService, string singleDbContextSubNamespace = null)
         {
-            Generator generator;
-
-            switch (Settings.GeneratorType)
-            {
-                case GeneratorType.Ef6:
-                    generator = new GeneratorEf6(fileManagementService);
-                    break;
-
-                case GeneratorType.EfCore:
-                    generator = new GeneratorEfCore(fileManagementService);
-                    break;
-
-                    break;
-
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
+            // The template type already says which generator runs: Ef6 is the only non-EF Core template.
+            Generator generator = Settings.IsEf6()
+                ? new GeneratorEf6(fileManagementService)
+                : new GeneratorEfCore(fileManagementService);
 
             try
             {

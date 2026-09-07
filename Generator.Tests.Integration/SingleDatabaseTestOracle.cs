@@ -21,10 +21,9 @@ namespace Generator.Tests.Integration
     [Category(Constants.DbType.Oracle)]
     public class SingleDatabaseTestOracle : SingleDatabaseTestBase
     {
-        public void SetupOracle(string schema, string connectionStringName, string dbContextName, TemplateType templateType,
-            GeneratorType generatorType)
+        public void SetupOracle(string schema, string connectionStringName, string dbContextName, TemplateType templateType)
         {
-            SetupDatabase(connectionStringName, dbContextName, templateType, generatorType);
+            SetupDatabase(connectionStringName, dbContextName, templateType);
 
             Settings.ConnectionString = $"User Id={schema};Password=abc123;Data Source=localhost:1521/pdb1;";
             Settings.DatabaseType = DatabaseType.Oracle;
@@ -52,7 +51,7 @@ namespace Generator.Tests.Integration
             // Arrange
             // Per-case settings must come after SetupOracle: SetupDatabase resets the leak-prone settings
             // (AllowNullStrings et al.) to defaults, so anything assigned before it is clobbered.
-            SetupOracle("efrpgtest", "MyDbContext", "MyDbContext", TemplateType.EfCore8, GeneratorType.EfCore);
+            SetupOracle("efrpgtest", "MyDbContext", "MyDbContext", TemplateType.EfCore8);
             Settings.GenerateSeparateFiles = false;
             Settings.UseMappingTables = false;
             Settings.UseDataAnnotations = useDataAnnotations;
@@ -74,7 +73,7 @@ namespace Generator.Tests.Integration
         {
             // Arrange - Oracle folds unquoted identifiers to UPPER_SNAKE_CASE, so this is the setting that decides
             // whether the generated model reads as C# or as a catalogue dump. Worth a golden of its own.
-            SetupOracle("efrpgtest", "My_db_context", "Efrpg_db_context", TemplateType.EfCore8, GeneratorType.EfCore);
+            SetupOracle("efrpgtest", "My_db_context", "Efrpg_db_context", TemplateType.EfCore8);
             Settings.GenerateSeparateFiles = false;
             Settings.UsePascalCase = false;
             Settings.UseMappingTables = false;

@@ -84,7 +84,6 @@ namespace Efrpg.Gui.Tests
         [TestCase("DbContextName")]
         [TestCase("ConnectionStringName")]
         [TestCase("CommandTimeout")]
-        [TestCase("GeneratorType")]
         [TestCase("UseDataAnnotations")]
         public void RemovingALineAndAddingItBackThroughTheEditorRestoresTheFileByteForByte(string name)
         {
