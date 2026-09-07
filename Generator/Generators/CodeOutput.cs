@@ -32,7 +32,9 @@ namespace Efrpg.Generators
         public void AddCode(string code)
         {
             if (code != null)
-                Code.AddRange(code.Split(new[] { Environment.NewLine }, StringSplitOptions.None));
+                // Both endings: a host such as Rider compiles the template's verbatim strings with LF, and a block
+                // that fails to split here is written as one line, so only its first line gets the indent.
+                Code.AddRange(code.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None));
         }
 
         public void AddUsings(List<string> usings)

@@ -42,6 +42,28 @@ Version is controlled by `BuildTT/version.txt`. That version covers the VSIX, th
 
 > **Gotcha when editing anything under `Generator/`:** `BuildTT/Application/BaseWriterStrategy.cs` strips the literal string `Efrpg.` from every code line on its way into the `.ttinclude`, including inside string literals. So a message ending `"... install -g Efrpg."` silently becomes `"... install -g "`. Never let `Efrpg` be immediately followed by a full stop in source under `Generator/`.
 
+> **Second gotcha:** the concatenated source sits inside a T4 class-feature block, so the T4 parser reads a literal
+> `<#` or `#>` anywhere in it - a string, a comment, anything - as a nested block and every template fails with
+> "An unexpected start or end tag was found within a block". The C# project compiles fine, and the generator's
+> tests stay green, because only the `.ttinclude` sees it. Spell such a string in two pieces (`"<" + "#"`).
+
+### Other T4 hosts
+
+The include has no dependency on Visual Studio beyond `hostspecific="true"` and three calls: `Host.TemplateFile`,
+`Host.ResolvePath` and `Host.ResolveParameterValue` for the namespace hint. Only Visual Studio supplies that hint;
+`TextTransform.exe` and Rider return nothing, so the prologue falls back to `ProjectNamespace.Resolve`, which
+derives the same answer from the nearest `.csproj`.
+
+Rider (the ForTea plugin) compiles the template from its editor document, which uses LF, so every verbatim string
+in the include arrives with LF endings. Anything that splits generated text on `Environment.NewLine` alone
+therefore silently fails to split there: `CodeOutput.AddCode` and the Mustache newline stripping split on both
+endings for that reason. Keep it that way for any new code that splits multi-line literals.
+
+Rider also writes the line break that follows `<#@ include #>` in the user's `.tt` (its collector drops the one
+after every other directive and statement block, and says so in `T4InfoCollectorSateSeenSpecialBlock.cs`). It is
+emitted in document order, after the include's prologue has run, so nothing in the `.ttinclude` can remove it;
+Rider output starts with one blank line. Accepted for now.
+
 ### Wire format contract
 
 The `efrpg` dotnet tool reads the database and writes XML to stdout; the T4 template parses it back. `EfrpgResultXmlWriter.cs` (in the separate **Efrpg** repository) and `Generator/Readers/EfrpgResultXmlReader.cs` are the two halves of that contract.

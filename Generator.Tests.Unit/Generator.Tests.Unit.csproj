@@ -145,6 +145,7 @@
     <Compile Include="ToolGateSchemaFloorTests.cs" />
     <Compile Include="SettingsMetadataTests.cs" />
     <Compile Include="PluralisationTests.cs" />
+    <Compile Include="ProjectNamespaceTests.cs" />
     <Compile Include="DecimalPrecisionTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

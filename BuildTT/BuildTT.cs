@@ -842,10 +842,11 @@ namespace BuildTT
             const string header2 = @"<#@ output extension="".cs"" encoding=""utf-8"" #>
 <#
         // WriteLine(""// T4 framework version = "" + AppDomain.CurrentDomain.SetupInformation.TargetFrameworkName);
+        // Visual Studio supplies the project's namespace here; other hosts supply nothing, so derive it from the .csproj instead.
         var namespaceHint = this.Host.ResolveParameterValue(""directiveId"", ""namespaceDirectiveProcessor"", ""namespaceHint"");
         Settings.TemplateFile = System.IO.Path.GetFileNameWithoutExtension(this.Host.TemplateFile);
-        var DefaultNamespace = !string.IsNullOrEmpty(namespaceHint) ? namespaceHint : Settings.TemplateFile;
         Settings.Root = Host.ResolvePath(string.Empty);
+        var DefaultNamespace = !string.IsNullOrEmpty(namespaceHint) ? namespaceHint : ProjectNamespace.Resolve(Settings.Root, Settings.TemplateFile);
         // System.Diagnostics.Debugger.Launch();
 #><#+";
 

@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-
 <#@ include file ="..\EntityFramework.Reverse.POCO.Generator\EF.Reverse.POCO.v4.ttinclude" #>
 <#
     Settings.TemplateType         = TemplateType.EfCore8;

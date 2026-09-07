@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-// The following connection settings were used to generate this file:
+﻿// The following connection settings were used to generate this file:
 //     Connection String Name: "EfrpgTestDbContext"
 //     Connection String:      "Data Source=(local);Initial Catalog=Efrpgtest;Integrated Security=True;Encrypt=false;TrustServerCertificate=true"
 //

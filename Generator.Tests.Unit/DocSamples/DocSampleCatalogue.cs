@@ -274,6 +274,11 @@ namespace Generator.Tests.Unit.DocSamples
                 { "UsePropertiesForStoredProcResultSets/true",  () => Extras(() => Settings.UsePropertiesForStoredProcResultSets = true,  "class GetCourseReportReturnModel") },
 
                 { "RowVersion/document", () => Extras(() => { }, "public class Document") },
+
+                // ---- Compared-with-the-Microsoft-scaffolder -------------------------------------------------
+                { "Comparison/stored-procedure-model",  () => Dedent(Extras(() => FilterSettings.IncludeStoredProcedures = true, "class GetStudentsByCourseReturnModel")) },
+                { "Comparison/interface",               () => InterfaceOutline() },
+                { "Comparison/fake-context",            () => FakeContextHead() },
             };
         }
 
@@ -388,6 +393,59 @@ namespace Generator.Tests.Unit.DocSamples
                 .ToList();
 
             return lines.Count == 0 ? "// No stored procedure callers were generated." : string.Join("\n", lines);
+        }
+
+        /// <summary>
+        ///     Strips the indentation a nested type carries inside its namespace, for a page that shows a class on
+        ///     its own rather than in the context of the file.
+        /// </summary>
+        private static string Dedent(string block)
+        {
+            var lines = Lines(block);
+            var indent = lines.Where(l => l.Trim().Length > 0).Min(l => l.Length - l.TrimStart().Length);
+            return string.Join("\n", lines.Select(l => l.Length >= indent ? l.Substring(indent) : l.TrimStart()));
+        }
+
+        /// <summary>
+        ///     The context interface with the forty DbContext members elided, leaving the DbSets and the stored
+        ///     procedure callers, which are the parts that show what the interface is for.
+        /// </summary>
+        private static string InterfaceOutline()
+        {
+            var lines = Lines(Extras(() => FilterSettings.IncludeStoredProcedures = true, "public interface IMyDbContext"));
+            var dbSetsEnd = lines.FindIndex(string.IsNullOrWhiteSpace);
+            var procs = lines.FindIndex(l => l.Contains("// Stored Procedures"));
+
+            return string.Join("\n", lines.Take(dbSetsEnd)
+                .Concat(new[] { "", "        // ... SaveChanges, Set<TEntity>, Add, Attach, Entry, Find, Remove and Update, as on DbContext", "" })
+                .Concat(lines.Skip(procs)));
+        }
+
+        /// <summary>
+        ///     The top of the fake context: its DbSets and the constructor that wires them up. The rest is a
+        ///     stub for every DbContext member and a fake caller per stored procedure, which the page describes.
+        /// </summary>
+        private static string FakeContextHead()
+        {
+            var lines = Lines(Extras(() =>
+            {
+                FilterSettings.IncludeStoredProcedures = true;
+                Settings.AddUnitTestingDbContext = true;
+            }, "public class FakeMyDbContext"));
+
+            var head = lines.Take(lines.FindIndex(l => l.Contains("public virtual int SaveChanges(bool"))).ToList();
+            while (string.IsNullOrWhiteSpace(head[head.Count - 1]))
+                head.RemoveAt(head.Count - 1);
+
+            head.Add("");
+            head.Add("        // ... every other DbContext member, and a fake caller for each stored procedure");
+            head.Add("    }");
+            return string.Join("\n", head);
+        }
+
+        private static List<string> Lines(string text)
+        {
+            return text.Replace("\r\n", "\n").Split('\n').ToList();
         }
 
         /// <summary>

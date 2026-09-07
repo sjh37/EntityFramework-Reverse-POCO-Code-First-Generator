@@ -13,6 +13,7 @@ Please note that this is not the Microsoft reverse generator. This generator cre
 ### Requirements
 
 * **Visual Studio 2022 or later**, including Visual Studio 2026. The v4 extension does not install on Visual Studio 2017 or 2019; v3 remains available for those.
+* **Or JetBrains Rider**, without the extension: add `Database.tt` and `EF.Reverse.POCO.v4.ttinclude` to the project and run the template. Same output. See [JetBrains Rider](https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/JetBrains-Rider) on the wiki.
 * **The `efrpg` dotnet tool**, which reads your database: `dotnet tool install -g Efrpg`. It needs the .NET 10 runtime and is installed once per machine.
 
 ### Watch a short video clip (no audio)

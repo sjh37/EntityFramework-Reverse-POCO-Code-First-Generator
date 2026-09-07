@@ -138,7 +138,7 @@ the wire format and the two fixtures, so it is done after section 1 and verified
 - [x] `CLAUDE.md`, `AGENTS.md` and `.claude/dotnet-tool-work.md` there - remove the multi-context material
 - [x] `--help` and `README.md` - remove the two options
 - [x] `Efrpg.csproj` `<Version>` - bump and publish. Removing command-line options is a breaking change under
-      SemVer, so 2.0.0 unless 1.x is regarded as pre-release; the number is independent of `BuildTT/version.txt`
+      SemVer, but 1.x has never shipped, so 1.0.2; the number is independent of `BuildTT/version.txt`
       by design and must stay so
 
 **Wire format.** `<MultiContextSettings>` and `<MultiContextConnection>` go; nothing is added. `SchemaVersion`
