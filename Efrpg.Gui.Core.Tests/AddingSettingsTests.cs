@@ -158,21 +158,21 @@ namespace Efrpg.Gui.Tests
         {
             var original = RepositoryFiles.DatabaseTemplate();
             var session  = SettingsEditSession.Load(original, V4);
-            var item     = session.Find("UsePascalCaseForEnumMembers");
+            var item     = session.Find("OwnedEntityFolder");
 
             Assert.That(item.IsAbsent, Is.True);
             Assert.That(item.IsEditable, Is.True, item.ReadOnlyReason);
 
-            item.SetBoolean(false);
+            item.SetText("Owned");
             var after = session.Apply();
 
             var before = Lines(original);
             var lines  = Lines(after);
             Assert.That(lines.Length, Is.EqualTo(before.Length + 1));
 
-            var added = lines.Select((l, i) => new { l, i }).Single(x => x.l.Contains("Settings.UsePascalCaseForEnumMembers"));
-            Assert.That(added.l.TrimEnd(), Does.StartWith("    Settings.UsePascalCaseForEnumMembers"));
-            Assert.That(added.l, Does.Contain("= false; // "));
+            var added = lines.Select((l, i) => new { l, i }).Single(x => x.l.Contains("Settings.OwnedEntityFolder"));
+            Assert.That(added.l.TrimEnd(), Does.StartWith("    Settings.OwnedEntityFolder"));
+            Assert.That(added.l, Does.Contain("= \"Owned\"; // "));
 
             // Directly under the "// Generate files in sub-folders ****" heading, and before the if.
             var heading = Array.FindIndex(before, l => l.TrimStart().StartsWith("// " + item.Section, StringComparison.Ordinal));

@@ -1,6 +1,6 @@
 {
   "metadataVersion": 1,
-  "generatorVersion": "4.0.36",
+  "generatorVersion": "4.0.40",
   "templateVersion": "v4",
   "include": "EF.Reverse.POCO.v4.ttinclude",
   "settings": [
@@ -955,7 +955,7 @@
       "wikiPage": "Settings.Enumerations",
       "type": "List<EnumerationSettings>",
       "kind": "complex",
-      "section": "Enumerations",
+      "section": "Enums",
       "help": null,
       "defaultValue": "new List<EnumerationSettings>\n    {\n        // Example\n        /*new EnumerationSettings\n        {\n            Name                        = \"DaysOfWeek\",          // Enum to generate. e.g. \"DaysOfWeek\" would result in \"public enum DaysOfWeek {...}\" if the GroupField is set to a value then {GroupField} must be used in this name. e.g. \"DaysOfWeek{GroupField}\"\n            Table                       = \"EnumTest.DaysOfWeek\", // Database table containing enum values. e.g. \"DaysOfWeek\"\n            NameField                   = \"TypeName\",            // Column containing the name for the enum. e.g. \"TypeName\"\n            ValueField                  = \"TypeId\",              // Column containing the values for the enum. e.g. \"TypeId\"\n            GroupField                  = string.Empty,          // [optional] Column containing the group name for the enum. This is used if multiple Enums are in the same table. if this is populated, use {GroupField} in the Name property. e.g. \"{GroupField}Enum\"\n            DescriptionField            = \"Description\",         // [optional] Column containing the description for each enum member. When set, emits [Description(\"...\")] on members with a non-empty value.\n            GenerateDescriptionFromName = false                  // [optional] If true and no description is available from DescriptionField, generates [Description(\"...\")] from the enum member name as human-readable text.\n        },\n        new EnumerationSettings\n        {\n            Name       = \"CarOptions\",\n            Table      = \"car_options\",\n            NameField  = \"enum_name\",\n            ValueField = \"value\"\n        }*/\n        // Code will be generated as:\n        // public enum Name\n        // {\n        //     NameField = ValueField,\n        //     etc\n        // }\n    }",
       "inDatabaseTt": true,
@@ -964,26 +964,26 @@
       "runtimeOnly": false
     },
     {
+      "name": "UsePascalCaseForEnumMembers",
+      "wikiPage": "Settings.Enumerations",
+      "type": "bool",
+      "kind": "bool",
+      "section": "Enums",
+      "help": "Renames the generated enum members to PascalCase. If false, members keep the names the table holds.",
+      "defaultValue": "true",
+      "inDatabaseTt": true,
+      "commentedOut": false,
+      "multiLine": false,
+      "runtimeOnly": false
+    },
+    {
       "name": "HiLoSequences",
       "wikiPage": "Settings.ColumnIdentity",
       "type": "List<HiLoSequence>",
       "kind": "complex",
-      "section": "Enumerations",
+      "section": "HiLo sequences",
       "help": null,
       "defaultValue": "new List<HiLoSequence>\n    {\n        // Example\n        // For column dbo.match_table_name.match_column_name this will use .UseHiLo(\"sequence_name\", \"sequence_schema\") instead of .UseSqlServerIdentityColumn()\n        /*new HiLoSequence\n        {\n            Schema         = \"dbo\",\n            Table          = \"match_table_name\", // Use * to match all tables\n            SequenceName   = \"sequence_name\",\n            SequenceSchema = \"sequence_schema\"\n        },\n        new HiLoSequence\n        {\n            Schema         = \"dbo\",\n            Table          = \"Employees\",\n            SequenceName   = \"EmployeeSequence\",\n            SequenceSchema = \"dbo\"\n        }*/\n    }",
-      "inDatabaseTt": true,
-      "commentedOut": false,
-      "multiLine": true,
-      "runtimeOnly": false
-    },
-    {
-      "name": "AddEnumDefinitions",
-      "wikiPage": "Settings.Enumerations",
-      "type": "Action<List<EnumDefinition>>",
-      "kind": "callback",
-      "section": "Column modification",
-      "help": null,
-      "defaultValue": "delegate(List<EnumDefinition> enumDefinitions)\n    {\n        // Examples:\n        //enumDefinitions.Add(new EnumDefinition { Schema = Settings.DefaultSchema, Table = \"match_table_name\", Column = \"match_column_name\", EnumType = \"name_of_enum\" });\n\n        // This will replace OrderHeader.OrderStatus type to be an OrderStatusType enum\n        //enumDefinitions.Add(new EnumDefinition { Schema = Settings.DefaultSchema, Table = \"OrderHeader\", Column = \"OrderStatus\", EnumType = \"OrderStatusType\" }); \n\n        // This will replace any table *.OrderStatus type to be an OrderStatusType enum\n        //enumDefinitions.Add(new EnumDefinition { Schema = Settings.DefaultSchema, Table = \"*\", Column = \"OrderStatus\", EnumType = \"OrderStatusType\" });\n    }",
       "inDatabaseTt": true,
       "commentedOut": false,
       "multiLine": true,
@@ -1107,6 +1107,58 @@
       "runtimeOnly": false
     },
     {
+      "name": "AddEnumDefinitions",
+      "wikiPage": "Settings.Enumerations",
+      "type": "Action<List<EnumDefinition>>",
+      "kind": "callback",
+      "section": "Enum callbacks",
+      "help": null,
+      "defaultValue": "delegate(List<EnumDefinition> enumDefinitions)\n    {\n        // Examples:\n        //enumDefinitions.Add(new EnumDefinition { Schema = Settings.DefaultSchema, Table = \"match_table_name\", Column = \"match_column_name\", EnumType = \"name_of_enum\" });\n\n        // This will replace OrderHeader.OrderStatus type to be an OrderStatusType enum\n        //enumDefinitions.Add(new EnumDefinition { Schema = Settings.DefaultSchema, Table = \"OrderHeader\", Column = \"OrderStatus\", EnumType = \"OrderStatusType\" }); \n\n        // This will replace any table *.OrderStatus type to be an OrderStatusType enum\n        //enumDefinitions.Add(new EnumDefinition { Schema = Settings.DefaultSchema, Table = \"*\", Column = \"OrderStatus\", EnumType = \"OrderStatusType\" });\n    }",
+      "inDatabaseTt": true,
+      "commentedOut": false,
+      "multiLine": true,
+      "runtimeOnly": false
+    },
+    {
+      "name": "AddEnum",
+      "wikiPage": "Settings.Enumerations",
+      "type": "Action<Table>",
+      "kind": "callback",
+      "section": "Enum callbacks",
+      "help": null,
+      "defaultValue": "delegate (Table table)\n    {\n        /*if (table.HasPrimaryKey && table.PrimaryKeys.Count() == 1 && table.Columns.Any(x => x.PropertyType == \"string\"))\n        {\n            // Example: choosing tables with certain naming conventions for enums. Please use your own conventions.\n            if (table.NameHumanCase.StartsWith(\"Enum\", StringComparison.InvariantCultureIgnoreCase) ||\n                table.NameHumanCase.EndsWith(\"Enum\", StringComparison.InvariantCultureIgnoreCase))\n            {\n                try\n                {\n                    Settings.Enumerations.Add(new EnumerationSettings\n                    {\n                        Name       = table.NameHumanCase.Replace(\"Enum\",\"\").Replace(\"Enum\",\"\") + \"Enum\",\n                        Table      = table.Schema.DbName + \".\" + table.DbName,\n                        NameField  = table.Columns.First(x => x.PropertyType == \"string\").DbName, // Or specify your own\n                        ValueField = table.PrimaryKeys.Single().DbName, // Or specify your own\n                        GroupField = string.Empty // Or specify your own\n                    });\n\n                    // This will cause this table to not be reverse-engineered.\n                    // This means it was only required to generate an enum and can now be removed.\n                    table.RemoveTable = true; // Remove this line if you want to keep it in your dbContext.\n                }\n                catch\n                {\n                    // Swallow exception\n                }\n            }\n        }*/\n    }",
+      "inDatabaseTt": true,
+      "commentedOut": false,
+      "multiLine": true,
+      "runtimeOnly": false
+    },
+    {
+      "name": "UpdateEnum",
+      "wikiPage": "Settings.Enumerations",
+      "type": "Action<Enumeration>",
+      "kind": "callback",
+      "section": "Enum callbacks",
+      "help": null,
+      "defaultValue": "delegate (Enumeration enumeration)\n    {\n        //enumeration.EnumAttributes.Add(\"[DataContract]\");\n    }",
+      "inDatabaseTt": true,
+      "commentedOut": false,
+      "multiLine": true,
+      "runtimeOnly": false
+    },
+    {
+      "name": "UpdateEnumMember",
+      "wikiPage": "Settings.Enumerations",
+      "type": "Action<EnumerationMember>",
+      "kind": "callback",
+      "section": "Enum callbacks",
+      "help": null,
+      "defaultValue": "delegate (EnumerationMember enumerationMember)\n    {\n        //enumerationMember.Attributes.Add(\"[EnumMember]\");\n        //enumerationMember.Attributes.Add(\"[SomeAttribute(\\\"\" + enumerationMember.AllValues[\"SomeName\"] + \" \\\")]\");\n    }",
+      "inDatabaseTt": true,
+      "commentedOut": false,
+      "multiLine": true,
+      "runtimeOnly": false
+    },
+    {
       "name": "AddExtraForeignKeys",
       "wikiPage": "Settings.AddExtraForeignKeys",
       "type": "Action<IDbContextFilter, Generator, List<ForeignKey>, Tables>",
@@ -1153,45 +1205,6 @@
       "section": "Table renaming (single context generation only)",
       "help": null,
       "defaultValue": "delegate(Column column, Table table, List<EnumDefinition> enumDefinitions, List<JsonColumnMapping> jsonColumnMappings)\n    {\n        // Rename column\n        //if (column.IsPrimaryKey && column.NameHumanCase == \"PkId\")\n        //    column.NameHumanCase = \"Id\";\n\n        // .IsConcurrencyToken() must be manually configured. However .IsRowVersion() can be automatically detected.\n        //if (table.NameHumanCase.Equals(\"SomeTable\", StringComparison.InvariantCultureIgnoreCase) && column.NameHumanCase.Equals(\"SomeColumn\", StringComparison.InvariantCultureIgnoreCase))\n        //    column.IsConcurrencyToken = true;\n\n        // Remove table name from primary key\n        //if (column.IsPrimaryKey && column.NameHumanCase.Equals(table.NameHumanCase + \"Id\", StringComparison.InvariantCultureIgnoreCase))\n        //    column.NameHumanCase = \"Id\";\n\n        // Remove column from poco class as it will be inherited from a base class. Also see Settings.UpdateTable above.\n        //var tracking  = new List<string> { \"createdby\", \"createdon\", \"modifiedby\", \"modifiedon\" };\n        //var replicate = new List<string> { \"uniqueid\", \"hrid\"};\n        //if (tracking .Contains(column.NameHumanCase.ToLower()) ||\n        //    replicate.Contains(column.NameHumanCase.ToLower()))\n        //{\n        //    column.ExistsInBaseClass = true; // If true, does not generate the property for this column as it will exist in a base class\n        //}\n\n        // Use the extended properties to perform tasks to column\n        //if (column.ExtendedProperty == \"HIDE\")\n        //    column.Hidden = true; // Hidden means the generator does not generate any code for this column at all.\n\n        // Apply the \"override\" access modifier to a specific column.\n        //if (column.NameHumanCase == \"id\")\n        //    column.OverrideModifier = true;\n        // This will create: public override long id { get; set; }\n\n        // Make property partial, see https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Partial-properties\n        //if (table.NameHumanCase.Equals(\"SomeTable\", StringComparison.InvariantCultureIgnoreCase) && column.NameHumanCase.Equals(\"SomeColumn\", StringComparison.InvariantCultureIgnoreCase))\n        //    column.IsPartial = true;\n\n        // Use ExtendedProperties dictionary to access specific extended property by name.\n        // See https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Extended-Property-Names-Feature\n        // Example: Add [JsonPropertyName] attribute from database extended property\n        // In SQL Server, set extended property: EXEC sp_addextendedproperty @name = N'JsonPropertyName', @value = N'id', @level0type = N'SCHEMA', @level0name = N'dbo', @level1type = N'TABLE', @level1name = N'YourTable', @level2type = N'COLUMN', @level2name = N'SystemId'\n        Settings.ApplyJsonPropertyNameAttribute(column);\n\n        Settings.ApplyJsonColumnMappings(column, table, jsonColumnMappings);    // Perform JSON column to POCO class mapping. See https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/JSON-column-support\n        Settings.ApplyDataAnnotations(column);\n        Settings.ApplyEnumTypeReplacement(column, table, enumDefinitions);\n    }",
-      "inDatabaseTt": true,
-      "commentedOut": false,
-      "multiLine": true,
-      "runtimeOnly": false
-    },
-    {
-      "name": "AddEnum",
-      "wikiPage": "Settings.Enumerations",
-      "type": "Action<Table>",
-      "kind": "callback",
-      "section": "Enumeration call-backs",
-      "help": null,
-      "defaultValue": "delegate (Table table)\n    {\n        /*if (table.HasPrimaryKey && table.PrimaryKeys.Count() == 1 && table.Columns.Any(x => x.PropertyType == \"string\"))\n        {\n            // Example: choosing tables with certain naming conventions for enums. Please use your own conventions.\n            if (table.NameHumanCase.StartsWith(\"Enum\", StringComparison.InvariantCultureIgnoreCase) ||\n                table.NameHumanCase.EndsWith(\"Enum\", StringComparison.InvariantCultureIgnoreCase))\n            {\n                try\n                {\n                    Settings.Enumerations.Add(new EnumerationSettings\n                    {\n                        Name       = table.NameHumanCase.Replace(\"Enum\",\"\").Replace(\"Enum\",\"\") + \"Enum\",\n                        Table      = table.Schema.DbName + \".\" + table.DbName,\n                        NameField  = table.Columns.First(x => x.PropertyType == \"string\").DbName, // Or specify your own\n                        ValueField = table.PrimaryKeys.Single().DbName, // Or specify your own\n                        GroupField = string.Empty // Or specify your own\n                    });\n\n                    // This will cause this table to not be reverse-engineered.\n                    // This means it was only required to generate an enum and can now be removed.\n                    table.RemoveTable = true; // Remove this line if you want to keep it in your dbContext.\n                }\n                catch\n                {\n                    // Swallow exception\n                }\n            }\n        }*/\n    }",
-      "inDatabaseTt": true,
-      "commentedOut": false,
-      "multiLine": true,
-      "runtimeOnly": false
-    },
-    {
-      "name": "UpdateEnum",
-      "wikiPage": "Settings.Enumerations",
-      "type": "Action<Enumeration>",
-      "kind": "callback",
-      "section": "Enumeration call-backs",
-      "help": null,
-      "defaultValue": "delegate (Enumeration enumeration)\n    {\n        //enumeration.EnumAttributes.Add(\"[DataContract]\");\n    }",
-      "inDatabaseTt": true,
-      "commentedOut": false,
-      "multiLine": true,
-      "runtimeOnly": false
-    },
-    {
-      "name": "UpdateEnumMember",
-      "wikiPage": "Settings.Enumerations",
-      "type": "Action<EnumerationMember>",
-      "kind": "callback",
-      "section": "Enumeration call-backs",
-      "help": null,
-      "defaultValue": "delegate (EnumerationMember enumerationMember)\n    {\n        //enumerationMember.Attributes.Add(\"[EnumMember]\");\n        //enumerationMember.Attributes.Add(\"[SomeAttribute(\\\"\" + enumerationMember.AllValues[\"SomeName\"] + \" \\\")]\");\n    }",
       "inDatabaseTt": true,
       "commentedOut": false,
       "multiLine": true,
@@ -1467,19 +1480,6 @@
       "commentedOut": false,
       "multiLine": false,
       "runtimeOnly": true
-    },
-    {
-      "name": "UsePascalCaseForEnumMembers",
-      "wikiPage": "Settings.Enumerations",
-      "type": "bool",
-      "kind": "bool",
-      "section": "Generate files in sub-folders",
-      "help": "This will rename the generated Enum Members to use PascalCase. If false Enum members will be left alone.",
-      "defaultValue": "true",
-      "inDatabaseTt": false,
-      "commentedOut": false,
-      "multiLine": false,
-      "runtimeOnly": false
     }
   ]
 }

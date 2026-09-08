@@ -41,13 +41,27 @@ namespace EntityFramework_Reverse_POCO_Generator
         private readonly TextBox _search;
         private readonly ListBox _sections;
         private readonly StackPanel _rows;
+        private ScrollViewer _scroller;
         private readonly TextBlock _summary;
         private readonly Button _save;
         private readonly Button _discard;
 
         private const string AllSections = "All settings";
+        private const string EnumsPage = "Enums";
         private const string CallbacksSection = "Callbacks";
         private const string FilterSection = "Filtering (read-only)";
+
+        /// <summary>
+        ///     The template sections that make up the Enums page: the tables to read enums from and the callbacks
+        ///     that shape them. Together on one page because enum generation is a headline feature, not a footnote
+        ///     inside a long list of callbacks.
+        /// </summary>
+        private static readonly string[] EnumSections = { "Enums", "Enum callbacks" };
+
+        private static bool IsEnumSetting(SettingEditorItem item)
+        {
+            return EnumSections.Contains(item.Section);
+        }
 
         private bool _rebuilding;
         private readonly List<CodeView> _codeViews = new List<CodeView>();
@@ -96,14 +110,16 @@ namespace EntityFramework_Reverse_POCO_Generator
             _save     = new Button { Content = "_Save", MinWidth = 90, Margin = new Thickness(0, 0, 8, 0), Padding = new Thickness(10, 4, 10, 4), IsDefault = true };
             _discard  = new Button { Content = "_Discard changes", MinWidth = 120, Padding = new Thickness(10, 4, 10, 4) };
 
-            // Code settings live on their own page, so a section that holds nothing else drops out of the list.
+            // Code settings live on their own page, so a section that holds nothing else drops out of the list;
+            // everything enum-related, values and code alike, lives on the Enums page instead.
             var valueSections = session.Sections
-                .Where(s => session.Items.Any(i => i.Section == s && !i.IsCode))
+                .Where(s => !EnumSections.Contains(s) && session.Items.Any(i => i.Section == s && !i.IsCode))
                 .ToList();
 
             _sections.ItemsSource   = new[] { AllSections }
                 .Concat(valueSections)
-                .Concat(session.Items.Any(i => i.IsCode) ? new[] { CallbacksSection } : new string[0])
+                .Concat(session.Items.Any(IsEnumSetting) ? new[] { EnumsPage } : new string[0])
+                .Concat(session.Items.Any(i => i.IsCode && !IsEnumSetting(i)) ? new[] { CallbacksSection } : new string[0])
                 .Concat(session.Document.FilterLines.Count > 0 ? new[] { FilterSection } : new string[0])
                 .ToList();
             _sections.SelectedIndex = 1;   // The "Settings" group: connection string, context name, the essentials.
@@ -239,7 +255,7 @@ namespace EntityFramework_Reverse_POCO_Generator
             body.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(240) });
             body.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
 
-            var scroller = new ScrollViewer
+            _scroller = new ScrollViewer
             {
                 Content = _rows,
                 VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
@@ -247,9 +263,9 @@ namespace EntityFramework_Reverse_POCO_Generator
             };
 
             Grid.SetColumn(_sections, 0);
-            Grid.SetColumn(scroller, 1);
+            Grid.SetColumn(_scroller, 1);
             body.Children.Add(_sections);
-            body.Children.Add(scroller);
+            body.Children.Add(_scroller);
 
             var layout = new Grid();
             layout.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
@@ -291,9 +307,10 @@ namespace EntityFramework_Reverse_POCO_Generator
                 // at the end of "All settings", under their own heading rather than scattered through the rest.
                 var visible = _session.Search(_search.Text)
                     .Where(i => searching
-                                || (section == CallbacksSection && i.IsCode)
+                                || (section == EnumsPage && IsEnumSetting(i))
+                                || (section == CallbacksSection && i.IsCode && !IsEnumSetting(i))
                                 || (section == AllSections && !i.IsCode)
-                                || (section != CallbacksSection && section != AllSections && i.Section == section && !i.IsCode))
+                                || (section != CallbacksSection && section != AllSections && section != EnumsPage && i.Section == section && !i.IsCode))
                     .ToList();
 
                 if (!searching && section == AllSections)
@@ -312,8 +329,20 @@ namespace EntityFramework_Reverse_POCO_Generator
                     });
                 }
 
-                var showHeadings = searching || section == AllSections;
+                // Code settings are grouped under the template's own banners - Enum data, Enum callbacks,
+                // Call-backs, Table renaming - so a list of tables to read enums from does not look like a callback.
+                var showHeadings = searching || section == AllSections || section == CallbacksSection || section == EnumsPage;
                 string heading = null;
+
+                if (section == EnumsPage && !searching)
+                    _rows.Children.Add(new TextBlock
+                    {
+                        Text = "Enums generated from lookup tables. List the tables to read under Enumerations, or add one with the " +
+                               "button; the callbacks below decide which tables become enums and how their members are named.",
+                        TextWrapping = TextWrapping.Wrap,
+                        Opacity = 0.8,
+                        Margin = new Thickness(0, 8, 0, 14)
+                    });
 
                 if (section == CallbacksSection && !searching)
                     _rows.Children.Add(new TextBlock
@@ -328,10 +357,9 @@ namespace EntityFramework_Reverse_POCO_Generator
 
                 foreach (var item in visible)
                 {
-                    var itemHeading = item.IsCode ? CallbacksSection : item.Section;
-                    if (showHeadings && itemHeading != heading)
+                    if (showHeadings && item.Section != heading)
                     {
-                        heading = itemHeading;
+                        heading = item.Section;
                         _rows.Children.Add(SectionHeading(heading));
                     }
 
@@ -353,26 +381,45 @@ namespace EntityFramework_Reverse_POCO_Generator
         /// </summary>
         private void ShowFilters()
         {
+            DisposeCodeViews();
             _rows.Children.Clear();
-            _rows.Children.Add(new TextBlock
+
+            var intro = new TextBlock
             {
                 Text = "These decide which schemas, tables, columns and stored procedures are generated. " +
-                       "They are code rather than values, so edit them in the .tt itself.",
+                       "They are code rather than values, so edit them in the .tt itself, or use \"Reverse POCO: Choose tables and procedures...\" " +
+                       "to pick tables and procedures by ticking them.",
                 TextWrapping = TextWrapping.Wrap,
                 Opacity = 0.75,
                 Margin = new Thickness(0, 14, 0, 12)
-            });
+            };
+            _rows.Children.Add(intro);
 
-            foreach (var filter in _session.Document.FilterLines)
-                _rows.Children.Add(new TextBlock
-                {
-                    Text = filter,
-                    FontFamily = new FontFamily("Consolas"),
-                    TextWrapping = TextWrapping.Wrap,
-                    Margin = new Thickness(0, 0, 0, 6)
-                });
+            var code = CodeView.Create(string.Join(Environment.NewLine, _session.Document.FilterLines));
+            _codeViews.Add(code);
+            _rows.Children.Add(code.Element);
+
+            // Nothing sits below this box, so it takes every pixel between the intro and the buttons and follows
+            // the window when it is resized, rather than leaving the lower half of the page empty.
+            SizeChangedEventHandler fill = (s, e) => FillRemainingHeight(code.Element, intro);
+            _scroller.SizeChanged += fill;
+            intro.SizeChanged     += fill;
+            code.Element.Unloaded += (s, e) => { _scroller.SizeChanged -= fill; intro.SizeChanged -= fill; };
+            FillRemainingHeight(code.Element, intro);
 
             UpdateSummary();
+        }
+
+        private void FillRemainingHeight(FrameworkElement element, FrameworkElement above)
+        {
+            var available = _scroller.ViewportHeight > 0 ? _scroller.ViewportHeight : _scroller.ActualHeight;
+            if (available <= 0)
+                return;
+
+            var used = above.ActualHeight + above.Margin.Top + above.Margin.Bottom + _rows.Margin.Top + _rows.Margin.Bottom +
+                       element.Margin.Top + element.Margin.Bottom;
+
+            element.Height = Math.Max(120, available - used);
         }
 
         private void UpdateSummary()

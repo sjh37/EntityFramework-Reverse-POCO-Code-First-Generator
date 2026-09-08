@@ -144,7 +144,7 @@ namespace BuildTT
     Settings.IncludeColumnsWithDefaults          = true;  // If true, will set properties to the default value from the database.
     Settings.GenerateHasDefaultValueSql          = false; // EFCore only. If true, will emit .HasDefaultValueSql() in the entity configuration for columns with a SQL default, making defaults queryable via EF model reflection.
 
-    // Enumerations ***********************************************************************************************************************
+    // Enums ******************************************************************************************************************************
     // Create enumerations from database tables
     // List the enumeration tables you want read and generated for
     // Also look at the AddEnum callback below to add your own during reverse generation of tables.
@@ -175,7 +175,9 @@ namespace BuildTT
         //     etc
         // }
     };
+    Settings.UsePascalCaseForEnumMembers = true; // Renames the generated enum members to PascalCase. If false, members keep the names the table holds.
 
+    // HiLo sequences *********************************************************************************************************************
     // Use the following list to add use of HiLo sequences for identity columns
     Settings.HiLoSequences = new List<HiLoSequence>
     {
@@ -195,21 +197,6 @@ namespace BuildTT
             SequenceName   = ""EmployeeSequence"",
             SequenceSchema = ""dbo""
         }*/
-    };
-
-    // Column modification ****************************************************************************************************************
-    // Use the following list to replace column byte types with Enums.
-    // As long as the type can be mapped to your new type, all is well.
-    Settings.AddEnumDefinitions = delegate(List<EnumDefinition> enumDefinitions)
-    {
-        // Examples:
-        //enumDefinitions.Add(new EnumDefinition { Schema = Settings.DefaultSchema, Table = ""match_table_name"", Column = ""match_column_name"", EnumType = ""name_of_enum"" });
-
-        // This will replace OrderHeader.OrderStatus type to be an OrderStatusType enum
-        //enumDefinitions.Add(new EnumDefinition { Schema = Settings.DefaultSchema, Table = ""OrderHeader"", Column = ""OrderStatus"", EnumType = ""OrderStatusType"" }); 
-
-        // This will replace any table *.OrderStatus type to be an OrderStatusType enum
-        //enumDefinitions.Add(new EnumDefinition { Schema = Settings.DefaultSchema, Table = ""*"", Column = ""OrderStatus"", EnumType = ""OrderStatusType"" });
     };
 
     // JSON column to POCO class mapping *************************************************************************************************
@@ -348,6 +335,67 @@ namespace BuildTT
     //     abc.hello will be Abc_Hello.
     Settings.PrependSchemaName = true; // Control if the schema name is prepended to the table name
 
+    // Enum callbacks ************************************************************************************************************************
+    // Use the following list to replace column byte types with Enums.
+    // As long as the type can be mapped to your new type, all is well.
+    Settings.AddEnumDefinitions = delegate(List<EnumDefinition> enumDefinitions)
+    {
+        // Examples:
+        //enumDefinitions.Add(new EnumDefinition { Schema = Settings.DefaultSchema, Table = ""match_table_name"", Column = ""match_column_name"", EnumType = ""name_of_enum"" });
+
+        // This will replace OrderHeader.OrderStatus type to be an OrderStatusType enum
+        //enumDefinitions.Add(new EnumDefinition { Schema = Settings.DefaultSchema, Table = ""OrderHeader"", Column = ""OrderStatus"", EnumType = ""OrderStatusType"" }); 
+
+        // This will replace any table *.OrderStatus type to be an OrderStatusType enum
+        //enumDefinitions.Add(new EnumDefinition { Schema = Settings.DefaultSchema, Table = ""*"", Column = ""OrderStatus"", EnumType = ""OrderStatusType"" });
+    };
+
+    // In order to use this function, Settings.ElementsToGenerate must contain both Elements.Poco and Elements.Enum;
+    Settings.AddEnum = delegate (Table table)
+    {
+        /*if (table.HasPrimaryKey && table.PrimaryKeys.Count() == 1 && table.Columns.Any(x => x.PropertyType == ""string""))
+        {
+            // Example: choosing tables with certain naming conventions for enums. Please use your own conventions.
+            if (table.NameHumanCase.StartsWith(""Enum"", StringComparison.InvariantCultureIgnoreCase) ||
+                table.NameHumanCase.EndsWith(""Enum"", StringComparison.InvariantCultureIgnoreCase))
+            {
+                try
+                {
+                    Settings.Enumerations.Add(new EnumerationSettings
+                    {
+                        Name       = table.NameHumanCase.Replace(""Enum"","""").Replace(""Enum"","""") + ""Enum"",
+                        Table      = table.Schema.DbName + ""."" + table.DbName,
+                        NameField  = table.Columns.First(x => x.PropertyType == ""string"").DbName, // Or specify your own
+                        ValueField = table.PrimaryKeys.Single().DbName, // Or specify your own
+                        GroupField = string.Empty // Or specify your own
+                    });
+
+                    // This will cause this table to not be reverse-engineered.
+                    // This means it was only required to generate an enum and can now be removed.
+                    table.RemoveTable = true; // Remove this line if you want to keep it in your dbContext.
+                }
+                catch
+                {
+                    // Swallow exception
+                }
+            }
+        }*/
+    };
+
+    // Use the following function if you need to apply additional modifications to a enum
+    // Called just before UpdateEnumMember
+    Settings.UpdateEnum = delegate (Enumeration enumeration)
+    {
+        //enumeration.EnumAttributes.Add(""[DataContract]"");
+    };
+
+    // Use the following function if you need to apply additional modifications to a enum member
+    Settings.UpdateEnumMember = delegate (EnumerationMember enumerationMember)
+    {
+        //enumerationMember.Attributes.Add(""[EnumMember]"");
+        //enumerationMember.Attributes.Add(""[SomeAttribute(\"""" + enumerationMember.AllValues[""SomeName""] + "" \"")]"");
+    };
+
     // Call-backs *************************************************************************************************************************
 
     // AddRelationship is a helper function that creates ForeignKey objects and adds them to the foreignKeys list
@@ -479,54 +527,6 @@ namespace BuildTT
         Settings.ApplyDataAnnotations(column);
         Settings.ApplyEnumTypeReplacement(column, table, enumDefinitions);
     };
-
-    // Enumeration call-backs *****************************************************************************************************************
-    // In order to use this function, Settings.ElementsToGenerate must contain both Elements.Poco and Elements.Enum;
-    Settings.AddEnum = delegate (Table table)
-    {
-        /*if (table.HasPrimaryKey && table.PrimaryKeys.Count() == 1 && table.Columns.Any(x => x.PropertyType == ""string""))
-        {
-            // Example: choosing tables with certain naming conventions for enums. Please use your own conventions.
-            if (table.NameHumanCase.StartsWith(""Enum"", StringComparison.InvariantCultureIgnoreCase) ||
-                table.NameHumanCase.EndsWith(""Enum"", StringComparison.InvariantCultureIgnoreCase))
-            {
-                try
-                {
-                    Settings.Enumerations.Add(new EnumerationSettings
-                    {
-                        Name       = table.NameHumanCase.Replace(""Enum"","""").Replace(""Enum"","""") + ""Enum"",
-                        Table      = table.Schema.DbName + ""."" + table.DbName,
-                        NameField  = table.Columns.First(x => x.PropertyType == ""string"").DbName, // Or specify your own
-                        ValueField = table.PrimaryKeys.Single().DbName, // Or specify your own
-                        GroupField = string.Empty // Or specify your own
-                    });
-
-                    // This will cause this table to not be reverse-engineered.
-                    // This means it was only required to generate an enum and can now be removed.
-                    table.RemoveTable = true; // Remove this line if you want to keep it in your dbContext.
-                }
-                catch
-                {
-                    // Swallow exception
-                }
-            }
-        }*/
-    };
-
-    // Use the following function if you need to apply additional modifications to a enum
-    // Called just before UpdateEnumMember
-    Settings.UpdateEnum = delegate (Enumeration enumeration)
-    {
-        //enumeration.EnumAttributes.Add(""[DataContract]"");
-    };
-
-    // Use the following function if you need to apply additional modifications to a enum member
-    Settings.UpdateEnumMember = delegate (EnumerationMember enumerationMember)
-    {
-        //enumerationMember.Attributes.Add(""[EnumMember]"");
-        //enumerationMember.Attributes.Add(""[SomeAttribute(\"""" + enumerationMember.AllValues[""SomeName""] + "" \"")]"");
-    };
-
 
     // Class body *****************************************************************************************************************************
     // Writes any boilerplate stuff inside the POCO class body

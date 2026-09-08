@@ -130,9 +130,17 @@ namespace Efrpg.Gui.Tests
         {
             var session = Shipped();
 
-            Assert.That(session.Find("AddEnum").Section, Is.EqualTo("Enumeration call-backs"));
-            Assert.That(session.Find("UpdateEnum").Section, Is.EqualTo("Enumeration call-backs"));
-            Assert.That(session.Find("UpdateEnumMember").Section, Is.EqualTo("Enumeration call-backs"));
+            Assert.That(session.Find("AddEnumDefinitions").Section, Is.EqualTo("Enum callbacks"));
+            Assert.That(session.Find("AddEnum").Section, Is.EqualTo("Enum callbacks"));
+            Assert.That(session.Find("UpdateEnum").Section, Is.EqualTo("Enum callbacks"));
+            Assert.That(session.Find("UpdateEnumMember").Section, Is.EqualTo("Enum callbacks"));
+
+            var sections = session.Sections.ToList();
+            Assert.That(sections.IndexOf("Enum callbacks"), Is.LessThan(sections.IndexOf("Call-backs")), "the enum section comes first");
+
+            Assert.That(session.Find("Enumerations").Section, Is.EqualTo("Enums"));
+            Assert.That(session.Find("UsePascalCaseForEnumMembers").Section, Is.EqualTo("Enums"));
+            Assert.That(session.Find("HiLoSequences").Section, Is.EqualTo("HiLo sequences"), "not an enum, so not on the Enums page");
         }
     }
 }
