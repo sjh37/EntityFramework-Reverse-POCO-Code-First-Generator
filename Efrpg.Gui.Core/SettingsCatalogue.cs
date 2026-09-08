@@ -64,7 +64,8 @@ namespace Efrpg.Gui
                 Text(setting["defaultValue"]),
                 Flag(setting["isFlags"]),
                 Flag(setting["runtimeOnly"]),
-                Members(setting["enumMembers"]));
+                Members(setting["enumMembers"]),
+                Text(setting["wikiPage"]));
         }
 
         private static IReadOnlyList<EnumMember> Members(Json members)

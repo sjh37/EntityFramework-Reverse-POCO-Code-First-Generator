@@ -116,6 +116,10 @@ namespace BuildTT
                 // MyTemplate.vstemplate. Shipping the dll inside the VSIX is not enough on its own: without this the
                 // user gets "this template attempted to load component assembly ..." when they add the item.
                 tt.WriteLine("        <Asset Type=\"Microsoft.VisualStudio.Assembly\" d:Source=\"Project\" d:ProjectName=\"%CurrentProject%\" Path=\"|%CurrentProject%|\" AssemblyName=\"|%CurrentProject%;AssemblyName|\" />");
+                // The settings editor's code previews use a content type and classifier exported through MEF (see
+                // CSharpPreviewClassifier). Without this asset MEF never scans the assembly and the previews stay
+                // one colour.
+                tt.WriteLine("        <Asset Type=\"Microsoft.VisualStudio.MefComponent\" d:Source=\"Project\" d:ProjectName=\"%CurrentProject%\" Path=\"|%CurrentProject%|\" />");
                 tt.WriteLine("    </Assets>");
                 tt.WriteLine("    <Prerequisites>");
                 tt.WriteLine("        <Prerequisite Id=\"Microsoft.VisualStudio.Component.TextTemplating\" Version=\"[15.0,)\" DisplayName=\"Text Template Transformation\" />");

@@ -18,6 +18,12 @@ namespace Efrpg.Gui
     {
         public SettingDefinition(string name, string type, SettingKind kind, string section, string help,
             string defaultValue, bool isFlags, bool runtimeOnly, IReadOnlyList<EnumMember> enumMembers)
+            : this(name, type, kind, section, help, defaultValue, isFlags, runtimeOnly, enumMembers, null)
+        {
+        }
+
+        public SettingDefinition(string name, string type, SettingKind kind, string section, string help,
+            string defaultValue, bool isFlags, bool runtimeOnly, IReadOnlyList<EnumMember> enumMembers, string wikiPage)
         {
             Name         = name ?? string.Empty;
             Type         = type ?? string.Empty;
@@ -28,7 +34,14 @@ namespace Efrpg.Gui
             IsFlags      = isFlags;
             RuntimeOnly  = runtimeOnly;
             EnumMembers  = enumMembers ?? new EnumMember[0];
+            WikiPage     = string.IsNullOrEmpty(wikiPage) ? "Settings-Reference" : wikiPage;
         }
+
+        /// <summary>The wiki page name that documents this setting; the index page when none is known.</summary>
+        public string WikiPage { get; }
+
+        /// <summary>The full address of <see cref="WikiPage"/>.</summary>
+        public string WikiUrl => "https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/" + WikiPage;
 
         public string Name { get; }
 
@@ -61,7 +74,7 @@ namespace Efrpg.Gui
         public bool IsEditable =>
             !RuntimeOnly &&
             (Kind == SettingKind.Text || Kind == SettingKind.Boolean || Kind == SettingKind.Number ||
-             Kind == SettingKind.Character || Kind == SettingKind.Enumeration);
+             Kind == SettingKind.Character || Kind == SettingKind.Enumeration || Kind == SettingKind.StringList);
 
         /// <summary>Why the editor will not offer to change it, or null when it will.</summary>
         public string ReadOnlyReason
@@ -74,7 +87,6 @@ namespace Efrpg.Gui
                 switch (Kind)
                 {
                     case SettingKind.Callback:   return "A callback you write in code - edit it in the editor.";
-                    case SettingKind.StringList: return "A list built in code - edit it in the editor.";
                     case SettingKind.Complex:    return "Built in code from " + Type + " - edit it in the editor.";
                     case SettingKind.Unknown:    return "This version of the editor does not know how to change it.";
                     default:                     return null;

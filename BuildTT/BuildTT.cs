@@ -97,6 +97,7 @@ namespace BuildTT
     Settings.OnConfiguration                        = OnConfiguration.ConnectionString; // Configuration, ConnectionString, Omit. EFCore only. Determines the code generated within DbContext.OnConfiguration(). Please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Settings.OnConfiguration
     Settings.AddParameterlessConstructorToDbContext = true; // EF6 only. If true, then DbContext will have a default (parameter-less) constructor which automatically passes in the connection string name, if false then no parameter-less constructor will be created.
     Settings.ConfigurationClassName                 = ""Configuration""; // Configuration, Mapping, Map, etc. This is appended to the Poco class name to configure the mappings.
+    Settings.TableSuffix                            = null; // Appended to every generated class name: ""Dto"" turns Order into OrderDto, ""Entity"" into OrderEntity. null adds nothing.
     Settings.UseMappingTables                       = false; // If true, mapping will be used, and no mapping tables will be generated. If false, all tables will be generated.
 
     Settings.EntityClassesModifiers        = ""public""; // ""public partial"";
@@ -347,12 +348,6 @@ namespace BuildTT
     //     abc.hello will be Abc_Hello.
     Settings.PrependSchemaName = true; // Control if the schema name is prepended to the table name
 
-    // Table Suffix ***********************************************************************************************************************
-    // Appends the suffix to the generated classes names
-    // Ie. If TableSuffix is ""Dto"" then Order will be OrderDto
-    //     If TableSuffix is ""Entity"" then Order will be OrderEntity
-    Settings.TableSuffix = null;
-
     // Call-backs *************************************************************************************************************************
 
     // AddRelationship is a helper function that creates ForeignKey objects and adds them to the foreignKeys list
@@ -485,6 +480,7 @@ namespace BuildTT
         Settings.ApplyEnumTypeReplacement(column, table, enumDefinitions);
     };
 
+    // Enumeration call-backs *****************************************************************************************************************
     // In order to use this function, Settings.ElementsToGenerate must contain both Elements.Poco and Elements.Enum;
     Settings.AddEnum = delegate (Table table)
     {
@@ -532,6 +528,7 @@ namespace BuildTT
     };
 
 
+    // Class body *****************************************************************************************************************************
     // Writes any boilerplate stuff inside the POCO class body
     Settings.WriteInsideClassBody = delegate(Table t)
     {

@@ -46,8 +46,18 @@ namespace EntityFramework_Reverse_POCO_Generator
                 return;
             }
 
+            // The Add enumeration form lists the database's tables when the connection string can be resolved;
+            // otherwise it takes typed names, and the dialog opens either way.
+            string unresolved;
+            var configuration    = TemplateConfiguration.ReadFrom(new TemplateSettingsFile(template), Path.GetFileNameWithoutExtension(path) + "DbContext");
+            var connectionString = configuration.ResolveConnectionString(out unresolved);
+
             var dialog = new SettingsEditorDialog(Path.GetFileName(path),
-                SettingsEditSession.Load(template, catalogue));
+                SettingsEditSession.Load(template, catalogue),
+                connectionString == null
+                    ? null
+                    : (System.Func<System.Threading.CancellationToken, System.Threading.Tasks.Task<SchemaReadResult>>)
+                      (token => SchemaReading.ReadAsync(configuration.Database.Name, connectionString, token)));
 
             dialog.ShowModal();
 
@@ -58,6 +68,27 @@ namespace EntityFramework_Reverse_POCO_Generator
                 await VS.MessageBox.ShowWarningAsync("EntityFramework Reverse POCO Generator",
                     "The .tt file was updated, but the generated code could not be refreshed automatically. " +
                     "Save the .tt file to regenerate it." + Environment.NewLine + Environment.NewLine + error);
+
+            if (dialog.OpenSetting != null)
+                await OpenAtAsync(path, SettingsEditSession.LineNumberOf(dialog.Text, dialog.OpenSetting));
+        }
+
+        /// <summary>Opens the .tt in the editor with the caret on a line, after the saved text has been written.</summary>
+        private static async Task OpenAtAsync(string path, int lineNumber)
+        {
+            var view = await VS.Documents.OpenAsync(path);
+            if (view == null || view.TextView == null || lineNumber < 1)
+                return;
+
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
+            var snapshot = view.TextView.TextSnapshot;
+            if (lineNumber > snapshot.LineCount)
+                return;
+
+            var line = snapshot.GetLineFromLineNumber(lineNumber - 1);
+            view.TextView.Caret.MoveTo(line.Start);
+            view.TextView.ViewScroller.EnsureSpanVisible(line.Extent, Microsoft.VisualStudio.Text.Editor.EnsureSpanVisibleOptions.AlwaysCenter);
         }
     }
 }

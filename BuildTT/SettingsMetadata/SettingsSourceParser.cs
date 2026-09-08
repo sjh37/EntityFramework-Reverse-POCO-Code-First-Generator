@@ -1,5 +1,6 @@
 using Efrpg.Gui;
 using System.Collections.Generic;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace BuildTT.SettingsMetadata
@@ -99,14 +100,22 @@ namespace BuildTT.SettingsMetadata
 
             setting.MultiLine = true;
 
+            // The whole right-hand side, continuation lines kept with their own indentation, so the GUI can put
+            // the statement into a template that lacks it. Joined with LF; the reader re-indents and re-joins.
+            var body = new StringBuilder(value.Trim());
+
             for (var index = firstLine + 1; index < lines.Length; index++)
             {
                 scanner.Feed(lines[index]);
                 if (scanner.Finished)
                 {
-                    setting.Help = HelpText(lines[index], scanner.LineCommentIndex);
+                    body.Append('\n').Append(lines[index].Substring(0, scanner.TerminatorIndex));
+                    setting.DefaultValue = body.ToString();
+                    setting.Help         = HelpText(lines[index], scanner.LineCommentIndex);
                     return index;
                 }
+
+                body.Append('\n').Append(lines[index]);
             }
 
             return lines.Length - 1;

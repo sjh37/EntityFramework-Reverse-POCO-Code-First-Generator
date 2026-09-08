@@ -25,7 +25,9 @@ namespace Efrpg.Gui.Tests
         public static IEnumerable<string> EditableSettings()
         {
             return Shipped().Items
-                .Where(i => i.IsEditable && i.Assignment != null)
+                // Lists are covered by StringListSettingTests: adding an item can change the line count, which
+                // the one-line assertion below is there to forbid for everything else.
+                .Where(i => i.IsEditable && i.Assignment != null && i.Kind != SettingKind.StringList)
                 .Select(i => i.Name)
                 .OrderBy(n => n)
                 .ToList();

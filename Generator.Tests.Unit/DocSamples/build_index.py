@@ -172,6 +172,10 @@ def main():
     body = io.open(os.path.join(os.path.dirname(__file__), 'index_header.md'), encoding='utf-8').read()
     body += "\n".join(rows) + "\n"
     io.open(os.path.join(WIKI, 'Settings-Reference.md'), 'w', encoding='utf-8', newline='').write(body)
+
+    # The same mapping, for BuildTT to stamp into settings-metadata so the GUI can link each setting to its page
+    pages = "{\n" + ",\n".join('  "%s": "%s"' % (n, M[n][0]) for n in sorted(names, key=str.lower)) + "\n}\n"
+    io.open(os.path.join(GEN, 'BuildTT', 'SettingsMetadata', 'wiki-pages.json'), 'w', encoding='utf-8', newline='').write(pages)
     print("Settings-Reference.md rebuilt: %d settings across %d pages"
           % (len(names), len(set(p for p, _ in M.values()))))
 

@@ -136,6 +136,11 @@
     <Compile Include="ConfigureTemplateCommand.cs" />
     <Compile Include="ConnectionDialog.cs" />
     <Compile Include="SettingsEditorCommand.cs" />
+    <Compile Include="AddEnumerationDialog.cs" />
+    <Compile Include="CodeView.cs" />
+    <Compile Include="CSharpPreviewClassifier.cs" />
+    <Compile Include="CSharpPreviewClassifierProvider.cs" />
+    <Compile Include="CSharpPreviewContentType.cs" />
     <Compile Include="SettingsEditorDialog.cs" />
     <Compile Include="SettingsMetadataFiles.cs" />
     <Compile Include="SolutionSelection.cs" />

@@ -175,7 +175,7 @@ namespace Efrpg.Gui.Tests
         private static readonly string[] Names =
         {
             "metadataVersion", "generatorVersion", "templateVersion", "include", "settings",
-            "name", "type", "kind", "section", "help", "defaultValue", "inDatabaseTt", "commentedOut",
+            "name", "wikiPage", "type", "kind", "section", "help", "defaultValue", "inDatabaseTt", "commentedOut",
             "multiLine", "runtimeOnly", "isFlags", "enumMembers", "value", "note"
         };
     }

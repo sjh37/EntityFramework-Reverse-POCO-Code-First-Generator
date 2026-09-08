@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace BuildTT.SettingsMetadata
 {
@@ -57,6 +58,10 @@ namespace BuildTT.SettingsMetadata
 
             var members = SettingsMembers().ToDictionary(x => x.Key, x => x.Value);
 
+            // Written by Generator.Tests.Unit/DocSamples/build_index.py from the same table that builds the wiki's
+            // Settings-Reference page, so the GUI links each setting to the page that actually documents it.
+            var wikiPages = ReadWikiPages(Path.Combine(generatorRoot, "..", "BuildTT", "SettingsMetadata", "wiki-pages.json"));
+
             foreach (var orphan in fromTemplate.Keys.Where(name => !members.ContainsKey(name)))
                 Console.WriteLine("WARNING: Database.tt assigns Settings." + orphan + ", which does not exist on Efrpg.Settings.");
 
@@ -78,7 +83,10 @@ namespace BuildTT.SettingsMetadata
                 Type type;
                 members.TryGetValue(name, out type);
 
-                Write(json, name, type, template, code);
+                string wikiPage;
+                wikiPages.TryGetValue(name, out wikiPage);
+
+                Write(json, name, type, template, code, wikiPage);
             }
 
             json.EndArray();
@@ -103,17 +111,39 @@ namespace BuildTT.SettingsMetadata
                 .ThenBy(name => name, StringComparer.Ordinal);
         }
 
-        private static void Write(JsonBuilder json, string name, Type type, SettingSource template, SettingSource code)
+        /// <summary>
+        ///     One line per setting, <c>"Name": "Page"</c>. A setting the file does not list links to the index page,
+        ///     which always exists, so a missing entry costs a click rather than a broken link.
+        /// </summary>
+        private static Dictionary<string, string> ReadWikiPages(string path)
+        {
+            var pages = new Dictionary<string, string>(StringComparer.Ordinal);
+            if (!File.Exists(path))
+            {
+                Console.WriteLine("WARNING: " + path + " not found; run Generator.Tests.Unit/DocSamples/build_index.py. Every wiki link will point at the index.");
+                return pages;
+            }
+
+            foreach (var match in Regex.Matches(File.ReadAllText(path), "\"(?<name>[^\"]+)\"\\s*:\\s*\"(?<page>[^\"]+)\"").Cast<Match>())
+                pages[match.Groups["name"].Value] = match.Groups["page"].Value;
+
+            return pages;
+        }
+
+        private static void Write(JsonBuilder json, string name, Type type, SettingSource template, SettingSource code, string wikiPage)
         {
             var preferred = template ?? code;
 
             json.StartObject(null);
             json.String("name", name);
+            json.String("wikiPage", wikiPage ?? "Settings-Reference");
             json.String("type", type == null ? null : TypeName(type));
             json.String("kind", Kind(type));
             json.String("section", preferred == null ? null : preferred.Section);
             json.String("help", First(template == null ? null : template.Help, code == null ? null : code.Help));
-            json.String("defaultValue", First(template == null ? null : template.DefaultValue, code == null ? null : code.DefaultValue));
+            json.String("defaultValue", template != null
+                ? template.DefaultValue
+                : code == null ? null : code.MultiLine ? QualifyForTemplate(code.DefaultValue) : code.DefaultValue);
             json.Bool("inDatabaseTt", template != null);
             json.Bool("commentedOut", template != null && template.CommentedOut);
             json.Bool("multiLine", preferred != null && preferred.MultiLine);
@@ -143,6 +173,34 @@ namespace BuildTT.SettingsMetadata
         private static string First(string preferred, string fallback)
         {
             return string.IsNullOrEmpty(preferred) ? (string.IsNullOrEmpty(fallback) ? null : fallback) : preferred;
+        }
+
+        /// <summary>
+        ///     A body written inside the Settings class names its members bare - <c>IsEfCore8Plus()</c>,
+        ///     <c>HiLoSequences</c> - which does not compile once the GUI pastes it into a .tt, where the same code
+        ///     runs inside the template class. Every bare member reference gets its <c>Settings.</c> prefix.
+        /// </summary>
+        private static string QualifyForTemplate(string body)
+        {
+            if (string.IsNullOrEmpty(body))
+                return body;
+
+            var settings = typeof(Efrpg.Settings);
+            var names = settings.GetFields(BindingFlags.Public | BindingFlags.Static).Select(f => f.Name)
+                .Concat(settings.GetProperties(BindingFlags.Public | BindingFlags.Static).Select(p => p.Name))
+                .Concat(settings.GetMethods(BindingFlags.Public | BindingFlags.Static).Select(m => m.Name))
+                .Distinct()
+                .OrderByDescending(n => n.Length);
+
+            foreach (var name in names)
+            {
+                // Not already qualified, not part of a longer identifier, and not the type of the same name being
+                // used as an enum (DatabaseType.MySql), which is what a following dot means for those settings.
+                var pattern = @"(?<![\w.])" + Regex.Escape(name) + @"\b(?!\s*\.)";
+                body = Regex.Replace(body, pattern, "Settings." + name);
+            }
+
+            return body;
         }
 
         private static IEnumerable<KeyValuePair<string, Type>> SettingsMembers()

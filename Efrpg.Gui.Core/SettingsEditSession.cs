@@ -20,6 +20,7 @@ namespace Efrpg.Gui
     public sealed class SettingsEditSession
     {
         private readonly List<SettingEditorItem> _items;
+        private readonly List<EnumerationEntry> _enumerations = new List<EnumerationEntry>();
 
         private SettingsEditSession(TemplateSettingsDocument document, SettingsCatalogue catalogue,
             List<SettingEditorItem> items)
@@ -28,6 +29,39 @@ namespace Efrpg.Gui
             Catalogue = catalogue;
             _items    = items;
         }
+
+        /// <summary>Entries queued for the end of the Settings.Enumerations block, written after every other edit.</summary>
+        public IReadOnlyList<EnumerationEntry> PendingEnumerations => _enumerations;
+
+        /// <summary>
+        ///     Queues an enum to append. If the template has the block commented out or missing, it is switched on
+        ///     first through the same edit the Callbacks page makes, so the append always has somewhere to land.
+        /// </summary>
+        public void AddEnumeration(EnumerationEntry entry)
+        {
+            if (entry == null)
+                throw new ArgumentNullException(nameof(entry));
+
+            if (!entry.IsValid)
+                throw new InvalidOperationException(entry.Problem);
+
+            var item = Find(EnumerationBlock.SettingName);
+            if (item == null)
+                throw new InvalidOperationException("This catalogue has no Settings." + EnumerationBlock.SettingName + ".");
+
+            if (!item.IsAssigned)
+                item.SetAssigned(true);
+
+            _enumerations.Add(entry);
+        }
+
+        public void RemoveEnumeration(EnumerationEntry entry)
+        {
+            _enumerations.Remove(entry);
+        }
+
+        /// <summary>Every change the next <see cref="Apply"/> will write: edited settings plus queued enums.</summary>
+        public int ChangeCount => Changed.Count + _enumerations.Count;
 
         public TemplateSettingsDocument Document { get; }
 
@@ -38,7 +72,7 @@ namespace Efrpg.Gui
 
         public IReadOnlyList<SettingEditorItem> Changed => _items.Where(i => i.IsChanged).ToList();
 
-        public bool HasChanges => _items.Any(i => i.IsChanged);
+        public bool HasChanges => _items.Any(i => i.IsChanged) || _enumerations.Count > 0;
 
         /// <summary>The section headings, in declaration order, for the editor's navigation.</summary>
         public IReadOnlyList<string> Sections =>
@@ -52,10 +86,26 @@ namespace Efrpg.Gui
             var document = TemplateSettingsDocument.Parse(templateText);
 
             var items = catalogue.Settings
-                .Select(definition => new SettingEditorItem(definition, document.Find(definition.Name)))
+                .Select(definition =>
+                {
+                    var assignment = document.Find(definition.Name);
+                    return new SettingEditorItem(definition, assignment, assignment == null ? null : document.StatementText(assignment));
+                })
                 .ToList();
 
             return new SettingsEditSession(document, catalogue, items);
+        }
+
+        /// <summary>
+        ///     The line a setting's statement starts on in <paramref name="templateText"/>, or 0 when it has none.
+        ///     For opening the .tt at a callback after the session's changes have been written: lines above it may
+        ///     have moved, so the number is taken from the text that was saved rather than the one that was loaded.
+        /// </summary>
+        public static int LineNumberOf(string templateText, string settingName)
+        {
+            var assignment = TemplateSettingsDocument.Parse(templateText ?? string.Empty).Find(settingName);
+
+            return assignment == null ? 0 : assignment.LineNumber;
         }
 
         public SettingEditorItem Find(string name)
@@ -104,7 +154,9 @@ namespace Efrpg.Gui
             {
                 var assignment = document.Find(item.Name);
 
-                if (assignment == null)
+                if (item.PendingAssigned.HasValue)
+                    document = Switch(document, item, assignment);
+                else if (assignment == null)
                     document = Add(document, item);
                 else if (assignment.IsCommentedOut)
                     document = document.WithUncommentedValue(assignment, item.PendingValueText);
@@ -112,7 +164,26 @@ namespace Efrpg.Gui
                     document = document.WithValue(assignment, item.PendingValueText);
             }
 
+            // After the item edits, so a block switched on in this same session is there to append to.
+            foreach (var entry in _enumerations)
+                document = EnumerationBlock.Append(document, entry);
+
             return document.Text;
+        }
+
+        /// <summary>
+        ///     Switches a code setting on or off: off comments its statement out, on uncomments one that is there
+        ///     or writes the default body beside the setting's neighbours when the template has nothing to uncomment.
+        /// </summary>
+        private TemplateSettingsDocument Switch(TemplateSettingsDocument document, SettingEditorItem item, SettingAssignment assignment)
+        {
+            if (!item.PendingAssigned.Value)
+                return assignment == null ? document : document.WithCommentedOut(assignment);
+
+            if (assignment != null)
+                return document.WithUncommented(assignment);
+
+            return AddStatement(document, item);
         }
 
         /// <summary>
@@ -151,6 +222,33 @@ namespace Efrpg.Gui
                 throw new InvalidOperationException("This template has no Settings block to add Settings." + item.Name + " to.");
 
             return document.WithNewAssignment(item.Name, item.PendingValueText, item.Help, anchor.Assignment, anchor.IsBefore);
+        }
+
+        /// <summary>The block form of <see cref="Add"/>, placed by the same rules, for a callback the template lacks.</summary>
+        private TemplateSettingsDocument AddStatement(TemplateSettingsDocument document, SettingEditorItem item)
+        {
+            var settings   = Catalogue.Settings;
+            var index      = IndexOf(settings, item.Name);
+            var baseIndent = document.Assignments.Count == 0 ? 0 : document.Assignments.Min(a => a.Indent.Length);
+            var body       = item.Definition.DefaultValue;
+
+            var anchor = Nearest(document, settings, index, -1, item.Section, baseIndent)
+                         ?? Nearest(document, settings, index, +1, item.Section, baseIndent);
+
+            if (anchor != null)
+                return document.WithNewStatement(item.Name, body, anchor.Assignment, anchor.IsBefore);
+
+            var heading = document.FindCommentLine(item.Section);
+            if (heading > 0)
+                return document.WithNewStatementAfterLine(item.Name, body, heading);
+
+            anchor = Nearest(document, settings, index, -1, null, baseIndent)
+                     ?? Nearest(document, settings, index, +1, null, baseIndent);
+
+            if (anchor == null)
+                throw new InvalidOperationException("This template has no Settings block to add Settings." + item.Name + " to.");
+
+            return document.WithNewStatement(item.Name, body, anchor.Assignment, anchor.IsBefore);
         }
 
         private static int IndexOf(IReadOnlyList<SettingDefinition> settings, string name)

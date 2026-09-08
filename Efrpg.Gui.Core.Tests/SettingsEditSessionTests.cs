@@ -218,6 +218,58 @@ namespace Efrpg.Gui.Tests
         }
 
         /// <summary>
+        ///     Settings.TableSuffix ships as null, which is how a string setting is switched off. That has to read
+        ///     as an empty box rather than as an expression the editor refuses to touch.
+        /// </summary>
+        [Test]
+        public void ANullStringIsEditableAndReadsAsEmpty()
+        {
+            var item = Shipped().Find("TableSuffix");
+
+            Assert.That(item.IsEditable, Is.True, item.ReadOnlyReason);
+            Assert.That(item.TextValue, Is.Empty);
+        }
+
+        [Test]
+        public void GivingANullStringAValueWritesALiteral()
+        {
+            var session = Shipped();
+
+            session.Find("TableSuffix").SetText("Dto");
+
+            var text = session.Apply();
+            Assert.That(text, Does.Match(@"Settings\.TableSuffix\s+= ""Dto"";"));
+            Assert.That(SettingsEditSession.Load(text, V4).Find("TableSuffix").TextValue, Is.EqualTo("Dto"));
+        }
+
+        /// <summary>Blank means off for a setting that ships as null, so clearing it restores null, not "".</summary>
+        [Test]
+        public void ClearingANullStringWritesNullBack()
+        {
+            var original = RepositoryFiles.DatabaseTemplate();
+            var session  = SettingsEditSession.Load(original, V4);
+            session.Find("TableSuffix").SetText("Dto");
+            var withSuffix = SettingsEditSession.Load(session.Apply(), V4);
+
+            withSuffix.Find("TableSuffix").SetText(string.Empty);
+
+            Assert.That(withSuffix.Apply(), Is.EqualTo(original));
+        }
+
+        /// <summary>A setting that ships as "" is a different case: clearing it must not turn it into null.</summary>
+        [Test]
+        public void ClearingAnEmptyStringKeepsTheEmptyLiteral()
+        {
+            var session = Shipped();
+            session.Find("ConnectionStringActions").SetText(".EnableRetryOnFailure()");
+            var withValue = SettingsEditSession.Load(session.Apply(), V4);
+
+            withValue.Find("ConnectionStringActions").SetText(string.Empty);
+
+            Assert.That(withValue.Apply(), Does.Contain("Settings.ConnectionStringActions      = \"\";"));
+        }
+
+        /// <summary>
         ///     A template written with @"" folder paths keeps them, so the diff is the value and not the style.
         /// </summary>
         [Test]

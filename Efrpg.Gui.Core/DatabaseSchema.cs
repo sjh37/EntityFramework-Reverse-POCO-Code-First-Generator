@@ -104,11 +104,14 @@ namespace Efrpg.Gui
                 {
                     Schema = Attribute(r, "schemaName"),
                     Name   = Attribute(r, "tableName"),
-                    Kind   = Attribute(r, "isView") == "true" ? DatabaseObjectKind.View : DatabaseObjectKind.Table
+                    Kind   = Attribute(r, "isView") == "true" ? DatabaseObjectKind.View : DatabaseObjectKind.Table,
+                    Column = new DatabaseColumn(Attribute(r, "columnName"), Attribute(r, "typeName"),
+                        Attribute(r, "primaryKey") == "true", ParseInt(Attribute(r, "ordinal")))
                 })
                 .Where(r => r.Name.Length > 0)
                 .GroupBy(r => r.Schema + "." + r.Name, StringComparer.OrdinalIgnoreCase)
-                .Select(g => new DatabaseObject(g.First().Schema, g.First().Name, g.First().Kind));
+                .Select(g => new DatabaseObject(g.First().Schema, g.First().Name, g.First().Kind,
+                    g.Select(r => r.Column).Where(c => c.Name.Length > 0).OrderBy(c => c.Ordinal).ToList()));
         }
 
         /// <summary>

@@ -18,12 +18,74 @@ namespace Efrpg.Gui
     public sealed class SettingEditorItem
     {
         private string _newValueText;
+        private bool? _pendingAssigned;
 
         internal SettingEditorItem(SettingDefinition definition, SettingAssignment assignment)
+            : this(definition, assignment, null)
         {
-            Definition = definition;
-            Assignment = assignment;
         }
+
+        internal SettingEditorItem(SettingDefinition definition, SettingAssignment assignment, string statementText)
+        {
+            Definition    = definition;
+            Assignment    = assignment;
+            StatementText = statementText;
+        }
+
+        /// <summary>
+        ///     True for the settings that hold code rather than a value: callbacks, lists and objects built in code.
+        ///     These are switched on and off as a whole rather than edited in a form.
+        /// </summary>
+        public bool IsCode =>
+            Kind == SettingKind.Callback || Kind == SettingKind.Complex;
+
+        /// <summary>The template assigns this and the assignment is live, once any pending switch is counted.</summary>
+        public bool IsAssigned => _pendingAssigned ?? (Assignment != null && !Assignment.IsCommentedOut);
+
+        /// <summary>
+        ///     The statement as it stands in the template, marker and all when it is commented out; or, when the
+        ///     template lacks it, the statement switching it on would write.
+        /// </summary>
+        public string Code
+        {
+            get
+            {
+                if (StatementText != null)
+                    return StatementText;
+
+                var body = Definition.DefaultValue;
+                return body == null ? null : "Settings." + Name + " = " + body.Trim() + ";";
+            }
+        }
+
+        /// <summary>The line the statement starts on in the template as loaded, or 0 when it is not there.</summary>
+        public int LineNumber => Assignment != null ? Assignment.LineNumber : 0;
+
+        /// <summary>The full statement text the session read for this item, or null when absent.</summary>
+        internal string StatementText { get; }
+
+        /// <summary>
+        ///     Switches a code setting on or off. Off comments the statement out, so the generator's default runs
+        ///     and the user's code stays in the file; on uncomments it, or writes the default body when the
+        ///     template has nothing to uncomment.
+        /// </summary>
+        public void SetAssigned(bool assigned)
+        {
+            if (!IsCode)
+                throw new InvalidOperationException("Settings." + Name + " is edited as a value, not switched on and off.");
+
+            if (assigned && Assignment == null && Definition.DefaultValue == null)
+                throw new InvalidOperationException("Settings." + Name + " has no default body to write.");
+
+            var fileSays = Assignment != null && !Assignment.IsCommentedOut;
+            _pendingAssigned = assigned == fileSays ? (bool?) null : assigned;
+        }
+
+        /// <summary>True when a switch is pending that the file does not already say.</summary>
+        public bool IsAssignmentChanged => _pendingAssigned.HasValue;
+
+        /// <summary>The state a pending switch will write, for the session; null when there is none.</summary>
+        internal bool? PendingAssigned => _pendingAssigned;
 
         public SettingDefinition Definition { get; }
 
@@ -53,7 +115,8 @@ namespace Efrpg.Gui
         ///     or has commented out, any value at all is a change, because writing it is what the user asked for.
         /// </summary>
         public bool IsChanged =>
-            _newValueText != null && (Assignment == null || Assignment.IsCommentedOut || _newValueText != Assignment.ValueText);
+            _pendingAssigned.HasValue ||
+            (_newValueText != null && (Assignment == null || Assignment.IsCommentedOut || _newValueText != Assignment.ValueText));
 
         public bool IsEditable => ReadOnlyReason == null;
 
@@ -87,7 +150,8 @@ namespace Efrpg.Gui
                 if (Assignment == null)
                     return null;
 
-                if (Assignment.SpansMultipleLines)
+                // A list of strings is read whole however many lines it takes; every other kind must fit one line.
+                if (Assignment.SpansMultipleLines && Kind != SettingKind.StringList)
                     return (Assignment.IsCommentedOut ? "Commented out, and w" : "W") + "ritten across several lines - edit it in the editor.";
 
                 if (CanParse())
@@ -157,14 +221,44 @@ namespace Efrpg.Gui
             bool verbatim;
 
             // Keeps whichever literal form the template already used, so the diff is the value and not the style.
-            SettingValue.TryReadText(Assignment != null ? Assignment.ValueText : null, out existing, out verbatim);
+            // A setting that ships as null, or that the file switches off with null, goes back to null when
+            // cleared: for those, blank means off, not an empty suffix.
+            var fileValue = Assignment != null ? Assignment.ValueText : null;
+            SettingValue.TryReadText(fileValue, out existing, out verbatim);
 
-            Set(SettingValue.WriteText(value, verbatim));
+            Set(string.IsNullOrEmpty(value) && (SettingValue.IsNull(fileValue) || SettingValue.IsNull(Definition.DefaultValue))
+                ? SettingValue.Null
+                : SettingValue.WriteText(value, verbatim));
         }
 
         public void SetNumber(int value)
         {
             Set(SettingValue.WriteNumber(value));
+        }
+
+        /// <summary>The items of a list setting, or empty when the file holds none or something unreadable.</summary>
+        public IReadOnlyList<string> StringListValue
+        {
+            get
+            {
+                IReadOnlyList<string> items;
+                StringListForm form;
+                return SettingValue.TryReadStringList(CurrentValueText, out items, out form) ? items : new string[0];
+            }
+        }
+
+        /// <summary>Replaces the items, keeping the list or array spelling the file used.</summary>
+        public void SetStringList(IEnumerable<string> items)
+        {
+            IReadOnlyList<string> existing;
+            StringListForm form;
+            if (!SettingValue.TryReadStringList(Assignment != null ? Assignment.ValueText : Definition.DefaultValue, out existing, out form))
+                form = StringListForm.List;
+
+            var indent  = Assignment != null ? Assignment.Indent : "    ";
+            var newLine = Assignment != null && Assignment.ValueText.Contains("\r\n") ? "\r\n" : Assignment != null && Assignment.ValueText.Contains("\n") ? "\n" : "\r\n";
+
+            Set(SettingValue.WriteStringList(items, form, indent, newLine));
         }
 
         public void SetCharacter(string value)
@@ -194,7 +288,8 @@ namespace Efrpg.Gui
         /// <summary>Puts the value back to whatever the file said when it was loaded.</summary>
         public void Revert()
         {
-            _newValueText = null;
+            _newValueText    = null;
+            _pendingAssigned = null;
         }
 
         private void Set(string valueText)
@@ -239,6 +334,12 @@ namespace Efrpg.Gui
                 {
                     IReadOnlyList<string> members;
                     return SettingValue.TryReadEnum(text, Definition, out members);
+                }
+                case SettingKind.StringList:
+                {
+                    IReadOnlyList<string> items;
+                    StringListForm form;
+                    return SettingValue.TryReadStringList(text, out items, out form);
                 }
                 default:
                     return false;

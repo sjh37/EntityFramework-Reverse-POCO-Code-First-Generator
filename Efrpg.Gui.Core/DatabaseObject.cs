@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace Efrpg.Gui
 {
@@ -8,13 +9,22 @@ namespace Efrpg.Gui
     public sealed class DatabaseObject : IComparable<DatabaseObject>
     {
         public DatabaseObject(string schema, string name, DatabaseObjectKind kind)
+            : this(schema, name, kind, null)
         {
-            Schema = schema ?? string.Empty;
-            Name   = name ?? string.Empty;
-            Kind   = kind;
+        }
+
+        public DatabaseObject(string schema, string name, DatabaseObjectKind kind, IReadOnlyList<DatabaseColumn> columns)
+        {
+            Schema  = schema ?? string.Empty;
+            Name    = name ?? string.Empty;
+            Kind    = kind;
+            Columns = columns ?? new DatabaseColumn[0];
         }
 
         public string Schema { get; }
+
+        /// <summary>The columns in ordinal order, for tables and views; empty for routines.</summary>
+        public IReadOnlyList<DatabaseColumn> Columns { get; }
 
         public string Name { get; }
 

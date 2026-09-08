@@ -23,9 +23,17 @@ namespace Efrpg.Gui
         private static readonly Regex Member   = new Regex(@"^[A-Za-z_]\w*\.(?<member>[A-Za-z_]\w*)$");
         private static readonly Regex Character = new Regex(@"^'(?<value>\\.|[^'])'$");
 
+        /// <summary>The right-hand side of a string setting that is switched off, such as <c>Settings.TableSuffix = null;</c>.</summary>
+        public const string Null = "null";
+
+        public static bool IsNull(string rhs)
+        {
+            return (rhs ?? string.Empty).Trim() == Null;
+        }
+
         /// <summary>
-        ///     Reads a string literal, regular or verbatim. False for anything else, including
-        ///     <c>string.Empty</c> and <c>Path.Combine(...)</c>, which are code and stay code.
+        ///     Reads a string literal, regular or verbatim, or <c>null</c>, which reads as empty. False for anything
+        ///     else, including <c>string.Empty</c> and <c>Path.Combine(...)</c>, which are code and stay code.
         /// </summary>
         public static bool TryReadText(string rhs, out string value, out bool isVerbatim)
         {
@@ -33,6 +41,12 @@ namespace Efrpg.Gui
             isVerbatim = false;
 
             var trimmed = (rhs ?? string.Empty).Trim();
+
+            if (trimmed == Null)
+            {
+                value = string.Empty;
+                return true;
+            }
 
             var verbatim = Verbatim.Match(trimmed);
             if (verbatim.Success)
@@ -65,6 +79,91 @@ namespace Efrpg.Gui
                 return "@\"" + value.Replace("\"", "\"\"") + "\"";
 
             return "\"" + Escape(value) + "\"";
+        }
+
+        private static readonly Regex ListHead = new Regex(
+            @"^new\s+(?<form>List\s*<\s*string\s*>|string\s*\[\s*\]|\[\s*\])\s*(?:\(\s*\))?\s*(?:\{(?<body>.*)\})?\s*$", RegexOptions.Singleline);
+
+        private static readonly Regex EmptyArray = new Regex(@"^new\s+string\s*\[\s*0\s*\]$");
+
+        private static readonly Regex Literal = new Regex(@"@""(?:[^""]|"""")*""|""(?:[^""\\]|\\.)*""", RegexOptions.Singleline);
+
+        /// <summary>
+        ///     Reads a list or array of string literals: <c>new List&lt;string&gt;()</c>, <c>new string[0]</c>, or
+        ///     either with an initialiser. Comments inside the initialiser are ignored, so the shipped
+        ///     <c>// "JsonIgnore"</c> example does not become an item. Anything that is not a literal - a call, a
+        ///     variable - fails the read, and the setting stays read-only.
+        /// </summary>
+        public static bool TryReadStringList(string rhs, out IReadOnlyList<string> items, out StringListForm form)
+        {
+            items = null;
+            form  = StringListForm.List;
+
+            var text = StripComments(rhs ?? string.Empty).Trim();
+
+            if (EmptyArray.IsMatch(text))
+            {
+                items = new string[0];
+                form  = StringListForm.Array;
+                return true;
+            }
+
+            var head = ListHead.Match(text);
+            if (!head.Success)
+                return false;
+
+            form = head.Groups["form"].Value.StartsWith("List", StringComparison.Ordinal) ? StringListForm.List : StringListForm.Array;
+
+            var list = new List<string>();
+            var body = head.Groups["body"].Success ? head.Groups["body"].Value : string.Empty;
+
+            // Every literal is an item; whatever is left after removing them must be commas and whitespace only.
+            var remainder = Literal.Replace(body, match =>
+            {
+                string value;
+                bool verbatim;
+                TryReadText(match.Value, out value, out verbatim);
+                list.Add(value);
+                return string.Empty;
+            });
+
+            if (remainder.Trim(' ', '\t', '\r', '\n', ',').Length > 0)
+                return false;
+
+            items = list;
+            return true;
+        }
+
+        /// <summary>
+        ///     Writes the list in the form the file used: on one line when it is short, otherwise one item per
+        ///     line inside braces indented for the assignment it belongs to.
+        /// </summary>
+        public static string WriteStringList(IEnumerable<string> items, StringListForm form, string indent, string newLine)
+        {
+            var values = (items ?? new string[0]).Where(i => i != null).ToList();
+            var head   = form == StringListForm.List ? "new List<string>" : "new string[]";
+
+            if (values.Count == 0)
+                return form == StringListForm.List ? "new List<string>()" : "new string[0]";
+
+            var literals = values.Select(v => WriteText(v, false)).ToList();
+            var oneLine  = head + " { " + string.Join(", ", literals) + " }";
+
+            if (oneLine.Length <= 110)
+                return oneLine;
+
+            indent  = indent ?? string.Empty;
+            newLine = string.IsNullOrEmpty(newLine) ? "\r\n" : newLine;
+
+            return head + newLine + indent + "{" + newLine +
+                   string.Join("," + newLine, literals.Select(l => indent + "    " + l)) + newLine +
+                   indent + "}";
+        }
+
+        private static string StripComments(string text)
+        {
+            text = Regex.Replace(text, @"/\*.*?\*/", string.Empty, RegexOptions.Singleline);
+            return Regex.Replace(text, @"//[^\r\n]*", string.Empty);
         }
 
         public static bool TryReadBoolean(string rhs, out bool value)

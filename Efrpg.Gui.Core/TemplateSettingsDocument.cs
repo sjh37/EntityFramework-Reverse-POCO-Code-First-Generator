@@ -34,6 +34,9 @@ namespace Efrpg.Gui
         private static readonly Regex AssignmentStart =
             new Regex(@"^(?<indent>[ \t]*)(?<comment>//[ \t]*)?Settings\.(?<name>\w+)[ \t]*=(?!=)[ \t]*");
 
+        /// <summary>The <c>//</c> that comments a line out, sitting right after its indentation.</summary>
+        private static readonly Regex CommentMarker = new Regex(@"^[ \t]*(?<marker>//)");
+
         private readonly string _text;
 
         private TemplateSettingsDocument(string text, IReadOnlyList<SettingAssignment> assignments,
@@ -79,8 +82,9 @@ namespace Efrpg.Gui
         ///     a set of edits and still show the user what the file looked like before.
         /// </summary>
         /// <remarks>
-        ///     Refuses a multi-line assignment. The caller should not have offered to edit one, and silently
-        ///     truncating a lambda to its first line is exactly the destruction this class exists to avoid.
+        ///     The value span covers the whole right-hand side however many lines it takes, so replacing it never
+        ///     truncates a statement; whether a multi-line value is one a form may rewrite is the item's decision,
+        ///     which it makes by reading it first.
         /// </remarks>
         public TemplateSettingsDocument WithValue(SettingAssignment assignment, string newValueText)
         {
@@ -89,10 +93,6 @@ namespace Efrpg.Gui
 
             if (newValueText == null)
                 throw new ArgumentNullException(nameof(newValueText));
-
-            if (assignment.SpansMultipleLines)
-                throw new InvalidOperationException(
-                    "Settings." + assignment.Name + " spans more than one line and cannot be rewritten from a form.");
 
             if (newValueText == assignment.ValueText)
                 return this;
@@ -122,9 +122,13 @@ namespace Efrpg.Gui
             if (newValueText == null)
                 throw new ArgumentNullException(nameof(newValueText));
 
+            // Every line of a multi-line statement carries a marker, so those come off first and the value is
+            // replaced on the re-scanned result.
             if (assignment.SpansMultipleLines)
-                throw new InvalidOperationException(
-                    "Settings." + assignment.Name + " spans more than one line and cannot be rewritten from a form.");
+            {
+                var uncommented = WithUncommented(assignment);
+                return uncommented.WithValue(uncommented.Find(assignment.Name), newValueText);
+            }
 
             // The value first: it sits after the marker, so removing the marker afterwards does not move it.
             var text = _text.Substring(0, assignment.ValueStart)
@@ -161,6 +165,135 @@ namespace Efrpg.Gui
             var lines = SplitKeepingOffsets(_text);
 
             return Join(lines.GetRange(assignment.LineNumber - 1, assignment.EndLineNumber - assignment.LineNumber + 1)).TrimEnd('\r', '\n');
+        }
+
+        /// <summary>
+        ///     Switches an assignment off by putting <c>//</c> after the indentation of every line it spans, so the
+        ///     generator uses its own default and the user's code stays in the file to read and to switch back on.
+        /// </summary>
+        public TemplateSettingsDocument WithCommentedOut(SettingAssignment assignment)
+        {
+            if (assignment == null)
+                throw new ArgumentNullException(nameof(assignment));
+
+            if (assignment.IsCommentedOut)
+                return this;
+
+            var lines = SplitKeepingOffsets(_text);
+            for (var i = assignment.LineNumber - 1; i < assignment.EndLineNumber; i++)
+            {
+                var text   = lines[i].Text;
+                var indent = text.Length - text.TrimStart(' ', '\t').Length;
+                lines[i] = new Line(text.Substring(0, indent) + "//" + text.Substring(indent), lines[i].Offset, lines[i].LineEnding);
+            }
+
+            return Build(Join(lines));
+        }
+
+        /// <summary>
+        ///     Switches a commented-out assignment back on by removing the <c>//</c> marker from every line it
+        ///     spans, and nothing else, so what comes back is exactly what <see cref="WithCommentedOut"/> took away.
+        /// </summary>
+        public TemplateSettingsDocument WithUncommented(SettingAssignment assignment)
+        {
+            if (assignment == null)
+                throw new ArgumentNullException(nameof(assignment));
+
+            if (!assignment.IsCommentedOut)
+                return this;
+
+            var lines = SplitKeepingOffsets(_text);
+            for (var i = assignment.LineNumber - 1; i < assignment.EndLineNumber; i++)
+            {
+                var match = CommentMarker.Match(lines[i].Text);
+                if (!match.Success)
+                    continue;
+
+                lines[i] = new Line(lines[i].Text.Remove(match.Groups["marker"].Index, match.Groups["marker"].Length), lines[i].Offset, lines[i].LineEnding);
+            }
+
+            return Build(Join(lines));
+        }
+
+        /// <summary>
+        ///     Adds a statement the template lacks, as many lines as its body takes, beside an existing assignment.
+        ///     The first line takes the anchor's indentation and the body's continuation lines are re-indented to
+        ///     match, so a block copied from Settings.cs or from the shipped template lands looking native.
+        /// </summary>
+        /// <param name="body">The right-hand side, without the trailing semicolon, lines joined with LF.</param>
+        public TemplateSettingsDocument WithNewStatement(string name, string body, SettingAssignment anchor, bool insertAfter)
+        {
+            if (anchor == null)
+                throw new ArgumentNullException(nameof(anchor));
+
+            return InsertStatement(name, body, insertAfter ? anchor.EndLineNumber : anchor.LineNumber - 1, anchor.LineNumber);
+        }
+
+        /// <summary>Adds a statement directly after an arbitrary line, a section heading typically, taking its indentation.</summary>
+        public TemplateSettingsDocument WithNewStatementAfterLine(string name, string body, int lineNumber)
+        {
+            return InsertStatement(name, body, lineNumber, lineNumber);
+        }
+
+        /// <summary>
+        ///     Inserts lines immediately before a line, and optionally replaces that line's text - for adding an
+        ///     entry to a collection initialiser ahead of the brace that closes it.
+        /// </summary>
+        /// <param name="lineNumber">One-based; the new lines go in front of it.</param>
+        /// <param name="replaceLineWith">New text for the line itself, or null to leave it as it is.</param>
+        public TemplateSettingsDocument WithLinesBeforeLine(int lineNumber, IReadOnlyList<string> newLines, string replaceLineWith)
+        {
+            if (newLines == null)
+                throw new ArgumentNullException(nameof(newLines));
+
+            var lines = SplitKeepingOffsets(_text);
+            if (lineNumber < 1 || lineNumber > lines.Count)
+                throw new ArgumentOutOfRangeException(nameof(lineNumber));
+
+            if (replaceLineWith != null)
+                lines[lineNumber - 1] = new Line(replaceLineWith, lines[lineNumber - 1].Offset, lines[lineNumber - 1].LineEnding);
+
+            for (var i = 0; i < newLines.Count; i++)
+                lines = InsertLine(lines, lineNumber - 1 + i, newLines[i]);
+
+            return Build(Join(lines));
+        }
+
+        private TemplateSettingsDocument InsertStatement(string name, string body, int at, int formatLineNumber)
+        {
+            if (string.IsNullOrEmpty(name))
+                throw new ArgumentNullException(nameof(name));
+
+            if (body == null)
+                throw new ArgumentNullException(nameof(body));
+
+            var lines  = SplitKeepingOffsets(_text);
+            var format = lines[formatLineNumber - 1].Text;
+            var indent = format.Substring(0, format.Length - format.TrimStart(' ', '\t').Length);
+
+            var bodyLines = body.Replace("\r\n", "\n").Split('\n');
+            var rest      = bodyLines.Skip(1).ToList();
+
+            // The continuation lines keep their shape relative to each other; only the common margin changes.
+            var margin = rest.Where(l => l.Trim().Length > 0)
+                .Select(l => l.Length - l.TrimStart(' ', '\t').Length)
+                .DefaultIfEmpty(0)
+                .Min();
+
+            var statement = new List<string> { indent + "Settings." + name + " = " + bodyLines[0].Trim() };
+            for (var i = 0; i < rest.Count; i++)
+            {
+                var line = rest[i].Trim().Length == 0 ? string.Empty : indent + rest[i].Substring(margin);
+                statement.Add(i == rest.Count - 1 ? line + ";" : line);
+            }
+
+            if (rest.Count == 0)
+                statement[0] += ";";
+
+            for (var i = 0; i < statement.Count; i++)
+                lines = InsertLine(lines, at + i, statement[i]);
+
+            return Build(Join(lines));
         }
 
         /// <summary>
@@ -341,10 +474,23 @@ namespace Efrpg.Gui
             var scanner    = new StatementScanner();
             var value      = string.Empty;
 
+            var commentedOut = match.Groups["comment"].Success;
+
             for (var i = start; i < lines.Count; i++)
             {
                 // Only the first line is entered part way through, at the character after the equals sign.
                 var fragment = i == start ? first.Text.Substring(match.Length) : lines[i].Text;
+
+                // A statement commented out line by line carries the marker on every line; without stripping it
+                // the scanner would read each continuation as a comment and never find the semicolon.
+                if (commentedOut && i > start)
+                {
+                    var marker = CommentMarker.Match(fragment);
+                    if (!marker.Success)
+                        return lines.Count - 1;
+
+                    fragment = fragment.Remove(marker.Groups["marker"].Index, marker.Groups["marker"].Length);
+                }
 
                 scanner.Feed(fragment);
 

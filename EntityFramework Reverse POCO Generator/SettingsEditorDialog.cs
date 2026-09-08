@@ -1,13 +1,20 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using Efrpg.Gui;
 using Microsoft.VisualStudio.PlatformUI;
+using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Threading;
+using Task = System.Threading.Tasks.Task;
 
 namespace EntityFramework_Reverse_POCO_Generator
 {
@@ -39,9 +46,17 @@ namespace EntityFramework_Reverse_POCO_Generator
         private readonly Button _discard;
 
         private const string AllSections = "All settings";
+        private const string CallbacksSection = "Callbacks";
         private const string FilterSection = "Filtering (read-only)";
 
         private bool _rebuilding;
+        private readonly List<CodeView> _codeViews = new List<CodeView>();
+
+        /// <summary>Reads the database for the Add enumeration form, or null when the connection string cannot be resolved.</summary>
+        private readonly Func<CancellationToken, Task<SchemaReadResult>> _readSchema;
+        private readonly CancellationTokenSource _closing = new CancellationTokenSource();
+        private DatabaseSchema _schema;
+        private JoinableTask _reading;
 
         /// <summary>True when the user pressed Save. The caller then writes <see cref="Text"/> to the .tt.</summary>
         public bool Confirmed { get; private set; }
@@ -49,9 +64,22 @@ namespace EntityFramework_Reverse_POCO_Generator
         /// <summary>The template with every change applied, valid once <see cref="Confirmed"/> is true.</summary>
         public string Text { get; private set; }
 
+        /// <summary>
+        ///     The setting whose "Open in .tt" button closed the dialog, or null. Opening the file at its statement
+        ///     is also a save: the line only means anything in the file as written, so the caller applies
+        ///     <see cref="Text"/> first and then opens the document at <see cref="SettingsEditSession.LineNumberOf"/>.
+        /// </summary>
+        public string OpenSetting { get; private set; }
+
         public SettingsEditorDialog(string fileName, SettingsEditSession session)
+            : this(fileName, session, null)
         {
-            _session = session ?? throw new ArgumentNullException(nameof(session));
+        }
+
+        public SettingsEditorDialog(string fileName, SettingsEditSession session, Func<CancellationToken, Task<SchemaReadResult>> readSchema)
+        {
+            _session    = session ?? throw new ArgumentNullException(nameof(session));
+            _readSchema = readSchema;
 
             Title                 = "Reverse POCO settings - " + fileName;
             Width                 = 1000;
@@ -68,8 +96,14 @@ namespace EntityFramework_Reverse_POCO_Generator
             _save     = new Button { Content = "_Save", MinWidth = 90, Margin = new Thickness(0, 0, 8, 0), Padding = new Thickness(10, 4, 10, 4), IsDefault = true };
             _discard  = new Button { Content = "_Discard changes", MinWidth = 120, Padding = new Thickness(10, 4, 10, 4) };
 
+            // Code settings live on their own page, so a section that holds nothing else drops out of the list.
+            var valueSections = session.Sections
+                .Where(s => session.Items.Any(i => i.Section == s && !i.IsCode))
+                .ToList();
+
             _sections.ItemsSource   = new[] { AllSections }
-                .Concat(session.Sections)
+                .Concat(valueSections)
+                .Concat(session.Items.Any(i => i.IsCode) ? new[] { CallbacksSection } : new string[0])
                 .Concat(session.Document.FilterLines.Count > 0 ? new[] { FilterSection } : new string[0])
                 .ToList();
             _sections.SelectedIndex = 1;   // The "Settings" group: connection string, context name, the essentials.
@@ -83,6 +117,84 @@ namespace EntityFramework_Reverse_POCO_Generator
             Rebuild();
 
             Loaded += (s, e) => _search.Focus();
+            Closed += (s, e) => { CancelRead(); DisposeCodeViews(); };
+        }
+
+        private void CancelRead()
+        {
+            _closing.Cancel();
+
+            if (_reading != null)
+                _reading.Join();
+        }
+
+        /// <summary>
+        ///     Opens the Add enumeration form, reading the database first when it has not been read yet. A read
+        ///     that fails still opens the form, with free-text boxes and the reason shown in the summary line.
+        /// </summary>
+        private void AddEnumeration(Button button)
+        {
+            if (_schema != null || _readSchema == null)
+            {
+                ShowAddEnumeration();
+                return;
+            }
+
+            button.IsEnabled = false;
+            button.Content   = "Reading the database...";
+
+#pragma warning disable VSSDK007
+            _reading = ThreadHelper.JoinableTaskFactory.RunAsync(async () =>
+            {
+                string problem = null;
+                try
+                {
+                    await TaskScheduler.Default;
+                    var result = await _readSchema(_closing.Token);
+                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(_closing.Token);
+
+                    if (result.Succeeded)
+                        _schema = result.Schema;
+                    else
+                        problem = result.Error;
+                }
+                catch (OperationCanceledException)
+                {
+                    return;
+                }
+                catch (Exception ex)
+                {
+                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                    problem = ex.Message;
+                }
+
+                if (problem != null)
+                    _summary.Text = "Could not read the database, so the table and columns must be typed. " + problem;
+
+                ShowAddEnumeration();
+            });
+#pragma warning restore VSSDK007
+
+            _reading.Task.FileAndForget("efrpg/gui/addenumeration");
+        }
+
+        private void ShowAddEnumeration()
+        {
+            var dialog = new AddEnumerationDialog(_schema, _session.Document);
+            dialog.ShowModal();
+
+            if (dialog.Confirmed)
+                _session.AddEnumeration(dialog.Result);
+
+            Rebuild();
+        }
+
+        private void DisposeCodeViews()
+        {
+            foreach (var view in _codeViews)
+                view.Dispose();
+
+            _codeViews.Clear();
         }
 
         private UIElement Build()
@@ -94,14 +206,21 @@ namespace EntityFramework_Reverse_POCO_Generator
             buttons.Children.Add(_save);
             buttons.Children.Add(close);
 
-            var footer = new DockPanel { Margin = new Thickness(16, 10, 16, 14), LastChildFill = false };
-            var footerLeft = new StackPanel { Orientation = Orientation.Horizontal };
-            footerLeft.Children.Add(_summary);
-            footerLeft.Children.Add(new Border { Width = 12 });
-            footerLeft.Children.Add(_discard);
-            DockPanel.SetDock(footerLeft, Dock.Left);
-            DockPanel.SetDock(buttons, Dock.Right);
-            footer.Children.Add(footerLeft);
+            // The summary takes whatever width is left and trims with an ellipsis, so a long list of changed
+            // names can never push Discard over Save and Close; the buttons keep their own columns.
+            _summary.TextTrimming = TextTrimming.CharacterEllipsis;
+            _summary.Margin       = new Thickness(0, 0, 12, 0);
+
+            var footer = new Grid { Margin = new Thickness(16, 10, 16, 14) };
+            footer.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+            footer.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+            footer.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+            _discard.Margin = new Thickness(0, 0, 24, 0);
+            Grid.SetColumn(_summary, 0);
+            Grid.SetColumn(_discard, 1);
+            Grid.SetColumn(buttons, 2);
+            footer.Children.Add(_summary);
+            footer.Children.Add(_discard);
             footer.Children.Add(buttons);
 
             var header = new StackPanel { Margin = new Thickness(16, 14, 16, 10) };
@@ -168,11 +287,19 @@ namespace EntityFramework_Reverse_POCO_Generator
                 }
 
                 // Searching looks everywhere. Filtering the results down to the selected section as well would
-                // hide the match somebody just went looking for.
+                // hide the match somebody just went looking for. Code settings show on the Callbacks page and
+                // at the end of "All settings", under their own heading rather than scattered through the rest.
                 var visible = _session.Search(_search.Text)
-                    .Where(i => searching || section == AllSections || i.Section == section)
+                    .Where(i => searching
+                                || (section == CallbacksSection && i.IsCode)
+                                || (section == AllSections && !i.IsCode)
+                                || (section != CallbacksSection && section != AllSections && i.Section == section && !i.IsCode))
                     .ToList();
 
+                if (!searching && section == AllSections)
+                    visible.AddRange(_session.Items.Where(i => i.IsCode));
+
+                DisposeCodeViews();
                 _rows.Children.Clear();
 
                 if (visible.Count == 0)
@@ -188,15 +315,27 @@ namespace EntityFramework_Reverse_POCO_Generator
                 var showHeadings = searching || section == AllSections;
                 string heading = null;
 
+                if (section == CallbacksSection && !searching)
+                    _rows.Children.Add(new TextBlock
+                    {
+                        Text = "Each of these is code in the .tt rather than a value. Ticked means the template sets it; " +
+                               "unticking comments the statement out so the generator's built-in default runs and your code stays " +
+                               "in the file. Ticking a setting the template lacks writes the default body, ready to edit.",
+                        TextWrapping = TextWrapping.Wrap,
+                        Opacity = 0.8,
+                        Margin = new Thickness(0, 8, 0, 14)
+                    });
+
                 foreach (var item in visible)
                 {
-                    if (showHeadings && item.Section != heading)
+                    var itemHeading = item.IsCode ? CallbacksSection : item.Section;
+                    if (showHeadings && itemHeading != heading)
                     {
-                        heading = item.Section;
+                        heading = itemHeading;
                         _rows.Children.Add(SectionHeading(heading));
                     }
 
-                    _rows.Children.Add(Row(item));
+                    _rows.Children.Add(item.IsCode ? CallbackRow(item) : Row(item));
                 }
 
                 UpdateSummary();
@@ -238,12 +377,15 @@ namespace EntityFramework_Reverse_POCO_Generator
 
         private void UpdateSummary()
         {
-            var changes = _session.Changed.Count;
+            var changes = _session.ChangeCount;
+            var names   = _session.Changed.Select(c => c.Name)
+                .Concat(_session.PendingEnumerations.Select(e => "enum " + e.Name))
+                .ToList();
 
             _summary.Text = changes == 0
                 ? "No changes"
                 : changes + (changes == 1 ? " change: " : " changes: ") +
-                  string.Join(", ", _session.Changed.Select(c => c.Name).Take(4).ToArray()) +
+                  string.Join(", ", names.Take(4).ToArray()) +
                   (changes > 4 ? ", ..." : string.Empty);
 
             _summary.FontWeight  = changes == 0 ? FontWeights.Normal : FontWeights.SemiBold;
@@ -332,11 +474,155 @@ namespace EntityFramework_Reverse_POCO_Generator
             return grid;
         }
 
+        /// <summary>
+        ///     A code setting: a tick for whether the template sets it, the statement itself in the editor's own
+        ///     colouring, and the two ways out - the .tt at that line, and the wiki page that explains it.
+        /// </summary>
+        private UIElement CallbackRow(SettingEditorItem item)
+        {
+            var canWrite = item.Assignment != null || item.Definition.DefaultValue != null;
+
+            var tick = new CheckBox
+            {
+                IsChecked = item.IsAssigned,
+                IsEnabled = canWrite,
+                Content = new TextBlock { Text = item.Name, FontWeight = item.IsChanged ? FontWeights.Bold : FontWeights.SemiBold, TextWrapping = TextWrapping.Wrap },
+                VerticalAlignment = VerticalAlignment.Top,
+                Margin = new Thickness(0, 2, 0, 0)
+            };
+            tick.Checked   += (s, e) => { if (!_rebuilding) { item.SetAssigned(true);  Rebuild(); } };
+            tick.Unchecked += (s, e) => { if (!_rebuilding) { item.SetAssigned(false); Rebuild(); } };
+
+            var right = new StackPanel();
+
+            if (item.Help.Length > 0)
+                right.Children.Add(new TextBlock { Text = item.Help, TextWrapping = TextWrapping.Wrap, Opacity = 0.7 });
+
+            right.Children.Add(new TextBlock
+            {
+                Text = State(item),
+                TextWrapping = TextWrapping.Wrap,
+                FontStyle = FontStyles.Italic,
+                Opacity = 0.7,
+                Margin = new Thickness(0, 2, 0, 0)
+            });
+
+            var code = CodeView.Create(item.Code ?? "// No default body is known for this setting.");
+            _codeViews.Add(code);
+            right.Children.Add(code.Element);
+
+            var links = new StackPanel { Orientation = Orientation.Horizontal };
+
+            var open = new Button
+            {
+                Content = "Open in .tt",
+                IsEnabled = item.IsAssigned || item.Assignment != null,
+                Padding = new Thickness(10, 3, 10, 3),
+                Margin = new Thickness(0, 0, 12, 0),
+                ToolTip = "Saves any changes, then opens the .tt at this statement."
+            };
+            open.Click += (s, e) => { OpenSetting = item.Name; Commit(); };
+            links.Children.Add(open);
+
+            var wiki = new TextBlock { VerticalAlignment = VerticalAlignment.Center };
+            var link = new Hyperlink(new Run("Wiki: " + item.Definition.WikiPage)) { NavigateUri = new Uri(item.Definition.WikiUrl) };
+            link.RequestNavigate += (s, e) => { Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri) { UseShellExecute = true }); e.Handled = true; };
+            wiki.Inlines.Add(link);
+            links.Children.Add(wiki);
+
+            if (item.IsChanged)
+                links.Children.Add(RevertLink(item));
+
+            right.Children.Add(links);
+
+            if (item.Name == EnumerationBlock.SettingName)
+                right.Children.Add(EnumerationAdder(item));
+
+            var grid = new Grid { Margin = new Thickness(0, 0, 0, 18) };
+            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(230) });
+            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+
+            Grid.SetColumn(tick, 0);
+            Grid.SetColumn(right, 1);
+            grid.Children.Add(tick);
+            grid.Children.Add(right);
+            return grid;
+        }
+
+        /// <summary>
+        ///     Under the Enumerations row: the enums queued to be appended on save, each with a way to drop it again,
+        ///     and the button that adds another. Appending is the only edit offered - the block is never rewritten.
+        /// </summary>
+        private UIElement EnumerationAdder(SettingEditorItem item)
+        {
+            var panel = new StackPanel { Margin = new Thickness(0, 8, 0, 0) };
+
+            foreach (var entry in _session.PendingEnumerations)
+            {
+                var row = new StackPanel { Orientation = Orientation.Horizontal, Margin = new Thickness(0, 0, 0, 4) };
+                row.Children.Add(new TextBlock { Text = "Will add " + entry, VerticalAlignment = VerticalAlignment.Center, FontWeight = FontWeights.SemiBold });
+
+                var remove = new Button
+                {
+                    Content = "remove",
+                    Padding = new Thickness(0),
+                    Margin = new Thickness(10, 0, 0, 0),
+                    Cursor = Cursors.Hand,
+                    BorderThickness = new Thickness(0),
+                    Background = Brushes.Transparent,
+                    VerticalAlignment = VerticalAlignment.Center
+                };
+                remove.SetResourceReference(ForegroundProperty, EnvironmentColors.ControlLinkTextBrushKey);
+                var captured = entry;
+                remove.Click += (s, e) => { _session.RemoveEnumeration(captured); Rebuild(); };
+                row.Children.Add(remove);
+                panel.Children.Add(row);
+            }
+
+            var reason = item.IsAssigned ? EnumerationBlock.CannotAppendReason(_session.Document) : null;
+            if (reason != null && reason.Contains("Switch it on first"))
+                reason = null;   // Adding switches the block on itself.
+
+            var add = new Button
+            {
+                Content = "+ Add enumeration...",
+                IsEnabled = reason == null,
+                Padding = new Thickness(10, 3, 10, 3),
+                HorizontalAlignment = HorizontalAlignment.Left,
+                Margin = new Thickness(0, 4, 0, 0),
+                ToolTip = reason ?? "Choose a lookup table and its name and value columns; the entry is appended to the block on save."
+            };
+            add.Click += (s, e) => AddEnumeration(add);
+            panel.Children.Add(add);
+
+            if (reason != null)
+                panel.Children.Add(new TextBlock { Text = reason, TextWrapping = TextWrapping.Wrap, FontStyle = FontStyles.Italic, Opacity = 0.7, Margin = new Thickness(0, 4, 0, 0) });
+
+            return panel;
+        }
+
+        private static string State(SettingEditorItem item)
+        {
+            if (item.IsAssignmentChanged)
+                return item.IsAssigned
+                    ? (item.Assignment == null ? "Will be added with the default body shown below." : "Will be switched back on.")
+                    : "Will be commented out; the generator's built-in default applies.";
+
+            if (item.Assignment == null)
+                return item.Definition.DefaultValue == null
+                    ? "Not in this template, and no default body is known to add."
+                    : "Not in this template; the generator's built-in default applies. This is what ticking writes.";
+
+            return item.Assignment.IsCommentedOut
+                ? "Commented out in this template; the generator's built-in default applies."
+                : "Set in this template, on line " + item.LineNumber + ".";
+        }
+
         private UIElement RevertLink(SettingEditorItem item)
         {
             var was = item.Assignment == null
                 ? "not set"
-                : item.Assignment.IsCommentedOut ? "commented out" : Shorten(item.Assignment.ValueText.Trim());
+                : item.Assignment.IsCommentedOut ? "commented out" : item.IsCode ? "set" : Shorten(item.Assignment.ValueText.Trim());
 
             var revert = new Button
             {
@@ -366,6 +652,7 @@ namespace EntityFramework_Reverse_POCO_Generator
                 case SettingKind.Enumeration: return item.Definition.IsFlags ? FlagsEditor(item) : EnumEditor(item);
                 case SettingKind.Number:      return NumberEditor(item);
                 case SettingKind.Character:   return CharacterEditor(item);
+                case SettingKind.StringList:  return StringListEditor(item);
                 default:                      return TextEditor(item);
             }
         }
@@ -510,6 +797,40 @@ namespace EntityFramework_Reverse_POCO_Generator
 
                 item.SetCharacter(box.Text);
                 UpdateSummary();
+            };
+            box.LostFocus += (s, e) =>
+            {
+                if (box.Text != shown)
+                    Rebuild();
+            };
+
+            return box;
+        }
+
+        /// <summary>One item per line. Blank lines are dropped, so the box can be cleared to empty the list.</summary>
+        private UIElement StringListEditor(SettingEditorItem item)
+        {
+            var box = new TextBox
+            {
+                Text = string.Join(Environment.NewLine, item.StringListValue),
+                Padding = new Thickness(6, 4, 6, 4),
+                FontFamily = new FontFamily("Consolas"),
+                AcceptsReturn = true,
+                MinLines = 3,
+                MaxLines = 12,
+                VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+                TextWrapping = TextWrapping.NoWrap
+            };
+
+            var shown = box.Text;
+            box.TextChanged += (s, e) =>
+            {
+                var items = box.Text.Replace("\r\n", "\n").Split('\n').Select(l => l.Trim()).Where(l => l.Length > 0).ToList();
+                if (!items.SequenceEqual(item.StringListValue))
+                {
+                    item.SetStringList(items);
+                    UpdateSummary();
+                }
             };
             box.LostFocus += (s, e) =>
             {
