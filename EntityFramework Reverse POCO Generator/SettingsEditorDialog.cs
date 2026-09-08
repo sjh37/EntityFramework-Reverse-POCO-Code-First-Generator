@@ -261,8 +261,8 @@ namespace EntityFramework_Reverse_POCO_Generator
 
         private void Commit()
         {
-            // Enter reaches this through the default button without moving focus, so the text box being typed in
-            // has not yet committed through LostFocus. Taking focus here fires it before anything is applied.
+            // Text boxes take their value on every keystroke, so nothing is pending here; taking focus is kept so
+            // a box that lost focus rebuilds its row consistently whichever way Save was reached.
             _save.Focus();
 
             Text      = _session.Apply();
@@ -469,22 +469,23 @@ namespace EntityFramework_Reverse_POCO_Generator
                 MinWidth = 120
             };
 
-            // Committed on losing focus rather than on every keystroke: rebuilding mid-type would move the caret,
-            // and a half-typed number is not a value anybody meant.
-            box.LostFocus += (s, e) =>
+            // The value is taken on every keystroke so Save lights up as soon as the number is changed; a half-typed
+            // number that does not parse is simply not taken yet. The row itself is only rebuilt on losing focus,
+            // because rebuilding mid-type would move the caret.
+            var shown = box.Text;
+            box.TextChanged += (s, e) =>
             {
                 int value;
-                if (!int.TryParse(box.Text.Trim(), NumberStyles.Integer, CultureInfo.InvariantCulture, out value))
+                if (int.TryParse(box.Text.Trim(), NumberStyles.Integer, CultureInfo.InvariantCulture, out value) && value != item.NumberValue)
                 {
-                    Rebuild();
-                    return;
+                    item.SetNumber(value);
+                    UpdateSummary();
                 }
-
-                if (value == item.NumberValue)
-                    return;
-
-                item.SetNumber(value);
-                Rebuild();
+            };
+            box.LostFocus += (s, e) =>
+            {
+                if (box.Text != shown)
+                    Rebuild();
             };
 
             return box;
@@ -501,13 +502,19 @@ namespace EntityFramework_Reverse_POCO_Generator
                 MinWidth = 60
             };
 
-            box.LostFocus += (s, e) =>
+            var shown = box.Text;
+            box.TextChanged += (s, e) =>
             {
                 if (box.Text.Length == 0 || box.Text == item.CharacterValue)
                     return;
 
                 item.SetCharacter(box.Text);
-                Rebuild();
+                UpdateSummary();
+            };
+            box.LostFocus += (s, e) =>
+            {
+                if (box.Text != shown)
+                    Rebuild();
             };
 
             return box;
@@ -523,13 +530,19 @@ namespace EntityFramework_Reverse_POCO_Generator
                 FontFamily = new FontFamily("Consolas")
             };
 
-            box.LostFocus += (s, e) =>
+            var shown = box.Text;
+            box.TextChanged += (s, e) =>
             {
                 if (box.Text == item.TextValue)
                     return;
 
                 item.SetText(box.Text);
-                Rebuild();
+                UpdateSummary();
+            };
+            box.LostFocus += (s, e) =>
+            {
+                if (box.Text != shown)
+                    Rebuild();
             };
 
             return box;
