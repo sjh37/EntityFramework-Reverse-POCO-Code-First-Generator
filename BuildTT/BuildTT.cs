@@ -27,7 +27,7 @@ namespace BuildTT
     // Only the most popular settings are listed below.
     // Either override Settings.* here, or edit the Settings, FilterSettings and DbContextFilter classes located at the top of EF.Reverse.POCO.v4.ttinclude
     
-    // For help on the various Types below, please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Common-Settings.*Types-explained
+    // For help on the various Types below, please read https://github.com/ReversePOCO/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Common-Settings.*Types-explained
     // The following entries are the only required settings.
     Settings.DatabaseType                 = DatabaseType.SqlServer; // SqlServer, SQLite, PostgreSQL, MySql, Oracle
     Settings.TemplateType                 = TemplateType.EfCore10; // Ef6, EfCore8-10
@@ -39,7 +39,7 @@ namespace BuildTT
     Settings.GenerateSeparateFiles        = false;
     Settings.Namespace                    = DefaultNamespace; // Override the default namespace here. Please use double quotes, example: ""Accounts.Billing""
     Settings.UseFileScopedNamespaces      = false; // If true, uses C# 10 file-scoped namespace syntax (namespace X;) instead of block-scoped (namespace X { })
-    Settings.AddUnitTestingDbContext      = true;  // Will add a FakeDbContext and FakeDbSet for easy unit testing. Read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/FakeDbContext
+    Settings.AddUnitTestingDbContext      = true;  // Will add a FakeDbContext and FakeDbSet for easy unit testing. Read https://github.com/ReversePOCO/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/FakeDbContext
     Settings.FakeDbContextInDebugOnlyMode = false; // If true, wraps Fake* classes in #if DEBUG / #endif so they are excluded from Release builds.
 
 
@@ -48,7 +48,7 @@ namespace BuildTT
     // Gone are the days of a single do-it-all regex, you can now split them up into many smaller Regex's.
     // You can have as many as you like, and mix and match them.
     // These settings are used by the DbContextFilter class.
-    // For further information please visit https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Filtering
+    // For further information please visit https://github.com/ReversePOCO/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Filtering
     // Filtering is done via the FilterSettings and DbContextFilter classes.
     // Override the filters here, or edit directly the FilterSettings and DbContextFilter classes located at the top of EF.Reverse.POCO.v4.ttinclude
     FilterSettings.Reset();
@@ -94,7 +94,7 @@ namespace BuildTT
     Settings.CommandTimeout                         = 600; // SQL Command timeout in seconds. 600 is 10 minutes, 0 will wait indefinitely. Some databases can be slow retrieving schema information.
     Settings.DbContextInterfaceBaseClasses          = ""IDisposable""; // Specify what the base classes are for your database context interface
     Settings.DbContextBaseClass                     = ""DbContext""; // Specify what the base class is for your DbContext. For ASP.NET Identity use ""IdentityDbContext<ApplicationUser>"";
-    Settings.OnConfiguration                        = OnConfiguration.ConnectionString; // Configuration, ConnectionString, Omit. EFCore only. Determines the code generated within DbContext.OnConfiguration(). Please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Settings.OnConfiguration
+    Settings.OnConfiguration                        = OnConfiguration.ConnectionString; // Configuration, ConnectionString, Omit. EFCore only. Determines the code generated within DbContext.OnConfiguration(). Please read https://github.com/ReversePOCO/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Settings.OnConfiguration
     Settings.AddParameterlessConstructorToDbContext = true; // EF6 only. If true, then DbContext will have a default (parameter-less) constructor which automatically passes in the connection string name, if false then no parameter-less constructor will be created.
     Settings.ConfigurationClassName                 = ""Configuration""; // Configuration, Mapping, Map, etc. This is appended to the Poco class name to configure the mappings.
     Settings.TableSuffix                            = null; // Appended to every generated class name: ""Dto"" turns Order into OrderDto, ""Entity"" into OrderEntity. null adds nothing.
@@ -113,7 +113,7 @@ namespace BuildTT
     Settings.UseInheritedBaseInterfaceFunctions     = false; // If true, the main DBContext interface functions will come from the DBContextInterfaceBaseClasses and not generated. If false, the functions will be generated.
     Settings.IncludeComments                        = CommentsStyle.AtEndOfField; // None, InSummaryBlock, AtEndOfField. Adds comments to the generated code
     Settings.IncludeExtendedPropertyComments        = CommentsStyle.InSummaryBlock; // None, InSummaryBlock, AtEndOfField. Adds extended properties as comments to the generated code
-    Settings.DisableGeographyTypes                  = true; // Turns off use of spatial types: Geography, Geometry. More info: https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Spatial-Types
+    Settings.DisableGeographyTypes                  = true; // Turns off use of spatial types: Geography, Geometry. More info: https://github.com/ReversePOCO/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Spatial-Types
     Settings.CollectionInterfaceType                = ""ICollection""; //  = ""System.Collections.Generic.List""; // Determines the declaration type of collections for the Navigation Properties. ICollection is used if not set.
     Settings.CollectionType                         = ""List""; // Determines the type of collection for the Navigation Properties. ""ObservableCollection"" for example. Add ""System.Collections.ObjectModel"" to AdditionalNamespaces if setting the CollectionType = ""ObservableCollection"".
     Settings.NullableShortHand                      = true; // true => T?, false => Nullable<T>
@@ -254,7 +254,7 @@ namespace BuildTT
 
     // Owned entity mappings ***************************************************************************************************************
     // Group database columns that share a common prefix into EF Core owned entities (OwnsOne).
-    // For full documentation see https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Owned-Entities
+    // For full documentation see https://github.com/ReversePOCO/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Owned-Entities
     Settings.AddOwnedEntityMappings = delegate (List<OwnedEntityMapping> mappings)
     {
         // Examples:
@@ -513,17 +513,17 @@ namespace BuildTT
         //    column.OverrideModifier = true;
         // This will create: public override long id { get; set; }
 
-        // Make property partial, see https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Partial-properties
+        // Make property partial, see https://github.com/ReversePOCO/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Partial-properties
         //if (table.NameHumanCase.Equals(""SomeTable"", StringComparison.InvariantCultureIgnoreCase) && column.NameHumanCase.Equals(""SomeColumn"", StringComparison.InvariantCultureIgnoreCase))
         //    column.IsPartial = true;
 
         // Use ExtendedProperties dictionary to access specific extended property by name.
-        // See https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Extended-Property-Names-Feature
+        // See https://github.com/ReversePOCO/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Extended-Property-Names-Feature
         // Example: Add [JsonPropertyName] attribute from database extended property
         // In SQL Server, set extended property: EXEC sp_addextendedproperty @name = N'JsonPropertyName', @value = N'id', @level0type = N'SCHEMA', @level0name = N'dbo', @level1type = N'TABLE', @level1name = N'YourTable', @level2type = N'COLUMN', @level2name = N'SystemId'
         Settings.ApplyJsonPropertyNameAttribute(column);
 
-        Settings.ApplyJsonColumnMappings(column, table, jsonColumnMappings);    // Perform JSON column to POCO class mapping. See https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/JSON-column-support
+        Settings.ApplyJsonColumnMappings(column, table, jsonColumnMappings);    // Perform JSON column to POCO class mapping. See https://github.com/ReversePOCO/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/JSON-column-support
         Settings.ApplyDataAnnotations(column);
         Settings.ApplyEnumTypeReplacement(column, table, enumDefinitions);
     };

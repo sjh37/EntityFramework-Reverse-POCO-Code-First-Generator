@@ -84,7 +84,7 @@ namespace BuildTT
                 tt.WriteLine($"        <Identity Id=\"EntityFramework_Reverse_POCO_Generator..d542a934-8bd6-4136-b490-5f0049d62033\" Version=\"{_version}\" Language=\"en-US\" Publisher=\"Simon Hughes\" />");
                 tt.WriteLine("        <DisplayName>EntityFramework Reverse POCO Generator</DisplayName>");
                 tt.WriteLine("        <Description xml:space=\"preserve\">Reverse engineers an existing database and generates EntityFramework Code First POCO classes, Configuration mappings and DbContext.</Description>");
-                tt.WriteLine("        <MoreInfo>https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator</MoreInfo>");
+                tt.WriteLine("        <MoreInfo>https://github.com/ReversePOCO/EntityFramework-Reverse-POCO-Code-First-Generator</MoreInfo>");
                 tt.WriteLine("        <License>license.txt</License>");
                 tt.WriteLine("        <Icon>TemplateIcon.ico</Icon>");
                 tt.WriteLine("        <PreviewImage>PreviewImage.png</PreviewImage>");

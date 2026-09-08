@@ -90,8 +90,9 @@ namespace Efrpg.Gui
         }
 
         /// <summary>
-        ///     Tables that look like enum lookups first - an integral key plus a text column - then the rest, each
-        ///     in name order. Views are left out: an enum is read from a table.
+        ///     Every table, in name order, so the dropdown reads like a list rather than a ranking. Views are left
+        ///     out: an enum is read from a table. <see cref="LooksLikeEnumTable"/> is there for a caller that wants
+        ///     to mark the likely ones.
         /// </summary>
         public static IReadOnlyList<DatabaseObject> Candidates(DatabaseSchema schema)
         {
@@ -99,8 +100,7 @@ namespace Efrpg.Gui
                 return new DatabaseObject[0];
 
             return schema.Of(DatabaseObjectKind.Table)
-                .OrderBy(t => LooksLikeEnumTable(t) ? 0 : 1)
-                .ThenBy(t => t.FullName, StringComparer.OrdinalIgnoreCase)
+                .OrderBy(t => t.FullName, StringComparer.OrdinalIgnoreCase)
                 .ToList();
         }
 

@@ -18,7 +18,7 @@ namespace EntityFramework_Reverse_POCO_Generator
         private const string Caption = "EntityFramework Reverse POCO Generator";
 
         private const string UpgradeGuide =
-            "https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki";
+            "https://github.com/ReversePOCO/EntityFramework-Reverse-POCO-Code-First-Generator/wiki";
 
         /// <summary>
         ///     Runs the whole flow. <paramref name="item"/> may be null for a file outside any project; the update

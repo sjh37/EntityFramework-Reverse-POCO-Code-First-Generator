@@ -13,7 +13,7 @@ Please note that this is not the Microsoft reverse generator. This generator cre
 ### Requirements
 
 * **Visual Studio 2022 or later**, including Visual Studio 2026. The v4 extension does not install on Visual Studio 2017 or 2019; v3 remains available for those.
-* **Or JetBrains Rider**, without the extension: add `Database.tt` and `EF.Reverse.POCO.v4.ttinclude` to the project and run the template. Same output. See [JetBrains Rider](https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/JetBrains-Rider) on the wiki.
+* **Or JetBrains Rider**, without the extension: add `Database.tt` and `EF.Reverse.POCO.v4.ttinclude` to the project and run the template. Same output. See [JetBrains Rider](https://github.com/ReversePOCO/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/JetBrains-Rider) on the wiki.
 * **The `efrpg` dotnet tool**, which reads your database: `dotnet tool install -g Efrpg`. It needs the .NET 10 runtime and is installed once per machine.
 
 ### Watch a short video clip (no audio)
@@ -26,7 +26,7 @@ Go to the [ReversePOCO](https://www.reversepoco.co.uk) website for your licence 
 
 ### What's new
 
-[Click here](https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/releases) to see what's new in this release.
+[Click here](https://github.com/ReversePOCO/EntityFramework-Reverse-POCO-Code-First-Generator/releases) to see what's new in this release.
 
 ### Supported databases
 
@@ -43,7 +43,7 @@ Play with the settings in the `<database>.tt` file. That's what it's there for.
 
 If your database changes, re-save the `<database>.tt` file. That's it.
 
-[Click here](https://github.com/sjh37/efreversepoco/wiki/Full-control-over-the-generated-code) to see a full list of features.
+[Click here](https://github.com/ReversePOCO/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Full-control-over-the-generated-code) to see a full list of features.
 
 Regards,
 Simon Hughes

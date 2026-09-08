@@ -42,7 +42,7 @@ namespace Efrpg
         public static int CommandTimeout = 600; // SQL Command timeout in seconds. 600 is 10 minutes, 0 will wait indefinitely. Some databases can be slow retrieving schema information.
         public static string DbContextInterfaceBaseClasses = "IDisposable"; // Specify what the base classes are for your database context interface
         public static string DbContextBaseClass = "DbContext"; // Specify what the base class is for your DbContext. For ASP.NET Identity use "IdentityDbContext<ApplicationUser>";
-        public static OnConfiguration OnConfiguration = OnConfiguration.ConnectionString; // Configuration, ConnectionString, Omit. EFCore only. Determines the code generated within DbContext.OnConfiguration(). Please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Settings.OnConfiguration
+        public static OnConfiguration OnConfiguration = OnConfiguration.ConnectionString; // Configuration, ConnectionString, Omit. EFCore only. Determines the code generated within DbContext.OnConfiguration(). Please read https://github.com/ReversePOCO/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Settings.OnConfiguration
         public static bool AddParameterlessConstructorToDbContext = true; // If true, then DbContext will have a default (parameter-less) constructor which automatically passes in the connection string name, if false then no parameter-less constructor will be created.
         public static string ConfigurationClassName = "Configuration"; // Configuration, Mapping, Map, etc. This is appended to the Poco class name to configure the mappings.
         public static string EntityClassesModifiers = "public"; // "public partial";
@@ -234,7 +234,7 @@ namespace Efrpg
 
         // Enable interception of stored procedure return model when an exception occurs. Typically, when the stored procedure contains temp tables.
         // This allows you render the proper error in comments or fix the return model by manually creating the ReturnModel using a list of DataColumns
-        // See https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Stored-Procedure-Return-Model-Errors
+        // See https://github.com/ReversePOCO/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Stored-Procedure-Return-Model-Errors
         public static Action<Exception, StoredProcedure> ReadStoredProcReturnObjectException = delegate (Exception ex, StoredProcedure sp)
         {
             // Store the error so it appears as a comment on the generated method.
@@ -347,12 +347,12 @@ namespace Efrpg
             //    column.OverrideModifier = true;
             // This will create: public override long id { get; set; }
 
-            // Make property partial, see https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Partial-properties
+            // Make property partial, see https://github.com/ReversePOCO/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Partial-properties
             //if (table.NameHumanCase.Equals("SomeTable", StringComparison.InvariantCultureIgnoreCase) && column.NameHumanCase.Equals("SomeColumn", StringComparison.InvariantCultureIgnoreCase))
             //    column.IsPartial = true;
 
             // Use ExtendedProperties dictionary to access specific extended property by name.
-            // See https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Extended-Property-Names-Feature
+            // See https://github.com/ReversePOCO/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Extended-Property-Names-Feature
             // Example: Add JsonPropertyName attribute from extended property
             // In SQL Server, set extended property: EXEC sp_addextendedproperty @name = N'JsonPropertyName', @value = N'id', @level0type = N'SCHEMA', @level0name = N'dbo', @level1type = N'TABLE', @level1name = N'YourTable', @level2type = N'COLUMN', @level2name = N'SystemId'
             ApplyJsonPropertyNameAttribute(column);

@@ -18,7 +18,7 @@ namespace Tester.Integration.Ef6
             _db = new EfrpgTestDbContext("Data Source=(local);Initial Catalog=Efrpgtest;Integrated Security=True;Encrypt=false;TrustServerCertificate=true");
         }
 
-        // https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/issues/538
+        // https://github.com/ReversePOCO/EntityFramework-Reverse-POCO-Code-First-Generator/issues/538
         [Test]
         public void OneToOneInsert()
         {
@@ -36,7 +36,7 @@ namespace Tester.Integration.Ef6
             Assert.AreEqual(2, result);
         }
 
-        // https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/issues/769
+        // https://github.com/ReversePOCO/EntityFramework-Reverse-POCO-Code-First-Generator/issues/769
         [Test]
         [TestCase(1, false, "Not complete")]
         [TestCase(20, true, "Complete")]

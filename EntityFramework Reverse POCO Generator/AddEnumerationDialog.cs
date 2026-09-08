@@ -3,6 +3,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Threading;
 using Efrpg.Gui;
 using Microsoft.VisualStudio.PlatformUI;
 
@@ -29,7 +30,9 @@ namespace EntityFramework_Reverse_POCO_Generator
         private readonly TextBox _name;
         private readonly TextBlock _validation;
         private readonly Button _ok;
+        private readonly System.Collections.Generic.List<string> _allTables;
         private bool _suggesting;
+        private bool _filtering;
 
         public bool Confirmed { get; private set; }
 
@@ -57,8 +60,14 @@ namespace EntityFramework_Reverse_POCO_Generator
             _validation = new TextBlock { TextWrapping = TextWrapping.Wrap, Margin = new Thickness(0, 0, 0, 10), FontWeight = FontWeights.SemiBold };
             _ok         = new Button { Content = "Add", MinWidth = 90, Margin = new Thickness(0, 0, 8, 0), Padding = new Thickness(10, 4, 10, 4), IsDefault = true };
 
+            _allTables = EnumerationBlock.Candidates(schema).Select(t => t.FullName).ToList();
+
+            // The combo's own prefix completion would fill in and highlight the rest of the first match, so that
+            // the next keystroke replaced it; the contains-filter below is the completion here.
+            _table.IsTextSearchEnabled = false;
+
             _table.SelectionChanged += (s, e) => TableChanged();
-            _table.AddHandler(TextBoxBase.TextChangedEvent, new TextChangedEventHandler((s, e) => Validate()));
+            _table.AddHandler(TextBoxBase.TextChangedEvent, new TextChangedEventHandler((s, e) => { FilterTables(); Validate(); }));
             foreach (var box in new[] { _nameField, _valueField, _groupField })
             {
                 box.SelectionChanged += (s, e) => Validate();
@@ -89,9 +98,61 @@ namespace EntityFramework_Reverse_POCO_Generator
                 : _schema.Of(DatabaseObjectKind.Table).FirstOrDefault(t => string.Equals(t.FullName, name.Trim(), StringComparison.OrdinalIgnoreCase));
         }
 
+        /// <summary>
+        ///     Narrows the dropdown to the tables whose name contains what has been typed, case-insensitively, and
+        ///     opens it, so a table is found by typing part of its name rather than scrolling for it. Typing the
+        ///     whole name selects it.
+        /// </summary>
+        private void FilterTables()
+        {
+            if (_filtering || _schema == null)
+                return;
+
+            var typed = (_table.Text ?? string.Empty).Trim();
+            var exact = _allTables.FirstOrDefault(t => string.Equals(t, typed, StringComparison.OrdinalIgnoreCase));
+
+            _filtering = true;
+            try
+            {
+                if (exact != null)
+                {
+                    if (!ReferenceEquals(_table.ItemsSource, _allTables))
+                        _table.ItemsSource = _allTables;
+                    if (!Equals(_table.SelectedItem, exact))
+                        _table.SelectedItem = exact;
+                    _table.IsDropDownOpen = false;
+                    return;
+                }
+
+                var matches = _allTables.Where(t => t.IndexOf(typed, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
+
+                // Swapping the list clears the editable text when the old selection drops out of it, so the text
+                // and caret are put back afterwards.
+                var text = _table.Text;
+                _table.ItemsSource = matches;
+                _table.SelectedItem = null;
+                _table.Text = text;
+
+                // The combo selects the whole text after it is set, so the next keystroke would replace it. The
+                // caret goes back to the end with nothing selected, once the combo has finished its own update.
+                var editor = _table.Template == null ? null : _table.Template.FindName("PART_EditableTextBox", _table) as TextBox;
+                if (editor != null)
+                    editor.Dispatcher.BeginInvoke(new Action(() => editor.Select(editor.Text.Length, 0)), DispatcherPriority.Input);
+
+                _table.IsDropDownOpen = typed.Length > 0 && matches.Count > 0;
+            }
+            finally
+            {
+                _filtering = false;
+            }
+        }
+
         /// <summary>The columns follow the table, and the suggestion fills the boxes a user would otherwise type.</summary>
         private void TableChanged()
         {
+            if (_filtering)
+                return;
+
             var table = _table.SelectedItem == null ? null : SelectedTableByName(_table.SelectedItem.ToString());
             if (table == null)
                 return;

@@ -41,7 +41,7 @@ namespace Efrpg.Gui
         public string WikiPage { get; }
 
         /// <summary>The full address of <see cref="WikiPage"/>.</summary>
-        public string WikiUrl => "https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/" + WikiPage;
+        public string WikiUrl => "https://github.com/ReversePOCO/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/" + WikiPage;
 
         public string Name { get; }
 

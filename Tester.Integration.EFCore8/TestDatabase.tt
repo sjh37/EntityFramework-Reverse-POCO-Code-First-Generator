@@ -8,14 +8,14 @@
     // Only the most popular settings are listed below.
     // Either override Settings.* here, or edit the Settings, FilterSettings and DbContextFilter classes located at the top of EF.Reverse.POCO.v4.ttinclude
     
-    // For help on the various Types below, please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Common-Settings.*Types-explained
+    // For help on the various Types below, please read https://github.com/ReversePOCO/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Common-Settings.*Types-explained
     // The following entries are the only required settings.
     Settings.DatabaseType          = DatabaseType.SqlServer; // SqlServer, SQLite, PostgreSQL, MySql, Oracle
     Settings.TemplateType          = TemplateType.EfCore8;
     Settings.ConnectionString      = "Data Source=(local);Initial Catalog=EfrpgTest;Integrated Security=True;Encrypt=false;TrustServerCertificate=true";
     Settings.ConnectionStringName  = "TestDatabase"; // ConnectionString key as specified in your app.config/web.config/appsettings.json
     Settings.DbContextName         = "TestDbContext"; // Class name for the DbContext to be generated.
-    Settings.OnConfiguration       = OnConfiguration.ConnectionString; // EFCore only. Determines the code generated within DbContext.OnConfiguration(). Please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/OnConfiguration    Settings.GenerateSeparateFiles   = false;
+    Settings.OnConfiguration       = OnConfiguration.ConnectionString; // EFCore only. Determines the code generated within DbContext.OnConfiguration(). Please read https://github.com/ReversePOCO/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/OnConfiguration    Settings.GenerateSeparateFiles   = false;
     Settings.GenerateSeparateFiles = false;
     Settings.Namespace             = "TestDatabaseStandard"; // Override the default namespace here
     Settings.UsePropertiesForStoredProcResultSets = true; // Stored procedure result set return models are rendered as fields (false) or properties (true).

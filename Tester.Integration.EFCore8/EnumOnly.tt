@@ -16,7 +16,7 @@
     // Gone are the days of a single do-it-all regex, you can now split them up into many smaller Regex's.
     // You can have as many as you like, and mix and match them.
     // These settings are used by the DbContextFilter class.
-    // For further information please visit https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Filtering
+    // For further information please visit https://github.com/ReversePOCO/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Filtering
     // Filtering is done via the FilterSettings and DbContextFilter classes.
     // Override the filters here, or edit directly the FilterSettings and DbContextFilter classes located at the top of EF.Reverse.POCO.v4.ttinclude
     FilterSettings.Reset();

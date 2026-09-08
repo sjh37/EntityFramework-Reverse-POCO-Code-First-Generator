@@ -8,7 +8,7 @@
     // Only the most popular settings are listed below.
     // Either override Settings.* here, or edit the Settings, FilterSettings and DbContextFilter classes located at the top of EF.Reverse.POCO.v4.ttinclude
     
-    // For help on the various Types below, please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Common-Settings.*Types-explained
+    // For help on the various Types below, please read https://github.com/ReversePOCO/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Common-Settings.*Types-explained
     // The following entries are the only required settings.
     Settings.DatabaseType               = DatabaseType.SqlServer;
     Settings.TemplateType               = TemplateType.EfCore8; 
@@ -16,10 +16,10 @@
     Settings.ConnectionString           = "Data Source=(local);Initial Catalog=EfrpgTest;Integrated Security=True;MultipleActiveResultSets=True;Encrypt=false;TrustServerCertificate=true";
     Settings.ConnectionStringName       = "MyDbContext"; // ConnectionString key as specified in your app.config/web.config/appsettings.json
     Settings.DbContextName              = "V8EfrpgTestDbContext"; // Class name for the DbContext to be generated. Note: If generating separate files, please give the db context a different name from this tt filename.
-    Settings.OnConfiguration            = OnConfiguration.ConnectionString; // EFCore only. Determines the code generated within DbContext.OnConfiguration(). Please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/OnConfiguration    Settings.GenerateSeparateFiles   = false;
+    Settings.OnConfiguration            = OnConfiguration.ConnectionString; // EFCore only. Determines the code generated within DbContext.OnConfiguration(). Please read https://github.com/ReversePOCO/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/OnConfiguration    Settings.GenerateSeparateFiles   = false;
     Settings.GenerateSeparateFiles      = false;
     Settings.Namespace                  = "V8EfrpgTest"; // Override the default namespace here
-    Settings.AddUnitTestingDbContext    = true; // Will add a FakeDbContext and FakeDbSet for easy unit testing. Read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/FakeDbContext
+    Settings.AddUnitTestingDbContext    = true; // Will add a FakeDbContext and FakeDbSet for easy unit testing. Read https://github.com/ReversePOCO/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/FakeDbContext
     Settings.TrimCharFields             = true; // EF Core option only. If true, will TrimEnd() 'char' fields when read from the database.
     Settings.DisableGeographyTypes      = false;
     Settings.AllowNullStrings           = true;
@@ -42,7 +42,7 @@
     // Gone are the days of a single do-it-all regex, you can now split them up into many smaller Regex's.
     // You can have as many as you like, and mix and match them.
     // These settings are used by the DbContextFilter class.
-    // For further information please visit https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Filtering
+    // For further information please visit https://github.com/ReversePOCO/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Filtering
     // Filtering is done via the FilterSettings and DbContextFilter classes.
     // Override the filters here, or edit directly the FilterSettings and DbContextFilter classes located at the top of EF.Reverse.POCO.v4.ttinclude
     FilterSettings.Reset();
@@ -75,12 +75,12 @@
     Settings.UpdateColumn = delegate (Column column, Table table, List<EnumDefinition> enumDefinitions, List<JsonColumnMapping> jsonColumnMappings)
     {
         // Use ExtendedProperties dictionary to access specific extended property by name.
-        // See https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Extended-Property-Names-Feature
+        // See https://github.com/ReversePOCO/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Extended-Property-Names-Feature
         // Example: Add JsonPropertyName attribute from extended property
         // In SQL Server, set extended property: EXEC sp_addextendedproperty @name = N'JsonPropertyName', @value = N'id', @level0type = N'SCHEMA', @level0name = N'dbo', @level1type = N'TABLE', @level1name = N'YourTable', @level2type = N'COLUMN', @level2name = N'SystemId'
         Settings.ApplyJsonPropertyNameAttribute(column);
 
-        Settings.ApplyJsonColumnMappings(column, table, jsonColumnMappings);    // Perform JSON column to POCO class mapping. See https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/JSON-column-support
+        Settings.ApplyJsonColumnMappings(column, table, jsonColumnMappings);    // Perform JSON column to POCO class mapping. See https://github.com/ReversePOCO/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/JSON-column-support
         Settings.ApplyDataAnnotations(column);
         Settings.ApplyEnumTypeReplacement(column, table, enumDefinitions);
     };

@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using Efrpg.Gui;
 using NUnit.Framework;
@@ -161,7 +162,7 @@ namespace Efrpg.Gui.Tests
         }
 
         [Test]
-        public void Candidates_PutLookupShapedTablesFirstAndLeaveViewsOut()
+        public void Candidates_AreEveryTableInNameOrderWithViewsLeftOut()
         {
             var schema = DatabaseSchema.Parse(RepositoryFiles.WireContractPayload());
 
@@ -169,9 +170,7 @@ namespace Efrpg.Gui.Tests
 
             Assert.That(candidates, Has.All.Property("Kind").EqualTo(DatabaseObjectKind.Table));
             Assert.That(candidates.Count, Is.EqualTo(schema.Count(DatabaseObjectKind.Table)));
-            var firstNonLookup = candidates.ToList().FindIndex(t => !EnumerationBlock.LooksLikeEnumTable(t));
-            var lastLookup     = candidates.ToList().FindLastIndex(EnumerationBlock.LooksLikeEnumTable);
-            Assert.That(firstNonLookup < 0 || lastLookup < firstNonLookup, Is.True, "lookups first");
+            Assert.That(candidates.Select(t => t.FullName), Is.Ordered.Using((System.Collections.Generic.IComparer<string>) StringComparer.OrdinalIgnoreCase));
         }
 
         [Test]
