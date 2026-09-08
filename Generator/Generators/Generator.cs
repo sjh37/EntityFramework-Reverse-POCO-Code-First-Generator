@@ -545,8 +545,8 @@ namespace Efrpg.Generators
 
                     if (exclude)
                     {
-                        FileManagementService.DeleteFile(table.NameHumanCaseWithSuffix() + Settings.FileExtension); // Poco
-                        FileManagementService.DeleteFile(table.NameHumanCaseWithSuffix() + Settings.ConfigurationClassName + Settings.FileExtension); // Poco config
+                        FileManagementService.DeleteFile(table.NameHumanCaseWithSuffix() + FileManagementService.Extension); // Poco
+                        FileManagementService.DeleteFile(table.NameHumanCaseWithSuffix() + Settings.ConfigurationClassName + FileManagementService.Extension); // Poco config
                         continue;
                     }
 
@@ -990,7 +990,7 @@ namespace Efrpg.Generators
                     if (spFilters.All(x => x.Value.IsExcluded(sp)))
                     {
                         if (deleteFilteredOutFiles)
-                            FileManagementService.DeleteFile(sp.WriteStoredProcReturnModelName(spFilters[0].Value) + Settings.FileExtension);
+                            FileManagementService.DeleteFile(sp.WriteStoredProcReturnModelName(spFilters[0].Value) + FileManagementService.Extension);
 
                         continue; // All Db Context exclude this stored proc, ignore it as nobody wants it
                     }
@@ -1065,7 +1065,7 @@ namespace Efrpg.Generators
                         else
                         {
                             if (deleteFilteredOutFiles)
-                                FileManagementService.DeleteFile(sp.WriteStoredProcReturnModelName(filter) + Settings.FileExtension);
+                                FileManagementService.DeleteFile(sp.WriteStoredProcReturnModelName(filter) + FileManagementService.Extension);
                         }
                     }
                 }

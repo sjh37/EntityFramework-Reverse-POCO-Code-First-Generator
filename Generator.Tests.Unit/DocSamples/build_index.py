@@ -18,7 +18,6 @@ M = {
  "ConnectionStringName":("Settings.ConnectionStringName","A key your **application** looks up at run time"),
  "ConnectionStringActions":("Settings.ConnectionStringName","Extra fluent calls appended to the provider setup"),
  "CommandTimeout":("Settings.CommandTimeout","How long each schema query may take, in seconds"),
- "IncludeQueryTraceOn9481Flag":("Settings.CommandTimeout","Works around the SQL Server 2014 cardinality estimator"),
 
  # Naming and namespaces
  "Namespace":("Settings.Namespace","The namespace all generated code goes into"),
@@ -38,8 +37,6 @@ M = {
  "PocoConfigurationFolder":("Settings.PocoFolder","Sub-folder for the configuration classes"),
  "OwnedEntityFolder":("Settings.PocoFolder","Sub-folder for owned entity classes"),
  "ElementsToGenerate":("Settings.ElementsToGenerate","Which kinds of class to generate at all"),
- "FileExtension":("Settings.FileExtension","The extension on generated files"),
- "GenerationLanguage":("Settings.FileExtension","C# or the experimental Javascript type map"),
 
  # DbContext
  "DbContextName":("Settings.DbContextName","The generated context class name"),
@@ -142,7 +139,6 @@ M = {
  # Runtime values
  "Root":("Settings.Runtime-Values","The folder holding your .tt file. Read-only"),
  "TemplateFile":("Settings.Runtime-Values","The .tt file name. Read-only"),
- "FilterCount":("Settings.Runtime-Values","How many contexts the run produced. Read-only"),
  "DefaultConstructorArgument":("Settings.Runtime-Values","**EF 6.** What the parameterless constructor passes to base"),
 }
 

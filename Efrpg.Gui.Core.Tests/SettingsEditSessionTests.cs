@@ -121,8 +121,7 @@ namespace Efrpg.Gui.Tests
             Assert.That(after, Is.EqualTo(filters));
 
             // FilterSettings.TableFilters.Add(...) is not a Settings.* assignment, so the parser must not
-            // have picked one up as a value it could rewrite. (FilterCount is a real setting, so a name
-            // test would be wrong here - this checks the lines instead.)
+            // have picked one up as a value it could rewrite. This checks the lines rather than the names.
             var lines = original.Replace("\r\n", "\n").Split('\n');
             Assert.That(session.Document.Assignments.Select(a => lines[a.LineNumber - 1].TrimStart()),
                 Has.None.StartWith("FilterSettings"));

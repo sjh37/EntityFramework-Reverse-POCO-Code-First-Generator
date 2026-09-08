@@ -37,6 +37,14 @@ namespace Efrpg.Gui
         /// </param>
         public TemplateConfiguration(DatabaseTarget database, TemplateTarget template, string connectionString,
             string dbContextName, string connectionStringName, string namespaceName, ConnectionStringSource source)
+            : this(database, template, connectionString, dbContextName, connectionStringName, namespaceName, source, null)
+        {
+        }
+
+        /// <param name="options">The output and fake context choices. Null means the shipped defaults.</param>
+        public TemplateConfiguration(DatabaseTarget database, TemplateTarget template, string connectionString,
+            string dbContextName, string connectionStringName, string namespaceName, ConnectionStringSource source,
+            TemplateOptions options)
         {
             Database             = database ?? throw new ArgumentNullException(nameof(database));
             Template             = template ?? throw new ArgumentNullException(nameof(template));
@@ -45,11 +53,15 @@ namespace Efrpg.Gui
             ConnectionStringName = (connectionStringName ?? string.Empty).Trim();
             Namespace            = (namespaceName ?? string.Empty).Trim();
             Source               = source ?? ConnectionStringSource.ForLiteral(ConnectionString);
+            Options              = options ?? TemplateOptions.Default;
         }
 
         public DatabaseTarget Database { get; }
 
         public TemplateTarget Template { get; }
+
+        /// <summary>Separate files, file-scoped namespaces, and the fake context and its Debug-only wrapping.</summary>
+        public TemplateOptions Options { get; }
 
         /// <summary>
         ///     The connection string when <see cref="IsConnectionStringEditable"/>; otherwise the code that sets it,
@@ -139,7 +151,8 @@ namespace Efrpg.Gui
                     dbContextName,
                     settings.GetString("ConnectionStringName") ?? dbContextName,
                     ReadNamespace(settings),
-                    source);
+                    source,
+                    TemplateOptions.ReadFrom(settings));
         }
 
         /// <summary>
@@ -207,6 +220,7 @@ namespace Efrpg.Gui
                 settings.TrySetString("ConnectionStringName", ConnectionStringName);
 
             WriteNamespace(settings);
+            Options.ApplyTo(settings);
 
             return settings.Text;
         }

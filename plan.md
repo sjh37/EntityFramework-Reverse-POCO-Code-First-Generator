@@ -111,7 +111,7 @@ identified.
 `PrependSchemaNameForStoredProcedure`, `ReadStoredProcReturnObjectCompleted`,
 `ReadStoredProcReturnObjectException`) already appear in this repo's own `Tester.Integration.*` templates, so
 metadata built from `Database.tt` alone would leave the GUI blind to settings that do occur in real files. The
-four the generator fills in at run time (`Root`, `TemplateFile`, `DefaultSchema`, `FilterCount`) carry
+three the generator fills in at run time (`Root`, `TemplateFile`, `DefaultSchema`) carry
 `runtimeOnly: true` rather than being dropped, so a new plumbing field surfaces as a spurious GUI entry
 instead of vanishing silently.
 

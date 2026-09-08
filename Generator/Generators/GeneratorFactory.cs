@@ -1,7 +1,6 @@
-using System;
 using Efrpg.FileManagement;
 using Efrpg.Readers;
-using Efrpg.Templates;
+using System;
 
 namespace Efrpg.Generators
 {

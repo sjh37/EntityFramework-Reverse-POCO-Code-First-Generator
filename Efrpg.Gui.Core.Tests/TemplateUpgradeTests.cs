@@ -78,14 +78,17 @@ namespace Efrpg.Gui.Tests
             Assert.That(code, Has.None.Contains("Settings.TemplateFolder"));
         }
 
-        [Test]
-        public void TheGeneratorTypeSettingIsDeleted()
+        [TestCase("Settings.GeneratorType")]
+        [TestCase("Settings.GenerationLanguage")]
+        [TestCase("Settings.FileExtension")]
+        [TestCase("Settings.IncludeQueryTraceOn9481Flag")]
+        public void ASettingV4DroppedIsDeleted(string setting)
         {
             var code = Upgraded().Text.Replace("\r\n", "\n").Split('\n')
                 .Select(l => l.IndexOf("//", StringComparison.Ordinal) is var i && i >= 0 ? l.Substring(0, i) : l)
                 .ToList();
 
-            Assert.That(code, Has.None.Contains("Settings.GeneratorType"));
+            Assert.That(code, Has.None.Contains(setting));
         }
 
         [TestCase("Settings.TemplateType                 = TemplateType.EfCore10;", "Settings.TemplateType                 = TemplateType.FileBasedCore10;", "file-based")]
@@ -138,9 +141,9 @@ namespace Efrpg.Gui.Tests
         {
             var changes = Upgraded().Changes;
 
-            // The six v3-to-v4 edits, the eight multi-context settings v4 removed, Settings.TemplateFolder and
-            // Settings.GeneratorType.
-            Assert.That(changes.Count, Is.EqualTo(16));
+            // The six v3-to-v4 edits, the eight multi-context settings v4 removed, and TemplateFolder,
+            // GeneratorType, GenerationLanguage, FileExtension and IncludeQueryTraceOn9481Flag.
+            Assert.That(changes.Count, Is.EqualTo(19));
             Assert.That(changes.Select(c => c.Description), Has.All.Not.Empty);
         }
 
@@ -182,8 +185,9 @@ namespace Efrpg.Gui.Tests
                 .Sum(a => a.EndLineNumber - a.LineNumber + 1);
 
             Assert.That(multiContextLines, Is.GreaterThan(8), "the four delegates span several lines each");
-            // FileManagerType, DatabaseReaderPlugin, TemplateFolder and GeneratorType are one line each
-            Assert.That(Lines(afterHead), Is.EqualTo(Lines(beforeHead) - 4 - multiContextLines));
+            // FileManagerType, DatabaseReaderPlugin, TemplateFolder, GeneratorType, GenerationLanguage,
+            // FileExtension and IncludeQueryTraceOn9481Flag are one line each
+            Assert.That(Lines(afterHead), Is.EqualTo(Lines(beforeHead) - 7 - multiContextLines));
         }
 
         [Test]
@@ -297,7 +301,7 @@ namespace Efrpg.Gui.Tests
             var result = TemplateUpgrade.Upgrade(string.Join("\r\n", lines));
 
             Assert.That(result.Succeeded, Is.True);
-            Assert.That(result.Changes.Count, Is.EqualTo(15));
+            Assert.That(result.Changes.Count, Is.EqualTo(18));
         }
 
         private static int Lines(string text)

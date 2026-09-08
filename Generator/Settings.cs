@@ -66,7 +66,6 @@ namespace Efrpg
         public static string CollectionType = "List"; // Determines the type of collection for the Navigation Properties. "ObservableCollection" for example. Add "System.Collections.ObjectModel" to AdditionalNamespaces if setting the CollectionType = "ObservableCollection".
         public static bool NullableShortHand = true; // true => T?, false => Nullable<T>
         public static bool AddIDbContextFactory = true; // Will add a default IDbContextFactory<DbContextName> implementation for easy dependency injection
-        public static bool IncludeQueryTraceOn9481Flag = false; // If SqlServer 2014 appears frozen / take a long time when this file is saved, try setting this to true (you will also need elevated privileges).
         public static bool UsePrivateSetterForComputedColumns = true; // If the columns is computed, use a private setter.
         public static bool IncludeGeneratorVersionInCode = false; // If true, will include the version number of the generator in the generated code (Settings.ShowLicenseInfo must also be true).
         public static bool TrimCharFields = false; // EF Core option only. If true, will TrimEnd() 'char' fields when read from the database.
@@ -80,8 +79,6 @@ namespace Efrpg
         public static OrderProperties OrderProperties = OrderProperties.Ordinal; // Order the properties in the generated POCO classes. Ordinal, Alphabetical
 
         // Language choices
-        public static GenerationLanguage GenerationLanguage = GenerationLanguage.CSharp; // CSharp, Javascript. Javascript is SqlServer only, every other database falls back to CSharp.
-        public static string FileExtension = ".cs";
 
         // Code suppression *******************************************************************************
         public static bool UseRegions = true;  // If false, suppresses the use of #region
@@ -1082,7 +1079,6 @@ namespace Efrpg
 
         public static string Root;
         public static string TemplateFile;
-        public static int FilterCount;
 
         public static bool NeedsNullForgiving() => AllowNullStrings || NullableReverseNavigationProperties;
 

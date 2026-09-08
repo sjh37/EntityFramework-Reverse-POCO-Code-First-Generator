@@ -93,7 +93,6 @@
         public static string CollectionType = "List"; // Determines the type of collection for the Navigation Properties. "ObservableCollection" for example. Add "System.Collections.ObjectModel" to AdditionalNamespaces if setting the CollectionType = "ObservableCollection".
         public static bool NullableShortHand = true; // true => T?, false => Nullable<T>
         public static bool AddIDbContextFactory = true; // Will add a default IDbContextFactory<DbContextName> implementation for easy dependency injection
-        public static bool IncludeQueryTraceOn9481Flag = false; // If SqlServer 2014 appears frozen / take a long time when this file is saved, try setting this to true (you will also need elevated privileges).
         public static bool UsePrivateSetterForComputedColumns = true; // If the columns is computed, use a private setter.
         public static bool IncludeGeneratorVersionInCode = false; // If true, will include the version number of the generator in the generated code (Settings.ShowLicenseInfo must also be true).
         public static bool TrimCharFields = false; // EF Core option only. If true, will TrimEnd() 'char' fields when read from the database.
@@ -107,8 +106,6 @@
         public static OrderProperties OrderProperties = OrderProperties.Ordinal; // Order the properties in the generated POCO classes. Ordinal, Alphabetical
 
         // Language choices
-        public static GenerationLanguage GenerationLanguage = GenerationLanguage.CSharp; // CSharp, Javascript. Javascript is SqlServer only, every other database falls back to CSharp.
-        public static string FileExtension = ".cs";
 
         // Code suppression *******************************************************************************
         public static bool UseRegions = true;  // If false, suppresses the use of #region
@@ -1109,7 +1106,6 @@
 
         public static string Root;
         public static string TemplateFile;
-        public static int FilterCount;
 
         public static bool NeedsNullForgiving() => AllowNullStrings || NullableReverseNavigationProperties;
 
@@ -2150,6 +2146,9 @@
         private bool _writeToOuter;
         public bool ForceWriteToOuter;
 
+        /// <summary>The generator writes C#, so every file it produces takes this extension.</summary>
+        public const string Extension = ".cs";
+
         public FileManagementService(GeneratedTextTransformation outer)
         {
             if (outer == null) throw new ArgumentNullException(nameof(outer));
@@ -2175,23 +2174,14 @@
 
         public void Init(Dictionary<string, IDbContextFilter> filters)
         {
-            Settings.FilterCount = filters.Count;
-
             _writeToOuter = !Settings.GenerateSeparateFiles;
-
-            // For debug
-            /*var a = _writeToOuter;
-            var b = Settings.FilterCount;
-            var c = Settings.GenerateSeparateFiles;
-            var d = Settings.TemplateType;
-            var f = filters.First().Key;*/
 
             foreach (var filter in filters)
             {
                 var fileManager = new EfCoreFileManager();
                 fileManager.Init(_outer);
                 if (!string.IsNullOrWhiteSpace(filter.Key))
-                    fileManager.StartNewFile(filter.Key + Settings.FileExtension);
+                    fileManager.StartNewFile(filter.Key + Extension);
                 _fileManagers.Add(filter.Key, fileManager);
             }
         }
@@ -3168,7 +3158,7 @@
 
         public CodeOutput GenerateInterface()
         {
-            var filename = Settings.DbContextInterfaceName + Settings.FileExtension;
+            var filename = Settings.DbContextInterfaceName + FileManagementService.Extension;
             if (!CanWriteInterface())
             {
                 FileManagementService.DeleteFile(filename);
@@ -3201,7 +3191,7 @@
 
         public CodeOutput GenerateContext()
         {
-            var filename = Settings.DbContextName + Settings.FileExtension;
+            var filename = Settings.DbContextName + FileManagementService.Extension;
             if (!CanWriteContext())
             {
                 FileManagementService.DeleteFile(filename);
@@ -3358,7 +3348,7 @@
 
         public CodeOutput GenerateFakeContext()
         {
-            var filename = "Fake" + Settings.DbContextName + Settings.FileExtension;
+            var filename = "Fake" + Settings.DbContextName + FileManagementService.Extension;
             if (!CanWriteFakeContext())
             {
                 FileManagementService.DeleteFile(filename);
@@ -3394,7 +3384,7 @@
 
         public CodeOutput GenerateFakeDbSet()
         {
-            var filename = "FakeDbSet" + Settings.FileExtension;
+            var filename = "FakeDbSet" + FileManagementService.Extension;
             if (!CanWriteFakeContext())
             {
                 FileManagementService.DeleteFile(filename);
@@ -3425,7 +3415,7 @@
 
         public CodeOutput GenerateFactory()
         {
-            var filename = Settings.DbContextName + "Factory" + Settings.FileExtension;
+            var filename = Settings.DbContextName + "Factory" + FileManagementService.Extension;
             if (!CanWriteFactory())
             {
                 FileManagementService.DeleteFile(filename);
@@ -3446,7 +3436,7 @@
 
         public CodeOutput GeneratePoco(Table table)
         {
-            var filename = table.NameHumanCaseWithSuffix() + Settings.FileExtension;
+            var filename = table.NameHumanCaseWithSuffix() + FileManagementService.Extension;
             if (!CanWritePoco())
             {
                 FileManagementService.DeleteFile(filename);
@@ -3550,7 +3540,7 @@
 
         public CodeOutput GeneratePocoConfiguration(Table table)
         {
-            var filename = table.NameHumanCaseWithSuffix() + Settings.ConfigurationClassName + Settings.FileExtension;
+            var filename = table.NameHumanCaseWithSuffix() + Settings.ConfigurationClassName + FileManagementService.Extension;
             if (!CanWritePocoConfiguration())
             {
                 FileManagementService.DeleteFile(filename);
@@ -3651,7 +3641,7 @@
 
         public CodeOutput GenerateStoredProcReturnModel(StoredProcedure sp)
         {
-            var filename = sp.WriteStoredProcReturnModelName(_filter) + Settings.FileExtension;
+            var filename = sp.WriteStoredProcReturnModelName(_filter) + FileManagementService.Extension;
             if (!CanWriteStoredProcReturnModel())
             {
                 FileManagementService.DeleteFile(filename);
@@ -3694,7 +3684,7 @@
 
         public CodeOutput GenerateEnum(Enumeration enumeration)
         {
-            var filename = enumeration.EnumName + Settings.FileExtension;
+            var filename = enumeration.EnumName + FileManagementService.Extension;
             if (!CanWriteEnums())
             {
                 FileManagementService.DeleteFile(filename);
@@ -3711,7 +3701,7 @@
 
         public CodeOutput GenerateOwnedEntityClass(string typeName, IList<OwnedEntity> instances)
         {
-            var filename = typeName + Settings.FileExtension;
+            var filename = typeName + FileManagementService.Extension;
             if (!CanWriteOwnedEntityClasses())
             {
                 FileManagementService.DeleteFile(filename);
@@ -4465,8 +4455,8 @@
 
                     if (exclude)
                     {
-                        FileManagementService.DeleteFile(table.NameHumanCaseWithSuffix() + Settings.FileExtension); // Poco
-                        FileManagementService.DeleteFile(table.NameHumanCaseWithSuffix() + Settings.ConfigurationClassName + Settings.FileExtension); // Poco config
+                        FileManagementService.DeleteFile(table.NameHumanCaseWithSuffix() + FileManagementService.Extension); // Poco
+                        FileManagementService.DeleteFile(table.NameHumanCaseWithSuffix() + Settings.ConfigurationClassName + FileManagementService.Extension); // Poco config
                         continue;
                     }
 
@@ -4910,7 +4900,7 @@
                     if (spFilters.All(x => x.Value.IsExcluded(sp)))
                     {
                         if (deleteFilteredOutFiles)
-                            FileManagementService.DeleteFile(sp.WriteStoredProcReturnModelName(spFilters[0].Value) + Settings.FileExtension);
+                            FileManagementService.DeleteFile(sp.WriteStoredProcReturnModelName(spFilters[0].Value) + FileManagementService.Extension);
 
                         continue; // All Db Context exclude this stored proc, ignore it as nobody wants it
                     }
@@ -4985,7 +4975,7 @@
                         else
                         {
                             if (deleteFilteredOutFiles)
-                                FileManagementService.DeleteFile(sp.WriteStoredProcReturnModelName(filter) + Settings.FileExtension);
+                                FileManagementService.DeleteFile(sp.WriteStoredProcReturnModelName(filter) + FileManagementService.Extension);
                         }
                     }
                 }
@@ -7350,40 +7340,32 @@
 
     public static class DatabaseToPropertyTypeFactory
     {
+        /// <summary>
+        ///     The type map that turns this database's column types into C# property types.
+        /// </summary>
         public static IDatabaseToPropertyType Create()
-        {
-            var factory = CreateDatabaseLanguageFactory();
-            return factory.Create();
-        }
-
-        private static IDatabaseLanguageFactory CreateDatabaseLanguageFactory()
         {
             switch (Settings.DatabaseType)
             {
                 case DatabaseType.SqlServer:
-                    return new SqlServerLanguageFactory();
+                    return new SqlServerToCSharp();
 
                 case DatabaseType.SQLite:
-                    return new SQLiteLanguageFactory();
+                    return new SqLiteToCSharp();
 
                 case DatabaseType.MySql:
-                    return new MySqlLanguageFactory();
+                    return new MySqlToCSharp();
 
                 case DatabaseType.PostgreSQL:
-                    return new PostgresLanguageFactory();
+                    return new PostgresToCSharp();
 
                 case DatabaseType.Oracle:
-                    return new OracleLanguageFactory();
+                    return new OracleToCSharp();
 
                 default:
                     throw new ArgumentOutOfRangeException();
             }
         }
-    }
-    public enum GenerationLanguage
-    {
-        CSharp,
-        Javascript
     }
 
     public interface IDatabaseToPropertyType
@@ -7404,97 +7386,6 @@
         /// A list of the database types that contain precision and scale.
         /// </summary>
         List<string> PrecisionAndScaleTypes();
-    }
-    public interface IDatabaseLanguageFactory
-    {
-        IDatabaseToPropertyType Create();
-    }
-    public class MySqlLanguageFactory : IDatabaseLanguageFactory
-    {
-        public IDatabaseToPropertyType Create()
-        {
-            switch (Settings.GenerationLanguage)
-            {
-                case GenerationLanguage.CSharp:
-                    return new MySqlToCSharp();
-
-                case GenerationLanguage.Javascript:
-                    // Not yet supported
-
-                default:
-                    return new MySqlToCSharp();
-            }
-        }
-    }
-    public class OracleLanguageFactory : IDatabaseLanguageFactory
-    {
-        public IDatabaseToPropertyType Create()
-        {
-            switch (Settings.GenerationLanguage)
-            {
-                case GenerationLanguage.CSharp:
-                    return new OracleToCSharp();
-
-                case GenerationLanguage.Javascript:
-                    // Not yet supported
-
-                default:
-                    return new OracleToCSharp();
-            }
-        }
-    }
-    public class PostgresLanguageFactory : IDatabaseLanguageFactory
-    {
-        public IDatabaseToPropertyType Create()
-        {
-            switch (Settings.GenerationLanguage)
-            {
-                case GenerationLanguage.CSharp:
-                    return new PostgresToCSharp();
-
-                case GenerationLanguage.Javascript:
-                    // Not yet supported
-
-                default:
-                    return new PostgresToCSharp();
-            }
-        }
-    }
-
-    public class SQLiteLanguageFactory : IDatabaseLanguageFactory
-    {
-        public IDatabaseToPropertyType Create()
-        {
-            switch (Settings.GenerationLanguage)
-            {
-                case GenerationLanguage.CSharp:
-                    return new SqLiteToCSharp();
-
-                case GenerationLanguage.Javascript:
-                    // Not yet supported
-
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-        }
-    }
-
-    public class SqlServerLanguageFactory : IDatabaseLanguageFactory
-    {
-        public IDatabaseToPropertyType Create()
-        {
-            switch (Settings.GenerationLanguage)
-            {
-                case GenerationLanguage.CSharp:
-                    return new SqlServerToCSharp();
-
-                case GenerationLanguage.Javascript:
-                    return new SqlServerToJavascript();
-
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-        }
     }
 
     public class MySqlToCSharp : IDatabaseToPropertyType
@@ -7881,60 +7772,6 @@
                 { "vector",           vectorType },
                 { "varbinary",        "byte[]" },
                 { "varbinary(max)",   "byte[]" }
-            };
-        }
-
-        public List<string> SpatialTypes()
-        {
-            return new List<string> { "geography", "geometry" };
-        }
-
-        public List<string> PrecisionTypes()
-        {
-            return new List<string> { "float", "datetime2", "datetimeoffset" };
-        }
-
-        public List<string> PrecisionAndScaleTypes()
-        {
-            return new List<string> { "decimal", "numeric" };
-        }
-    }
-
-    public class SqlServerToJavascript : IDatabaseToPropertyType
-    {
-        // [Database type] = Language type
-        public Dictionary<string, string> GetMapping()
-        {
-            return new Dictionary<string, string>
-            {
-                { string.Empty,       "string" }, // default
-                { "bigint",           "Number" },
-                { "binary",           "string" },
-                { "bit",              "boolean" },
-                { "date",             "string" },
-                { "datetime",         "string" },
-                { "datetime2",        "string" },
-                { "datetimeoffset",   "string" },
-                { "decimal",          "Number" },
-                { "float",            "Number" },
-                { "geography",        Settings.DisableGeographyTypes ? string.Empty : "string" },
-                { "geometry",         Settings.DisableGeographyTypes ? string.Empty : "string" },
-                { "hierarchyid",      "string" },
-                { "image",            "string" },
-                { "int",              "Number" },
-                { "money",            "Number" },
-                { "numeric",          "Number" },
-                { "real",             "Number" },
-                { "smalldatetime",    "string" },
-                { "smallint",         "Number" },
-                { "smallmoney",       "Number" },
-                { "table type",       string.Empty },
-                { "time",             "string" },
-                { "timestamp",        "string" },
-                { "tinyint",          "Number" },
-                { "uniqueidentifier", "string" },
-                { "varbinary",        "string" },
-                { "varbinary(max)",   "string" }
             };
         }
 

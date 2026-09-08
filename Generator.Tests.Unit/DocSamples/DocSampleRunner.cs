@@ -239,7 +239,6 @@ namespace Generator.Tests.Unit.DocSamples
             Settings.CollectionType                         = "List";
             Settings.NullableShortHand                      = true;
             Settings.AddIDbContextFactory                   = true;
-            Settings.IncludeQueryTraceOn9481Flag            = false;
             Settings.UsePrivateSetterForComputedColumns     = true;
             Settings.IncludeGeneratorVersionInCode          = false;
             Settings.TrimCharFields                         = false;
@@ -252,8 +251,6 @@ namespace Generator.Tests.Unit.DocSamples
             Settings.AdditionalFileFooterText               = new List<string>();
             Settings.OrderProperties                        = OrderProperties.Ordinal;
 
-            Settings.GenerationLanguage = GenerationLanguage.CSharp;
-            Settings.FileExtension      = ".cs";
 
             Settings.UseRegions                          = true;
             Settings.UseNamespace                        = true;

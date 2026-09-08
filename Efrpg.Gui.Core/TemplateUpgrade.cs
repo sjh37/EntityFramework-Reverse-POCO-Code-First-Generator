@@ -196,6 +196,12 @@ namespace Efrpg.Gui
                 "Settings.TemplateFolder no longer exists in v4 - file-based templates were removed.");
             text = DeleteSetting(text, "GeneratorType",
                 "Settings.GeneratorType no longer exists in v4 - TemplateType alone decides which generator runs.");
+            text = DeleteSetting(text, "GenerationLanguage",
+                "Settings.GenerationLanguage no longer exists in v4 - the generator only writes C#.");
+            text = DeleteSetting(text, "FileExtension",
+                "Settings.FileExtension no longer exists in v4 - generated files are always .cs.");
+            text = DeleteSetting(text, "IncludeQueryTraceOn9481Flag",
+                "Settings.IncludeQueryTraceOn9481Flag no longer exists in v4 - the SQL Server 2014 workaround was retired.");
             text = SimplifySeparateFilesCondition(text);
             text = RenameCleanUp(text);
             text = ReplaceEntryPoint(text);

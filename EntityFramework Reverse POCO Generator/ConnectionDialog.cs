@@ -38,6 +38,10 @@ namespace EntityFramework_Reverse_POCO_Generator
         private readonly TextBox _dbContextName;
         private readonly TextBox _connectionStringName;
         private readonly TextBox _namespace;
+        private readonly CheckBox _separateFiles;
+        private readonly CheckBox _fileScopedNamespaces;
+        private readonly CheckBox _fakeContext;
+        private readonly CheckBox _fakeContextDebugOnly;
 
         /// <summary>
         ///     What the DbContext name box last held, so the connection string name can follow it while the two are
@@ -81,7 +85,12 @@ namespace EntityFramework_Reverse_POCO_Generator
             get
             {
                 return new TemplateConfiguration(SelectedDatabase, SelectedTemplate, _connectionString.Text.Trim(),
-                    _dbContextName.Text.Trim(), _connectionStringName.Text.Trim(), _namespace.Text.Trim(), _source);
+                    _dbContextName.Text.Trim(), _connectionStringName.Text.Trim(), _namespace.Text.Trim(), _source,
+                    new TemplateOptions(
+                        _separateFiles.IsChecked == true,
+                        _fileScopedNamespaces.IsChecked == true,
+                        _fakeContext.IsChecked == true,
+                        _fakeContextDebugOnly.IsChecked == true));
             }
         }
 
@@ -130,6 +139,11 @@ namespace EntityFramework_Reverse_POCO_Generator
             _connectionStringName = new TextBox { Text = current.ConnectionStringName, Padding = new Thickness(6, 4, 6, 4) };
             _lastDbContextName    = current.DbContextName;
             _namespace        = new TextBox { Text = current.Namespace, Padding = new Thickness(6, 4, 6, 4) };
+            _separateFiles        = Option("Generate a file per class, in sub-folders", current.Options.GenerateSeparateFiles);
+            _fileScopedNamespaces = Option("Use file-scoped namespaces (C# 10)", current.Options.UseFileScopedNamespaces);
+            _fakeContext          = Option("Generate a FakeDbContext for unit tests", current.Options.AddUnitTestingDbContext);
+            _fakeContextDebugOnly = Option("Wrap the fake in #if DEBUG so Release builds leave it out", current.Options.FakeDbContextInDebugOnlyMode);
+            _fakeContextDebugOnly.Margin = new Thickness(22, 0, 0, 6);
             _connectionHint   = Hint(current.Database.Hint);
             _validation       = new TextBlock { TextWrapping = TextWrapping.Wrap, Margin = new Thickness(0, 0, 0, 10) };
             _ok               = new Button { Content = "OK", MinWidth = 90, Margin = new Thickness(0, 0, 8, 0), Padding = new Thickness(10, 4, 10, 4), IsDefault = true };
@@ -139,6 +153,8 @@ namespace EntityFramework_Reverse_POCO_Generator
             _connectionString.TextChanged += (s, e) => { TestedSchema = null; Validate(); };
             _namespace.TextChanged        += (s, e) => Validate();
             _dbContextName.TextChanged    += (s, e) => FollowDbContextName();
+            _fakeContext.Checked          += (s, e) => FollowFakeContext();
+            _fakeContext.Unchecked        += (s, e) => FollowFakeContext();
             _ok.Click                     += (s, e) => { Confirmed = true; DialogResult = true; Close(); };
             _test.Click                   += (s, e) => Test();
 
@@ -149,7 +165,19 @@ namespace EntityFramework_Reverse_POCO_Generator
             Closed += (s, e) => CancelTest();
 
             Content = Build();
+            FollowFakeContext();
             Validate();
+        }
+
+        /// <summary>The Debug-only choice means nothing without a fake context to wrap, so it follows that box.</summary>
+        private void FollowFakeContext()
+        {
+            _fakeContextDebugOnly.IsEnabled = _fakeContext.IsChecked == true;
+        }
+
+        private static CheckBox Option(string text, bool isChecked)
+        {
+            return new CheckBox { Content = text, IsChecked = isChecked, Margin = new Thickness(0, 0, 0, 6) };
         }
 
         /// <summary>
@@ -357,7 +385,7 @@ namespace EntityFramework_Reverse_POCO_Generator
             {
                 Text = _isNewTemplate
                     ? "Point the template at your database. Next you choose which tables and procedures to generate. You can change any of this later by right-clicking the .tt file."
-                    : "Changing any of these rewrites that one line of the .tt and regenerates the output. Everything else in the file is left alone.",
+                    : "Changing any of these rewrites that one line of the .tt and regenerates the output. Everything else in the file is left alone. Every other setting is under \"Reverse POCO: All settings...\".",
                 TextWrapping = TextWrapping.Wrap,
                 Margin = new Thickness(0, 0, 0, 14)
             });
@@ -394,9 +422,14 @@ namespace EntityFramework_Reverse_POCO_Generator
                 Text = "Leave the namespace blank to use the namespace of the project the .tt sits in.",
                 TextWrapping = TextWrapping.Wrap,
                 Opacity = 0.75,
-                Margin = new Thickness(0, 4, 0, 0)
+                Margin = new Thickness(0, 4, 0, 12)
             });
-            body.Children.Add(new Border { Height = 14 });
+            body.Children.Add(Label("Output"));
+            body.Children.Add(_separateFiles);
+            body.Children.Add(_fileScopedNamespaces);
+            body.Children.Add(_fakeContext);
+            body.Children.Add(_fakeContextDebugOnly);
+            body.Children.Add(new Border { Height = 8 });
             body.Children.Add(_validation);
             body.Children.Add(buttons);
             return body;

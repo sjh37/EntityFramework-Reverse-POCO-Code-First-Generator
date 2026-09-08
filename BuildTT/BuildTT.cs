@@ -117,7 +117,6 @@ namespace BuildTT
     Settings.CollectionType                         = ""List""; // Determines the type of collection for the Navigation Properties. ""ObservableCollection"" for example. Add ""System.Collections.ObjectModel"" to AdditionalNamespaces if setting the CollectionType = ""ObservableCollection"".
     Settings.NullableShortHand                      = true; // true => T?, false => Nullable<T>
     Settings.AddIDbContextFactory                   = true; // Will add a default IDbContextFactory<DbContextName> implementation for easy dependency injection
-    Settings.IncludeQueryTraceOn9481Flag            = false; // If SqlServer 2014 appears frozen / take a long time when this file is saved, try setting this to true (you will also need elevated privileges).
     Settings.UsePrivateSetterForComputedColumns     = true; // If the columns is computed, use a private setter.
     Settings.IncludeGeneratorVersionInCode          = false; // If true, will include the version number of the generator in the generated code (Settings.ShowLicenseInfo must also be true).
     Settings.TrimCharFields                         = false; // EF Core option only. If true, will TrimEnd() 'char' fields when read from the database.
@@ -130,8 +129,6 @@ namespace BuildTT
     Settings.AdditionalFileFooterText               = new List<string>(); // This will put additional lines verbatim at the end of each file above the // </auto-generated>, 1 line per entry
 
     // Language choices
-    Settings.GenerationLanguage = GenerationLanguage.CSharp; // CSharp, Javascript. Javascript is SqlServer only, every other database falls back to CSharp.
-    Settings.FileExtension      = "".cs"";
 
     // Code suppression *******************************************************************************
     Settings.UseRegions                          = true;  // If false, suppresses the use of #region

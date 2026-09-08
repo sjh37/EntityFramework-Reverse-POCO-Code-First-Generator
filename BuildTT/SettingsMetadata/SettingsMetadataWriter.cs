@@ -42,8 +42,7 @@ namespace BuildTT.SettingsMetadata
         {
             { "Root",          "Set by the T4 host from Host.ResolvePath." },
             { "TemplateFile",  "Set by the T4 host from Host.TemplateFile." },
-            { "DefaultSchema", "Set by the database reader." },
-            { "FilterCount",   "Counted while filters are applied." }
+            { "DefaultSchema", "Set by the database reader." }
         };
 
         public static void Create(string generatorRoot, string ttRoot, string version)
