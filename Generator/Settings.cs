@@ -1,10 +1,8 @@
 ﻿using Efrpg.Filtering;
 using Efrpg.Generators;
-using Efrpg.LanguageMapping;
 using Efrpg.Templates;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 using System.Text.RegularExpressions;
 

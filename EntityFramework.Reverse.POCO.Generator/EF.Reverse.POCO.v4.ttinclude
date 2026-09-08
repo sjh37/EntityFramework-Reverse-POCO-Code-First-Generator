@@ -1,6 +1,6 @@
 <#
 // Copyright (C) Simon Hughes 2012
-// v4.0.29
+// v4.0.30
 // If you want to submit a pull request, please modify the Generator C# project as this file
 // is automatically constructed from the C# Generator project during the build process.
 #>
@@ -1915,7 +1915,7 @@
     {
         public static string Version()
         {
-            return "v4.0.29";
+            return "v4.0.30";
         }
     }
 
@@ -3596,8 +3596,11 @@
                 ConfigurationClassesArePartial = Settings.ConfigurationClassesArePartial(),
                 Indexes = indexes,
                 HasIndexes = hasIndexes,
+                // Written inside ToTable(..., t => t.HasComment(...)): EF Core 10 made the entity-level HasComment
+                // obsolete, and the TableBuilder form has no view equivalent, so a view's description is not emitted.
                 HasTableComment = !Settings.UseDataAnnotations &&
                                   !Settings.IsEf6() &&
+                                  !table.IsView &&
                                   Settings.IncludeExtendedPropertyComments != CommentsStyle.None &&
                                   !string.IsNullOrEmpty(table.Description),
                 TableComment = table.Description?.Replace("\"", "\"\"")
@@ -18521,13 +18524,10 @@ public class FakeDbContextTransaction : IDbContextTransaction{{#newline}}
     {{{#newline}}
 {{#if NotUsingDataAnnotations}}
 {{#if HasSchema}}
-        builder.{{ToTableOrView}}(""{{Name}}"", ""{{Schema}}"");{{#newline}}
+        builder.{{ToTableOrView}}(""{{Name}}"", ""{{Schema}}""{{#if HasTableComment}}, t => t.HasComment(@""{{TableComment}}""){{/if}});{{#newline}}
 {{#else}}
-        builder.{{ToTableOrView}}(""{{Name}}"");{{#newline}}
+        builder.{{ToTableOrView}}(""{{Name}}""{{#if HasTableComment}}, t => t.HasComment(@""{{TableComment}}""){{/if}});{{#newline}}
 {{/if}}
-{{/if}}
-{{#if HasTableComment}}
-        builder.HasComment(@""{{TableComment}}"");{{#newline}}
 {{/if}}
         {{PrimaryKeyNameHumanCase}}{{#newline}}{{#newline}}
 

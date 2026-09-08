@@ -763,8 +763,11 @@ namespace Efrpg.Generators
                 ConfigurationClassesArePartial = Settings.ConfigurationClassesArePartial(),
                 Indexes = indexes,
                 HasIndexes = hasIndexes,
+                // Written inside ToTable(..., t => t.HasComment(...)): EF Core 10 made the entity-level HasComment
+                // obsolete, and the TableBuilder form has no view equivalent, so a view's description is not emitted.
                 HasTableComment = !Settings.UseDataAnnotations &&
                                   !Settings.IsEf6() &&
+                                  !table.IsView &&
                                   Settings.IncludeExtendedPropertyComments != CommentsStyle.None &&
                                   !string.IsNullOrEmpty(table.Description),
                 TableComment = table.Description?.Replace("\"", "\"\"")

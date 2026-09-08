@@ -2203,8 +2203,7 @@ namespace Efrpg.PostgreSQL
     {
         public void Configure(EntityTypeBuilder<Allcolumntype> builder)
         {
-            builder.ToTable("allcolumntypes", "public");
-            builder.HasComment(@"One column per PostgreSQL type, to exercise the language mapping");
+            builder.ToTable("allcolumntypes", "public", t => t.HasComment(@"One column per PostgreSQL type, to exercise the language mapping"));
             builder.HasKey(x => x.Bigint).HasName("pk_allcolumntypes");
 
             builder.Property(x => x.Bigint).HasColumnName(@"bigint").HasColumnType("bigint").IsRequired().ValueGeneratedNever();
@@ -2425,8 +2424,7 @@ namespace Efrpg.PostgreSQL
     {
         public void Configure(EntityTypeBuilder<DefaultsAndGenerated> builder)
         {
-            builder.ToTable("defaults_and_generated", "public");
-            builder.HasComment(@"Column defaults and a stored generated column");
+            builder.ToTable("defaults_and_generated", "public", t => t.HasComment(@"Column defaults and a stored generated column"));
             builder.HasKey(x => x.Id).HasName("defaults_and_generated_pkey");
 
             builder.Property(x => x.Id).HasColumnName(@"id").HasColumnType("integer").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();
@@ -2600,8 +2598,7 @@ namespace Efrpg.PostgreSQL
     {
         public void Configure(EntityTypeBuilder<Mixed Case Schema_SpacedTableName> builder)
         {
-            builder.ToTable("Spaced Table Name", "Mixed Case Schema");
-            builder.HasComment(@"Every identifier here needs quoting");
+            builder.ToTable("Spaced Table Name", "Mixed Case Schema", t => t.HasComment(@"Every identifier here needs quoting"));
             builder.HasKey(x => x.SpacedTableName).HasName("Spaced Table Name_pkey");
 
             builder.Property(x => x.SpacedTableName).HasColumnName(@"Spaced Table Name").HasColumnType("integer").IsRequired().ValueGeneratedOnAdd().UseIdentityColumn();

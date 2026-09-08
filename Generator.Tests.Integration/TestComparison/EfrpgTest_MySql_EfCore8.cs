@@ -1915,8 +1915,7 @@ namespace Efrpg.MySql
     {
         public void Configure(EntityTypeBuilder<AllColumnType> builder)
         {
-            builder.ToTable("AllColumnTypes", "EfrpgTest");
-            builder.HasComment(@"One column per MySQL type, to exercise the language mapping");
+            builder.ToTable("AllColumnTypes", "EfrpgTest", t => t.HasComment(@"One column per MySQL type, to exercise the language mapping"));
             builder.HasKey(x => x.Id).HasName("PRIMARY").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd();
@@ -1983,8 +1982,7 @@ namespace Efrpg.MySql
     {
         public void Configure(EntityTypeBuilder<ChildComposite> builder)
         {
-            builder.ToTable("ChildComposite", "EfrpgTest");
-            builder.HasComment(@"Composite foreign key, unique constraint and a plain index");
+            builder.ToTable("ChildComposite", "EfrpgTest", t => t.HasComment(@"Composite foreign key, unique constraint and a plain index"));
             builder.HasKey(x => x.Id).HasName("PRIMARY").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd();
@@ -2020,8 +2018,7 @@ namespace Efrpg.MySql
     {
         public void Configure(EntityTypeBuilder<CurrenCy> builder)
         {
-            builder.ToTable("CURRENCIES", "EfrpgTest");
-            builder.HasComment(@"ALLCAPS ending in IES, which naive pluralisation mangles");
+            builder.ToTable("CURRENCIES", "EfrpgTest", t => t.HasComment(@"ALLCAPS ending in IES, which naive pluralisation mangles"));
             builder.HasKey(x => x.Id).HasName("PRIMARY").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedNever();
@@ -2034,8 +2031,7 @@ namespace Efrpg.MySql
     {
         public void Configure(EntityTypeBuilder<DefaultsAndGenerated> builder)
         {
-            builder.ToTable("DefaultsAndGenerated", "EfrpgTest");
-            builder.HasComment(@"Column defaults, generated columns and ON UPDATE");
+            builder.ToTable("DefaultsAndGenerated", "EfrpgTest", t => t.HasComment(@"Column defaults, generated columns and ON UPDATE"));
             builder.HasKey(x => x.Id).HasName("PRIMARY").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd();
@@ -2056,8 +2052,7 @@ namespace Efrpg.MySql
     {
         public void Configure(EntityTypeBuilder<Employee> builder)
         {
-            builder.ToTable("Employee", "EfrpgTest");
-            builder.HasComment(@"Self referencing foreign key");
+            builder.ToTable("Employee", "EfrpgTest", t => t.HasComment(@"Self referencing foreign key"));
             builder.HasKey(x => x.Id).HasName("PRIMARY").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd();
@@ -2076,8 +2071,7 @@ namespace Efrpg.MySql
     {
         public void Configure(EntityTypeBuilder<Flight> builder)
         {
-            builder.ToTable("Flight", "EfrpgTest");
-            builder.HasComment(@"Two foreign keys onto the same parent");
+            builder.ToTable("Flight", "EfrpgTest", t => t.HasComment(@"Two foreign keys onto the same parent"));
             builder.HasKey(x => x.Id).HasName("PRIMARY").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd();
@@ -2098,8 +2092,7 @@ namespace Efrpg.MySql
     {
         public void Configure(EntityTypeBuilder<IndexTest> builder)
         {
-            builder.ToTable("IndexTest", "EfrpgTest");
-            builder.HasComment(@"Prefix index, fulltext index, check constraint and a zerofill column");
+            builder.ToTable("IndexTest", "EfrpgTest", t => t.HasComment(@"Prefix index, fulltext index, check constraint and a zerofill column"));
             builder.HasKey(x => x.Id).HasName("PRIMARY").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd();
@@ -2123,8 +2116,7 @@ namespace Efrpg.MySql
     {
         public void Configure(EntityTypeBuilder<OrderStatus> builder)
         {
-            builder.ToTable("OrderStatus", "EfrpgTest");
-            builder.HasComment(@"Reverse engineered into a C# enum");
+            builder.ToTable("OrderStatus", "EfrpgTest", t => t.HasComment(@"Reverse engineered into a C# enum"));
             builder.HasKey(x => x.Id).HasName("PRIMARY").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedNever();
@@ -2139,8 +2131,7 @@ namespace Efrpg.MySql
     {
         public void Configure(EntityTypeBuilder<ParentComposite> builder)
         {
-            builder.ToTable("ParentComposite", "EfrpgTest");
-            builder.HasComment(@"Composite primary key");
+            builder.ToTable("ParentComposite", "EfrpgTest", t => t.HasComment(@"Composite primary key"));
             builder.HasKey(x => new { x.KeyPartOne, x.KeyPartTwo }).HasName("PRIMARY").IsClustered();
 
             builder.Property(x => x.KeyPartOne).HasColumnName(@"KeyPartOne").HasColumnType("int").IsRequired().ValueGeneratedNever();
@@ -2167,8 +2158,7 @@ namespace Efrpg.MySql
     {
         public void Configure(EntityTypeBuilder<PersonPhoto> builder)
         {
-            builder.ToTable("PersonPhoto", "EfrpgTest");
-            builder.HasComment(@"One to one: the primary key is also the foreign key");
+            builder.ToTable("PersonPhoto", "EfrpgTest", t => t.HasComment(@"One to one: the primary key is also the foreign key"));
             builder.HasKey(x => x.PersonId).HasName("PRIMARY").IsClustered();
 
             builder.Property(x => x.PersonId).HasColumnName(@"PersonId").HasColumnType("int").IsRequired().ValueGeneratedNever();
@@ -2184,8 +2174,7 @@ namespace Efrpg.MySql
     {
         public void Configure(EntityTypeBuilder<PkOrdinalTest> builder)
         {
-            builder.ToTable("PkOrdinalTest", "EfrpgTest");
-            builder.HasComment(@"The key order is not the column order");
+            builder.ToTable("PkOrdinalTest", "EfrpgTest", t => t.HasComment(@"The key order is not the column order"));
             builder.HasKey(x => new { x.FirstKey, x.SecondKey }).HasName("PRIMARY").IsClustered();
 
             builder.Property(x => x.Filler).HasColumnName(@"Filler").HasColumnType("varchar(10)").IsRequired(false).IsUnicode(false).HasMaxLength(10);
@@ -2199,8 +2188,7 @@ namespace Efrpg.MySql
     {
         public void Configure(EntityTypeBuilder<PrincipalKeyChild> builder)
         {
-            builder.ToTable("PrincipalKeyChild", "EfrpgTest");
-            builder.HasComment(@"Foreign key onto a unique constraint, not the primary key");
+            builder.ToTable("PrincipalKeyChild", "EfrpgTest", t => t.HasComment(@"Foreign key onto a unique constraint, not the primary key"));
             builder.HasKey(x => x.Id).HasName("PRIMARY").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd();
@@ -2218,8 +2206,7 @@ namespace Efrpg.MySql
     {
         public void Configure(EntityTypeBuilder<SpacedTableName> builder)
         {
-            builder.ToTable("Spaced Table Name", "EfrpgTest");
-            builder.HasComment(@"Identifiers that are legal in MySQL and illegal in C#");
+            builder.ToTable("Spaced Table Name", "EfrpgTest", t => t.HasComment(@"Identifiers that are legal in MySQL and illegal in C#"));
             builder.HasKey(x => x.Id).HasName("PRIMARY").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedOnAdd();
@@ -2241,8 +2228,7 @@ namespace Efrpg.MySql
     {
         public void Configure(EntityTypeBuilder<Status> builder)
         {
-            builder.ToTable("Status", "EfrpgTest");
-            builder.HasComment(@"Enum lookup with no group column");
+            builder.ToTable("Status", "EfrpgTest", t => t.HasComment(@"Enum lookup with no group column"));
             builder.HasKey(x => x.Id).HasName("PRIMARY").IsClustered();
 
             builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("int").IsRequired().ValueGeneratedNever();
@@ -2268,8 +2254,7 @@ namespace Efrpg.MySql
     {
         public void Configure(EntityTypeBuilder<StudentCourse> builder)
         {
-            builder.ToTable("StudentCourse", "EfrpgTest");
-            builder.HasComment(@"Nothing but two foreign keys, so it collapses into a many to many");
+            builder.ToTable("StudentCourse", "EfrpgTest", t => t.HasComment(@"Nothing but two foreign keys, so it collapses into a many to many"));
             builder.HasKey(x => new { x.StudentId, x.CourseId }).HasName("PRIMARY").IsClustered();
 
             builder.Property(x => x.StudentId).HasColumnName(@"StudentId").HasColumnType("int").IsRequired().ValueGeneratedNever();

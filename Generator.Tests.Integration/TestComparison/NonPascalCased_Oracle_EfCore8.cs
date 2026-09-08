@@ -1908,7 +1908,6 @@ namespace Efrpg.Oracle
         public void Configure(EntityTypeBuilder<ACTIVE_Child> builder)
         {
             builder.ToView("ACTIVE_CHILDREN", "EFRPGTEST");
-            builder.HasComment(@"A view has no keys and no relationships");
             builder.HasNoKey();
 
             builder.Property(x => x.CHILD_ID).HasColumnName(@"CHILD_ID").HasColumnType("number").IsRequired();
@@ -1935,8 +1934,7 @@ namespace Efrpg.Oracle
     {
         public void Configure(EntityTypeBuilder<ALL_COLUMN_TYPE> builder)
         {
-            builder.ToTable("ALL_COLUMN_TYPES", "EFRPGTEST");
-            builder.HasComment(@"One column per Oracle type, to exercise the language mapping");
+            builder.ToTable("ALL_COLUMN_TYPES", "EFRPGTEST", t => t.HasComment(@"One column per Oracle type, to exercise the language mapping"));
             builder.HasKey(x => x.ID).HasName("PK_ALL_COLUMN_TYPES");
 
             builder.Property(x => x.ID).HasColumnName(@"ID").HasColumnType("number(19)").IsRequired().ValueGeneratedNever();
@@ -2077,8 +2075,7 @@ namespace Efrpg.Oracle
     {
         public void Configure(EntityTypeBuilder<DEFAULTS_AND_GENERATED> builder)
         {
-            builder.ToTable("DEFAULTS_AND_GENERATED", "EFRPGTEST");
-            builder.HasComment(@"Column defaults and a virtual column");
+            builder.ToTable("DEFAULTS_AND_GENERATED", "EFRPGTEST", t => t.HasComment(@"Column defaults and a virtual column"));
             builder.HasKey(x => x.ID).HasName("PK_DEFAULTS_AND_GENERATED");
 
             builder.Property(x => x.ID).HasColumnName(@"ID").HasColumnType("number").IsRequired().ValueGeneratedOnAdd();
@@ -2336,8 +2333,7 @@ namespace Efrpg.Oracle
     {
         public void Configure(EntityTypeBuilder<SpacedTableName> builder)
         {
-            builder.ToTable("Spaced Table Name", "EFRPGTEST");
-            builder.HasComment(@"Every identifier here needs quoting");
+            builder.ToTable("Spaced Table Name", "EFRPGTEST", t => t.HasComment(@"Every identifier here needs quoting"));
             builder.HasKey(x => x.SpacedTableName_).HasName("PK Spaced Table Name");
 
             builder.Property(x => x.SpacedTableName_).HasColumnName(@"Spaced Table Name").HasColumnType("number").IsRequired().ValueGeneratedOnAdd();
