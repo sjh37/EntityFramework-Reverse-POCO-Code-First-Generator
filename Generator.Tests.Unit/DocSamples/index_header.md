@@ -1,5 +1,3 @@
-# Settings Reference
-
 Every setting in `Database.tt`, A to Z, with a one-line summary and a link to its page.
 
 **Each page shows the generated code before and after**, produced by running the generator rather than typed
