@@ -18,11 +18,9 @@ namespace Generator.Tests.Integration
             string database,
             string connectionStringName,
             string dbContextName,
-            TemplateType templateType,
-            GeneratorType generatorType,
-            ForeignKeyNamingStrategy foreignKeyNamingStrategy)
+            TemplateType templateType)
         {
-            SetupDatabase(connectionStringName, dbContextName, templateType, generatorType, foreignKeyNamingStrategy);
+            SetupDatabase(connectionStringName, dbContextName, templateType);
 
             Settings.ConnectionString =
                 $"Data Source=(local);Initial Catalog={database};Integrated Security=True;Encrypt=false;TrustServerCertificate=true;Application Name=Generator";
@@ -30,23 +28,21 @@ namespace Generator.Tests.Integration
         }
 
         [Test]
-        // Legacy
-        [TestCase("EfrpgTest", ".V3TestE1", "MyDbContext", "EfrpgTestDbContext", TemplateType.Ef6, ForeignKeyNamingStrategy.Current, false, false, false)]
-        [TestCase("EfrpgTest", ".V3TestE8a", "MyDbContext", "EfrpgTestDbContext", TemplateType.EfCore8, ForeignKeyNamingStrategy.Current, false, false, false)]
-        [TestCase("EfrpgTest", ".V3TestE8b", "MyDbContext", "EfrpgTestDbContext", TemplateType.EfCore8, ForeignKeyNamingStrategy.Current, false, true, false)]
-        [TestCase("EfrpgTest", ".V3TestE8c", "MyDbContext", "EfrpgTestDbContext", TemplateType.EfCore8, ForeignKeyNamingStrategy.Current, false, false, true)]
-        [TestCase("EfrpgTest", ".V3TestE8d", "MyDbContext", "EfrpgTestDbContext", TemplateType.EfCore8, ForeignKeyNamingStrategy.Current, false, true, true)]
-        [TestCase("EfrpgTest", ".V3TestE1Da", "MyDbContext", "EfrpgTestDbContextDa", TemplateType.Ef6, ForeignKeyNamingStrategy.Current, true, false, false)]
-        [TestCase("EfrpgTest", ".V3TestE8Da", "MyDbContext", "EfrpgTestDbContextDa", TemplateType.EfCore8, ForeignKeyNamingStrategy.Current, true, false, false)]
-        [TestCase("EfrpgTest", ".V3TestE8Db", "MyDbContext", "EfrpgTestDbContextDa", TemplateType.EfCore8, ForeignKeyNamingStrategy.Current, true, true, false)]
-        [TestCase("EfrpgTest", ".V3TestE8Dc", "MyDbContext", "EfrpgTestDbContextDa", TemplateType.EfCore8, ForeignKeyNamingStrategy.Current, true, false, true)]
-        [TestCase("EfrpgTest", ".V3TestE8Dd", "MyDbContext", "EfrpgTestDbContextDa", TemplateType.EfCore8, ForeignKeyNamingStrategy.Current, true, true, true)]
+        [TestCase("EfrpgTest", ".V3TestE1", "MyDbContext", "EfrpgTestDbContext", TemplateType.Ef6, false, false, false)]
+        [TestCase("EfrpgTest", ".V3TestE8a", "MyDbContext", "EfrpgTestDbContext", TemplateType.EfCore8, false, false, false)]
+        [TestCase("EfrpgTest", ".V3TestE8b", "MyDbContext", "EfrpgTestDbContext", TemplateType.EfCore8, false, true, false)]
+        [TestCase("EfrpgTest", ".V3TestE8c", "MyDbContext", "EfrpgTestDbContext", TemplateType.EfCore8, false, false, true)]
+        [TestCase("EfrpgTest", ".V3TestE8d", "MyDbContext", "EfrpgTestDbContext", TemplateType.EfCore8, false, true, true)]
+        [TestCase("EfrpgTest", ".V3TestE1Da", "MyDbContext", "EfrpgTestDbContextDa", TemplateType.Ef6, true, false, false)]
+        [TestCase("EfrpgTest", ".V3TestE8Da", "MyDbContext", "EfrpgTestDbContextDa", TemplateType.EfCore8, true, false, false)]
+        [TestCase("EfrpgTest", ".V3TestE8Db", "MyDbContext", "EfrpgTestDbContextDa", TemplateType.EfCore8, true, true, false)]
+        [TestCase("EfrpgTest", ".V3TestE8Dc", "MyDbContext", "EfrpgTestDbContextDa", TemplateType.EfCore8, true, false, true)]
+        [TestCase("EfrpgTest", ".V3TestE8Dd", "MyDbContext", "EfrpgTestDbContextDa", TemplateType.EfCore8, true, true, true)]
         public void ReverseEngineerSqlServer(string database, string singleDbContextSubNamespace, string connectionStringName, string dbContextName,
-            TemplateType templateType, ForeignKeyNamingStrategy foreignKeyNamingStrategy, bool useDataAnnotations, bool allowNullStrings, bool nullableReverseNavigationProperties)
+            TemplateType templateType, bool useDataAnnotations, bool allowNullStrings, bool nullableReverseNavigationProperties)
         {
             // Arrange
-            SetupSqlServer(database, connectionStringName, dbContextName, templateType,
-                templateType == TemplateType.Ef6 ? GeneratorType.Ef6 : GeneratorType.EfCore, foreignKeyNamingStrategy);
+            SetupSqlServer(database, connectionStringName, dbContextName, templateType);
             Settings.GenerateSeparateFiles = false;
             Settings.UseMappingTables = true;
             Settings.TrimCharFields = false;
@@ -105,7 +101,7 @@ namespace Generator.Tests.Integration
         public void NonPascalCased(TemplateType templateType, string singleDbContextSubNamespace)
         {
             // Arrange
-            SetupSqlServer("EfrpgTest", "My_db_context", "Efrpg_db_context", templateType, GeneratorType.EfCore, ForeignKeyNamingStrategy.Current);
+            SetupSqlServer("EfrpgTest", "My_db_context", "Efrpg_db_context", templateType);
             Settings.GenerateSeparateFiles = false;
             Settings.UsePascalCase = false;
             Settings.UseMappingTables = true;
@@ -125,8 +121,7 @@ namespace Generator.Tests.Integration
         public void SpacedColumnStoredProcedure(TemplateType templateType, string singleDbContextSubNamespace, bool useDataAnnotations)
         {
             // Arrange - #721 SP that returns columns whose names contain spaces
-            SetupSqlServer("EfrpgTest", "MyDbContext", "EfrpgTestDbContext", templateType,
-                templateType == TemplateType.Ef6 ? GeneratorType.Ef6 : GeneratorType.EfCore, ForeignKeyNamingStrategy.Current);
+            SetupSqlServer("EfrpgTest", "MyDbContext", "EfrpgTestDbContext", templateType);
             Settings.GenerateSeparateFiles = false;
             Settings.UseMappingTables = false;
             Settings.AddUnitTestingDbContext = false;
@@ -151,8 +146,7 @@ namespace Generator.Tests.Integration
         public void SpacedColumnTableValuedFunction(TemplateType templateType, string singleDbContextSubNamespace, bool useDataAnnotations)
         {
             // Arrange - #721 TVF that returns columns whose names contain spaces
-            SetupSqlServer("EfrpgTest", "MyDbContext", "EfrpgTestDbContext", templateType,
-                templateType == TemplateType.Ef6 ? GeneratorType.Ef6 : GeneratorType.EfCore, ForeignKeyNamingStrategy.Current);
+            SetupSqlServer("EfrpgTest", "MyDbContext", "EfrpgTestDbContext", templateType);
             Settings.GenerateSeparateFiles = false;
             Settings.UseMappingTables = false;
             Settings.AddUnitTestingDbContext = false;
@@ -175,13 +169,12 @@ namespace Generator.Tests.Integration
         }
 
         [Test]
-        [TestCase("EfrpgTest", ".V8FilterTest", "EfrpgTest", "EfrpgDbContext", false, TemplateType.EfCore8, ForeignKeyNamingStrategy.Current)]
+        [TestCase("EfrpgTest", ".V8FilterTest", "EfrpgTest", "EfrpgDbContext", false, TemplateType.EfCore8)]
         public void MultipleIncludeFilters(string database, string singleDbContextSubNamespace, string connectionStringName, string dbContextName,
-            bool publicTestComparison, TemplateType templateType, ForeignKeyNamingStrategy foreignKeyNamingStrategy)
+            bool publicTestComparison, TemplateType templateType)
         {
             // Arrange
-            SetupSqlServer(database, connectionStringName, dbContextName, templateType,
-                templateType == TemplateType.Ef6 ? GeneratorType.Ef6 : GeneratorType.EfCore, foreignKeyNamingStrategy);
+            SetupSqlServer(database, connectionStringName, dbContextName, templateType);
             Settings.GenerateSeparateFiles = false;
             Settings.UseMappingTables = true;
             Settings.AddUnitTestingDbContext = false;

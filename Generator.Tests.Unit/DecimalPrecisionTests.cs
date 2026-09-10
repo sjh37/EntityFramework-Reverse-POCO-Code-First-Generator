@@ -52,7 +52,6 @@ namespace Generator.Tests.Unit
         {
             // Arrange
             Settings.TemplateType       = TemplateType.EfCore10;
-            Settings.GeneratorType      = GeneratorType.EfCore;
             Settings.UseDataAnnotations = false;
 
             var fileManagement = new FileManagementService(new GeneratedTextTransformation());
@@ -77,7 +76,6 @@ namespace Generator.Tests.Unit
         {
             // Arrange
             Settings.TemplateType       = TemplateType.EfCore10;
-            Settings.GeneratorType      = GeneratorType.EfCore;
             Settings.UseDataAnnotations = true;
 
             var fileManagement = new FileManagementService(new GeneratedTextTransformation());
@@ -102,7 +100,6 @@ namespace Generator.Tests.Unit
         {
             // Arrange
             Settings.TemplateType       = TemplateType.Ef6;
-            Settings.GeneratorType      = GeneratorType.Ef6;
             Settings.UseDataAnnotations = false;
 
             var fileManagement = new FileManagementService(new GeneratedTextTransformation());
@@ -128,7 +125,6 @@ namespace Generator.Tests.Unit
         {
             // Arrange
             Settings.TemplateType       = TemplateType.EfCore10;
-            Settings.GeneratorType      = GeneratorType.EfCore;
             Settings.UseDataAnnotations = false;
 
             var fileManagement = new FileManagementService(new GeneratedTextTransformation());
@@ -151,7 +147,6 @@ namespace Generator.Tests.Unit
         {
             // Arrange: decimal with Precision=0 and Scale=0 - precision not specified in DB schema
             Settings.TemplateType       = TemplateType.EfCore10;
-            Settings.GeneratorType      = GeneratorType.EfCore;
             Settings.UseDataAnnotations = false;
 
             var fileManagement = new FileManagementService(new GeneratedTextTransformation());

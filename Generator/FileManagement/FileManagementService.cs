@@ -14,6 +14,9 @@ namespace Efrpg.FileManagement
         private bool _writeToOuter;
         public bool ForceWriteToOuter;
 
+        /// <summary>The generator writes C#, so every file it produces takes this extension.</summary>
+        public const string Extension = ".cs";
+
         public FileManagementService(GeneratedTextTransformation outer)
         {
             if (outer == null) throw new ArgumentNullException(nameof(outer));
@@ -39,24 +42,14 @@ namespace Efrpg.FileManagement
 
         public void Init(Dictionary<string, IDbContextFilter> filters)
         {
-            Settings.FilterCount = filters.Count;
-
-            _writeToOuter = Settings.GenerateSingleDbContext && !Settings.GenerateSeparateFiles;
-
-            // For debug
-            /*var a = _writeToOuter;
-            var b = Settings.FilterCount;
-            var c = Settings.GenerateSeparateFiles;
-            var d = Settings.TemplateType;
-            var e = Settings.GenerateSingleDbContext;
-            var f = filters.First().Key;*/
+            _writeToOuter = !Settings.GenerateSeparateFiles;
 
             foreach (var filter in filters)
             {
                 var fileManager = new EfCoreFileManager();
                 fileManager.Init(_outer);
                 if (!string.IsNullOrWhiteSpace(filter.Key))
-                    fileManager.StartNewFile(filter.Key + Settings.FileExtension);
+                    fileManager.StartNewFile(filter.Key + Extension);
                 _fileManagers.Add(filter.Key, fileManager);
             }
         }

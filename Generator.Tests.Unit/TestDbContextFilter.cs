@@ -4,7 +4,7 @@ using Efrpg.Filtering;
 
 namespace Generator.Tests.Unit
 {
-    public class TestContextFilter : SingleContextFilter
+    public class TestContextFilter : DbContextFilter
     {
         public TestContextFilter()
         {

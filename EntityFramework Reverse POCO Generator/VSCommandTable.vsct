@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CommandTable xmlns="http://schemas.microsoft.com/VisualStudio/2005-10-18/CommandTable" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <!-- vsshlids.h, NOT vsshell.h. vsshlids.h is the plain menu-ID header - IDM_VS_CTXT_ITEMNODE and friends - and
+       compiles with nothing but the VSSDK include path. vsshell.h is the COM interface header, and it #includes
+       Windows SDK headers (rpcndr.h, oaidl.h, oleidl.h) that only exist with the C++ workload installed, giving
+       VSCT1118. An earlier attempt used vsshell.h, hit that, and removed both Externs rather than correcting the
+       wrong one; the menu then never appeared. Do not "simplify" these away again. -->
+  <Extern href="stdidcmd.h" />
+  <Extern href="vsshlids.h" />
+
+  <Commands package="EfrpgPackage">
+    <Groups>
+      <!-- Right-click a file in Solution Explorer. This is where the .tt operations belong: the settings editor and
+           the v3-to-v4 upgrade both act on the file the user clicked. -->
+      <Group guid="EfrpgCommandSet" id="ItemNodeGroup" priority="0x0600">
+        <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_ITEMNODE" />
+      </Group>
+    </Groups>
+
+    <Buttons>
+      <!-- DynamicVisibility so BeforeQueryStatus can hide these for everything that is not a .tt: they hang off
+           IDM_VS_CTXT_ITEMNODE, which Visual Studio draws for every file in every project.
+
+           Deliberately NOT DefaultInvisible. That flag is the state a command keeps until something calls
+           QueryStatus, and nothing does until the package is loaded - so in 4.0.11 all three items were invisible
+           everywhere, with nothing logged. Visible-until-told-otherwise fails the safe way round, and the package
+           now autoloads on SolutionExists so BeforeQueryStatus runs before the first right-click. -->
+      <Button guid="EfrpgCommandSet" id="ConfigureTemplateCommand" priority="0x0100" type="Button">
+        <Parent guid="EfrpgCommandSet" id="ItemNodeGroup" />
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <Strings>
+          <ButtonText>Reverse POCO: Connection...</ButtonText>
+          <LocCanonicalName>.ReversePoco.ConfigureTemplate</LocCanonicalName>
+        </Strings>
+      </Button>
+
+      <Button guid="EfrpgCommandSet" id="ChooseObjectsCommand" priority="0x0105" type="Button">
+        <Parent guid="EfrpgCommandSet" id="ItemNodeGroup" />
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <Strings>
+          <ButtonText>Reverse POCO: Choose tables and procedures...</ButtonText>
+          <LocCanonicalName>.ReversePoco.ChooseObjects</LocCanonicalName>
+        </Strings>
+      </Button>
+
+      <Button guid="EfrpgCommandSet" id="SettingsEditorCommand" priority="0x0110" type="Button">
+        <Parent guid="EfrpgCommandSet" id="ItemNodeGroup" />
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <Strings>
+          <ButtonText>Reverse POCO: All settings...</ButtonText>
+          <LocCanonicalName>.ReversePoco.SettingsEditor</LocCanonicalName>
+        </Strings>
+      </Button>
+
+      <Button guid="EfrpgCommandSet" id="UpgradeToV4Command" priority="0x0150" type="Button">
+        <Parent guid="EfrpgCommandSet" id="ItemNodeGroup" />
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <Strings>
+          <ButtonText>Reverse POCO: Upgrade this template to v4...</ButtonText>
+          <LocCanonicalName>.ReversePoco.UpgradeToV4</LocCanonicalName>
+        </Strings>
+      </Button>
+
+      <Button guid="EfrpgCommandSet" id="CheckEfrpgToolCommand" priority="0x0200" type="Button">
+        <Parent guid="EfrpgCommandSet" id="ItemNodeGroup" />
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <Strings>
+          <ButtonText>Reverse POCO: Check efrpg tool...</ButtonText>
+          <LocCanonicalName>.ReversePoco.CheckEfrpgTool</LocCanonicalName>
+        </Strings>
+      </Button>
+    </Buttons>
+  </Commands>
+
+  <Symbols>
+    <GuidSymbol name="EfrpgPackage" value="{6f4b7d0e-6b1f-4a8e-9a1a-2b7c8d3e5f41}" />
+
+    <GuidSymbol name="EfrpgCommandSet" value="{9c2e5b41-0d3a-4c7e-8f16-4a5d9e0b7c23}">
+      <IDSymbol name="ItemNodeGroup" value="0x0001" />
+      <IDSymbol name="ConfigureTemplateCommand" value="0x0100" />
+      <IDSymbol name="SettingsEditorCommand" value="0x0103" />
+      <IDSymbol name="ChooseObjectsCommand" value="0x0104" />
+      <IDSymbol name="UpgradeToV4Command" value="0x0102" />
+      <IDSymbol name="CheckEfrpgToolCommand" value="0x0101" />
+    </GuidSymbol>
+  </Symbols>
+
+</CommandTable>

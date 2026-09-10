@@ -20,17 +20,11 @@ namespace Generator.Tests.Integration
         protected static void SetupDatabase(
             string connectionStringName,
             string dbContextName,
-            TemplateType templateType,
-            GeneratorType generatorType,
-            ForeignKeyNamingStrategy foreignKeyNamingStrategy)
+            TemplateType templateType)
         {
-            Settings.ForeignKeyNamingStrategy = foreignKeyNamingStrategy;
             Settings.TemplateType = templateType;
-            Settings.GeneratorType = generatorType;
             Settings.ConnectionStringName = connectionStringName;
             Settings.DbContextName = dbContextName;
-            Settings.GenerateSingleDbContext = true;
-            Settings.MultiContextSettingsPlugin = null;
             Settings.Enumerations = null;
             Settings.PrependSchemaName = true;
             Settings.DisableGeographyTypes = false;
@@ -89,14 +83,13 @@ namespace Generator.Tests.Integration
         {
             Inflector.IgnoreWordsThatEndWith = new List<string> { "Status", "To", "Data" };
             Inflector.PluralisationService = new EnglishPluralizationService();
-            Settings.GenerateSingleDbContext = true;
 
             var path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             if (!string.IsNullOrEmpty(subFolder))
                 path = Path.Combine(path, subFolder);
 
             Settings.Root = path;
-            var fullPath = Path.Combine(path, $"{filename}_{Settings.DatabaseType}_{Settings.TemplateType}_Fk{Settings.ForeignKeyNamingStrategy}.cs");
+            var fullPath = Path.Combine(path, $"{filename}_{Settings.DatabaseType}_{Settings.TemplateType}.cs");
 
             // Delete old generated files
             if (File.Exists(fullPath))
@@ -123,7 +116,7 @@ namespace Generator.Tests.Integration
                 filter.Value.IncludeTableValuedFunctions = true;
                 filter.Value.IncludeScalarValuedFunctions = true;
 
-                if (filter.Value is SingleContextFilter singleContextFilter)
+                if (filter.Value is DbContextFilter singleContextFilter)
                     singleContextFilter.EnumDefinitions = enumDefinitions;
             }
 
@@ -157,7 +150,7 @@ namespace Generator.Tests.Integration
         {
             // includeSynonyms is always true: the tests enable IncludeSynonyms on every filter after the tool has
             // already run, so the synonym rows must be in the result up front.
-            return EfrpgToolRunner.ReadDatabase(includeStoredProcedures, includeSynonyms: true, multiContext: false);
+            return EfrpgToolRunner.ReadDatabase(includeStoredProcedures, includeSynonyms: true);
         }
 
         protected static void CompareAgainstFolderTestComparison(string subFolder)
@@ -191,7 +184,7 @@ namespace Generator.Tests.Integration
 
         protected static void CompareAgainstTestComparison(string database)
         {
-            var comparisonFile = $"{database}_{Settings.DatabaseType}_{Settings.TemplateType}_Fk{Settings.ForeignKeyNamingStrategy}.cs";
+            var comparisonFile = $"{database}_{Settings.DatabaseType}_{Settings.TemplateType}.cs";
             var testRootPath = AppDomain.CurrentDomain.BaseDirectory;
             var testComparisonPath = Path.Combine(testRootPath, $"TestComparison\\{comparisonFile}");
             var testComparison = File.ReadAllText(testComparisonPath);

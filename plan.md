@@ -1,0 +1,851 @@
+# Plan: Visual Studio GUI for the generator
+
+Working checklist. Tick items as they are done.
+
+## Why
+
+New paying customers have gone **214 → 142 → 117 → 56 → 48 → 20 → 14** over six years, while the returning
+base stayed loyal (50-60% renewal, 87% of revenue, rising seat counts). Capability is not the problem - the
+first five minutes is. A newcomer who installs the VSIX gets a `.tt` file and a wall of settings; the same
+developer installing the free EF Core Power Tools gets a wizard, ticks some tables, and has code.
+
+**The goal is the newcomer's first five minutes, not feature parity.**
+
+## Decisions already made
+
+Recorded so they are not relitigated mid-build.
+
+- **Community.VisualStudio.Toolkit**, not raw VSSDK. Same capability, far less ceremony.
+- **In-process VSIX**, not the new out-of-process VisualStudio.Extensibility model - `IWizard` is not
+  available out-of-process, and the auto-popup on Add is the highest-value piece.
+- **Roslyn surgical edit** for round-tripping an existing `.tt`, not regeneration and not a side-car JSON
+  config. Regeneration destroys customisation; a side-car splits the product's "it is all in one file"
+  identity, which the paying base likes.
+- **The GUI shells out to `efrpg`** for schema, exactly as the T4 template does. No second copy of the
+  readers - that is the duplication `WireContractTests` exists to police - and the picker therefore cannot
+  show tables the generator would skip.
+- **The GUI binary ships in the VSIX**, not in the `efrpg` tool package. WPF would force `efrpg` to
+  `net10.0-windows` and kill the cross-platform CLI; a second `dotnet tool install` would add friction to the
+  exact moment we are trying to make frictionless.
+- **The `.tt` stays authoritative.** The GUI never becomes the only way in. Every setting it cannot
+  represent must round-trip untouched.
+
+## Solution structure
+
+
+| Project                                | Framework      | Description                                                                                                                |
+|----------------------------------------|----------------|----------------------------------------------------------------------------------------------------------------------------|
+| Efrpg.Gui.Core                         | netstandard2.0 | Roslyn settings model, .tt parse/write, tool detection. All the logic. No VS reference.                                    |
+| Efrpg.Gui.Core.Tests                   | net10.0        | NUnit against the above.                                                                                                   |
+| EntityFramework Reverse POCO Generator | net48          | The EXISTING VSIX project, not a new one. Gains the Toolkit package, IWizard, .vsct and WPF views. Kept deliberately thin. |
+
+**Only the two `Efrpg.Gui.Core*` projects are new.** The third row is the VSIX project that already ships;
+Phase 1 converts it from item-template-only rather than adding a second extension.
+
+**The extension identity and the output filename must not change.** `source.extension.vsixmanifest` carries
+`Id="EntityFramework_Reverse_POCO_Generator..d542a934-8bd6-4136-b490-5f0049d62033"` and the project's
+`<AssemblyName>` produces `EntityFramework Reverse POCO Generator.vsix`. That identity is what makes an
+existing install *upgrade*. Change either and the 576,893 installs get a stranger sitting alongside the
+extension they have, two entries on the marketplace, and two copies of the item template competing on
+Add - New Item. So the project is not renamed to `Efrpg.Vsix` or anything else, however tidy that would look
+next to `Efrpg.Gui.Core`.
+
+**The Target Framework Monikers (TFMs) are forced, not chosen.** An in-process Visual Studio extension runs inside the VS process, which
+is .NET Framework - the existing VSIX project is already `<TargetFrameworkVersion>v4.8</TargetFrameworkVersion>`.
+Neither `net8.0-windows` nor `net10.0-windows` will load in-process.
+
+**Why in-process WPF rather than a separate .NET 10 exe.** An out-of-process GUI could target `net10.0-windows`
+and match `efrpg`, but WPF on .NET 10 needs the **.NET 10 Windows Desktop Runtime**, which is a separate
+install. The GUI's first job is to tell a user that `efrpg` is missing - and a team still on .NET 8 would have
+no .NET 10 Desktop Runtime, so the dialog whose whole purpose is removing a prerequisite would itself be
+blocked by one. Visual Studio already hosts WPF, so in-process has no prerequisite at all. Self-contained
+deployment would also solve it, at 70-150 MB added to the VSIX - a poor trade for a wizard.
+
+**`netstandard2.0` for Core is the load-bearing choice.** Roslyn (`Microsoft.CodeAnalysis.CSharp`) ships
+netstandard2.0, so Core is consumable from the net48 VSIX *and* from a modern test project, and a future
+cross-platform Avalonia shell can reuse it without a rewrite.
+
+VSIX debugging is miserable. Anything worth testing goes in `Efrpg.Gui.Core` where NUnit can reach it.
+
+---
+
+## Phase 0 - settings metadata
+
+The GUI needs to know which settings exist, their types, enum values and help text. Hand-maintaining that
+list would drift from `Database.tt` the way the language mappings drifted from each other.
+
+- [x] Extend `BuildTT` to emit `settings-metadata.json` alongside `Database.tt`
+- [x] Include for each setting: name, CLR type, whether it is an enum and its members, default value
+- [x] Parse the trailing `//` comment on each `Settings.*` line as the help text - `Database.tt` already
+      documents every setting inline, so the GUI's tooltips maintain themselves
+- [x] Ship `settings-metadata.v4.json` in the VSIX
+- [x] Hand-write `settings-metadata.v3.json` **once** - v3 is frozen at 3.14.1 and will never change, so it
+      needs no generator. Derive it from the v3 `Database.tt` in git history
+- [x] Unit test: every `Settings.*` assignment in `Database.tt` appears in the v4 metadata
+- [x] Audit every enum setting's trailing comment against the enum's actual members, and lock it with a
+      test so it cannot rot again
+
+**Verification:** re-running BuildTT on an unchanged tree rewrites the metadata byte for byte. Confirmed.
+
+### As built
+
+`BuildTT/SettingsMetadata/` writes `EntityFramework.Reverse.POCO.Generator/settings-metadata.v4.json` -
+118 settings, 104 of them assigned in `Database.tt`. The VSIX links both metadata files rather than copying
+them, and they are deliberately kept out of `efrpoco.zip`, which is unpacked into the user's project.
+
+**Two sources, each answering only what it can.** Reflection over `Efrpg.Settings` is the authority on which
+settings exist and what type each one is - it cannot go stale, because it is the assembly the generator runs.
+The source text of `Database.tt` and `Settings.cs` is the authority on help text and on the value a new
+template starts with, neither of which survives compilation. `defaultValue` is therefore always the **source
+text**, never a reflected runtime value: `Settings.Namespace` evaluates to `"Efrpg"`, and
+`Settings.TemplateFolder` is `""` in code but `Path.Combine(Settings.Root, "Templates")` in the template. The
+GUI writes C# into a `.tt`, so source text is the thing it actually needs.
+
+**Emitted per setting:** `name`, `type`, `kind`, `section`, `help`, `defaultValue`, `inDatabaseTt`,
+`commentedOut`, `multiLine`, `runtimeOnly`, plus `isFlags` and `enumMembers` for enums. `kind` is the render
+hint the later phases classify on - `bool`, `string`, `char`, `number`, `enum`, `stringList`, `callback`,
+`complex`. The 27 `callback` and 3 `complex` settings are Phase 3's *"customised in code"* category, already
+identified.
+
+**Settings absent from `Database.tt` are still emitted** - 15 of them. Four (`PrependSchemaNameForTable`,
+`PrependSchemaNameForStoredProcedure`, `ReadStoredProcReturnObjectCompleted`,
+`ReadStoredProcReturnObjectException`) already appear in this repo's own `Tester.Integration.*` templates, so
+metadata built from `Database.tt` alone would leave the GUI blind to settings that do occur in real files. The
+three the generator fills in at run time (`Root`, `TemplateFile`, `DefaultSchema`) carry
+`runtimeOnly: true` rather than being dropped, so a new plumbing field surfaces as a spurious GUI entry
+instead of vanishing silently.
+
+`settings-metadata.v3.json` was produced once by running this same writer against the `Generator/` and
+`Database.tt` of tag `v3.14.1`, then frozen with a `note` recording that. It holds 121 settings: the v4 set
+plus `FileManagerType` and `DatabaseReaderPlugin`, which is exactly the difference the two files exist to keep
+apart. No setting changed type between v3 and v4.
+
+**Tests** are the five in `Generator.Tests.Unit/SettingsMetadataTests.cs`. They scan `Database.tt` with their
+own deliberately crude regex rather than calling BuildTT's parser - a test that reused the parser would agree
+with it about a setting it had dropped. Beyond the checklist item they assert both reverse directions (nothing
+described that `Settings` no longer has; nothing on `Settings` missing from the file - the "BuildTT was not
+run" guard, proved by adding a field and watching it fail), that every enum lists its members, and that the v3
+file has not been overwritten with a copy of the v4 one.
+
+**The help text is harvested at build time, from this repository, never from a user's file.**
+`SettingsMetadataWriter` reads this repo's `Database.tt` - itself generated by BuildTT from the footer in
+`BuildTT/BuildTT.cs` - and `Generator/Settings.cs`. It runs when you run BuildTT, before packaging, and the
+result is a static file at the VSIX root. A user's `Database.tt` is a *copy* extracted from `efrpoco.zip`;
+stripping every comment from it cannot change the metadata, because the two files never meet. **The GUI must
+keep it that way: never read tooltip text out of the file being edited.** Phase 3 takes only *values* from the
+user's `.tt` and everything else from the metadata, and that must not be "improved" later.
+
+**What the comments could not be trusted about was accuracy, and that was worth auditing.** Three defects, all
+shipping to users in `Database.tt` and the `.ttinclude` long before the GUI existed:
+
+- `ForeignKeyNamingStrategy` read *"Please use Legacy for now, Latest (not yet ready)"* when its members were
+  `Current` and `Beta` - two values that did not exist, and neither of the two that did
+- `TemplateType` listed `EfCore8-10, Ef6, FileBasedCore8-10` and silently omitted `FileBasedEf6`
+- `ElementsToGenerate`, `OnConfiguration`, `IncludeComments`, `IncludeExtendedPropertyComments` and
+  `GenerationLanguage` listed no values at all, so half the enums documented nothing
+
+All enum settings now name every member, and
+`SettingsMetadataTests.Metadata_EveryEnumSettingNamesAllItsMembersInTheHelpText` fails if one stops. It
+understands the `EfCore8-10` shorthand so the template stays readable.
+
+**Two of those were fixed in the code, not in the comment.**
+
+***`Settings.ForeignKeyNamingStrategy` is deleted.*** Chasing the wrong comment found `Beta` mapped to a
+strategy whose own header said *"Not complete"* and whose body was two `// todo`s, so the setting chose between
+one real behaviour and an unfinished one. Gone: the enum, the setting, `LatestForeignKeyNamingStrategy`,
+`ForeignKeyNamingStrategyFactory`, `IForeignKeyNamingStrategy` and `BaseForeignKeyNamingStrategy` - together
+with the dead `IDbContextFilter` that base class held but never read. **`LegacyForeignKeyNamingStrategy` is
+gone too**; its body carried over unchanged into `Generator/ForeignKeyNaming.cs`, which `Table` constructs
+directly. Nothing is called Legacy or Latest any more, because there is nothing left to be legacy *to* - the
+unit test became `ForeignKeyNames` and a stray `// Legacy` banner over the SQL Server test cases went with it.
+The 31 comparison files in `Generator.Tests.Integration/TestComparison/` all carried the same constant
+`_FkCurrent` suffix, so it distinguished nothing; they were renamed with it dropped and the format strings in
+`SingleDatabaseTestBase.cs` follow. The setting was never in `Database.tt`, so only a user who copied it out of
+the `.ttinclude` is affected. The v3 metadata still records it, correctly - that is frozen history.
+
+***`[Flags]` is off `CommentsStyle`.*** Every use in the generator is `==` or `!=`; `HasFlag` appears on
+`Elements` only. The metadata had therefore been reporting `isFlags: true`, so the GUI would have rendered
+checkboxes, and a user selecting `InSummaryBlock | AtEndOfField` would get value 3 - matching no `==` branch,
+passing every `!= None` guard, and silently generating no comments. Three mutually exclusive styles are not a
+bit set. Removing the attribute is behaviourally free, because `[Flags]` never gated the `|` operator - it only
+affects `ToString()` - so no existing `.tt` stops compiling. `Elements` keeps it; that one genuinely is a flags
+enum.
+
+**Left out deliberately:** `FilterSettings.Include*` is not in the metadata. Phase 2's table / view / stored
+procedure checkboxes map onto those five flags, so that is the moment to add a second array to this file.
+
+**Why two files.** `Settings.FileManagerType` is valid in v3 and poison in v4 - showing it for a v4 file
+would make the GUI write code that does not compile. The metadata is what keeps the two apart.
+
+---
+
+## Phase 1 - VSIX skeleton and the tool gate
+
+De-risks the plumbing before any UI depends on it.
+
+- [x] Add `Community.VisualStudio.Toolkit.17` and `Microsoft.VSSDK.BuildTools` to the VSIX project
+- [x] Convert the VSIX from item-template-only to carrying a `ToolkitPackage`
+- [x] Add the `Microsoft.VisualStudio.VsPackage` asset to `source.extension.vsixmanifest`
+      **via `BuildTT/VersionSetter.cs:UpdateVsixManifest`, not by hand** - that method writes the file
+      wholesale, so a hand edit is deleted on the next BuildTT run
+- [x] Build `EfrpgToolGate` in `Efrpg.Gui.Core`:
+  - [x] Locate `efrpg` on PATH, and at `%USERPROFILE%\.dotnet\tools\efrpg.exe` as a fallback
+  - [x] Run `efrpg --version`, parse the package version and the **wire format schema version**
+  - [x] Compare the schema version against `EfrpgResultXmlReader.RequiredSchemaVersion`
+  - [x] Check `dotnet --version` - `dotnet tool install` needs the **SDK**, not just the runtime
+  - [x] Install: `dotnet tool install -g Efrpg`
+  - [x] Update: `dotnet tool update -g Efrpg`
+  - [x] Surface stderr verbatim on failure - do not swallow it
+- [x] Unit test `EfrpgToolGate` against a fake process runner: missing, too old, current, no SDK, no network
+- [x] Gate dialog with three choices: **Install/Update**, **Copy command**, **Continue anyway**
+- [x] Always display the exact command next to the button
+
+### Chunk A as built - the gate
+
+`Efrpg.Gui.Core` (netstandard2.0) and `Efrpg.Gui.Core.Tests` (net10.0) exist and are in the solution. 13 tests
+against a hand-rolled `FakeProcessRunner`; nothing touches the machine's real tool install.
+
+`IProcessRunner` is the only seam, and **"failed to start" is a result rather than an exception** - a missing
+tool surfaces as a `Win32Exception` from `Process.Start`, which is the very thing the gate exists to detect, so
+it is information, not a fault. Everything is `async`: `dotnet tool install` can take the best part of a minute
+against a slow feed, and this is called from a dialog on the VS UI thread. Output is drained through the
+`OutputDataReceived` events, for the same reason `EfrpgToolRunner` drains on two threads - a child that fills
+the stdout pipe while the parent blocks on stderr deadlocks, and neither side times out.
+
+**The schema floor is duplicated, and guarded rather than shared.** `EfrpgResultXmlReader` must stay plain
+source under `Generator/` so BuildTT can concatenate it, which pins it to net48; `Efrpg.Gui.Core` is
+netstandard2.0 so the net48 VSIX and a modern test project can both consume it, and netstandard cannot
+reference net48. So each holds a copy and `Generator.Tests.Unit/ToolGateSchemaFloorTests.cs` fails if they
+diverge. Verified by bumping one and watching it fail - drift is otherwise silent, and would leave the gate
+approving a tool the reader then refuses.
+
+Real `efrpg --version` output, which the tests use verbatim: `efrpg 1.0.1` then
+`wire format schema version 1`, on stdout, exit 0. A tool predating the handshake prints no schema line, which
+parses as 0 and is correctly rejected - the same reading the reader gives a payload with no `schemaVersion`
+attribute.
+
+`EfrpgToolStatus.IsOnPath` is the PATH trap made explicit: when the tool is found only via the fallback it is
+on disk but not on the PATH this VS process inherited, so the bare-name resolution in `EfrpgToolRunner` will
+still fail. Phase 2 reads that flag to decide whether to invoke by full path and ask for a restart.
+
+**The rest of Phase 1** - the packages, the `ToolkitPackage`, the `VsPackage` asset via `VersionSetter` and the
+gate dialog - is Chunk B below.
+
+### Menus need `RegisterWithCodebase`, and this cost seven attempts
+
+A menu command - first on the Tools menu, then on the item context menu - did not appear in Visual Studio 2026,
+through many rebuilds. Everything checkable was correct: the package registered, the pkgdef declared
+`Menus.ctmenu`, the `.cto` compiled with 0 errors, the resource sat in `VSPackage.resources` under the right
+key, and **nothing was logged anywhere** - not in the build, not in ActivityLog.xml.
+
+**The fix is one MSBuild property:**
+
+```xml
+<RegisterWithCodebase>true</RegisterWithCodebase>
+```
+
+Without it `CreatePkgDef` emits `"Assembly"="<name>, Version=..., PublicKeyToken=null"`, which tells Visual
+Studio to resolve the package assembly **by name** from the GAC or the probing path. This assembly is unsigned
+and is not in the GAC, so VS cannot load it, cannot read the managed `Menus.ctmenu` resource out of it, and
+draws no menu. It never reaches a load *failure*, so there is nothing to log - the merge simply finds no data.
+With the property set the pkgdef says `"CodeBase"="$PackageFolder$\....dll"` and the menu appears.
+
+**How it was actually found, after six wrong answers reasoned from documentation:** diffing our deployed pkgdef
+against a *working* extension already installed on the same machine, in
+`%LOCALAPPDATA%\Microsoft\VisualStudio8.0_<hive>\Extensions`. One line differed. **When VSIX plumbing
+misbehaves, compare against something that works on the same box before reading any more docs.**
+
+Two things were fixed along the way and are still required:
+
+- `VSPackage.resx` marked `MergeWithCTO`. Without it the SDK writes the command table into a placeholder called
+  `_EmptyResource.resources`, and `ProvideMenuResource` only looks in `VSPackage.resources`. Also silent.
+- `<Extern href="vsshlids.h" />`, **not** `vsshell.h`. `vsshlids.h` is the plain menu-ID header and compiles
+  with only the VSSDK include path. `vsshell.h` is the COM interface header and pulls in Windows SDK headers
+  that need the C++ workload, giving `VSCT1118: Unable to locate rpcndr.h`. An earlier attempt used the wrong
+  one, hit that, and deleted both `Extern` elements rather than correcting it.
+
+`Microsoft.VSSDK.BuildTools` is referenced, as EF Core Power Tools does. It was not what fixed the header
+error, but it supplies the VSCT compiler rather than depending on the Visual Studio install.
+
+### IWizard works, and needs one non-obvious asset
+
+`ReversePocoWizard : IWizard` is reached from `<WizardExtension>` in `MyTemplate.vstemplate`. It needs no
+package, no pkgdef and no command table, which is why it was tried when the menu stalled.
+
+**Shipping the assembly inside the VSIX is not enough.** The template engine resolves the wizard by assembly
+name, and without
+
+```xml
+<Asset Type="Microsoft.VisualStudio.Assembly" d:Source="Project" d:ProjectName="%CurrentProject%"
+       Path="|%CurrentProject%|" AssemblyName="|%CurrentProject%;AssemblyName|" />
+```
+
+the user gets *"this template attempted to load component assembly ..."* on Add - New Item. This is the
+same root cause as the missing menu above - an unsigned assembly that cannot be resolved by name - just
+reached through the template engine rather than the package loader. The `<Assembly>`
+element in the vstemplate embeds `AssemblyVersion`, so both it and this asset are generated by `VersionSetter`
+from `version.txt`; a hand-written copy rots at the next version bump and the failure is obscure.
+
+**Verified working**: with the tool hidden, Add - New Item shows the gate's message and the exact install
+command, and offers to continue. With the tool present and current the wizard runs and shows nothing, which is
+correct and indistinguishable from not running - worth remembering when testing.
+
+**Check the schema version, not the package version.** The schema version is what the template actually
+floor-checks, so the gate becomes the same test the generator does - surfaced as a friendly dialog instead
+of a comment in a broken output file.
+
+**"Copy command" is not a nicety.** It is the escape hatch for developers behind a proxy, on an internal
+NuGet feed, or without permission to install.
+
+**Deliverable:** a command that reports tool status. **Done** - Tools -> "Reverse POCO: Check efrpg tool...".
+
+### Chunk B as built - the VSIX skeleton
+
+`EfrpgPackage : ToolkitPackage` and `CheckEfrpgToolCommand` now ship in the existing VSIX, which also carries
+`Efrpg.Gui.Core.dll`. The package is background loaded and does nothing until the command asks it to, so an
+unused extension costs nothing at startup.
+
+Three plan assumptions turned out to be wrong, all found by building it:
+
+- **`Microsoft.VSSDK.BuildTools` is not needed and does not help.** It was added, changed nothing, and was
+  removed. `VSCommandTable.vsct` failed with `VSCT1118: Unable to locate 'rpcndr.h'` because
+  `<Extern href="vsshell.h" />` pulls in *Windows SDK* C headers that are only present with the C++ workload -
+  not VSSDK ones, so no VSSDK package can supply them. The fix is to declare the two shell symbols the file
+  actually uses (`guidSHLMainMenu` `{d309f791-903f-11d0-9efc-00a0c911004f}` and `IDM_VS_MENU_TOOLS` `0x0085`,
+  both read out of `VSSDK\VisualStudioIntegration\Common\inc`) and drop both `Extern` elements. That also
+  makes the build work on a machine with only the managed workloads, which is what CI would have.
+- **`VersionSetter` was dead code, and is now live.** `SetVersions()` was commented out in
+  `BuildTT/Program.cs`, so adding the asset there alone would have shipped nothing. It was therefore added to
+  `UpdateVsixManifest` *and* to the checked-in `source.extension.vsixmanifest`, and the two compared line by
+  line. `SetVersions()` has since been re-enabled, so BuildTT now also stamps the vsixmanifest and the
+  vstemplate and rebuilds `efrpoco.zip` in all four locations. That regeneration overwrites the manifest
+  wholesale - and it kept the `VsPackage` asset and the open version ranges precisely because they were put
+  into the generator rather than only into its output. Hand-editing the manifest alone would have been silently
+  undone the moment that line was uncommented.
+- **The three VSIX flags had to flip.** `GeneratePkgDefFile`, `IncludeAssemblyInVSIXContainer` and
+  `CopyBuildOutputToOutputDirectory` were all `false` while this was item-template-only. An old-style project
+  also needs `<RestoreProjectStyle>PackageReference</RestoreProjectStyle>` before `PackageReference` works.
+
+**The 17.x installation targets lost their upper bound.** They were `[17.0,18.0)` and are now `[17.0,)`, in
+the manifest and in `VersionSetter` alike. From Visual Studio 2026 onward compatibility is decided by *API
+version*, not product version: VS 2026 supports API 17.x, reads only the lower bound of the range and
+**ignores the upper bound entirely** - which is why the old range installed into 18.9 perfectly happily. The
+open range is what VS 2026 emits for new extensions, VS 2022 still uses the old product-range model and is
+satisfied by it too, and it means this never needs touching again for a new major release. The `[15.0,17.0)`
+entries for VS 2017/2019 were removed when v4's deprecations were done - the package depends on the VS 2022
+toolkit, so it could never have loaded there - and `<ProductArchitecture>amd64</...>` is untouched.
+
+Worth being clear about what this does *not* buy: the manifest range is no longer the gate for a future VS 19,
+API version support is. Nothing written here can make a future release load an extension whose APIs it has
+dropped.
+
+**Since verified by installing it.** The package loads in Visual Studio 2026 and the right-click commands
+appear and run. They vanished once, in 4.0.11: the commands had been marked `DefaultInvisible`, which keeps a
+command hidden until QueryStatus runs, which needs the package loaded, which never happens for a command nobody
+can see. 4.0.12 removed the flag and added `ProvideAutoLoad` on SolutionExists so `BeforeQueryStatus` runs
+before the first right-click. Nothing in the VSIX is reachable from a test, so every version still needs a
+manual install before it is believed.
+
+---
+
+## A constraint that shapes every phase - the `**TODO**` placeholder
+
+A `.tt` added from the item template ships with the database name unset:
+
+```
+Settings.ConnectionString = "Data Source=(local);Initial Catalog=**TODO**;Integrated Security=True;..."
+```
+
+`efrpg` checks for that literal and returns an error without attempting a connection - *"the connection string
+still contains the placeholder \*\*TODO\*\*"*. **So a brand-new `.tt` cannot be reverse engineered, by
+construction.** Any code path that reaches for schema before the user has supplied a real connection string is
+work that can only end in an error dialog.
+
+What follows for each phase:
+
+- **Phase 1** is unaffected: `efrpg --version` takes no connection string. Do not "improve" the gate's liveness
+  check into a schema read - it would fail on exactly the machines the gate is meant to reassure.
+- **Phase 2's ordering is mandatory, not stylistic.** Gate, then connection dialog, then test connection, and
+  only then shell out for schema. The checkbox tree cannot be populated before that, so the wizard cannot open
+  on the table picker.
+- **Phase 3 must check before offering anything schema-backed.** The settings editor can be invoked on a file
+  the user has never configured, so `**TODO**` is also the reliable test for "unconfigured".
+
+`Generator.Init` carries its own `**TODO**` guard at `Generator/Generators/Generator.cs:107`, but the tool now
+fails first and the template only constructs the generator when the tool succeeded, so that guard no longer
+fires through the template path. Left alone rather than removed - it still protects the direct-construction
+route the unit tests use.
+
+---
+
+## Phase 2 - wizard on Add → New Item
+
+**This is the phase that addresses the acquisition collapse.** It needs no Roslyn at all. See
+[Sequencing](#sequencing) - if effort has to be cut, cut Phase 3, never this.
+
+- [x] `ReversePocoWizard : Microsoft.VisualStudio.TemplateWizard.IWizard`
+- [x] Wire it into `MyTemplate.vstemplate` via `<WizardExtension>` -
+      **through `BuildTT/VersionSetter.cs:UpdateVstemplate`**, which also regenerates that file wholesale
+- [x] `RunStarted`: tool gate → connection dialog, then re-run the T4
+- [x] Shell out to `efrpg --secrets-stdin` for the schema (same binary and wire format the template uses)
+- [x] **Test connection** button, reporting what was found rather than a bare OK
+- [x] Checkbox tree: tables, views, stored procedures and both kinds of function - see
+      [the object picker](#the-object-picker-writes-generator-code-not-a-side-car)
+- [x] Fields: database type, template type, connection string, DbContext name - see below
+- [x] Fields: namespace
+- [x] Write the answers into the generated `.tt` - see below, this is *not* `replacementsDictionary`
+- [x] ~~Flip `ReplaceParameters` to `true`~~ - deliberately not done, see below
+- [x] `Database.tt` confirmed to contain **zero `$` characters**, so it stays token-safe if this is ever
+      revisited
+- [x] `throw new WizardBackoutException()` on cancel so VS cleans up the half-created item
+- [x] Reopen the dialog afterwards from the `.tt` file's right-click menu - **Reverse POCO: Connection...**
+- [x] After a successful install, invoke the tool **by full path** for the wizard's own schema read, and
+      tell the user to restart Visual Studio before saving the `.tt`
+
+### Email capture and first-run telemetry
+
+**The wizard is the only place in the product where a new user can be reached.** Lifetime, 2,582 website
+accounts have produced 653 paying customers - **25.3%** - but in the 91 days to 31 August 2026 there were
+1,523 downloads and **6 registrations**. The trial is not registration-gated (the 10-table limit is enforced
+in the generated code, not by a licence file anyone has to come and fetch), so roughly 1,500 leads a quarter
+are discarded: no email, no follow-up, no idea they existed.
+
+- [ ] Optional email capture step - honest framing, e.g. *"Get a trial licence key and release notes"*
+- [ ] Never block generation on it. A skipped email must not degrade the wizard
+- [ ] Post to the ReversePOCO site so the address lands in the same funnel as a registration
+- [ ] First-run telemetry, opt-out, no connection strings and no schema:
+  - [ ] wizard started
+  - [ ] connection test succeeded / failed (with the dialect, not the connection string)
+  - [ ] tool gate outcome - already present, installed by us, declined
+  - [ ] wizard completed and a `.tt` written
+- [ ] Publish what is collected, and honour a decline permanently
+
+Not started. Both need an endpoint on the ReversePOCO site to post to, and what is collected is a product
+decision; the client side is an afternoon once those exist.
+
+**Without this the wizard improves the experience but tells you nothing about whether it worked.** Installs,
+first-run completions and connection successes are the three numbers that would say whether the acquisition
+problem is being fixed, and none of them exist today.
+
+**Also fix outside this plan:** `AspNetUsers.CreatedAtUtc` is NULL for 2,576 of 2,582 rows, so registration
+history cannot be measured at all before mid-2026.
+
+### The answers are written into the .tt, not substituted as tokens
+
+The plan called for `ReplaceParameters="true"` and `$token$` substitution. That is not what was built, and
+deliberately so: `EntityFramework.Reverse.POCO.Generator/Database.tt` is itself executed in this repository -
+there is a `Database.cs` beside it - so putting tokens in the master would break it, and generating a second
+tokenised copy for the zip would be exactly the parallel-copy problem avoided everywhere else here.
+
+Instead `ProjectItemFinishedGenerating` records the path of the added `.tt` and `RunFinished` rewrites it
+through `TemplateSettingsFile`. That also reuses the anchored-edit approach Phase 3 needs, rather than
+inventing a second mechanism that Phase 3 would then replace.
+
+`TemplateSettingsFile` lives in `Efrpg.Gui.Core` and is unit tested, including **against the real shipped
+`Database.tt`** rather than only a fixture - so if BuildTT ever changes how those settings are emitted, the
+tests fail before a user meets a mangled template. It refuses anything that is not a single-line string
+literal or a single-line `Type.Member` enum assignment. Everything else is refused rather than mangled: a
+commented-out setting means "not this one", and a combination of flags, a method call or an expression would
+be turned into something that does not compile. Backslashes are escaped, because `Data Source=.\SQLEXPRESS` is
+the common case and an unescaped one produces a `.tt` that fails far from where it was written.
+
+Skipping the dialog is always allowed. The template with the placeholder still in it is a working starting
+point, and a wizard that will not let you out is worse than one that asks nothing.
+
+### The database type is chosen before the connection string, not after
+
+Oracle, PostgreSQL, MySQL and SQL Server share no connection-string keywords at all - Oracle wants
+`Data Source=host:port/service`, PostgreSQL wants `Server=;Port=;Database=`. An Oracle user handed a SQL Server
+connection string is no better off than one handed the placeholder, so the database dropdown sits above the
+connection box and fills it with the right skeleton. Every default carries `**TODO**` wherever the user has to
+supply something, and OK stays disabled until all of them are gone.
+
+Switching database always shows a connection string for the database now chosen: the default, or whatever was
+last typed for that database in this dialog. The text typed for the previous database is kept and comes back
+when it is selected again. This replaced an earlier rule that swapped only while the box held an untouched
+default, which left a SQLite string sitting under an Oracle selection - the providers share no keywords, so the
+"preserved" text could not connect to anything and had to be deleted by hand to get the skeleton back.
+
+**`TemplateType` is the only template setting written.** `Settings.GeneratorType` used to have to be written
+alongside it as a matching pair, and a mismatch produced code that did not compile; it was removed before v4
+shipped, and the generator now derives EF6 or EF Core from `TemplateType` itself.
+
+`DatabaseTarget` and `TemplateTarget` identify their values by **enum member name**, not by `Efrpg.DatabaseType`
+and `Efrpg.Templates.TemplateType` themselves: those live in the net48 `Generator` project and `Efrpg.Gui.Core`
+is netstandard2.0, so it cannot reference them. The name is what gets written into the `.tt` in any case. Drift
+is caught by testing both lists against the `enumMembers` recorded in **`settings-metadata.v4.json`** - the
+Phase 0 artefact, doing a second job. A database or template type added to the generator and left out of the
+dropdown fails the build rather than quietly going missing from the UI.
+
+**The T4 runs before the wizard finishes, so it has to be re-run.** Adding a `.tt` to a project fires its
+custom tool immediately - well before `RunFinished` - so the first generated `.cs` is always the efrpg tool's
+*"the connection string still contains \*\*TODO\*\*"* error. Writing the real connection string afterwards fixes
+the `.tt` but leaves that error sitting in the generated output, which is exactly the confusing first impression
+the wizard exists to remove. Re-running rather than suppressing the first pass: there is no supported way to
+stop the custom tool firing on add, and a second pass is cheap next to the schema read it performs.
+
+**Re-running has to go through the editor buffer, not the file on disk.** `TemplateFileUpdater` is the whole
+answer and the reason it exists. The T4 custom tool is an `IVsSingleFileGenerator`, and Visual Studio hands it
+the contents of the **editor buffer**, not the file. Visual Studio opens the `.tt` as soon as it is added, so
+writing straight to disk and calling `VSProjectItem.RunCustomTool()` regenerates from the stale text the buffer
+still holds - the `.tt` on disk is correct and the generated `.cs` still carries the placeholder error, which
+looks exactly like the file never having been written. That was shipped in 4.0.6 and 4.0.8 and is fixed in
+4.0.9.
+
+So: when the document is open, replace the buffer and `Document.Save()`. The save runs the generator by itself,
+and it is the same path the user takes by hand, which is the one Visual Studio supports best. Only when the
+document is *not* open is the file written directly, and then `RunCustomTool` is asked to run - falling back to
+reassigning the `CustomTool` property, because `VSProjectItem` is not available in every project system.
+
+### Testing the connection runs the real thing
+
+**Test connection** invokes the same `efrpg` binary, with the same flags and the same wire format the T4 uses on
+save. Opening a `SqlConnection` in the dialog instead would prove something subtly different from what happens at
+generation time, which is what *"it tested fine but generation fails"* is made of. It reports the object counts -
+*24 tables, 3 views, 15 stored procedures* - because the question behind the question is almost always "did I point
+it at the right database", which a bare "OK" does not answer.
+
+The pieces, all in `Efrpg.Gui.Core` and all unit tested against the captured wire payload in
+`Generator.Tests.Unit/WireContract/`:
+
+- `IProcessRunner` gained a `standardInput` parameter. **The connection string goes over stdin, never on the
+  command line** - command lines are captured by process listings and by command-line audit logging (Sysmon event
+  1, EDR telemetry, ETW), which forwards them to a SIEM and to everyone with access to one. A test asserts the
+  database name appears in stdin and *not* in the arguments.
+- `SecretsXml` is **linked** into `Efrpg.Gui.Core` from `Generator/Readers/`, not copied. It has to produce
+  byte-identical XML to what the tool parses, and a second copy would be free to drift; compiling the one source
+  file into both assemblies is the only way to share it across the net48/netstandard2.0 line.
+- `DatabaseSchema.Parse` is a **name extractor, not a second `EfrpgResultXmlReader`**. It reads four attributes and
+  ignores everything else - which is also what lets a newer tool serve an older GUI. The real reader builds the
+  generator's whole object model and has to stay under `Generator/` for BuildTT to concatenate.
+- The executable path comes from `EfrpgToolGate`, never resolved again. That is the PATH trap below, already
+  solved once.
+
+Every row under `Tables` in the payload is a *column*, so the same table appears once per column and is collapsed;
+synonyms are skipped, being aliases for something already listed. That is the data the object picker needs, so the
+picker is now a UI job rather than a plumbing one.
+
+### The object picker writes generator code, not a side-car
+
+**Reverse POCO: Choose tables and procedures...** on the `.tt` menu, and the wizard's second page. A checkbox
+tree - tables, views, stored procedures, table-valued functions, scalar functions - grouped by schema when there
+is more than one, with a search box and a count on every node. It opens at once and reads the database while
+open, so a slow server shows progress rather than a frozen Visual Studio; the wizard hands it the schema the
+Test button already read, so the common path reads the database once.
+
+**It opens on what the template generates today.** `ObjectSelection` runs the same tests `SingleContextFilter`
+runs - every exclude regex against the raw name, the include regexes or-ed together as `MergeIncludeFilters`
+does, the schema filters, the period rule, the reserved `MultiContext` schema, and the five `Include*` flags -
+so the ticks are the truth rather than a guess. An object a hand-written filter decides is shown disabled with
+that filter as its tooltip. The picker never overrides a user's filter; it adds beside it.
+
+**A choice is saved as whichever list is shorter, per filter list**, as ordinary code the user can read - the
+ticked names as an include filter, or the unticked names as an exclude filter:
+
+```
+FilterSettings.TableFilters.Add(new RegexIncludeFilter(@"^(?:Customers|Order\ Details|Orders)$")); // Reverse POCO object picker: right-click the .tt to change this
+```
+
+The trailing marker is how the picker finds its own lines next time; everything without it belongs to the user
+and is never rewritten. Names are `Regex.Escape`d, sorted, and wrapped at about a hundred characters per line
+so a one-table change is a one-line diff. Ticking everything writes nothing at all, and ticking everything back
+removes the lines, so a template nobody has narrowed stays byte for byte as shipped.
+
+The first version wrote an include list only, on the argument that ticking a subset means *these and only
+these*. It lasted one day: tables and views share one filter list, so leaving three views unticked produced
+hundreds of lines naming every table. Now the shorter list wins, which is what a person would write, and the
+dialog says how the two differ - an exclude list lets a table added later through, an include list keeps it out
+until ticked. Ticking nothing in a list writes an include filter that matches nothing. A schema with nothing
+ticked in it becomes a `SchemaFilters` line by the same shorter-of rule, which is both what a person would write
+and more precise, since the name lists match on the bare name and cannot tell `Audit.Log` from `dbo.Log`; a
+schema holding anything the user's own include filter wants is never shut out. Whole categories switch off
+through the flags instead - unticking every view writes `FilterSettings.IncludeViews = false`, uncommenting the template's
+own line - because that is what the template's comments tell a user to do. Stored procedures are read whenever
+either function flag is on, because the generator couples them, so wanting one function alone writes the flag
+*and* an include list naming it.
+
+Refused, with the reason shown: a multi-context template (`Settings.GenerateSingleDbContext = false`, where
+FilterSettings does nothing), and a template with no FilterSettings block. A filter the dialog cannot evaluate -
+`new Regex(..., RegexOptions.IgnoreCase)`, a custom filter class - locks every object in that list with the line
+as the reason rather than guessing.
+
+`TemplateFilterDocumentTests` and `ObjectSelectionTests` cover it, including the round trip through the file,
+the user's own include filter, the unevaluable case, and the property that opening the picker and saving
+without touching anything leaves every real template in the repository byte for byte unchanged. The dialog
+itself is WPF inside Visual Studio and is not reachable from a test.
+
+### Namespace is not a string setting
+
+`Settings.Namespace` ships as the bare identifier `DefaultNamespace` and becomes a quoted string only once
+somebody overrides it, so neither the string setter nor the enum setter can touch it. `TrySetExpression` replaces
+the whole right-hand side, and `TemplateConfiguration` validates the namespace against dotted identifiers before
+anything is written - what goes there becomes C# in the `.tt`, and an invalid value is left alone rather than
+written and broken. Clearing the field puts `DefaultNamespace` back.
+
+### A connection string set in code is shown, not replaced
+
+The tester `Azure.tt` files keep their credentials out of source control with
+`Settings.ConnectionString = Environment.GetEnvironmentVariable("ReversePoco", EnvironmentVariableTarget.User);`,
+and the first dialog got that badly wrong: it read the line as "no literal", fell back to the SQL Server default,
+showed the placeholder as if the template were unconfigured, and on OK silently wrote nothing for it.
+
+`ConnectionStringSource` classifies the line into exactly four shapes. A **literal** is editable. An
+**environment variable** - `Environment.GetEnvironmentVariable("NAME")`, with or without a target, with or
+without `System.` - and a **file with a literal path** - `File.ReadAllText("...")` - are read-only in the box
+but can be *resolved*, so Test and the object picker still work for them: the T4 runs inside this same Visual
+Studio process as this same user, so the value fetched here is the value generation will use. Both accept a
+trailing `.Trim()` and a literal after `??`. **Anything else** is read-only and opaque, with the code shown and
+"Test needs a value it can read".
+
+That last line is deliberate and stays where it is. `File.ReadAllText(path)` with a variable, a
+`ConfigurationManager` lookup, a helper call - each is one step from evaluating arbitrary C# in the GUI, which
+is a compiler in-process, which this project is not going to become. A developer who obtains the connection
+string that way keeps a working dialog for every other field, and knows why Test is off.
+
+Reading a verbatim literal, `@"Data Source=.\SQLEXPRESS..."`, was the same class of bug and is fixed alongside:
+`TemplateSettingsFile` now reads both forms and writes back in whichever the file used.
+
+### The dialog is reachable again after the file exists
+
+The wizard runs once. Somebody who pressed Skip, mistyped a database name, or wants to point the same template
+at a different server had no route back to it at all - the only option was to find the right line in the `.tt`
+by hand, which is the thing the GUI exists to avoid. **Reverse POCO: Connection...** on the `.tt` file's
+right-click menu opens the same dialog on what the file already says.
+
+That is why `TemplateSettingsFile` reads as well as writes, and why `TemplateConfiguration` lives in
+`Efrpg.Gui.Core` rather than in the dialog: reading the current values first is what stops OK replacing a
+user's own connection string with the SQL Server default. `TemplateConfigurationTests` asserts that reading a
+template and writing it straight back leaves it **byte for byte identical**.
+
+Every command is `DynamicVisibility` and its `BeforeQueryStatus` shows it only for a `.tt`. The group is
+parented to `IDM_VS_CTXT_ITEMNODE`, which Visual Studio draws for *every* file in the solution, so without that
+they would clutter the right-click menu of every file in every project. **Not `DefaultInvisible`** - that flag
+keeps a command hidden until QueryStatus runs, which needs the package loaded, which never happens for a
+command nobody can see; 4.0.11 shipped that way and had no menu at all. The package autoloads on SolutionExists
+instead.
+
+**The PATH trap.** VS caches its environment at launch, so a tool installed by the wizard is not on the PATH
+that `EfrpgToolRunner` uses - it calls `new ProcessStartInfo("efrpg", …)` and relies on PATH resolution.
+Without the full-path fallback and the restart prompt, users hit "it said it installed but generation still
+fails".
+
+**Budget an afternoon for wizard assembly resolution.** The `<Assembly>` element needs the full strong name
+and fails obscurely when wrong. It is the most annoying part of this phase.
+
+**Verification:** on a clean VM with no `efrpg` installed, Add → New Item → reverse poco produces working
+generated code without the user reading any documentation.
+
+---
+
+## Phase 2b - "Upgrade to v4"
+
+The v3 to v4 migration is four mechanical edits - the same ones in the upgrade guide - and they are exactly
+the anchored span edits this GUI already does. **Getting the v3 base onto v4 is what makes the `efrpg` tool
+ubiquitous**, which matters given the licence check lives there.
+
+- [x] Its own `.vsct` command, offered only when a v3 file is selected
+- [x] Offer it unprompted the first time a v3 template is opened - an information bar on that document, with
+      *Don't ask again*
+- [x] Change the include directive to `EF.Reverse.POCO.v4.ttinclude`
+- [x] Delete the `Settings.FileManagerType` assignment
+- [x] Delete the `Settings.DatabaseReaderPlugin` assignment - same class of breakage, and it was missing from
+      this list until a v3.14.1 file was actually diffed against v4
+- [x] Rewrite `if (Settings.GenerateSeparateFiles && Settings.FileManagerType == FileManagerType.EfCore)`
+      to `if (Settings.GenerateSeparateFiles)`
+- [x] Replace the entry-point block with the `EfrpgToolRunner.ReadDatabase` version
+- [x] Replace `DatabaseReader.CleanUp` with `NamingHelper.CleanUp` if present
+- [x] Show a diff preview and require confirmation before writing
+- [x] **If the file does not match the expected shape exactly, refuse** and link to the upgrade guide
+
+### How it was built
+
+`TemplateUpgrade` in `Efrpg.Gui.Core`, tested against a **real v3.14.1 `Database.tt`** recovered from the commit
+before database reading moved into the tool (`Efrpg.Gui.Core.Tests/Fixtures/`), not a reconstruction of one.
+
+Three things are worth knowing:
+
+- **The entry point is compared by statement, not by text.** Blank lines and comments are stripped from the tail
+  before it is matched, so a file carrying its own commented-out notes inside that block still upgrades - which is
+  exactly what tripped the first pass when the 24 in-repo templates were migrated - while a genuinely restructured
+  one is refused.
+- **A leftover reference to a removed name is a refusal.** After the edits, any remaining `FileManagerType`,
+  `DatabaseReaderPlugin` or `DatabaseReader.` means the file mentions them somewhere this does not know how to
+  change, and the result would not compile. Those checks run only when nothing else already failed, so a refused
+  entry point does not also report the `FileManagerFactory.GetFileManagerType()` still inside it.
+- **`V4EntryPoint` is guarded against BuildTT.** A test asserts the constant is byte for byte the tail of the
+  shipped `Database.tt`, so a change to BuildTT's footer fails the build rather than leaving the upgrade emitting
+  last year's code.
+
+Line endings are preserved: a CRLF template stays CRLF and an LF one stays LF, because a whole-file line ending
+change shows up as every line differing in the user's next commit.
+
+**The full v3 to v4 delta, from diffing a real v3.14.1 `Database.tt`.** 18 blocks differ, and they split into
+two groups that must be treated differently.
+
+*Six edits that are required, because without them the template does not compile or does not run:*
+
+| Where | Change |
+|---|---|
+| line 1 | include directive -> `EF.Reverse.POCO.v4.ttinclude` |
+| ~17 | delete `Settings.FileManagerType` |
+| ~86 | delete `Settings.DatabaseReaderPlugin` |
+| ~70 | `if (GenerateSeparateFiles && FileManagerType == FileManagerType.EfCore)` -> `if (GenerateSeparateFiles)` |
+| ~656 | `DatabaseReader.CleanUp(fkName)` -> `NamingHelper.CleanUp(fkName)` |
+| ~812-823 | the entry-point block -> the `EfrpgToolRunner.ReadDatabase` version |
+
+*Twelve blocks that are cosmetic and must **not** be forced:* the version header, two `v3.ttinclude` mentions
+inside comment prose, and the trailing-comment improvements made in v4 (`DatabaseType`, `TemplateType`,
+`ElementsToGenerate`, `OnConfiguration`, `IncludeComments`, `IncludeExtendedPropertyComments`,
+`GenerationLanguage`). A customer's file will already differ here, and rewriting comments they may have edited
+themselves is exactly the over-reach the refusal rule exists to prevent.
+
+**The entry-point block is a replacement, not a patch.** In v3 `var fileManagement = new FileManagementService(outer);`
+sits *after* the commented-out machine.config lines; in v4 it moves *before* the try block. So the whole span
+has to go, which is the part most likely to vary between customer files and the most likely thing to refuse on.
+
+**Refusing is the important item.** During the v4 work, 24 tester templates were migrated by script and it
+took two passes - some carried an extra commented-out line inside the block the first pattern expected.
+Customer files will vary more than in-repo ones. A half-applied migration leaves a template that neither
+compiles nor matches the guide, which is worse than not offering the button.
+
+**The unprompted offer is an information bar, not a dialog.** `V3UpgradeOffer` hooks document opening; the
+first time a v3 `.tt` is opened in a session it shows the yellow bar across the top of that document with
+*Upgrade to v4...* and *Don't ask again*, the latter persisted per user through the toolkit's option store. It
+does not steal focus or block the editor, and the right-click command stays either way. The upgrade itself is
+`TemplateUpgradeFlow`, shared with the command, and `TemplateFileUpdater` now finds an open document by path
+when there is no project item to ask.
+
+**Independent of Phase 3.** Needs the Phase 1 plumbing and version detection, and nothing else - no Roslyn,
+no metadata files, no settings form, no round-trip property tests. It is anchored find-and-replace plus a
+diff dialog.
+
+---
+
+## Phase 3 - right-click "ReversePOCO Settings…"
+
+The Roslyn round-trip. Serves people who already bought.
+
+- [x] `.vsct` command on `.tt` files, visible when the file includes **either** `EF.Reverse.POCO.v4.ttinclude`
+      **or** `EF.Reverse.POCO.v3.ttinclude` - the settings blocks are near-identical, and almost the whole
+      installed base is still on v3
+- [x] Detect the version from the `<#@ include file="..." #>` directive on line 1 and load the matching
+      metadata file. **Version must be first-class, not inferred later**
+- [x] **Do not hijack double-click or Open** - the paying base lives in the text editor and expects it
+- [x] ~~Parse with `CSharpSyntaxTree.ParseText`~~ - **deviated, see below.** `StatementScanner` instead, the
+      same lexer BuildTT already uses on this exact file
+- [x] Find each `Settings.X = ...;` and record the span of its value
+- [x] Classify the right-hand side:
+  - [x] a literal → editable (textbox / checkbox / number / character)
+  - [x] a known enum member → dropdown, or a checklist for a flags setting, values from the Phase 0 metadata
+  - [x] anything else (lambda, `new`, method call, bare identifier) → **read-only**, labelled with why
+- [x] Show `FilterSettings.*.Add(...)` calls read-only
+- [x] Write back by **replacing only the value's span** in the original file text
+- [x] Never re-render the syntax tree - that is what would eat comments, formatting and the T4 markers
+
+### Roslyn was specified and was not used
+
+The plan called for `CSharpSyntaxTree.ParseText`. It is not there, deliberately.
+
+Roslyn would have to be loaded **in process by Visual Studio, which brings its own copy**, and
+`Efrpg.Gui.Core` cannot be exercised inside VS from any test here - so a binding conflict would surface only on
+a user's machine, which is exactly the class of failure this project has already paid for three times over
+(`RegisterWithCodebase`, `MergeWithCTO`, `DefaultInvisible`). The gain would have been small: the settings block
+is a flat list of one-per-line assignments, and `BuildTT/SettingsMetadata/StatementScanner.cs` already lexes it
+correctly - strings, verbatim strings, character literals, block comments, `//` inside a URL, brace depth - and
+has been doing so since Phase 0.
+
+That scanner now lives in `Efrpg.Gui.Core` and BuildTT compiles it **by link**, so there is one implementation
+and not two. The same lexer that decides what a setting *is* decides what the editor may rewrite.
+
+The seam is `TemplateSettingsDocument`. If Roslyn is ever wanted, that one class is what changes.
+
+### What makes it usable rather than just correct
+
+118 settings is a wall unless three things are true, and they drove the design:
+
+- **Search covers the help text, not just the name.** Nobody remembers `UseDataAnnotationsWithFluent`; they
+  remember roughly what it does. The search is also multi-term, so "context name" narrows.
+- **It opens on the section that matters.** Landing on `Settings` - connection string, context name, template
+  type - rather than an alphabetical list means the first screen is the one most people came for.
+- **Unusable settings are shown, not hidden.** A lambda and a `Path.Combine` appear with their value and a
+  one-line reason. Hiding them would send somebody to the wiki looking for a setting that is already in their
+  file.
+- **A setting the file lacks can still be set, and so can a commented-out one.** The line is added beside its
+  section neighbours - the catalogue is in Database.tt order, so the nearest present setting of the same section
+  marks the spot - with the neighbours' indentation, the equals sign in the same column, and the template's own
+  help text as the trailing comment. Deleting a line from Database.tt and adding it back through the editor
+  reproduces the file byte for byte, which is the test. A commented-out line is switched on by changing it: the
+  `//` goes and nothing else on the line moves. It is never appended to the end of the file, because the settings
+  block closes long before that. The generator's run-time settings and the callbacks stay read-only.
+
+### Round-trip tests (do these properly)
+
+This phase can silently destroy a paying customer's customisation. It deserves the paranoia applied to
+`WireContractTests`.
+
+- [x] Fixtures: the real `Database.tt`, `Northwind.tt`, several `Tester.Integration.*` templates, **and a
+      v3 `Database.tt` taken from git history** - seven files, none written for this test
+- [x] **Property: load, change one setting, save → the diff is exactly one line**
+- [x] Load and save with no change → file is byte-for-byte identical
+- [x] A template with a custom `Settings.ForeignKeyName` lambda survives untouched
+- [x] A template with regex `FilterSettings` survives untouched
+- [x] CRLF line endings preserved, and an LF file stays LF
+
+The first two run as `[TestCaseSource]` over every fixture, so adding a template to the list adds it to both
+properties. The hand-written JSON reader is held to the same standard: both shipped metadata files are parsed
+with it **and** with `System.Text.Json`, and every value is compared.
+
+---
+
+## Phase 4 - column exclusion and rename
+
+Where EF Core Power Tools is genuinely ahead: checkbox per column, F2 to rename.
+
+- [ ] Column-level exclusion
+- [ ] Table and column renaming
+- [ ] Persistence - per-column choices do not fit `Settings.*` assignments, so this is the point where a
+      side-car file becomes unavoidable. By then we will know whether users want one.
+
+---
+
+## Sequencing
+
+**Order: Phase 1 → 2 → 2b → 3 → 4.**
+
+- **Phase 2 (wizard)** serves people who do not yet have a `.tt` - exactly the population we are failing to
+  convert - and carries none of the parsing risk.
+- **Phase 2b (upgrade)** serves the 576,893 v3 installs and drives adoption of the tool the licence check
+  will live in. Cheap, and independent of everything in Phase 3. **Pull it ahead of Phase 2 if v4 adoption
+  stalls after launch** - it ships with nothing more than Phase 1.
+- **Phase 3 (settings editor)** serves people who already bought and are already productive. It is the most
+  expensive phase and the one that can damage a customer's file.
+
+If effort has to be cut, cut Phase 3. Never cut 2 or 2b.
+
+---
+
+## Out of scope
+
+- **Rider / VS Code.** A standalone Avalonia shell on `net10.0-windows` would serve them, reusing
+  `Efrpg.Gui.Core` and still shelling out to `efrpg`. A second audience we do not have yet - all 576,893
+  installs are Visual Studio. Note it would carry the .NET 10 Desktop Runtime prerequisite the in-process
+  VSIX avoids.
+- **Model-first / DDL generation.** Devart territory. Different product.
+- **Replacing the `.tt` file.** See decisions above.
+
+---
+
+## Related work not in this plan
+
+From `TODO.md`, the database gaps behind the same competitive comparison:
+
+- Azure Synapse - likely already works via the SQL Server reader; test before building anything
+- `.dacpac` - does not fit `DatabaseReader` (no connection, no SQL), but fits as a **sibling** producing an
+  `EfrpgResult` directly. The only item that removes a hard blocker rather than adding a dialect
+- Firebird - textbook fit, roughly the MySQL reader again
+- Snowflake - fits but degraded (foreign keys unenforced, no stored procedure result sets)
+- Azure Data Explorer - **will not work**; not relational, not SQL, no `DbProviderFactory`. Document the
+  refusal rather than attempting it
+
+**Adding databases is what we have been doing while new customers went 214 → 14.** EF Core Power Tools beats
+us on databases *and* has a wizard. The wizard is the likelier reason it wins evaluations.

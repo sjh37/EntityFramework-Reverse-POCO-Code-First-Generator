@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!--
+    Exists so the compiled command table has somewhere to live.
+
+    The VSSDK merges VSCommandTable.cto into a managed resource named "Menus.ctmenu", and
+    [ProvideMenuResource("Menus.ctmenu", 1)] on EfrpgPackage resolves that through the package's
+    ResourceManager, which looks for "<Namespace>.VSPackage.resources". With no VSPackage.resx in the project
+    the SDK invents "_EmptyResource.resources" instead, the lookup fails, and the menu item never appears -
+    no error, no warning, nothing in the build log or the ActivityLog. Do not delete this file.
+  -->
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="110" xml:space="preserve">
+    <value>EntityFramework Reverse POCO Generator</value>
+  </data>
+  <data name="112" xml:space="preserve">
+    <value>Reverse engineers an existing database and generates EntityFramework Code First POCO classes, Configuration mappings and DbContext.</value>
+  </data>
+</root>

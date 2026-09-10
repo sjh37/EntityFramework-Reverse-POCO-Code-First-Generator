@@ -11,7 +11,7 @@ public repo reads that XML and generates EF Code First POCO classes, DbContext,
 mappings, stored procedure callers, etc.
 
 This repo is private. The public repo (T4 template side) is at:
-https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator
+https://github.com/ReversePOCO/EntityFramework-Reverse-POCO-Code-First-Generator
 
 ## Why a Separate Tool
 

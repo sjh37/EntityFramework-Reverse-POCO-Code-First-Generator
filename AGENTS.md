@@ -20,7 +20,6 @@ The generator is distributed as a VSIX (Visual Studio Extension) containing a T4
 - **`Generator.Tests.Common/`** — Shared test constants and helpers (`netstandard2.0`).
 - **`Tester.Integration.EFCore8/`, `EFCore9/`, `Ef6/`** — Projects that consume the generated output and verify it compiles/runs correctly.
 - **`Tester.Repository/`**, **`Tester.BusinessLogic.EfCore/`** — Support projects for integration testing.
-- **`_File based templates/`** — Mustache template files for the `FileBased` template mode.
 
 ## Key Architecture
 
@@ -28,9 +27,9 @@ The generator is distributed as a VSIX (Visual Studio Extension) containing a T4
 
 1. **Settings** (`Generator/Settings.cs`) — static class holding all configuration. The `.tt` file sets these before running.
 2. **DatabaseReader** (`Generator/Readers/`) — reads schema from the database. `DatabaseReaderFactory` selects the reader based on `Settings.DatabaseType` (SqlServer, PostgreSQL, SQLite, MySql or Oracle).
-3. **Generator** (`Generator/Generators/`) — abstract base class with `GeneratorEf6`, `GeneratorEfCore`, and `GeneratorCustom` implementations. Selected by `GeneratorFactory` based on `Settings.GeneratorType`.
-4. **Template** (`Generator/Templates/`) — abstract base class with `TemplateEf6`, `TemplateEfCore8`, and `TemplateFileBased` implementations. Mustache-based string templates. Selected by `TemplateFactory` based on `Settings.TemplateType`.
-5. **Filtering** (`Generator/Filtering/`) — `FilterSettings` and `SingleContextFilter`/`MultiContextFilter` control which schemas/tables/columns/stored procs are included.
+3. **Generator** (`Generator/Generators/`) — abstract base class with `GeneratorEf6` and `GeneratorEfCore` implementations. Selected by `GeneratorFactory` from `Settings.TemplateType`: `Ef6` gets the EF6 generator, everything else EF Core.
+4. **Template** (`Generator/Templates/`) — abstract base class with `TemplateEf6` and `TemplateEfCore8` implementations. Mustache-based string templates. Selected by `TemplateFactory` based on `Settings.TemplateType`.
+5. **Filtering** (`Generator/Filtering/`) — `FilterSettings` and `DbContextFilter` control which schemas/tables/columns/stored procs are included.
 6. **FileManagement** (`Generator/FileManagement/`) — handles writing output files; different implementations for EF Core projects, VS4.x projects, and null (test mode).
 
 ### The `.ttinclude` Build Process
@@ -69,6 +68,12 @@ That is why the check is a floor, not a match:
 
 Worked example of rule 2: `StoredProcedureParameter.DefaultValue` distinguishes null (the DB default is `NULL`) from empty string, because null is what makes an `AllowNullStrings` parameter generate as `string?`. The writer therefore *omits* the attribute for null rather than writing `defaultValue=""`. Changing that encoding now would silently break every template already in the field.
 
+**One removal happened, before v4 shipped.** Multi-context generation was taken out of both halves in one go:
+the template stopped sending `--multi-context` and reading `<MultiContextSettings>`, and the tool stopped
+offering the flag and writing the element. `SchemaVersion` stayed at 1, because a newer template with an older
+tool works (the template no longer asks) and the only templates that ever read the element were the
+pre-release v4 ones in this repository. That is the one moment rule 1 does not bind; after release it does.
+
 The enum exchange (`--enums-base64`, `<EnumData>`) carries no version stamp by design: it is a second invocation of the same binary within one run, and the first call has already passed the floor check.
 
 `SchemaVersion` governs the **whole protocol, in both directions**, not just the XML the tool returns. If the template ever starts *requiring* a tool capability on the request side, bump `SchemaVersion` too - the floor check is the only thing that can reject a tool too old to understand the request, and it fires before a confusing downstream failure.
@@ -95,11 +100,6 @@ Note the connection string is also sitting in plaintext in the user's `Database.
 
 - `TemplateType.EfCore9` / `EfCore8` → uses `TemplateEfCore8` class with Mustache templates inline in C#
 - `TemplateType.Ef6` → uses `TemplateEf6` class
-- `TemplateType.FileBasedCore8/9` / `FileBasedEf6` → uses `TemplateFileBased` which reads from `Settings.TemplateFolder` (Mustache `.mustache` files)
-
-### Multi-Context Support
-
-When `Settings.GenerateSingleDbContext = false`, a plugin class implementing `IMultiDbContextSettingsPlugin` drives generation of multiple `DbContext` classes from one database.
 
 ## Build Commands
 
@@ -122,7 +122,83 @@ dotnet test Generator.Tests.Unit/Generator.Tests.Unit.csproj --filter "FullyQual
 
 ## Packaging
 
-`pack.bat` packages the VSIX item template (requires 7-Zip at `C:\Program Files\7-Zip\7z.exe`). Run after building if you need to update the VSIX item template zip.
+The VSIX item template zip (`efrpoco.zip`) is built by `VersionSetter.BuildEfrpocoZip`, which runs only from
+`SetVersions()` - and that call is normally **commented out** in `BuildTT/Program.cs`, so an ordinary BuildTT
+run does not rebuild it. Uncomment those two lines when cutting a release, run BuildTT, then comment them back
+out. Leaving them enabled during development churns the four `efrpoco.zip` copies on every run, because
+`ZipArchive` stamps each entry with the current time.
+
+`SetVersions()` also stamps `source.extension.vsixmanifest` and `MyTemplate.vstemplate` from
+`BuildTT/version.txt`, and it rewrites the manifest **wholesale**. Never hand-edit that manifest and expect it
+to survive: put the change in `VersionSetter.UpdateVsixManifest` as well, or it is deleted the next time a
+release is cut. `AssemblyInfo.cs` is the one copy of the version `VersionSetter` does not own - bump it by hand.
+
+`pack.bat` used to build the zip with 7-Zip and was deleted: two mechanisms for one artefact, and the 7-Zip one
+needed a tool at a hard-coded path.
+
+## Wiki documentation examples
+
+The code examples on the wiki's `Settings.*` pages are **generated, not written**. `Generator.Tests.Unit/DocSamples/`
+runs the generator over a hand-written schema fixture, and `WikiSnippetDriftTests` regenerates every block the
+wiki marks with `<!-- docsample: Key -->` and fails when a page has fallen behind.
+
+Read `Generator.Tests.Unit/DocSamples/README.md` before touching the wiki's generated code blocks or adding a
+new one. It covers the authoring loop, the two fixture schemas, and why `StaticStateSnapshot` is mandatory for
+any fixture that generates a sample.
+
+This exists because prose describing code drifts from the code. An audit found a documented setting that never
+existed, a helper method that never existed, three wrong defaults, and an example that does not compile on
+MySQL - all of it written by reading the source. Do not go back to hand-written examples.
+
+## Releasing
+
+Order matters at three points; the rest is ordinary.
+
+1. **Bump `BuildTT/version.txt`.** This is the source of truth.
+2. **Bump by hand the three copies `VersionSetter` does not own:**
+   - `Generator/Properties/AssemblyInfo.cs` - `AssemblyVersion` and `AssemblyFileVersion`
+   - `EntityFramework Reverse POCO Generator/Properties/AssemblyInfo.cs` - the same two
+   - `EntityFramework.Reverse.POCO.Generator/Northwind.tt` - its `// v` header. BuildTT writes `Database.tt`
+     but not this one.
+3. **Uncomment `SetVersions()`** in `BuildTT/Program.cs`.
+4. **Build BuildTT.** Not optional: `version.txt` is `CopyToOutputDirectory=Always`, so `BuildTT.exe` reads the
+   copy beside itself. Skip this and it stamps everything with the *previous* version and nothing complains.
+5. **Run `BuildTT/bin/Debug/BuildTT.exe`.** Regenerates `EF.Reverse.POCO.v4.ttinclude`, `Database.tt`,
+   `settings-metadata.v4.json` and `EfrpgVersion.cs`; stamps
+   `source.extension.vsixmanifest` and `MyTemplate.vstemplate`; rebuilds all four `efrpoco.zip` copies.
+6. **Re-comment `SetVersions()`** so day-to-day builds stop churning the zips.
+7. **Rebuild the solution.** Step 5 rewrote `EfrpgVersion.cs`, so until now `EF.Reverse.POCO.Generator.dll`
+   still carries the old version. The `.ttinclude` is already correct - BuildTT writes `EfrpgVersion.cs` before
+   it concatenates - but the compiled assembly is not.
+8. **Run the `*.tt` files, then the tests** (see Testing Patterns). Generated output feeds the tests, so the
+   order is not negotiable.
+9. **Rebuild the VSIX in Release - `-t:Rebuild`, never an incremental build.** Output is
+   `EntityFramework Reverse POCO Generator\bin\Release\EntityFramework Reverse POCO Generator.vsix`.
+   `dotnet build` cannot build this project at all - it needs the VSSDK targets - so use the VS MSBuild at
+   `C:\Program Files\Microsoft Visual Studio\18\Community\MSBuild\Current\Bin\MSBuild.exe`, first with
+   `-t:Restore`, then with `-t:Rebuild -p:Configuration=Release`.
+10. **Verify the version inside the `.vsix`**, which is a zip: `extension.vsixmanifest` must carry the new
+    version in **both** `<Identity Version="...">` and the `Microsoft.VisualStudio.Assembly` asset's
+    `AssemblyName`. See below for why this is a separate step.
+11. **Commit and tag**, then upload the `.vsix` to the marketplace.
+
+**An incremental Release build ships a stale manifest.** The VSSDK does not always regenerate
+`extension.vsixmanifest` when only `source.extension.vsixmanifest` has changed, so the `.vsix` gets the
+*previous* version stamped into the `Microsoft.VisualStudio.Assembly` asset while containing the *new*
+assembly. `MyTemplate.vstemplate` asks for the new one by full name, nothing registers it, and adding a `.tt`
+fails with *"this template attempted to load component assembly ... Version=x.y.z"* - naming the version that
+is correct, which sends you looking in the wrong place entirely. The extension installs fine and the menu
+command still works, because only the `IWizard` lookup goes through that asset. `-t:Rebuild` and the check
+above are the whole fix.
+
+**Never change the extension identity.** `source.extension.vsixmanifest` carries
+`Id="EntityFramework_Reverse_POCO_Generator..d542a934-8bd6-4136-b490-5f0049d62033"` and the project's
+`<AssemblyName>` produces the `.vsix` filename. That identity is what makes an install *upgrade* rather than
+sit beside the extension users already have. Only the version changes.
+
+**A version already handed out is spent.** Visual Studio refuses to install a VSIX whose version matches one
+already installed - "this extension is already installed to all applicable products" - so a build shared with
+anyone, even informally, needs the next number rather than a rebuild.
 
 ## Testing Patterns
 

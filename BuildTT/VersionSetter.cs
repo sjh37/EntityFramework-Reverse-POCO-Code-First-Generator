@@ -18,7 +18,7 @@ namespace BuildTT
         public void SetVersions()
         {
             UpdateVstemplate();
-            UpdateVsixmanifest();
+            UpdateVsixManifest();
 
             // Deliberately does NOT stamp the efrpg dotnet tool, which lives in its own repository and versions
             // independently of
@@ -55,11 +55,19 @@ namespace BuildTT
                 tt.WriteLine("        <ProjectItem SubType=\"\" TargetFileName=\"$fileinputname$.tt\" ReplaceParameters=\"false\">Database.tt</ProjectItem>");
                 tt.WriteLine("        <ProjectItem SubType=\"\" TargetFileName=\"EF.Reverse.POCO.v4.ttinclude\" ReplaceParameters=\"false\">EF.Reverse.POCO.v4.ttinclude</ProjectItem>");
                 tt.WriteLine("    </TemplateContent>");
+                // Reached by Visual Studio when the user picks this template from Add - New Item. This is how the GUI
+                // is invoked: no package, no pkgdef and no command table, all of which the .vsct route needed and none
+                // of which ever produced a menu in VS 2026. The assembly name must match AssemblyInfo exactly - a wrong
+                // strong name fails obscurely, with the template simply added and no wizard run.
+                tt.WriteLine("    <WizardExtension>");
+                tt.WriteLine($"        <Assembly>EntityFramework Reverse POCO Generator, Version={_version}.0, Culture=neutral, PublicKeyToken=null</Assembly>");
+                tt.WriteLine("        <FullClassName>EntityFramework_Reverse_POCO_Generator.ReversePocoWizard</FullClassName>");
+                tt.WriteLine("    </WizardExtension>");
                 tt.Write("</VSTemplate>");
             }
         }
 
-        private void UpdateVsixmanifest()
+        private void UpdateVsixManifest()
         {
             var filename = Path.Combine(_root, "EntityFramework Reverse POCO Generator\\source.extension.vsixmanifest");
 
@@ -76,28 +84,42 @@ namespace BuildTT
                 tt.WriteLine($"        <Identity Id=\"EntityFramework_Reverse_POCO_Generator..d542a934-8bd6-4136-b490-5f0049d62033\" Version=\"{_version}\" Language=\"en-US\" Publisher=\"Simon Hughes\" />");
                 tt.WriteLine("        <DisplayName>EntityFramework Reverse POCO Generator</DisplayName>");
                 tt.WriteLine("        <Description xml:space=\"preserve\">Reverse engineers an existing database and generates EntityFramework Code First POCO classes, Configuration mappings and DbContext.</Description>");
-                tt.WriteLine("        <MoreInfo>https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator</MoreInfo>");
+                tt.WriteLine("        <MoreInfo>https://github.com/ReversePOCO/EntityFramework-Reverse-POCO-Code-First-Generator</MoreInfo>");
                 tt.WriteLine("        <License>license.txt</License>");
                 tt.WriteLine("        <Icon>TemplateIcon.ico</Icon>");
                 tt.WriteLine("        <PreviewImage>PreviewImage.png</PreviewImage>");
                 tt.WriteLine($"        <Tags>{tags}</Tags>");
                 tt.WriteLine("    </Metadata>");
                 tt.WriteLine("    <Installation>");
-                tt.WriteLine("        <InstallationTarget Version=\"[15.0,17.0)\" Id=\"Microsoft.VisualStudio.Community\" />");
-                tt.WriteLine("        <InstallationTarget Version=\"[17.0,18.0)\" Id=\"Microsoft.VisualStudio.Community\">");
+                // No upper bound on the 17.x entries. From Visual Studio 2026 compatibility is decided by API
+                // version, not product version: VS supports API 17.x, reads only the lower bound and ignores
+                // the upper one. An open range is what VS 2026 emits for new extensions, and it means this
+                // never needs touching again for a new major release. VS 2022 still uses the old product-range
+                // model, and an open range satisfies it too. VS 2017 and 2019 are no longer targeted: the package
+                // which predate all of this.
+                tt.WriteLine("        <InstallationTarget Version=\"[17.0,)\" Id=\"Microsoft.VisualStudio.Community\">");
                 tt.WriteLine("            <ProductArchitecture>amd64</ProductArchitecture>");
                 tt.WriteLine("        </InstallationTarget>");
-                tt.WriteLine("        <InstallationTarget Version=\"[15.0,17.0)\" Id=\"Microsoft.VisualStudio.Pro\" />");
-                tt.WriteLine("        <InstallationTarget Version=\"[17.0,18.0)\" Id=\"Microsoft.VisualStudio.Pro\">");
+                tt.WriteLine("        <InstallationTarget Version=\"[17.0,)\" Id=\"Microsoft.VisualStudio.Pro\">");
                 tt.WriteLine("            <ProductArchitecture>amd64</ProductArchitecture>");
                 tt.WriteLine("        </InstallationTarget>");
-                tt.WriteLine("        <InstallationTarget Version=\"[15.0,17.0)\" Id=\"Microsoft.VisualStudio.Enterprise\" />");
-                tt.WriteLine("        <InstallationTarget Version=\"[17.0,18.0)\" Id=\"Microsoft.VisualStudio.Enterprise\">");
+                tt.WriteLine("        <InstallationTarget Version=\"[17.0,)\" Id=\"Microsoft.VisualStudio.Enterprise\">");
                 tt.WriteLine("            <ProductArchitecture>amd64</ProductArchitecture>");
                 tt.WriteLine("        </InstallationTarget>");
                 tt.WriteLine("    </Installation>");
                 tt.WriteLine("    <Assets>");
                 tt.WriteLine("        <Asset Type=\"Microsoft.VisualStudio.ItemTemplate\" d:Source=\"File\" Path=\"ItemTemplates\" d:TargetPath=\"ItemTemplates\\efrpoco.zip\" />");
+                // Without this the package assembly ships but Visual Studio never loads it: the pkgdef is present
+                // and inert. See EfrpgPackage in the VSIX project.
+                tt.WriteLine("        <Asset Type=\"Microsoft.VisualStudio.VsPackage\" d:Source=\"Project\" d:ProjectName=\"%CurrentProject%\" Path=\"|%CurrentProject%;PkgdefProjectOutputGroup|\" />");
+                // Registers the assembly by name so the template engine can resolve the IWizard named in
+                // MyTemplate.vstemplate. Shipping the dll inside the VSIX is not enough on its own: without this the
+                // user gets "this template attempted to load component assembly ..." when they add the item.
+                tt.WriteLine("        <Asset Type=\"Microsoft.VisualStudio.Assembly\" d:Source=\"Project\" d:ProjectName=\"%CurrentProject%\" Path=\"|%CurrentProject%|\" AssemblyName=\"|%CurrentProject%;AssemblyName|\" />");
+                // The settings editor's code previews use a content type and classifier exported through MEF (see
+                // CSharpPreviewClassifier). Without this asset MEF never scans the assembly and the previews stay
+                // one colour.
+                tt.WriteLine("        <Asset Type=\"Microsoft.VisualStudio.MefComponent\" d:Source=\"Project\" d:ProjectName=\"%CurrentProject%\" Path=\"|%CurrentProject%|\" />");
                 tt.WriteLine("    </Assets>");
                 tt.WriteLine("    <Prerequisites>");
                 tt.WriteLine("        <Prerequisite Id=\"Microsoft.VisualStudio.Component.TextTemplating\" Version=\"[15.0,)\" DisplayName=\"Text Template Transformation\" />");

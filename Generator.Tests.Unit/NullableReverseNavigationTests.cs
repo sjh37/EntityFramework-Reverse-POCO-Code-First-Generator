@@ -18,7 +18,7 @@ namespace Generator.Tests.Unit
         [SetUp]
         public void SetUp()
         {
-            _filter      = new SingleContextFilter();
+            _filter      = new DbContextFilter();
             _parentTable = new Table(_filter, new Schema("dbo"), "A", false) { NameHumanCase = "A" };
             _childTable  = new Table(_filter, new Schema("dbo"), "B", false) { NameHumanCase = "B" };
             _foreignKeys = new List<ForeignKey>

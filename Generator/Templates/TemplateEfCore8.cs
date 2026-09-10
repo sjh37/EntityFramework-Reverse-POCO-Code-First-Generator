@@ -7,6 +7,7 @@ namespace Efrpg.Templates
 {
     /// <summary>
     /// {{Mustache}} template documentation available at https://github.com/jehugaleahsa/mustache-sharp
+    /// This template is also used for EfCore 9 and 10.
     /// </summary>
     public class TemplateEfCore8 : Template
     {
@@ -1838,13 +1839,10 @@ public class FakeDbContextTransaction : IDbContextTransaction{{#newline}}
     {{{#newline}}
 {{#if NotUsingDataAnnotations}}
 {{#if HasSchema}}
-        builder.{{ToTableOrView}}(""{{Name}}"", ""{{Schema}}"");{{#newline}}
+        builder.{{ToTableOrView}}(""{{Name}}"", ""{{Schema}}""{{#if HasTableComment}}, t => t.HasComment(@""{{TableComment}}""){{/if}});{{#newline}}
 {{#else}}
-        builder.{{ToTableOrView}}(""{{Name}}"");{{#newline}}
+        builder.{{ToTableOrView}}(""{{Name}}""{{#if HasTableComment}}, t => t.HasComment(@""{{TableComment}}""){{/if}});{{#newline}}
 {{/if}}
-{{/if}}
-{{#if HasTableComment}}
-        builder.HasComment(@""{{TableComment}}"");{{#newline}}
 {{/if}}
         {{PrimaryKeyNameHumanCase}}{{#newline}}{{#newline}}
 

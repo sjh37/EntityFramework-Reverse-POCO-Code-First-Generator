@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using BuildTT.Application;
 using BuildTT.Infrastructure;
+using BuildTT.SettingsMetadata;
 
 namespace BuildTT
 {
@@ -17,19 +18,19 @@ namespace BuildTT
             UpdateEfrpgVersion(Path.Combine(generatorRoot, "EfrpgVersion.cs"));
             CreateTT(generatorRoot, ttRoot);
             CreateCoreTTInclude(generatorRoot, ttRoot);
+            SettingsMetadataWriter.Create(generatorRoot, ttRoot, version); // Reads back the Database.tt just written
         }
 
         private static void CreateTT(string generatorRoot, string ttRoot)
         {
             const string footer = @"    // Settings ***************************************************************************************************************************
     // Only the most popular settings are listed below.
-    // Either override Settings.* here, or edit the Settings, FilterSettings and SingleContextFilter classes located at the top of EF.Reverse.POCO.v4.ttinclude
+    // Either override Settings.* here, or edit the Settings, FilterSettings and DbContextFilter classes located at the top of EF.Reverse.POCO.v4.ttinclude
     
-    // For help on the various Types below, please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Common-Settings.*Types-explained
+    // For help on the various Types below, please read https://github.com/ReversePOCO/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Common-Settings.*Types-explained
     // The following entries are the only required settings.
     Settings.DatabaseType                 = DatabaseType.SqlServer; // SqlServer, SQLite, PostgreSQL, MySql, Oracle
-    Settings.TemplateType                 = TemplateType.EfCore10; // EfCore8-10, Ef6, FileBasedCore8-10. FileBased specify folder using Settings.TemplateFolder
-    Settings.GeneratorType                = GeneratorType.EfCore; // EfCore, Ef6, Custom. Custom edit GeneratorCustom class to provide your own implementation
+    Settings.TemplateType                 = TemplateType.EfCore10; // Ef6, EfCore8-10
     Settings.ConnectionString             = ""Data Source=(local);Initial Catalog=**TODO**;Integrated Security=True;MultipleActiveResultSets=True;Encrypt=false;TrustServerCertificate=true""; // This is used by the generator to reverse engineer your database
     Settings.ConnectionStringActions      = """"; // EFCore only. Additional method chain to append to the database provider setup in OnConfiguring. e.g. "".EnableRetryOnFailure(maxRetryCount: 10, maxRetryDelay: TimeSpan.FromSeconds(30), errorNumbersToAdd: null)""
     Settings.ConnectionStringName         = ""MyDbContext""; // ConnectionString key as specified in your app.config/web.config/appsettings.json. Not used by the generator, but is placed into the generated DbContext constructor.
@@ -38,8 +39,7 @@ namespace BuildTT
     Settings.GenerateSeparateFiles        = false;
     Settings.Namespace                    = DefaultNamespace; // Override the default namespace here. Please use double quotes, example: ""Accounts.Billing""
     Settings.UseFileScopedNamespaces      = false; // If true, uses C# 10 file-scoped namespace syntax (namespace X;) instead of block-scoped (namespace X { })
-    Settings.TemplateFolder               = Path.Combine(Settings.Root, ""Templates""); // Only used if Settings.TemplateType = TemplateType.FileBased. Specify folder name where the mustache folders can be found. Please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Custom-file-based-templates
-    Settings.AddUnitTestingDbContext      = true;  // Will add a FakeDbContext and FakeDbSet for easy unit testing. Read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/FakeDbContext
+    Settings.AddUnitTestingDbContext      = true;  // Will add a FakeDbContext and FakeDbSet for easy unit testing. Read https://github.com/ReversePOCO/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/FakeDbContext
     Settings.FakeDbContextInDebugOnlyMode = false; // If true, wraps Fake* classes in #if DEBUG / #endif so they are excluded from Release builds.
 
 
@@ -47,11 +47,10 @@ namespace BuildTT
     // Filtering can now be done via one or more Regex's and one or more functions.
     // Gone are the days of a single do-it-all regex, you can now split them up into many smaller Regex's.
     // You can have as many as you like, and mix and match them.
-    // These settings are only used by the single context filter SingleContextFilter (Settings.GenerateSingleDbContext = true)
-    // For further information please visit https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Filtering
-    // For multi-context filtering (Settings.GenerateSingleDbContext = false), please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Generating-multiple-database-contexts-in-a-single-go
-    // Single-context filtering is done via FilterSettings and SingleContextFilter classes.
-    // Override the filters here, or edit directly the FilterSettings and SingleContextFilter classes located at the top of EF.Reverse.POCO.v4.ttinclude
+    // These settings are used by the DbContextFilter class.
+    // For further information please visit https://github.com/ReversePOCO/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Filtering
+    // Filtering is done via the FilterSettings and DbContextFilter classes.
+    // Override the filters here, or edit directly the FilterSettings and DbContextFilter classes located at the top of EF.Reverse.POCO.v4.ttinclude
     FilterSettings.Reset();
     FilterSettings.AddDefaults();
 
@@ -78,7 +77,7 @@ namespace BuildTT
     // Elements to generate ***************************************************************************************************************
     // Add the elements that should be generated when the template is executed.
     // Multiple projects can be used that separate the different concerns.
-    Settings.ElementsToGenerate = Elements.Poco | Elements.Context | Elements.Interface | Elements.PocoConfiguration | Elements.Enum;
+    Settings.ElementsToGenerate = Elements.Poco | Elements.Context | Elements.Interface | Elements.PocoConfiguration | Elements.Enum; // Combine with |. None, Poco, Context, Interface, PocoConfiguration, Enum
 
 
     // Generate files in sub-folders ******************************************************************************************************
@@ -95,10 +94,11 @@ namespace BuildTT
     Settings.CommandTimeout                         = 600; // SQL Command timeout in seconds. 600 is 10 minutes, 0 will wait indefinitely. Some databases can be slow retrieving schema information.
     Settings.DbContextInterfaceBaseClasses          = ""IDisposable""; // Specify what the base classes are for your database context interface
     Settings.DbContextBaseClass                     = ""DbContext""; // Specify what the base class is for your DbContext. For ASP.NET Identity use ""IdentityDbContext<ApplicationUser>"";
-    Settings.OnConfiguration                        = OnConfiguration.ConnectionString; // EFCore only. Determines the code generated within DbContext.OnConfiguration(). Please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Settings.OnConfiguration
+    Settings.OnConfiguration                        = OnConfiguration.ConnectionString; // Configuration, ConnectionString, Omit. EFCore only. Determines the code generated within DbContext.OnConfiguration(). Please read https://github.com/ReversePOCO/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Settings.OnConfiguration
     Settings.AddParameterlessConstructorToDbContext = true; // EF6 only. If true, then DbContext will have a default (parameter-less) constructor which automatically passes in the connection string name, if false then no parameter-less constructor will be created.
     Settings.ConfigurationClassName                 = ""Configuration""; // Configuration, Mapping, Map, etc. This is appended to the Poco class name to configure the mappings.
-    Settings.UseMappingTables                       = false; // Must be false for TemplateType.EfCore2-4. If true, mapping will be used, and no mapping tables will be generated. If false, all tables will be generated.
+    Settings.TableSuffix                            = null; // Appended to every generated class name: ""Dto"" turns Order into OrderDto, ""Entity"" into OrderEntity. null adds nothing.
+    Settings.UseMappingTables                       = false; // If true, mapping will be used, and no mapping tables will be generated. If false, all tables will be generated.
 
     Settings.EntityClassesModifiers        = ""public""; // ""public partial"";
     Settings.ConfigurationClassesModifiers = ""public""; // ""public partial"";
@@ -111,14 +111,13 @@ namespace BuildTT
     Settings.UsePropertyInitialisers                = false; // Removes POCO constructor and instead uses C# 6 property initialisers to set defaults
     Settings.UseLazyLoading                         = false; // Marks all navigation properties as virtual or not, to support or disable EF Lazy Loading feature
     Settings.UseInheritedBaseInterfaceFunctions     = false; // If true, the main DBContext interface functions will come from the DBContextInterfaceBaseClasses and not generated. If false, the functions will be generated.
-    Settings.IncludeComments                        = CommentsStyle.AtEndOfField; // Adds comments to the generated code
-    Settings.IncludeExtendedPropertyComments        = CommentsStyle.InSummaryBlock; // Adds extended properties as comments to the generated code
-    Settings.DisableGeographyTypes                  = true; // Turns off use of spatial types: Geography, Geometry. More info: https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Spatial-Types
+    Settings.IncludeComments                        = CommentsStyle.AtEndOfField; // None, InSummaryBlock, AtEndOfField. Adds comments to the generated code
+    Settings.IncludeExtendedPropertyComments        = CommentsStyle.InSummaryBlock; // None, InSummaryBlock, AtEndOfField. Adds extended properties as comments to the generated code
+    Settings.DisableGeographyTypes                  = true; // Turns off use of spatial types: Geography, Geometry. More info: https://github.com/ReversePOCO/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Spatial-Types
     Settings.CollectionInterfaceType                = ""ICollection""; //  = ""System.Collections.Generic.List""; // Determines the declaration type of collections for the Navigation Properties. ICollection is used if not set.
     Settings.CollectionType                         = ""List""; // Determines the type of collection for the Navigation Properties. ""ObservableCollection"" for example. Add ""System.Collections.ObjectModel"" to AdditionalNamespaces if setting the CollectionType = ""ObservableCollection"".
     Settings.NullableShortHand                      = true; // true => T?, false => Nullable<T>
     Settings.AddIDbContextFactory                   = true; // Will add a default IDbContextFactory<DbContextName> implementation for easy dependency injection
-    Settings.IncludeQueryTraceOn9481Flag            = false; // If SqlServer 2014 appears frozen / take a long time when this file is saved, try setting this to true (you will also need elevated privileges).
     Settings.UsePrivateSetterForComputedColumns     = true; // If the columns is computed, use a private setter.
     Settings.IncludeGeneratorVersionInCode          = false; // If true, will include the version number of the generator in the generated code (Settings.ShowLicenseInfo must also be true).
     Settings.TrimCharFields                         = false; // EF Core option only. If true, will TrimEnd() 'char' fields when read from the database.
@@ -131,8 +130,6 @@ namespace BuildTT
     Settings.AdditionalFileFooterText               = new List<string>(); // This will put additional lines verbatim at the end of each file above the // </auto-generated>, 1 line per entry
 
     // Language choices
-    Settings.GenerationLanguage = GenerationLanguage.CSharp;
-    Settings.FileExtension      = "".cs"";
 
     // Code suppression *******************************************************************************
     Settings.UseRegions                          = true;  // If false, suppresses the use of #region
@@ -147,7 +144,7 @@ namespace BuildTT
     Settings.IncludeColumnsWithDefaults          = true;  // If true, will set properties to the default value from the database.
     Settings.GenerateHasDefaultValueSql          = false; // EFCore only. If true, will emit .HasDefaultValueSql() in the entity configuration for columns with a SQL default, making defaults queryable via EF model reflection.
 
-    // Enumerations ***********************************************************************************************************************
+    // Enums ******************************************************************************************************************************
     // Create enumerations from database tables
     // List the enumeration tables you want read and generated for
     // Also look at the AddEnum callback below to add your own during reverse generation of tables.
@@ -178,7 +175,9 @@ namespace BuildTT
         //     etc
         // }
     };
+    Settings.UsePascalCaseForEnumMembers = true; // Renames the generated enum members to PascalCase. If false, members keep the names the table holds.
 
+    // HiLo sequences *********************************************************************************************************************
     // Use the following list to add use of HiLo sequences for identity columns
     Settings.HiLoSequences = new List<HiLoSequence>
     {
@@ -198,21 +197,6 @@ namespace BuildTT
             SequenceName   = ""EmployeeSequence"",
             SequenceSchema = ""dbo""
         }*/
-    };
-
-    // Column modification ****************************************************************************************************************
-    // Use the following list to replace column byte types with Enums.
-    // As long as the type can be mapped to your new type, all is well.
-    Settings.AddEnumDefinitions = delegate(List<EnumDefinition> enumDefinitions)
-    {
-        // Examples:
-        //enumDefinitions.Add(new EnumDefinition { Schema = Settings.DefaultSchema, Table = ""match_table_name"", Column = ""match_column_name"", EnumType = ""name_of_enum"" });
-
-        // This will replace OrderHeader.OrderStatus type to be an OrderStatusType enum
-        //enumDefinitions.Add(new EnumDefinition { Schema = Settings.DefaultSchema, Table = ""OrderHeader"", Column = ""OrderStatus"", EnumType = ""OrderStatusType"" }); 
-
-        // This will replace any table *.OrderStatus type to be an OrderStatusType enum
-        //enumDefinitions.Add(new EnumDefinition { Schema = Settings.DefaultSchema, Table = ""*"", Column = ""OrderStatus"", EnumType = ""OrderStatusType"" });
     };
 
     // JSON column to POCO class mapping *************************************************************************************************
@@ -270,7 +254,7 @@ namespace BuildTT
 
     // Owned entity mappings ***************************************************************************************************************
     // Group database columns that share a common prefix into EF Core owned entities (OwnsOne).
-    // For full documentation see https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Owned-Entities
+    // For full documentation see https://github.com/ReversePOCO/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Owned-Entities
     Settings.AddOwnedEntityMappings = delegate (List<OwnedEntityMapping> mappings)
     {
         // Examples:
@@ -351,11 +335,66 @@ namespace BuildTT
     //     abc.hello will be Abc_Hello.
     Settings.PrependSchemaName = true; // Control if the schema name is prepended to the table name
 
-    // Table Suffix ***********************************************************************************************************************
-    // Appends the suffix to the generated classes names
-    // Ie. If TableSuffix is ""Dto"" then Order will be OrderDto
-    //     If TableSuffix is ""Entity"" then Order will be OrderEntity
-    Settings.TableSuffix = null;
+    // Enum callbacks ************************************************************************************************************************
+    // Use the following list to replace column byte types with Enums.
+    // As long as the type can be mapped to your new type, all is well.
+    Settings.AddEnumDefinitions = delegate(List<EnumDefinition> enumDefinitions)
+    {
+        // Examples:
+        //enumDefinitions.Add(new EnumDefinition { Schema = Settings.DefaultSchema, Table = ""match_table_name"", Column = ""match_column_name"", EnumType = ""name_of_enum"" });
+
+        // This will replace OrderHeader.OrderStatus type to be an OrderStatusType enum
+        //enumDefinitions.Add(new EnumDefinition { Schema = Settings.DefaultSchema, Table = ""OrderHeader"", Column = ""OrderStatus"", EnumType = ""OrderStatusType"" }); 
+
+        // This will replace any table *.OrderStatus type to be an OrderStatusType enum
+        //enumDefinitions.Add(new EnumDefinition { Schema = Settings.DefaultSchema, Table = ""*"", Column = ""OrderStatus"", EnumType = ""OrderStatusType"" });
+    };
+
+    // In order to use this function, Settings.ElementsToGenerate must contain both Elements.Poco and Elements.Enum;
+    Settings.AddEnum = delegate (Table table)
+    {
+        /*if (table.HasPrimaryKey && table.PrimaryKeys.Count() == 1 && table.Columns.Any(x => x.PropertyType == ""string""))
+        {
+            // Example: choosing tables with certain naming conventions for enums. Please use your own conventions.
+            if (table.NameHumanCase.StartsWith(""Enum"", StringComparison.InvariantCultureIgnoreCase) ||
+                table.NameHumanCase.EndsWith(""Enum"", StringComparison.InvariantCultureIgnoreCase))
+            {
+                try
+                {
+                    Settings.Enumerations.Add(new EnumerationSettings
+                    {
+                        Name       = table.NameHumanCase.Replace(""Enum"","""").Replace(""Enum"","""") + ""Enum"",
+                        Table      = table.Schema.DbName + ""."" + table.DbName,
+                        NameField  = table.Columns.First(x => x.PropertyType == ""string"").DbName, // Or specify your own
+                        ValueField = table.PrimaryKeys.Single().DbName, // Or specify your own
+                        GroupField = string.Empty // Or specify your own
+                    });
+
+                    // This will cause this table to not be reverse-engineered.
+                    // This means it was only required to generate an enum and can now be removed.
+                    table.RemoveTable = true; // Remove this line if you want to keep it in your dbContext.
+                }
+                catch
+                {
+                    // Swallow exception
+                }
+            }
+        }*/
+    };
+
+    // Use the following function if you need to apply additional modifications to a enum
+    // Called just before UpdateEnumMember
+    Settings.UpdateEnum = delegate (Enumeration enumeration)
+    {
+        //enumeration.EnumAttributes.Add(""[DataContract]"");
+    };
+
+    // Use the following function if you need to apply additional modifications to a enum member
+    Settings.UpdateEnumMember = delegate (EnumerationMember enumerationMember)
+    {
+        //enumerationMember.Attributes.Add(""[EnumMember]"");
+        //enumerationMember.Attributes.Add(""[SomeAttribute(\"""" + enumerationMember.AllValues[""SomeName""] + "" \"")]"");
+    };
 
     // Call-backs *************************************************************************************************************************
 
@@ -474,68 +513,22 @@ namespace BuildTT
         //    column.OverrideModifier = true;
         // This will create: public override long id { get; set; }
 
-        // Make property partial, see https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Partial-properties
+        // Make property partial, see https://github.com/ReversePOCO/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Partial-properties
         //if (table.NameHumanCase.Equals(""SomeTable"", StringComparison.InvariantCultureIgnoreCase) && column.NameHumanCase.Equals(""SomeColumn"", StringComparison.InvariantCultureIgnoreCase))
         //    column.IsPartial = true;
 
         // Use ExtendedProperties dictionary to access specific extended property by name.
-        // See https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Extended-Property-Names-Feature
+        // See https://github.com/ReversePOCO/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Extended-Property-Names-Feature
         // Example: Add [JsonPropertyName] attribute from database extended property
         // In SQL Server, set extended property: EXEC sp_addextendedproperty @name = N'JsonPropertyName', @value = N'id', @level0type = N'SCHEMA', @level0name = N'dbo', @level1type = N'TABLE', @level1name = N'YourTable', @level2type = N'COLUMN', @level2name = N'SystemId'
         Settings.ApplyJsonPropertyNameAttribute(column);
 
-        Settings.ApplyJsonColumnMappings(column, table, jsonColumnMappings);    // Perform JSON column to POCO class mapping. See https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/JSON-column-support
+        Settings.ApplyJsonColumnMappings(column, table, jsonColumnMappings);    // Perform JSON column to POCO class mapping. See https://github.com/ReversePOCO/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/JSON-column-support
         Settings.ApplyDataAnnotations(column);
         Settings.ApplyEnumTypeReplacement(column, table, enumDefinitions);
     };
 
-    // In order to use this function, Settings.ElementsToGenerate must contain both Elements.Poco and Elements.Enum;
-    Settings.AddEnum = delegate (Table table)
-    {
-        /*if (table.HasPrimaryKey && table.PrimaryKeys.Count() == 1 && table.Columns.Any(x => x.PropertyType == ""string""))
-        {
-            // Example: choosing tables with certain naming conventions for enums. Please use your own conventions.
-            if (table.NameHumanCase.StartsWith(""Enum"", StringComparison.InvariantCultureIgnoreCase) ||
-                table.NameHumanCase.EndsWith(""Enum"", StringComparison.InvariantCultureIgnoreCase))
-            {
-                try
-                {
-                    Settings.Enumerations.Add(new EnumerationSettings
-                    {
-                        Name       = table.NameHumanCase.Replace(""Enum"","""").Replace(""Enum"","""") + ""Enum"",
-                        Table      = table.Schema.DbName + ""."" + table.DbName,
-                        NameField  = table.Columns.First(x => x.PropertyType == ""string"").DbName, // Or specify your own
-                        ValueField = table.PrimaryKeys.Single().DbName, // Or specify your own
-                        GroupField = string.Empty // Or specify your own
-                    });
-
-                    // This will cause this table to not be reverse-engineered.
-                    // This means it was only required to generate an enum and can now be removed.
-                    table.RemoveTable = true; // Remove this line if you want to keep it in your dbContext.
-                }
-                catch
-                {
-                    // Swallow exception
-                }
-            }
-        }*/
-    };
-
-    // Use the following function if you need to apply additional modifications to a enum
-    // Called just before UpdateEnumMember
-    Settings.UpdateEnum = delegate (Enumeration enumeration)
-    {
-        //enumeration.EnumAttributes.Add(""[DataContract]"");
-    };
-
-    // Use the following function if you need to apply additional modifications to a enum member
-    Settings.UpdateEnumMember = delegate (EnumerationMember enumerationMember)
-    {
-        //enumerationMember.Attributes.Add(""[EnumMember]"");
-        //enumerationMember.Attributes.Add(""[SomeAttribute(\"""" + enumerationMember.AllValues[""SomeName""] + "" \"")]"");
-    };
-
-
+    // Class body *****************************************************************************************************************************
     // Writes any boilerplate stuff inside the POCO class body
     Settings.WriteInsideClassBody = delegate(Table t)
     {
@@ -699,7 +692,7 @@ namespace BuildTT
         return fkName;
     };
 
-    // This foreign key filter used in addition to SingleContextFilter.ForeignKeyFilter()
+    // This foreign key filter used in addition to DbContextFilter.ForeignKeyFilter()
     // Return null to exclude this foreign key
     Settings.ForeignKeyFilterFunc = delegate(ForeignKey fk)
     {
@@ -734,80 +727,7 @@ namespace BuildTT
     };
 
 
-    // Generate multiple db contexts in a single go ***************************************************************************************
-    // Generating multiple contexts at a time requires you specifying which tables, and columns to generate for each context.
-    // As this generator can now generate multiple db contexts in a single go, filtering is done a per db context, and no longer global.
-    // If GenerateSingleDbContext = true (default), please modify SingleContextFilter, this is where your previous global settings should go.
-    // If GenerateSingleDbContext = false, this will generate multiple db contexts. Please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Generating-multiple-database-contexts-in-a-single-go
-    Settings.GenerateSingleDbContext              = true; // Set this to false to generate multiple db contexts.
-    Settings.MultiContextSettingsConnectionString = """"; // Leave empty to read data from same database in ConnectionString above. If settings are in another database, specify the connection string here.
-    Settings.MultiContextSettingsPlugin           = """"; // Only used for unit testing Generator project as you can't (yet) inherit from IMultiContextSettingsPlugin. ""c:\\Path\\YourMultiDbSettingsReader.dll,Full.Name.Of.Class.Including.Namespace"". This will allow you to specify a pluggable provider for reading your MultiContext settings.
-    Settings.MultiContextAttributeDelimiter       = '~'; // The delimiter used for splitting MultiContext attributes
-
-    Settings.MultiContextAllFieldsColumnProcessing = delegate (Column column, Table table, Dictionary<string, object> allFields)
-    {
-        // Examples of how to use additional custom fields from the MultiContext.[Column] table
-        // INT example
-        /*if (allFields.ContainsKey(""DummyInt""))
-        {
-            var o = allFields[""DummyInt""];
-            column.ExtendedProperty += string.Format("" DummyInt = {0}"", (int) o);
-        }*/
-
-        // VARCHAR example
-        /*if (allFields.ContainsKey(""Test""))
-        {
-            var o = allFields[""Test""];
-            column.ExtendedProperty += string.Format("" Test = {0}"", o.ToString());
-        }*/
-
-        // DATETIME example
-        /*if (allFields.ContainsKey(""date_of_birth""))
-        {
-            var o = allFields[""date_of_birth""];
-            var date = Convert.ToDateTime(o);
-            column.ExtendedProperty += string.Format("" date_of_birth = {0}"", date.ToLongDateString());
-        }*/
-    };
-
-    Settings.MultiContextAllFieldsTableProcessing = delegate (Table table, Dictionary<string, object> allFields)
-    {
-        // Examples of how to use additional custom fields from the MultiContext.[Table] table
-        // VARCHAR example
-        /*if (allFields.ContainsKey(""Notes""))
-        {
-            var o = allFields[""Notes""];
-            if (string.IsNullOrEmpty(table.AdditionalComment))
-                table.AdditionalComment = string.Empty;
-
-            table.AdditionalComment += string.Format("" Test = {0}"", o.ToString());
-        }*/
-    };
-
-    Settings.MultiContextAllFieldsStoredProcedureProcessing = delegate (StoredProcedure sp, Dictionary<string, object> allFields)
-    {
-        // Examples of how to use additional custom fields from the MultiContext.[Table] table
-        // VARCHAR example
-        /*if (allFields.ContainsKey(""CustomRename""))
-        {
-            var o = allFields[""CustomRename""];
-            sp.NameHumanCase = o.ToString();
-        }*/
-    };
-
-    Settings.MultiContextAllFieldsFunctionProcessing = delegate (StoredProcedure sp, Dictionary<string, object> allFields)
-    {
-        // Examples of how to use additional custom fields from the MultiContext.[Table] table
-        // VARCHAR example
-        /*if (allFields.ContainsKey(""CustomRename""))
-        {
-            var o = allFields[""CustomRename""];
-            sp.NameHumanCase = o.ToString();
-        }*/
-    };
-
-
-    // Don't forget to take a look at SingleContextFilter and FilterSettings classes!
+    // Don't forget to take a look at DbContextFilter and FilterSettings classes!
     // That's it, nothing else to configure ***********************************************************************************************
 
     FilterSettings.CheckSettings();
@@ -831,11 +751,9 @@ namespace BuildTT
     {
         // Connection strings are passed to the tool over stdin, never on the command line, so they stay out of
         // process listings and command-line audit logs. See SecretsXml and EfrpgToolRunner.
-        var efrpgMultiContext = !Settings.GenerateSingleDbContext && string.IsNullOrWhiteSpace(Settings.MultiContextSettingsPlugin);
         toolResult = EfrpgToolRunner.ReadDatabase(
             FilterSettings.IncludeStoredProcedures || FilterSettings.IncludeTableValuedFunctions || FilterSettings.IncludeScalarValuedFunctions,
-            FilterSettings.IncludeSynonyms,
-            efrpgMultiContext);
+            FilterSettings.IncludeSynonyms);
     }
     catch (Exception efrpgEx)
     {
@@ -909,18 +827,17 @@ namespace BuildTT
 <#@ assembly name=""System"" #>
 <#@ assembly name=""System.Core"" #>
 <#@ assembly name=""System.Data"" #>
-<#@ assembly name=""System.Configuration"" #>
-<#@ assembly name=""System.Windows.Forms"" #>
 <#@ assembly name=""System.Xml"" #>
 <#@ assembly name=""System.Xml.Linq"" #>";
 
             const string header2 = @"<#@ output extension="".cs"" encoding=""utf-8"" #>
 <#
         // WriteLine(""// T4 framework version = "" + AppDomain.CurrentDomain.SetupInformation.TargetFrameworkName);
+        // Visual Studio supplies the project's namespace here; other hosts supply nothing, so derive it from the .csproj instead.
         var namespaceHint = this.Host.ResolveParameterValue(""directiveId"", ""namespaceDirectiveProcessor"", ""namespaceHint"");
         Settings.TemplateFile = System.IO.Path.GetFileNameWithoutExtension(this.Host.TemplateFile);
-        var DefaultNamespace = !string.IsNullOrEmpty(namespaceHint) ? namespaceHint : Settings.TemplateFile;
         Settings.Root = Host.ResolvePath(string.Empty);
+        var DefaultNamespace = !string.IsNullOrEmpty(namespaceHint) ? namespaceHint : ProjectNamespace.Resolve(Settings.Root, Settings.TemplateFile);
         // System.Diagnostics.Debugger.Launch();
 #><#+";
 
@@ -945,7 +862,7 @@ namespace BuildTT
             {
                 new KeyValuePair<int, string>(1, "Settings.cs"),
                 new KeyValuePair<int, string>(2, "FilterSettings.cs"),
-                new KeyValuePair<int, string>(3, "SingleContextFilter.cs")
+                new KeyValuePair<int, string>(3, "DbContextFilter.cs")
             };
             var files = Directory
                 .GetFiles(generatorRoot, "*.cs", SearchOption.AllDirectories)

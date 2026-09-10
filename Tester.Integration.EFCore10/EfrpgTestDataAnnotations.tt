@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 <#@ include file ="..\EntityFramework.Reverse.POCO.Generator\EF.Reverse.POCO.v4.ttinclude" #>
 <#
     // Please make changes to the settings below.
@@ -8,30 +6,26 @@ using System.Collections.Generic;
 
     // Settings ***************************************************************************************************************************
     // Only the most popular settings are listed below.
-    // Either override Settings.* here, or edit the Settings, FilterSettings and SingleContextFilter classes located at the top of EF.Reverse.POCO.v4.ttinclude
+    // Either override Settings.* here, or edit the Settings, FilterSettings and DbContextFilter classes located at the top of EF.Reverse.POCO.v4.ttinclude
 
-    // For help on the various Types below, please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Common-Settings.*Types-explained
+    // For help on the various Types below, please read https://github.com/ReversePOCO/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Common-Settings.*Types-explained
     // The following entries are the only required settings.
     Settings.DatabaseType = DatabaseType.SqlServer;
     Settings.TemplateType = TemplateType.EfCore10;
-    Settings.GeneratorType = GeneratorType.EfCore;
-    Settings.UseMappingTables = true; // Must be false for TemplateType.EfCore2-4. If true, mapping will be used, and no mapping tables will be generated. If false, all tables will be generated.
+    Settings.UseMappingTables = true; // If true, mapping will be used, and no mapping tables will be generated. If false, all tables will be generated.
     Settings.ConnectionString = "Data Source=(local);Initial Catalog=EfrpgTest;Integrated Security=True;MultipleActiveResultSets=True;Encrypt=false;TrustServerCertificate=true";
     Settings.ConnectionStringActions = ".EnableRetryOnFailure(maxRetryCount: 10, maxRetryDelay: TimeSpan.FromSeconds(30), errorNumbersToAdd: null)"; // EFCore only
     Settings.ConnectionStringName = "MyDbContext"; // ConnectionString key as specified in your app.config/web.config/appsettings.json
     Settings.DbContextName = "V10EfrpgTestDataAnnotationsDbContext"; // Class name for the DbContext to be generated. Note: If generating separate files, please give the db context a different name from this tt filename.
-    Settings.OnConfiguration = OnConfiguration.ConnectionString; // EFCore only. Determines the code generated within DbContext.OnConfiguration(). Please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/OnConfiguration    Settings.GenerateSeparateFiles   = false;
+    Settings.OnConfiguration = OnConfiguration.ConnectionString; // EFCore only. Determines the code generated within DbContext.OnConfiguration(). Please read https://github.com/ReversePOCO/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/OnConfiguration    Settings.GenerateSeparateFiles   = false;
     Settings.GenerateSeparateFiles = false;
     Settings.Namespace = "V10EfrpgTestDataAnnotations"; // Override the default namespace here
-    Settings.AddUnitTestingDbContext = true; // Will add a FakeDbContext and FakeDbSet for easy unit testing. Read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/FakeDbContext
+    Settings.AddUnitTestingDbContext = true; // Will add a FakeDbContext and FakeDbSet for easy unit testing. Read https://github.com/ReversePOCO/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/FakeDbContext
     Settings.TrimCharFields = true; // EF Core option only. If true, will TrimEnd() 'char' fields when read from the database.
     Settings.DisableGeographyTypes = false;
     Settings.GenerateHasDefaultValueSql = true; // EFCore only. If true, will emit .HasDefaultValueSql() in the entity configuration for columns with a SQL default, making defaults queryable via EF model reflection.
     Settings.UseDataAnnotations = true; // If true, will add data annotations to the poco classes.
 
-    // If GenerateSingleDbContext = false, this will generate multiple db contexts. Please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Generating-multiple-database-contexts-in-a-single-go
-    Settings.GenerateSingleDbContext = true; // Set this to false to generate multiple db contexts.
-    Settings.MultiContextSettingsConnectionString = ""; // Leave empty to read data from same database in ConnectionString above. If settings are in another database, specify the connection string here.
 
     // Elements to generate ***************************************************************************************************************
     // Add the elements that should be generated when the template is executed.
@@ -51,11 +45,10 @@ using System.Collections.Generic;
     // Filtering can now be done via one or more Regex's and one or more functions.
     // Gone are the days of a single do-it-all regex, you can now split them up into many smaller Regex's.
     // You can have as many as you like, and mix and match them.
-    // These settings are only used by the single context filter SingleContextFilter (Settings.GenerateSingleDbContext = true)
-    // For further information please visit https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Filtering
-    // For multi-context filtering (Settings.GenerateSingleDbContext = false), please read https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Generating-multiple-database-contexts-in-a-single-go
-    // Single-context filtering is done via FilterSettings and SingleContextFilter classes.
-    // Override the filters here, or edit directly the FilterSettings and SingleContextFilter classes located at the top of EF.Reverse.POCO.v4.ttinclude
+    // These settings are used by the DbContextFilter class.
+    // For further information please visit https://github.com/ReversePOCO/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Filtering
+    // Filtering is done via the FilterSettings and DbContextFilter classes.
+    // Override the filters here, or edit directly the FilterSettings and DbContextFilter classes located at the top of EF.Reverse.POCO.v4.ttinclude
     FilterSettings.Reset();
     FilterSettings.AddDefaults();
 
@@ -85,7 +78,7 @@ using System.Collections.Generic;
 
     Settings.UpdateColumn = delegate (Column column, Table table, List<EnumDefinition> enumDefinitions, List<JsonColumnMapping> jsonColumnMappings)
     {
-        // Make property partial, see https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Partial-properties
+        // Make property partial, see https://github.com/ReversePOCO/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/Partial-properties
         // if (table.NameHumanCase.Equals("AbOrderLinesAb", StringComparison.InvariantCultureIgnoreCase) && column.NameHumanCase.Equals("Sku", StringComparison.InvariantCultureIgnoreCase))
         //    column.IsPartial = true;
 
@@ -123,11 +116,9 @@ using System.Collections.Generic;
     {
         // Connection strings are passed to the tool over stdin, never on the command line, so they stay out of
         // process listings and command-line audit logs. See SecretsXml and EfrpgToolRunner.
-        var efrpgMultiContext = !Settings.GenerateSingleDbContext && string.IsNullOrWhiteSpace(Settings.MultiContextSettingsPlugin);
         toolResult = EfrpgToolRunner.ReadDatabase(
             FilterSettings.IncludeStoredProcedures || FilterSettings.IncludeTableValuedFunctions || FilterSettings.IncludeScalarValuedFunctions,
-            FilterSettings.IncludeSynonyms,
-            efrpgMultiContext);
+            FilterSettings.IncludeSynonyms);
     }
     catch (Exception efrpgEx)
     {

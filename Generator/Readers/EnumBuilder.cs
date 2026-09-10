@@ -1,13 +1,13 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Efrpg.Filtering;
 
 namespace Efrpg.Readers
 {
-    // Transforms the raw enum rows returned by the efrpg tool into Enumeration/EnumerationMember
-    // objects, applying the same casing, grouping and description rules the legacy
-    // DatabaseReader.ReadEnums applied. Lives on the Generator (T4) side because it needs Inflector.
+    // Transforms the raw enum rows returned by the efrpg tool into Enumeration/EnumerationMember objects, applying
+    // the same casing, grouping and description rules the readers applied before they moved to the separate efrpg
+    // tool repository. Stays on the Generator (T4) side because it needs Inflector, which the tool does not have.
     public static class EnumBuilder
     {
         private static readonly Regex RemoveNonAlphaNumeric = new Regex(@"[^\w\d\s_-]", RegexOptions.Compiled);

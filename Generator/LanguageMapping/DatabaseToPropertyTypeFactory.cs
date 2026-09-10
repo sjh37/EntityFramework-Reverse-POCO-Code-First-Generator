@@ -1,34 +1,30 @@
-﻿using System;
-using Efrpg.LanguageMapping.LanguageFactories;
+using System;
 
 namespace Efrpg.LanguageMapping
 {
     public static class DatabaseToPropertyTypeFactory
     {
+        /// <summary>
+        ///     The type map that turns this database's column types into C# property types.
+        /// </summary>
         public static IDatabaseToPropertyType Create()
-        {
-            var factory = CreateDatabaseLanguageFactory();
-            return factory.Create();
-        }
-
-        private static IDatabaseLanguageFactory CreateDatabaseLanguageFactory()
         {
             switch (Settings.DatabaseType)
             {
                 case DatabaseType.SqlServer:
-                    return new SqlServerLanguageFactory();
+                    return new SqlServerToCSharp();
 
                 case DatabaseType.SQLite:
-                    return new SQLiteLanguageFactory();
+                    return new SqLiteToCSharp();
 
                 case DatabaseType.MySql:
-                    return new MySqlLanguageFactory();
+                    return new MySqlToCSharp();
 
                 case DatabaseType.PostgreSQL:
-                    return new PostgresLanguageFactory();
+                    return new PostgresToCSharp();
 
                 case DatabaseType.Oracle:
-                    return new OracleLanguageFactory();
+                    return new OracleToCSharp();
 
                 default:
                     throw new ArgumentOutOfRangeException();

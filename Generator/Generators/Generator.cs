@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
@@ -119,7 +119,7 @@ namespace Efrpg.Generators
             _result = result;
             if (_result == null)
             {
-                _fileManagementService.Error("// Cannot create a database reader due to unknown database type.");
+                _fileManagementService.Error("// The efrpg tool returned no schema, so nothing can be generated.");
                 return;
             }
 
@@ -320,28 +320,12 @@ namespace Efrpg.Generators
                 // Read enumeration values from the database. The AddEnum callbacks above may have
                 // added entries to the enumeration lists, so this must happen after them. The efrpg
                 // tool is re-invoked here with the now-resolved enumeration specs (see ReadEnumsViaTool).
-                if (Settings.GenerateSingleDbContext)
+                if (Settings.Enumerations != null && Settings.Enumerations.Count > 0)
                 {
-                    if (Settings.Enumerations != null && Settings.Enumerations.Count > 0)
+                    var enumerations = ReadEnumsViaTool(Settings.Enumerations);
+                    if (enumerations.Count > 0)
                     {
-                        var enumerations = ReadEnumsViaTool(Settings.Enumerations);
-                        if (enumerations.Count > 0)
-                        {
-                            foreach (var filterKeyValuePair in FilterList.GetFilters())
-                                filterKeyValuePair.Value.Enums.AddRange(enumerations);
-                        }
-                    }
-                }
-                else
-                {
-                    foreach (var filterKeyValuePair in FilterList.GetFilters())
-                    {
-                        var multiContextSetting = ((MultiContextFilter) filterKeyValuePair.Value).GetSettings();
-                        if (multiContextSetting?.Enumerations == null || multiContextSetting.Enumerations.Count == 0)
-                            continue;
-
-                        var enumerations = ReadEnumsViaTool(multiContextSetting.Enumerations);
-                        if (enumerations.Count > 0)
+                        foreach (var filterKeyValuePair in FilterList.GetFilters())
                             filterKeyValuePair.Value.Enums.AddRange(enumerations);
                     }
                 }
@@ -561,8 +545,8 @@ namespace Efrpg.Generators
 
                     if (exclude)
                     {
-                        FileManagementService.DeleteFile(table.NameHumanCaseWithSuffix() + Settings.FileExtension); // Poco
-                        FileManagementService.DeleteFile(table.NameHumanCaseWithSuffix() + Settings.ConfigurationClassName + Settings.FileExtension); // Poco config
+                        FileManagementService.DeleteFile(table.NameHumanCaseWithSuffix() + FileManagementService.Extension); // Poco
+                        FileManagementService.DeleteFile(table.NameHumanCaseWithSuffix() + Settings.ConfigurationClassName + FileManagementService.Extension); // Poco config
                         continue;
                     }
 
@@ -722,32 +706,14 @@ namespace Efrpg.Generators
 
         private void AddForeignKeysToFilters(List<RawForeignKey> rawForeignKeys)
         {
-            if (Settings.GenerateSingleDbContext && (rawForeignKeys == null || !rawForeignKeys.Any()))
+            if (rawForeignKeys == null || !rawForeignKeys.Any())
                 return;
-
-            if (rawForeignKeys == null)
-                rawForeignKeys = new List<RawForeignKey>();
-            //else
-            //SortForeignKeys(rawForeignKeys);
 
             foreach (var filterKeyValuePair in FilterList.GetFilters())
             {
                 var filter = filterKeyValuePair.Value;
                 var fks = new List<RawForeignKey>();
                 fks.AddRange(rawForeignKeys/*.OrderBy(x => x.SortOrder).ThenBy(x => x.FkTableName).ThenBy(x => x.PkTableName)*/);
-
-                if (!Settings.GenerateSingleDbContext)
-                {
-                    var multiContextSetting = ((MultiContextFilter) filter).GetSettings();
-                    if (multiContextSetting?.ForeignKeys != null)
-                    {
-                        fks.AddRange(multiContextSetting.ForeignKeys.Select(x =>
-                            new RawForeignKey(x.ConstraintName, x.ParentName, x.ChildName,
-                                x.PkColumn, x.FkColumn, x.PkSchema, x.PkTableName,
-                                x.FkSchema, x.FkTableName, x.Ordinal, x.CascadeOnDelete,
-                                x.IsNotEnforced, x.HasUniqueConstraint)));
-                    }
-                }
 
                 if (!fks.Any())
                     continue;
@@ -1024,7 +990,7 @@ namespace Efrpg.Generators
                     if (spFilters.All(x => x.Value.IsExcluded(sp)))
                     {
                         if (deleteFilteredOutFiles)
-                            FileManagementService.DeleteFile(sp.WriteStoredProcReturnModelName(spFilters[0].Value) + Settings.FileExtension);
+                            FileManagementService.DeleteFile(sp.WriteStoredProcReturnModelName(spFilters[0].Value) + FileManagementService.Extension);
 
                         continue; // All Db Context exclude this stored proc, ignore it as nobody wants it
                     }
@@ -1099,7 +1065,7 @@ namespace Efrpg.Generators
                         else
                         {
                             if (deleteFilteredOutFiles)
-                                FileManagementService.DeleteFile(sp.WriteStoredProcReturnModelName(filter) + Settings.FileExtension);
+                                FileManagementService.DeleteFile(sp.WriteStoredProcReturnModelName(filter) + FileManagementService.Extension);
                         }
                     }
                 }
@@ -1126,19 +1092,21 @@ namespace Efrpg.Generators
                 NormaliseStoredProcedureParameterName(parameter);
                 NormaliseStoredProcedureParameterTypes(parameter);
 
-                // The legacy readers stripped remaining special characters (underscores included) from the parameter
-                // names of everything they read return objects for - stored procedures and TVFs, but never scalar
-                // functions (see legacy SqlServerDatabaseReader.ReadStoredProcReturnObjects: procs.Where(x =>
-                // !x.IsScalarValuedFunction), "Tidy up parameters"). Scalar function parameters therefore keep their
-                // underscores (udf_net_sale(list_price)) while stored procedure parameters lose them (firstval).
+                // The readers that used to live in this project stripped remaining special characters (underscores
+                // included) from the parameter names of everything they read return objects for - stored procedures
+                // and TVFs, but never scalar functions. Scalar function parameters therefore keep their underscores
+                // (udf_net_sale(list_price)) while stored procedure parameters lose them (firstval). The readers now
+                // live in the separate efrpg tool repository; this behaviour is reproduced here because generated
+                // signatures depend on it, so it must not be "tidied" to be consistent.
                 if (!sp.IsScalarValuedFunction)
                     parameter.NameHumanCase = Regex.Replace(parameter.NameHumanCase, @"[^A-Za-z0-9@\s]*", string.Empty);
             }
         }
 
-        // Mirrors the legacy DatabaseReader parameter naming exactly: CleanUp, then title-case only when UsePascalCase,
-        // then the reserved-keyword escape. No further character stripping - that would eat underscores (list_price ->
-        // listprice) and non-Latin letters, changing generated signatures. CleanUp already handles illegal characters.
+        // Reproduces exactly what the readers did before they moved to the separate efrpg tool repository: CleanUp,
+        // then title-case only when UsePascalCase, then the reserved-keyword escape. No further character stripping -
+        // that would eat underscores (list_price -> listprice) and non-Latin letters, changing generated signatures.
+        // CleanUp already handles illegal characters.
         private static void NormaliseStoredProcedureParameterName(StoredProcedureParameter parameter)
         {
             var clean = NamingHelper.CleanUp((parameter.Name ?? string.Empty).Replace("@", string.Empty));
@@ -1628,28 +1596,10 @@ namespace Efrpg.Generators
             try
             {
                 CreateOutputFolders();
-                var fallback = Settings.TemplateFolder;
                 foreach (var filter in FilterList.GetFilters())
                 {
                     _fileManagementService.UseFileManager(filter.Key);
-                    if (!Settings.GenerateSingleDbContext)
-                    {
-                        // Multi-context
-                        Settings.DbContextInterfaceName = null;
-                        Settings.DbContextName = ((MultiContextFilter) filter.Value).GetSettings().Name ?? filter.Key;
-
-                        if (Settings.TemplateType == TemplateType.FileBasedCore8 ||
-                            Settings.TemplateType == TemplateType.FileBasedCore9)
-                        {
-                            // Use file based templates, set the path
-                            var multiContextSetting = ((MultiContextFilter) filter.Value).GetSettings();
-                            if (multiContextSetting != null && !string.IsNullOrEmpty(multiContextSetting.TemplatePath))
-                                Settings.TemplateFolder = multiContextSetting.TemplatePath;
-                        }
-                    }
-
                     GenerateCode(filter.Value);
-                    Settings.TemplateFolder = fallback; // Reset back
                 }
             }
             catch (Exception x)
@@ -2011,11 +1961,6 @@ namespace Efrpg.Generators
 
                 _preHeaderInfo.AppendLine(string.Format("//     Connection String:      \"{0}\"", ZapPassword(Settings.ConnectionString)));
 
-                if (!Settings.GenerateSingleDbContext)
-                {
-                    var conn = string.IsNullOrWhiteSpace(Settings.MultiContextSettingsConnectionString) ? Settings.ConnectionString : Settings.MultiContextSettingsConnectionString;
-                    _preHeaderInfo.AppendLine(string.Format("//     Multi-context settings: \"{0}\"", ZapPassword(conn)));
-                }
                 _preHeaderInfo.AppendLine("//");
             }
         }

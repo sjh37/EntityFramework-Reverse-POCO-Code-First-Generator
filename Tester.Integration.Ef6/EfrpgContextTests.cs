@@ -16,7 +16,7 @@ namespace Tester.Integration.Ef6
             _db = new EfrpgTestDbContext("Data Source=(local);Initial Catalog=Efrpgtest;Integrated Security=True;Encrypt=false;TrustServerCertificate=true");
         }
 
-        // https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator/issues/621
+        // https://github.com/ReversePOCO/EntityFramework-Reverse-POCO-Code-First-Generator/issues/621
         [Test]
         [TestCase("StpTest", false)]
         [TestCase("StpTestUnderscoreTest", true)]

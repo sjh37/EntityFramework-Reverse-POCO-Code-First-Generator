@@ -1,8 +1,5 @@
-﻿using System;
-
-namespace Efrpg
+﻿namespace Efrpg
 {
-    [Flags]
     public enum CommentsStyle
     {
         None,

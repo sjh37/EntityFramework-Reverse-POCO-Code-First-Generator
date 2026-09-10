@@ -16,7 +16,7 @@
     public class ViewTests
     {
         private List<RawTable> _rawTables;
-        private GeneratorCustom _sut;
+        private GeneratorEfCore _sut;
 
         [OneTimeSetUp]
         public void OneTimeSetUp()
@@ -24,7 +24,7 @@
             var fileManagement = new FileManagementService(new GeneratedTextTransformation());
 
             _rawTables = new List<RawTable>();
-            _sut = new GeneratorCustom(fileManagement);
+            _sut = new GeneratorEfCore(fileManagement);
             _sut.Init(FakeDatabaseReader.CreateResult(), string.Empty);
         }
 
@@ -58,7 +58,6 @@
         {
             // Arrange
             Settings.TemplateType         = templateType;
-            Settings.GeneratorType        = templateType == TemplateType.Ef6 ? GeneratorType.Ef6 : GeneratorType.EfCore;
             Settings.UseDataAnnotations   = useDataAnnotations;
             Settings.ElementsToGenerate   = Elements.Poco | Elements.PocoConfiguration;
 
@@ -90,7 +89,7 @@
             view.Columns.Add(pkCol);
             view.SetPrimaryKeys();
 
-            var filter = new SingleContextFilter();
+            var filter = new DbContextFilter();
             filter.Tables.Add(view);
 
             var codeGen = new CodeGenerator(generator, filter);

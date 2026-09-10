@@ -30,7 +30,7 @@ namespace Efrpg.Generators
             if (filter == null) throw new ArgumentNullException(nameof(filter));
 #pragma warning restore IDE0016 // Use 'throw' expression
 
-            var isEfCore = Settings.GeneratorType == GeneratorType.EfCore;
+            var isEfCore = !Settings.IsEf6();
             var IsEfCore8Plus = Settings.IsEfCore8Plus();
 
             _generator = generator;
@@ -290,7 +290,7 @@ namespace Efrpg.Generators
 
         private bool CanWriteOwnedEntityClasses()
         {
-            return Settings.GeneratorType == GeneratorType.EfCore &&
+            return !Settings.IsEf6() &&
                    Settings.ElementsToGenerate.HasFlag(Elements.Poco);
         }
 
@@ -325,7 +325,7 @@ namespace Efrpg.Generators
 
         public CodeOutput GenerateInterface()
         {
-            var filename = Settings.DbContextInterfaceName + Settings.FileExtension;
+            var filename = Settings.DbContextInterfaceName + FileManagementService.Extension;
             if (!CanWriteInterface())
             {
                 FileManagementService.DeleteFile(filename);
@@ -358,7 +358,7 @@ namespace Efrpg.Generators
 
         public CodeOutput GenerateContext()
         {
-            var filename = Settings.DbContextName + Settings.FileExtension;
+            var filename = Settings.DbContextName + FileManagementService.Extension;
             if (!CanWriteContext())
             {
                 FileManagementService.DeleteFile(filename);
@@ -515,7 +515,7 @@ namespace Efrpg.Generators
 
         public CodeOutput GenerateFakeContext()
         {
-            var filename = "Fake" + Settings.DbContextName + Settings.FileExtension;
+            var filename = "Fake" + Settings.DbContextName + FileManagementService.Extension;
             if (!CanWriteFakeContext())
             {
                 FileManagementService.DeleteFile(filename);
@@ -551,7 +551,7 @@ namespace Efrpg.Generators
 
         public CodeOutput GenerateFakeDbSet()
         {
-            var filename = "FakeDbSet" + Settings.FileExtension;
+            var filename = "FakeDbSet" + FileManagementService.Extension;
             if (!CanWriteFakeContext())
             {
                 FileManagementService.DeleteFile(filename);
@@ -582,7 +582,7 @@ namespace Efrpg.Generators
 
         public CodeOutput GenerateFactory()
         {
-            var filename = Settings.DbContextName + "Factory" + Settings.FileExtension;
+            var filename = Settings.DbContextName + "Factory" + FileManagementService.Extension;
             if (!CanWriteFactory())
             {
                 FileManagementService.DeleteFile(filename);
@@ -603,7 +603,7 @@ namespace Efrpg.Generators
 
         public CodeOutput GeneratePoco(Table table)
         {
-            var filename = table.NameHumanCaseWithSuffix() + Settings.FileExtension;
+            var filename = table.NameHumanCaseWithSuffix() + FileManagementService.Extension;
             if (!CanWritePoco())
             {
                 FileManagementService.DeleteFile(filename);
@@ -707,7 +707,7 @@ namespace Efrpg.Generators
 
         public CodeOutput GeneratePocoConfiguration(Table table)
         {
-            var filename = table.NameHumanCaseWithSuffix() + Settings.ConfigurationClassName + Settings.FileExtension;
+            var filename = table.NameHumanCaseWithSuffix() + Settings.ConfigurationClassName + FileManagementService.Extension;
             if (!CanWritePocoConfiguration())
             {
                 FileManagementService.DeleteFile(filename);
@@ -763,8 +763,11 @@ namespace Efrpg.Generators
                 ConfigurationClassesArePartial = Settings.ConfigurationClassesArePartial(),
                 Indexes = indexes,
                 HasIndexes = hasIndexes,
+                // Written inside ToTable(..., t => t.HasComment(...)): EF Core 10 made the entity-level HasComment
+                // obsolete, and the TableBuilder form has no view equivalent, so a view's description is not emitted.
                 HasTableComment = !Settings.UseDataAnnotations &&
-                                  Settings.GeneratorType == GeneratorType.EfCore &&
+                                  !Settings.IsEf6() &&
+                                  !table.IsView &&
                                   Settings.IncludeExtendedPropertyComments != CommentsStyle.None &&
                                   !string.IsNullOrEmpty(table.Description),
                 TableComment = table.Description?.Replace("\"", "\"\"")
@@ -808,7 +811,7 @@ namespace Efrpg.Generators
 
         public CodeOutput GenerateStoredProcReturnModel(StoredProcedure sp)
         {
-            var filename = sp.WriteStoredProcReturnModelName(_filter) + Settings.FileExtension;
+            var filename = sp.WriteStoredProcReturnModelName(_filter) + FileManagementService.Extension;
             if (!CanWriteStoredProcReturnModel())
             {
                 FileManagementService.DeleteFile(filename);
@@ -851,7 +854,7 @@ namespace Efrpg.Generators
 
         public CodeOutput GenerateEnum(Enumeration enumeration)
         {
-            var filename = enumeration.EnumName + Settings.FileExtension;
+            var filename = enumeration.EnumName + FileManagementService.Extension;
             if (!CanWriteEnums())
             {
                 FileManagementService.DeleteFile(filename);
@@ -868,7 +871,7 @@ namespace Efrpg.Generators
 
         public CodeOutput GenerateOwnedEntityClass(string typeName, IList<OwnedEntity> instances)
         {
-            var filename = typeName + Settings.FileExtension;
+            var filename = typeName + FileManagementService.Extension;
             if (!CanWriteOwnedEntityClasses())
             {
                 FileManagementService.DeleteFile(filename);
