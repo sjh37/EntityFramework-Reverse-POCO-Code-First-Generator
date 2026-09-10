@@ -94,7 +94,8 @@ namespace Efrpg.Gui
 
         public string Name => Definition.Name;
 
-        public string Section => Definition.Section;
+        /// <summary>The group the editor lists it under; see <see cref="EditorGroups"/> for where that differs from the template.</summary>
+        public string Section => EditorGroups.For(Definition);
 
         public string Help => Definition.Help;
 

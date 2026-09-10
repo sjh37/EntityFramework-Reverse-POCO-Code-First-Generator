@@ -507,8 +507,11 @@ namespace EntityFramework_Reverse_POCO_Generator
                     Margin = new Thickness(0, 4, 0, 0)
                 });
 
+            var links = new StackPanel { Orientation = Orientation.Horizontal, Margin = new Thickness(0, 2, 0, 0) };
+            links.Children.Add(WikiLink(item));
             if (item.IsChanged)
-                right.Children.Add(RevertLink(item));
+                links.Children.Add(RevertLink(item));
+            right.Children.Add(links);
 
             var grid = new Grid { Margin = new Thickness(0, 0, 0, 14) };
             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(230) });
@@ -571,11 +574,7 @@ namespace EntityFramework_Reverse_POCO_Generator
             open.Click += (s, e) => { OpenSetting = item.Name; Commit(); };
             links.Children.Add(open);
 
-            var wiki = new TextBlock { VerticalAlignment = VerticalAlignment.Center };
-            var link = new Hyperlink(new Run("Wiki: " + item.Definition.WikiPage)) { NavigateUri = new Uri(item.Definition.WikiUrl) };
-            link.RequestNavigate += (s, e) => { Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri) { UseShellExecute = true }); e.Handled = true; };
-            wiki.Inlines.Add(link);
-            links.Children.Add(wiki);
+            links.Children.Add(WikiLink(item));
 
             if (item.IsChanged)
                 links.Children.Add(RevertLink(item));
@@ -663,6 +662,19 @@ namespace EntityFramework_Reverse_POCO_Generator
             return item.Assignment.IsCommentedOut
                 ? "Commented out in this template; the generator's built-in default applies."
                 : "Set in this template, on line " + item.LineNumber + ".";
+        }
+
+        /// <summary>
+        ///     The wiki page for a setting, opened in the browser. A setting documented alongside others lands on
+        ///     its own heading; the label shows the page only.
+        /// </summary>
+        private static UIElement WikiLink(SettingEditorItem item)
+        {
+            var wiki = new TextBlock { VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(0, 0, 12, 0) };
+            var link = new Hyperlink(new Run("Wiki: " + item.Definition.WikiPage)) { NavigateUri = new Uri(item.Definition.WikiUrl) };
+            link.RequestNavigate += (s, e) => { Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri) { UseShellExecute = true }); e.Handled = true; };
+            wiki.Inlines.Add(link);
+            return wiki;
         }
 
         private UIElement RevertLink(SettingEditorItem item)

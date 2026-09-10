@@ -9,25 +9,27 @@ import io, os, re, sys
 WIKI = r"C:\S\Source (open source)\EntityFramework-Reverse-POCO-Code-First-Generator.wiki"
 GEN  = r"C:\S\Source (open source)\EntityFramework-Reverse-POCO-Code-First-Generator"
 
-# setting -> (page, one-line summary)
+# setting -> (page, one-line summary). A setting documented on another setting's page names its heading there
+# as "Page#anchor", using GitHub's rule for turning a heading into an anchor (see anchor_of); main() checks that
+# the heading exists, so a renamed heading fails here rather than dropping the reader at the top of the page.
 M = {
  # Core
  "DatabaseType":("Settings.DatabaseType","Which database to read: SqlServer, PostgreSQL, MySql, Oracle, SQLite"),
- "TemplateType":("Settings.DatabaseType","Which code templates to use. Match your EF version, not your .NET version"),
- "ConnectionString":("Settings.ConnectionStringName","The connection string the **generator** uses at design time"),
+ "TemplateType":("Settings.DatabaseType#choosing-templatetype","Which code templates to use. Match your EF version, not your .NET version"),
+ "ConnectionString":("Settings.ConnectionStringName#settingsconnectionstring","The connection string the **generator** uses at design time"),
  "ConnectionStringName":("Settings.ConnectionStringName","A key your **application** looks up at run time"),
- "ConnectionStringActions":("Settings.ConnectionStringName","Extra fluent calls appended to the provider setup"),
+ "ConnectionStringActions":("Settings.ConnectionStringName#settingsconnectionstringactions","Extra fluent calls appended to the provider setup"),
  "CommandTimeout":("Settings.CommandTimeout","How long each schema query may take, in seconds"),
 
  # Naming and namespaces
  "Namespace":("Settings.Namespace","The namespace all generated code goes into"),
- "UseNamespace":("Settings.Namespace","Suppresses the namespace declaration entirely"),
- "UseFileScopedNamespaces":("Settings.Namespace","`namespace X;` instead of `namespace X { }`"),
- "ContextNamespace":("Settings.Namespace","A `using` for where the DbContext lives"),
- "InterfaceNamespace":("Settings.Namespace","A `using` for where the interface lives"),
- "PocoNamespace":("Settings.Namespace","A `using` for where the entities live"),
- "PocoConfigurationNamespace":("Settings.Namespace","A `using` for where the configurations live"),
- "UseFolderNameInNamespace":("Settings.PocoFolder","Makes the namespace follow the output folder"),
+ "UseNamespace":("Settings.Namespace#settingsusenamespace","Suppresses the namespace declaration entirely"),
+ "UseFileScopedNamespaces":("Settings.Namespace#settingsusefilescopednamespaces","`namespace X;` instead of `namespace X { }`"),
+ "ContextNamespace":("Settings.Namespace#the-four-cross-namespace-settings","A `using` for where the DbContext lives"),
+ "InterfaceNamespace":("Settings.Namespace#the-four-cross-namespace-settings","A `using` for where the interface lives"),
+ "PocoNamespace":("Settings.Namespace#the-four-cross-namespace-settings","A `using` for where the entities live"),
+ "PocoConfigurationNamespace":("Settings.Namespace#the-four-cross-namespace-settings","A `using` for where the configurations live"),
+ "UseFolderNameInNamespace":("Settings.PocoFolder#settingsusefoldernameinnamespace","Makes the namespace follow the output folder"),
 
  # Output layout
  "GenerateSeparateFiles":("Settings.GenerateSeparateFiles","One file per class instead of one big Database.cs"),
@@ -40,16 +42,16 @@ M = {
 
  # DbContext
  "DbContextName":("Settings.DbContextName","The generated context class name"),
- "DbContextInterfaceName":("Settings.DbContextName","The interface name; empty string means no interface"),
+ "DbContextInterfaceName":("Settings.DbContextName#overriding-just-the-interface","The interface name; empty string means no interface"),
  "DbContextBaseClass":("Settings.DbContextBaseClass","What the context inherits from, e.g. IdentityDbContext"),
- "DbContextInterfaceBaseClasses":("Settings.DbContextBaseClass","What the interface extends"),
+ "DbContextInterfaceBaseClasses":("Settings.DbContextBaseClass#extra-interfaces","What the interface extends"),
  "OnConfiguration":("Settings.OnConfiguration","**EF Core.** Connection string, IConfiguration, or nothing"),
  "AddParameterlessConstructorToDbContext":("Settings.AddParameterlessConstructorToDbContext","**EF 6.** Whether a parameterless constructor is generated"),
- "UseInheritedBaseInterfaceFunctions":("Settings.AddParameterlessConstructorToDbContext","Take the interface members from a base interface instead"),
+ "UseInheritedBaseInterfaceFunctions":("Settings.AddParameterlessConstructorToDbContext#settingsuseinheritedbaseinterfacefunctions","Take the interface members from a base interface instead"),
  "AddIDbContextFactory":("Settings.AddIDbContextFactory","Generates the factory `dotnet ef` looks for"),
  "AddUnitTestingDbContext":("Settings.AddUnitTestingDbContext","Generates FakeDbContext and FakeDbSet"),
  "FakeDbContextInDebugOnlyMode":("Settings.AddUnitTestingDbContext","Wraps the fakes in `#if DEBUG`"),
- "AdditionalContextInterfaceItems":("Settings.AdditionalNamespaces","Extra members on the context interface"),
+ "AdditionalContextInterfaceItems":("Settings.AdditionalNamespaces#settingsadditionalcontextinterfaceitems","Extra members on the context interface"),
 
  # Class modifiers
  "EntityClassesModifiers":("Settings.EntityClassesModifiers","Modifiers on entity classes - usually `public partial`"),
@@ -61,7 +63,7 @@ M = {
 
  # POCO shape
  "UsePascalCase":("Settings.UsePascalCase","`order_line_item` becomes `OrderLineItem`"),
- "UsePascalCaseForEnumMembers":("Settings.Enumerations","The same, for enum member names"),
+ "UsePascalCaseForEnumMembers":("Settings.Enumerations#settingsusepascalcaseforenummembers","The same, for enum member names"),
  "UseDataAnnotations":("Settings.UseDataAnnotations","Adds [Key], [Required], [MaxLength] and friends"),
  "UsePropertyInitialisers":("Settings.UsePropertyInitialisers","Property initialisers instead of a constructor"),
  "UseLazyLoading":("Settings.UseLazyLoading","Marks navigation properties `virtual`"),
@@ -70,18 +72,18 @@ M = {
  "IncludeFieldNameConstants":("Settings.IncludeFieldNameConstants","A `const string` per property holding its own name"),
  "AllowNullStrings":("Settings.AllowNullStrings","`string?` and `#nullable enable`"),
  "NullableShortHand":("Settings.NullableShortHand","`int?` rather than `Nullable<int>`"),
- "NullableReverseNavigationProperties":("Settings.NullableShortHand","Nullable reverse navigation on one-to-one"),
+ "NullableReverseNavigationProperties":("Settings.NullableShortHand#settingsnullablereversenavigationproperties","Nullable reverse navigation on one-to-one"),
  "OrderProperties":("Settings.OrderProperties","Column order or alphabetical"),
  "TableSuffix":("Settings.TableSuffix","Appends a suffix to every entity class name"),
  "CollectionType":("Settings.CollectionType","The concrete collection type: List, ObservableCollection, HashSet"),
  "CollectionInterfaceType":("Settings.CollectionType","The declared collection type: ICollection, IList"),
- "TrimCharFields":("Settings.DisableGeographyTypes","**EF Core.** TrimEnd() on `char` columns"),
+ "TrimCharFields":("Settings.DisableGeographyTypes#settingstrimcharfields","**EF Core.** TrimEnd() on `char` columns"),
  "DisableGeographyTypes":("Settings.DisableGeographyTypes","Skips spatial columns. **On by default**"),
  "UseMappingTables":("Settings.UseMappingTables","**EF 6.** Map many-to-many implicitly"),
 
  # Comments and file furniture
  "IncludeComments":("Settings.IncludeComments","Column names, keys and lengths as comments"),
- "IncludeExtendedPropertyComments":("Settings.IncludeComments","Your database's own column descriptions"),
+ "IncludeExtendedPropertyComments":("Settings.IncludeComments#example-settingsincludeextendedpropertycomments","Your database's own column descriptions"),
  "UseRegions":("Settings.UseRegions","`#region` blocks in single-file output"),
  "UsePragma":("Settings.UsePragma","`#pragma warning disable 1591`"),
  "UseResharper":("Settings.UseResharper","`// ReSharper disable All`. **On by default**"),
@@ -92,34 +94,34 @@ M = {
  "AdditionalNamespaces":("Settings.AdditionalNamespaces","Extra `using` lines"),
  "AdditionalFileHeaderText":("Settings.AdditionalFileHeaderText","Your own lines at the top of each file"),
  "AdditionalFileFooterText":("Settings.AdditionalFileHeaderText","Your own lines at the bottom"),
- "AdditionalReverseNavigationsDataAnnotations":("Settings.AdditionalNamespaces","Attributes on every reverse navigation"),
- "AdditionalForeignKeysDataAnnotations":("Settings.AdditionalNamespaces","Attributes on every foreign key property"),
+ "AdditionalReverseNavigationsDataAnnotations":("Settings.AdditionalNamespaces#the-two-data-annotation-arrays","Attributes on every reverse navigation"),
+ "AdditionalForeignKeysDataAnnotations":("Settings.AdditionalNamespaces#the-two-data-annotation-arrays","Attributes on every foreign key property"),
 
  # Schema
  "PrependSchemaName":("Settings.PrependSchemaName","`sales.Order` becomes `sales_Order`"),
  "PrependSchemaNameForTable":("Settings.PrependSchemaNameForTable","Per-table control of the above"),
  "PrependSchemaNameForStoredProcedure":("Settings.PrependSchemaNameForStoredProcedure","Per-procedure control of the above"),
- "DefaultSchema":("Settings.Runtime-Values","The schema that is never prepended. Set by the reader"),
+ "DefaultSchema":("Settings.Runtime-Values#settingsdefaultschema","The schema that is never prepended. Set by the reader"),
 
  # Mapping
  "GenerateHasDefaultValueSql":("Settings.GenerateHasDefaultValueSql","**EF Core.** Defaults in the EF model, not just the POCO"),
  "ColumnIdentity":("Settings.ColumnIdentity","The fluent call after ValueGeneratedOnAdd()"),
- "HiLoSequences":("Settings.ColumnIdentity","Client-side id blocks from a database sequence"),
+ "HiLoSequences":("Settings.ColumnIdentity#settingshilosequences","Client-side id blocks from a database sequence"),
 
  # Stored procedures
  "UsePropertiesForStoredProcResultSets":("Settings.UsePropertiesForStoredProcResultSets","Properties rather than fields on multi-result-set models"),
- "MergeMultipleStoredProcModelsIfAllSame":("Settings.StoredProcedureReturnTypes","Collapses identical result sets into one"),
+ "MergeMultipleStoredProcModelsIfAllSame":("Settings.StoredProcedureReturnTypes#settingsmergemultiplestoredprocmodelsifallsame","Collapses identical result sets into one"),
  "StoredProcedureReturnTypes":("Settings.StoredProcedureReturnTypes","Return an entity you already have"),
- "ReadStoredProcReturnObjectException":("Settings.StoredProcedureReturnTypes","Handle a failed result-shape discovery"),
- "ReadStoredProcReturnObjectCompleted":("Settings.StoredProcedureReturnTypes","Adjust a discovered result shape"),
+ "ReadStoredProcReturnObjectException":("Settings.StoredProcedureReturnTypes#settingsreadstoredprocreturnobjectexception","Handle a failed result-shape discovery"),
+ "ReadStoredProcReturnObjectCompleted":("Settings.StoredProcedureReturnTypes#settingsreadstoredprocreturnobjectcompleted","Adjust a discovered result shape"),
  "StoredProcedureRename":("Settings.StoredProcedureRename","Rename the generated method"),
  "StoredProcedureReturnModelRename":("Settings.StoredProcedureReturnModelRename","Rename the generated result class"),
 
  # Enums
  "Enumerations":("Settings.Enumerations","Turn a lookup table's rows into a C# enum"),
- "AddEnum":("Settings.Enumerations","Decide which tables become enums, by rule"),
- "UpdateEnum":("Settings.Enumerations","Attributes on the generated enum"),
- "UpdateEnumMember":("Settings.Enumerations","Attributes on each enum member"),
+ "AddEnum":("Settings.Enumerations#settingsaddenum","Decide which tables become enums, by rule"),
+ "UpdateEnum":("Settings.Enumerations#updateenum-and-updateenummember","Attributes on the generated enum"),
+ "UpdateEnumMember":("Settings.Enumerations#updateenum-and-updateenummember","Attributes on each enum member"),
  "AddEnumDefinitions":("Settings.Enumerations","Replace a column's type with an enum"),
 
  # Callbacks
@@ -137,9 +139,9 @@ M = {
  "AddOwnedEntityMappings":("Settings.AddOwnedEntityMappings","Group prefixed columns into an owned entity"),
 
  # Runtime values
- "Root":("Settings.Runtime-Values","The folder holding your .tt file. Read-only"),
- "TemplateFile":("Settings.Runtime-Values","The .tt file name. Read-only"),
- "DefaultConstructorArgument":("Settings.Runtime-Values","**EF 6.** What the parameterless constructor passes to base"),
+ "Root":("Settings.Runtime-Values#settingsroot","The folder holding your .tt file. Read-only"),
+ "TemplateFile":("Settings.Runtime-Values#settingstemplatefile","The .tt file name. Read-only"),
+ "DefaultConstructorArgument":("Settings.Runtime-Values#settingsdefaultconstructorargument","**EF 6.** What the parameterless constructor passes to base"),
 }
 
 def settings_from_source():
@@ -151,6 +153,15 @@ def settings_from_source():
         seen.add(n); out.append(n)
     return out
 
+def anchor_of(heading):
+    """GitHub's anchor for a markdown heading: lower case, punctuation dropped, spaces to hyphens."""
+    text = re.sub(r'[^\w\- ]', '', heading.strip().lower())
+    return text.replace(' ', '-')
+
+def heading_anchors(path):
+    return set(anchor_of(m.group(1))
+               for m in re.finditer(r'^#{1,6}\s+(.*?)\s*$', io.open(path, encoding='utf-8').read(), re.M))
+
 def main():
     names = settings_from_source()
     missing = [n for n in names if n not in M]
@@ -160,9 +171,13 @@ def main():
     if stale:
         sys.exit("Index entries for settings that no longer exist: " + ", ".join(stale))
 
-    for page in sorted(set(p for p, _ in M.values())):
-        if not os.path.exists(os.path.join(WIKI, page + '.md')):
+    for link in sorted(set(p for p, _ in M.values())):
+        page, _, anchor = link.partition('#')
+        path = os.path.join(WIKI, page + '.md')
+        if not os.path.exists(path):
             sys.exit("Index points at a page that does not exist: " + page)
+        if anchor and anchor not in heading_anchors(path):
+            sys.exit("Index points at a heading that does not exist: " + link)
 
     rows = []
     for n in sorted(names, key=str.lower):
@@ -177,7 +192,7 @@ def main():
     pages = "{\n" + ",\n".join('  "%s": "%s"' % (n, M[n][0]) for n in sorted(names, key=str.lower)) + "\n}\n"
     io.open(os.path.join(GEN, 'BuildTT', 'SettingsMetadata', 'wiki-pages.json'), 'w', encoding='utf-8', newline='').write(pages)
     print("Settings-Reference.md rebuilt: %d settings across %d pages"
-          % (len(names), len(set(p for p, _ in M.values()))))
+          % (len(names), len(set(p.partition('#')[0] for p, _ in M.values()))))
 
 if __name__ == '__main__':
     main()

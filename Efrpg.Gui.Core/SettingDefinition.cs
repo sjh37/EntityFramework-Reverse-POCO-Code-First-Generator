@@ -34,14 +34,20 @@ namespace Efrpg.Gui
             IsFlags      = isFlags;
             RuntimeOnly  = runtimeOnly;
             EnumMembers  = enumMembers ?? new EnumMember[0];
-            WikiPage     = string.IsNullOrEmpty(wikiPage) ? "Settings-Reference" : wikiPage;
+            _wikiLink    = string.IsNullOrEmpty(wikiPage) ? "Settings-Reference" : wikiPage;
+            WikiPage     = _wikiLink.Split('#')[0];
         }
 
-        /// <summary>The wiki page name that documents this setting; the index page when none is known.</summary>
+        /// <summary>
+        ///     The page, and for a setting documented alongside others the heading on it, as <c>Page#heading</c>.
+        /// </summary>
+        private readonly string _wikiLink;
+
+        /// <summary>The wiki page that documents this setting, for display; the index page when none is known.</summary>
         public string WikiPage { get; }
 
-        /// <summary>The full address of <see cref="WikiPage"/>.</summary>
-        public string WikiUrl => "https://github.com/ReversePOCO/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/" + WikiPage;
+        /// <summary>The full address, including the heading for a setting that shares its page.</summary>
+        public string WikiUrl => "https://github.com/ReversePOCO/EntityFramework-Reverse-POCO-Code-First-Generator/wiki/" + _wikiLink;
 
         public string Name { get; }
 

@@ -228,8 +228,7 @@ namespace Efrpg.Gui.Tests
             Assert.That(session.Apply(), Is.EqualTo(original));
         }
 
-        /// <summary>Absent is not a licence: what the generator fills in itself, and code, stay read-only.</summary>
-        [TestCase("DefaultSchema", "Set by the generator")]
+        /// <summary>Absent is not a licence: code stays read-only.</summary>
         [TestCase("PrependSchemaNameForTable", "callback")]
         public void WhatCannotBeWrittenAsAValueStaysReadOnlyEvenWhenAbsent(string name, string reason)
         {
@@ -238,6 +237,40 @@ namespace Efrpg.Gui.Tests
             Assert.That(item.IsAbsent, Is.True);
             Assert.That(item.IsEditable, Is.False);
             Assert.That(item.ReadOnlyReason, Does.Contain(reason));
+        }
+
+        /// <summary>What the generator fills in while it runs is not offered at all, rather than shown read-only.</summary>
+        [TestCase("DefaultSchema")]
+        [TestCase("Root")]
+        [TestCase("TemplateFile")]
+        public void Load_RuntimeOnlySetting_IsNotListed(string name)
+        {
+            var session = SettingsEditSession.Load(RepositoryFiles.DatabaseTemplate(), V4);
+
+            Assert.That(V4.Find(name).RuntimeOnly, Is.True, "the catalogue still knows it");
+            Assert.That(session.Find(name), Is.Null);
+        }
+
+        /// <summary>
+        ///     PrependSchemaNameForTable's section is "Schema". In a template without that banner the word still
+        ///     appears, in the commented-out TableRenames example, and inserting there would bury the callback inside
+        ///     that example, where the parser cannot see it. Only a banner is a heading.
+        /// </summary>
+        [Test]
+        public void ACallbackWhoseHeadingIsMissingIsNotInsertedIntoACommentThatSharesTheWord()
+        {
+            var noBanner = Regex.Replace(RepositoryFiles.DatabaseTemplate(), @"^[ \t]*// Schema \*+[^\r\n]*\r?\n", string.Empty, RegexOptions.Multiline);
+            Assert.That(noBanner, Does.Not.Contain("// Schema **"), "the banner is what this test removes");
+
+            var session = SettingsEditSession.Load(noBanner, V4);
+            session.Find("PrependSchemaNameForTable").SetAssigned(true);
+
+            var lines = Lines(session.Apply());
+            var added = Array.FindIndex(lines, l => l.TrimStart().StartsWith("Settings.PrependSchemaNameForTable", StringComparison.Ordinal));
+
+            Assert.That(added, Is.GreaterThan(0));
+            Assert.That(lines[added - 1].TrimStart(), Does.Not.StartWith("//    Schema"));
+            Assert.That(SettingsEditSession.Load(string.Join("\n", lines), V4).Find("PrependSchemaNameForTable").IsAssigned, Is.True);
         }
 
         [Test]

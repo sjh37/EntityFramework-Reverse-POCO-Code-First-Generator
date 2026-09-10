@@ -79,6 +79,15 @@ namespace Efrpg.Gui.Tests
                 "EntityFramework.Reverse.POCO.Generator", "settings-metadata." + version + ".json"));
         }
 
+        /// <summary>The wiki checkout beside this repository, or null on a machine that has only the generator.</summary>
+        public static string WikiFolder()
+        {
+            var root = new DirectoryInfo(RepositoryRoot.Value);
+            var wiki = Path.Combine(root.Parent.FullName, root.Name + ".wiki");
+
+            return Directory.Exists(wiki) ? wiki : null;
+        }
+
         /// <summary>
         ///     Real .tt files from this repository, for the round-trip tests.
         /// </summary>

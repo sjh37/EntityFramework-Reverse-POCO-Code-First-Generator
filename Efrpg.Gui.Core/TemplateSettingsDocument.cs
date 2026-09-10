@@ -334,9 +334,11 @@ namespace Efrpg.Gui
         }
 
         /// <summary>
-        ///     The one-based number of the first comment line whose text starts with <paramref name="text"/>, as
-        ///     in the <c>// Generate files in sub-folders ****</c> headings Database.tt groups its settings under.
-        ///     Minus one when there is none.
+        ///     The one-based number of the heading <paramref name="text"/>, as in the
+        ///     <c>// Generate files in sub-folders ****</c> banners Database.tt groups its settings under. Minus one
+        ///     when there is none. Only a banner counts: a plain comment that happens to start with the same word,
+        ///     such as <c>//    Schema = Settings.DefaultSchema,</c> inside a commented-out example, is not a place
+        ///     to insert anything.
         /// </summary>
         public int FindCommentLine(string text)
         {
@@ -348,8 +350,12 @@ namespace Efrpg.Gui
             for (var i = 0; i < lines.Count; i++)
             {
                 var trimmed = lines[i].Text.TrimStart();
-                if (trimmed.StartsWith("//", StringComparison.Ordinal) &&
-                    trimmed.Substring(2).TrimStart().StartsWith(text.Trim(), StringComparison.Ordinal))
+                if (!trimmed.StartsWith("//", StringComparison.Ordinal))
+                    continue;
+
+                var label = trimmed.Substring(2).Trim();
+                var stars = label.Length - label.TrimEnd('*').Length;
+                if (stars >= 5 && string.Equals(label.TrimEnd('*').TrimEnd(), text.Trim(), StringComparison.Ordinal))
                     return i + 1;
             }
 

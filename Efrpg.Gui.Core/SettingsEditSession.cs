@@ -85,13 +85,21 @@ namespace Efrpg.Gui
 
             var document = TemplateSettingsDocument.Parse(templateText);
 
+            // What the generator fills in while it runs - Root, TemplateFile, DefaultSchema - is not something a
+            // template can set, so a row for it would only ever say "read-only".
             var items = catalogue.Settings
+                .Where(definition => !definition.RuntimeOnly)
                 .Select(definition =>
                 {
                     var assignment = document.Find(definition.Name);
                     return new SettingEditorItem(definition, assignment, assignment == null ? null : document.StatementText(assignment));
                 })
                 .ToList();
+
+            // A setting the editor groups away from its banner (see EditorGroups) is listed with its group, so a
+            // heading appears once. Within a group the template's order is kept.
+            var groupOrder = items.Select(i => i.Section).Distinct(StringComparer.Ordinal).ToList();
+            items = items.OrderBy(i => groupOrder.IndexOf(i.Section)).ToList();
 
             return new SettingsEditSession(document, catalogue, items);
         }
@@ -204,14 +212,15 @@ namespace Efrpg.Gui
             // do behind GenerateSeparateFiles. A neighbour there would put the new line under that condition.
             var baseIndent = document.Assignments.Count == 0 ? 0 : document.Assignments.Min(a => a.Indent.Length);
 
-            var anchor = Nearest(document, settings, index, -1, item.Section, baseIndent)
-                         ?? Nearest(document, settings, index, +1, item.Section, baseIndent);
+            var section = item.Definition.Section;
+            var anchor  = Nearest(document, settings, index, -1, section, baseIndent)
+                          ?? Nearest(document, settings, index, +1, section, baseIndent);
 
             if (anchor != null)
                 return document.WithNewAssignment(item.Name, item.PendingValueText, item.Help, anchor.Assignment, anchor.IsBefore);
 
             // No usable neighbour in the section: under its heading, which is where Database.tt would have it.
-            var heading = document.FindCommentLine(item.Section);
+            var heading = document.FindCommentLine(section);
             if (heading > 0)
                 return document.WithNewAssignmentAfterLine(item.Name, item.PendingValueText, item.Help, heading);
 
@@ -231,14 +240,15 @@ namespace Efrpg.Gui
             var index      = IndexOf(settings, item.Name);
             var baseIndent = document.Assignments.Count == 0 ? 0 : document.Assignments.Min(a => a.Indent.Length);
             var body       = item.Definition.DefaultValue;
+            var section    = item.Definition.Section;
 
-            var anchor = Nearest(document, settings, index, -1, item.Section, baseIndent)
-                         ?? Nearest(document, settings, index, +1, item.Section, baseIndent);
+            var anchor = Nearest(document, settings, index, -1, section, baseIndent)
+                         ?? Nearest(document, settings, index, +1, section, baseIndent);
 
             if (anchor != null)
                 return document.WithNewStatement(item.Name, body, anchor.Assignment, anchor.IsBefore);
 
-            var heading = document.FindCommentLine(item.Section);
+            var heading = document.FindCommentLine(section);
             if (heading > 0)
                 return document.WithNewStatementAfterLine(item.Name, body, heading);
 

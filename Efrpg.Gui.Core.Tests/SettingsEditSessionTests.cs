@@ -173,7 +173,7 @@ namespace Efrpg.Gui.Tests
         public void EditingAMultiLineAssignmentIsRefusedRatherThanTruncated()
         {
             var session    = Shipped();
-            var multiLine  = session.Items.First(i => i.Assignment != null && i.Assignment.SpansMultipleLines);
+            var multiLine  = session.Items.First(i => i.Assignment != null && i.Assignment.SpansMultipleLines && i.Kind != SettingKind.StringList);
 
             Assert.That(multiLine.IsEditable, Is.False);
             Assert.That(() => multiLine.SetText("nope"), Throws.TypeOf<InvalidOperationException>());
@@ -186,7 +186,7 @@ namespace Efrpg.Gui.Tests
         {
             var session = Shipped();
 
-            Assert.That(session.Items.Count, Is.EqualTo(session.Catalogue.Settings.Count));
+            Assert.That(session.Items.Count, Is.EqualTo(session.Catalogue.Settings.Count(s => !s.RuntimeOnly)));
             Assert.That(session.Items.Count(i => i.IsEditable), Is.GreaterThan(40));
         }
 

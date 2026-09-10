@@ -125,6 +125,74 @@ namespace Efrpg.Gui.Tests
             Assert.That(Shipped().Find("TableSuffix").Section, Is.EqualTo("Other settings"));
         }
 
+        /// <summary>
+        ///     The template keeps these under their own banners; the editor does not, because a group of one or two
+        ///     rows is a page of nothing. The template is untouched: only the editor's grouping differs.
+        /// </summary>
+        [TestCase("PrependSchemaName", "Schema")]
+        [TestCase("AdditionalReverseNavigationsDataAnnotations", "Additional attributes on on reverse navigation and foreign key properties")]
+        [TestCase("AdditionalForeignKeysDataAnnotations", "Additional attributes on on reverse navigation and foreign key properties")]
+        public void Section_SettingGroupedAwayFromItsBanner_ShowsUnderOtherSettings(string name, string banner)
+        {
+            var item = Shipped().Find(name);
+
+            Assert.That(item.Definition.Section, Is.EqualTo(banner), "the template's own heading is still known");
+            Assert.That(item.Section, Is.EqualTo("Other settings"));
+        }
+
+        /// <summary>
+        ///     The editor's left-hand list is the groups that have a value row. "Schema" survives only as a heading on
+        ///     the Callbacks page, over the two schema callbacks, which is where it belongs.
+        /// </summary>
+        [Test]
+        public void Sections_ShippedTemplate_HasNoSchemaOrAdditionalAttributesGroupOfValues()
+        {
+            var valueSections = Shipped().Items.Where(i => !i.IsCode).Select(i => i.Section).Distinct().ToList();
+
+            Assert.That(valueSections, Does.Not.Contain("Schema"));
+            Assert.That(valueSections, Has.None.StartsWith("Additional attributes"));
+        }
+
+        [Test]
+        public void Items_AnnotationLists_FollowAdditionalFileFooterText()
+        {
+            var names = Shipped().Items.Select(i => i.Name).ToList();
+            var footer = names.IndexOf("AdditionalFileFooterText");
+
+            Assert.That(names[footer + 1], Is.EqualTo("AdditionalReverseNavigationsDataAnnotations"));
+            Assert.That(names[footer + 2], Is.EqualTo("AdditionalForeignKeysDataAnnotations"));
+        }
+
+        /// <summary>Regrouping must not scatter a heading through the "All settings" list.</summary>
+        [Test]
+        public void Items_ShippedTemplate_ListsEachGroupContiguously()
+        {
+            var runs = new List<string>();
+            foreach (var item in Shipped().Items)
+                if (runs.Count == 0 || runs[runs.Count - 1] != item.Section)
+                    runs.Add(item.Section);
+
+            Assert.That(runs, Is.Unique);
+        }
+
+        /// <summary>Display grouping is not placement: an added line still goes under the template's own banner.</summary>
+        [Test]
+        public void Apply_PrependSchemaNameAddedBack_LandsUnderTheSchemaBanner()
+        {
+            var original = RepositoryFiles.DatabaseTemplate();
+            var lines    = original.Split('\n');
+            var kept     = lines.Where(l => !l.TrimStart().StartsWith("Settings.PrependSchemaName ")).ToList();
+            var session  = SettingsEditSession.Load(string.Join("\n", kept), V4);
+
+            session.Find("PrependSchemaName").SetBoolean(false);
+            var written = session.Apply().Split('\n');
+
+            var banner = System.Array.FindIndex(written, l => l.TrimStart().StartsWith("// Schema **"));
+            var added  = System.Array.FindIndex(written, l => l.TrimStart().StartsWith("Settings.PrependSchemaName "));
+            Assert.That(added, Is.GreaterThan(banner));
+            Assert.That(added - banner, Is.LessThan(6), "beside its banner, not off in Other settings");
+        }
+
         [Test]
         public void TheEnumCallbacks_HaveTheirOwnSection()
         {

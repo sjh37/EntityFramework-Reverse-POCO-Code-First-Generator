@@ -1,6 +1,6 @@
 {
   "metadataVersion": 1,
-  "generatorVersion": "4.0.42",
+  "generatorVersion": "4.0.44",
   "templateVersion": "v4",
   "include": "EF.Reverse.POCO.v4.ttinclude",
   "settings": [
@@ -42,7 +42,7 @@
     },
     {
       "name": "TemplateType",
-      "wikiPage": "Settings.DatabaseType",
+      "wikiPage": "Settings.DatabaseType#choosing-templatetype",
       "type": "TemplateType",
       "kind": "enum",
       "section": "Settings",
@@ -74,7 +74,7 @@
     },
     {
       "name": "ConnectionString",
-      "wikiPage": "Settings.ConnectionStringName",
+      "wikiPage": "Settings.ConnectionStringName#settingsconnectionstring",
       "type": "string",
       "kind": "string",
       "section": "Settings",
@@ -87,7 +87,7 @@
     },
     {
       "name": "ConnectionStringActions",
-      "wikiPage": "Settings.ConnectionStringName",
+      "wikiPage": "Settings.ConnectionStringName#settingsconnectionstringactions",
       "type": "string",
       "kind": "string",
       "section": "Settings",
@@ -126,7 +126,7 @@
     },
     {
       "name": "DbContextInterfaceName",
-      "wikiPage": "Settings.DbContextName",
+      "wikiPage": "Settings.DbContextName#overriding-just-the-interface",
       "type": "string",
       "kind": "string",
       "section": "Settings",
@@ -165,7 +165,7 @@
     },
     {
       "name": "UseFileScopedNamespaces",
-      "wikiPage": "Settings.Namespace",
+      "wikiPage": "Settings.Namespace#settingsusefilescopednamespaces",
       "type": "bool",
       "kind": "bool",
       "section": "Settings",
@@ -296,7 +296,7 @@
     },
     {
       "name": "UseFolderNameInNamespace",
-      "wikiPage": "Settings.PocoFolder",
+      "wikiPage": "Settings.PocoFolder#settingsusefoldernameinnamespace",
       "type": "bool",
       "kind": "bool",
       "section": "Generate files in sub-folders",
@@ -322,7 +322,7 @@
     },
     {
       "name": "DbContextInterfaceBaseClasses",
-      "wikiPage": "Settings.DbContextBaseClass",
+      "wikiPage": "Settings.DbContextBaseClass#extra-interfaces",
       "type": "string",
       "kind": "string",
       "section": "Other settings",
@@ -545,7 +545,7 @@
     },
     {
       "name": "UseInheritedBaseInterfaceFunctions",
-      "wikiPage": "Settings.AddParameterlessConstructorToDbContext",
+      "wikiPage": "Settings.AddParameterlessConstructorToDbContext#settingsuseinheritedbaseinterfacefunctions",
       "type": "bool",
       "kind": "bool",
       "section": "Other settings",
@@ -586,7 +586,7 @@
     },
     {
       "name": "IncludeExtendedPropertyComments",
-      "wikiPage": "Settings.IncludeComments",
+      "wikiPage": "Settings.IncludeComments#example-settingsincludeextendedpropertycomments",
       "type": "CommentsStyle",
       "kind": "enum",
       "section": "Other settings",
@@ -705,7 +705,7 @@
     },
     {
       "name": "TrimCharFields",
-      "wikiPage": "Settings.DisableGeographyTypes",
+      "wikiPage": "Settings.DisableGeographyTypes#settingstrimcharfields",
       "type": "bool",
       "kind": "bool",
       "section": "Other settings",
@@ -744,7 +744,7 @@
     },
     {
       "name": "MergeMultipleStoredProcModelsIfAllSame",
-      "wikiPage": "Settings.StoredProcedureReturnTypes",
+      "wikiPage": "Settings.StoredProcedureReturnTypes#settingsmergemultiplestoredprocmodelsifallsame",
       "type": "bool",
       "kind": "bool",
       "section": "Other settings",
@@ -770,7 +770,7 @@
     },
     {
       "name": "AdditionalContextInterfaceItems",
-      "wikiPage": "Settings.AdditionalNamespaces",
+      "wikiPage": "Settings.AdditionalNamespaces#settingsadditionalcontextinterfaceitems",
       "type": "List<string>",
       "kind": "stringList",
       "section": "Other settings",
@@ -822,7 +822,7 @@
     },
     {
       "name": "UseNamespace",
-      "wikiPage": "Settings.Namespace",
+      "wikiPage": "Settings.Namespace#settingsusenamespace",
       "type": "bool",
       "kind": "bool",
       "section": "Code suppression",
@@ -861,7 +861,7 @@
     },
     {
       "name": "NullableReverseNavigationProperties",
-      "wikiPage": "Settings.NullableShortHand",
+      "wikiPage": "Settings.NullableShortHand#settingsnullablereversenavigationproperties",
       "type": "bool",
       "kind": "bool",
       "section": "Code suppression",
@@ -965,7 +965,7 @@
     },
     {
       "name": "UsePascalCaseForEnumMembers",
-      "wikiPage": "Settings.Enumerations",
+      "wikiPage": "Settings.Enumerations#settingsusepascalcaseforenummembers",
       "type": "bool",
       "kind": "bool",
       "section": "Enums",
@@ -978,7 +978,7 @@
     },
     {
       "name": "HiLoSequences",
-      "wikiPage": "Settings.ColumnIdentity",
+      "wikiPage": "Settings.ColumnIdentity#settingshilosequences",
       "type": "List<HiLoSequence>",
       "kind": "complex",
       "section": "HiLo sequences",
@@ -1017,7 +1017,7 @@
     },
     {
       "name": "AdditionalReverseNavigationsDataAnnotations",
-      "wikiPage": "Settings.AdditionalNamespaces",
+      "wikiPage": "Settings.AdditionalNamespaces#the-two-data-annotation-arrays",
       "type": "string[]",
       "kind": "stringList",
       "section": "Additional attributes on on reverse navigation and foreign key properties",
@@ -1030,7 +1030,7 @@
     },
     {
       "name": "AdditionalForeignKeysDataAnnotations",
-      "wikiPage": "Settings.AdditionalNamespaces",
+      "wikiPage": "Settings.AdditionalNamespaces#the-two-data-annotation-arrays",
       "type": "string[]",
       "kind": "stringList",
       "section": "Additional attributes on on reverse navigation and foreign key properties",
@@ -1043,7 +1043,7 @@
     },
     {
       "name": "ContextNamespace",
-      "wikiPage": "Settings.Namespace",
+      "wikiPage": "Settings.Namespace#the-four-cross-namespace-settings",
       "type": "string",
       "kind": "string",
       "section": "Reference other namespaces",
@@ -1056,7 +1056,7 @@
     },
     {
       "name": "InterfaceNamespace",
-      "wikiPage": "Settings.Namespace",
+      "wikiPage": "Settings.Namespace#the-four-cross-namespace-settings",
       "type": "string",
       "kind": "string",
       "section": "Reference other namespaces",
@@ -1069,7 +1069,7 @@
     },
     {
       "name": "PocoNamespace",
-      "wikiPage": "Settings.Namespace",
+      "wikiPage": "Settings.Namespace#the-four-cross-namespace-settings",
       "type": "string",
       "kind": "string",
       "section": "Reference other namespaces",
@@ -1082,7 +1082,7 @@
     },
     {
       "name": "PocoConfigurationNamespace",
-      "wikiPage": "Settings.Namespace",
+      "wikiPage": "Settings.Namespace#the-four-cross-namespace-settings",
       "type": "string",
       "kind": "string",
       "section": "Reference other namespaces",
@@ -1121,7 +1121,7 @@
     },
     {
       "name": "AddEnum",
-      "wikiPage": "Settings.Enumerations",
+      "wikiPage": "Settings.Enumerations#settingsaddenum",
       "type": "Action<Table>",
       "kind": "callback",
       "section": "Enum callbacks",
@@ -1134,7 +1134,7 @@
     },
     {
       "name": "UpdateEnum",
-      "wikiPage": "Settings.Enumerations",
+      "wikiPage": "Settings.Enumerations#updateenum-and-updateenummember",
       "type": "Action<Enumeration>",
       "kind": "callback",
       "section": "Enum callbacks",
@@ -1147,7 +1147,7 @@
     },
     {
       "name": "UpdateEnumMember",
-      "wikiPage": "Settings.Enumerations",
+      "wikiPage": "Settings.Enumerations#updateenum-and-updateenummember",
       "type": "Action<EnumerationMember>",
       "kind": "callback",
       "section": "Enum callbacks",
@@ -1329,7 +1329,7 @@
     },
     {
       "name": "DefaultConstructorArgument",
-      "wikiPage": "Settings.Runtime-Values",
+      "wikiPage": "Settings.Runtime-Values#settingsdefaultconstructorargument",
       "type": "string",
       "kind": "string",
       "section": null,
@@ -1342,7 +1342,7 @@
     },
     {
       "name": "DefaultSchema",
-      "wikiPage": "Settings.Runtime-Values",
+      "wikiPage": "Settings.Runtime-Values#settingsdefaultschema",
       "type": "string",
       "kind": "string",
       "section": "Schema",
@@ -1418,7 +1418,7 @@
     },
     {
       "name": "ReadStoredProcReturnObjectCompleted",
-      "wikiPage": "Settings.StoredProcedureReturnTypes",
+      "wikiPage": "Settings.StoredProcedureReturnTypes#settingsreadstoredprocreturnobjectcompleted",
       "type": "Action<StoredProcedure>",
       "kind": "callback",
       "section": "StoredProcedure return types",
@@ -1431,7 +1431,7 @@
     },
     {
       "name": "ReadStoredProcReturnObjectException",
-      "wikiPage": "Settings.StoredProcedureReturnTypes",
+      "wikiPage": "Settings.StoredProcedureReturnTypes#settingsreadstoredprocreturnobjectexception",
       "type": "Action<Exception, StoredProcedure>",
       "kind": "callback",
       "section": "StoredProcedure return types",
@@ -1444,7 +1444,7 @@
     },
     {
       "name": "Root",
-      "wikiPage": "Settings.Runtime-Values",
+      "wikiPage": "Settings.Runtime-Values#settingsroot",
       "type": "string",
       "kind": "string",
       "section": null,
@@ -1470,7 +1470,7 @@
     },
     {
       "name": "TemplateFile",
-      "wikiPage": "Settings.Runtime-Values",
+      "wikiPage": "Settings.Runtime-Values#settingstemplatefile",
       "type": "string",
       "kind": "string",
       "section": null,
